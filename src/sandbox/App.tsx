@@ -1,8 +1,24 @@
-import React from 'react';
+import React from "react";
+import List from "./List";
+import ListItem from "./ListItem";
+import ListItemText from "./ListItemText";
 
 function App() {
   return (
-    <h1>Hello World!</h1>
+    <List>
+      <ListItem>
+        <ListItemText primary="Hello1" />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="Hello2" />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="Hello3" />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="Hello4" />
+      </ListItem>
+    </List>
   );
 }
 
