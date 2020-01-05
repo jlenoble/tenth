@@ -1,0 +1,10 @@
+ul,
+li {
+  border: lightgrey solid 1px;
+  padding: 8px;
+  margin: 8px;
+}
+
+ul {
+  list-style-type: none;
+}
