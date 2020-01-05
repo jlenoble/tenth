@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
-import List from "./List";
-import ListItem from "./ListItem";
+import List from "./DroppableList";
+import ListItem from "./DraggableListItem";
 import ListItemText from "./ListItemText";
 
 type CategoryProps = {
@@ -15,10 +15,10 @@ const Category: FunctionComponent<CategoryProps> = ({
   return (
     <div>
       <h3>{categoryName}</h3>
-      <List>
-        {Object.entries(categoryElements).map(([key, value]) => {
+      <List droppableId={categoryName}>
+        {Object.entries(categoryElements).map(([key, value], index) => {
           return (
-            <ListItem key={key}>
+            <ListItem key={key} draggableId={key} index={index}>
               <ListItemText primary={value} />
             </ListItem>
           );
