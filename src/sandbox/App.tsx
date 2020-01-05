@@ -7,7 +7,7 @@ import "./List.css";
 
 function App() {
   const { items, layout } = data;
-  const [categories, setData] = useState(data.categories);
+  const [categories, setCategories] = useState(data.categories);
 
   return (
     <DragDropContext
@@ -23,15 +23,29 @@ function App() {
           return;
         }
 
-        const category = categories[source.droppableId];
-        const newItemIds = category.concat();
-        newItemIds.splice(source.index, 1);
-        newItemIds.splice(destination.index, 0, draggableId);
+        if (source.droppableId === destination.droppableId) {
+          const newItemIds = categories[source.droppableId].concat();
+          newItemIds.splice(source.index, 1);
+          newItemIds.splice(destination.index, 0, draggableId);
 
-        setData({
-          ...categories,
-          [source.droppableId]: newItemIds
-        });
+          setCategories({
+            ...categories,
+            [source.droppableId]: newItemIds
+          });
+        } else {
+          const sourceItemIds = categories[source.droppableId].concat();
+          const destinationItemIds = categories[
+            destination.droppableId
+          ].concat();
+          sourceItemIds.splice(source.index, 1);
+          destinationItemIds.splice(destination.index, 0, draggableId);
+
+          setCategories({
+            ...categories,
+            [source.droppableId]: sourceItemIds,
+            [destination.droppableId]: destinationItemIds
+          });
+        }
       }}
     >
       {layout.map(key => {
