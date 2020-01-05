@@ -15,3 +15,7 @@ li.tenth {
   padding: 8px;
   list-style-type: none;
 }
+
+li.tenth.isDragging {
+  background-color: yellow;
+}

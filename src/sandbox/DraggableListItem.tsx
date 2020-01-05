@@ -5,6 +5,7 @@ import {
   DraggableProvided,
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
+import clsx from "clsx";
 
 export type DraggablePropsWithoutChildren = Omit<DraggableProps, "children">;
 
@@ -19,12 +20,15 @@ const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
   draggableProps
 }) => (
   <Draggable {...draggableProps}>
-    {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
+    {(
+      { innerRef, draggableProps, dragHandleProps }: DraggableProvided,
+      { isDragging }: DraggableStateSnapshot
+    ) => (
       <li
-        className={className}
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
+        className={clsx(className, { isDragging })}
+        ref={innerRef}
+        {...draggableProps}
+        {...dragHandleProps}
       >
         {children}
       </li>
