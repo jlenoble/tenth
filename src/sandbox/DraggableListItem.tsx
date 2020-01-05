@@ -6,19 +6,22 @@ import {
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
 
-// DraggableProps defines a custom type for the "children" property:
-// (provided: DraggableProvided, snapshot: DraggableStateSnapshot): React.ReactElement<HTMLElement>
-// But we don't want to override the default for a FunctionComponent.
-type DraggablePropsWithoutChildren = Omit<DraggableProps, "children">;
+export type DraggablePropsWithoutChildren = Omit<DraggableProps, "children">;
 
-const DraggableListItem: FunctionComponent<DraggablePropsWithoutChildren> = ({
+type DraggableListItemProps = {
+  className?: string;
+  draggableProps: DraggablePropsWithoutChildren;
+};
+
+const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
   children,
-  ...draggableProps
+  className,
+  draggableProps
 }) => (
   <Draggable {...draggableProps}>
     {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
       <li
-        className="tenth"
+        className={className}
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}

@@ -15,9 +15,11 @@ function App() {
       {Object.entries(data.sets).map(([key, itemIds]) => {
         return (
           <Category
+            className="tenth"
             key={key}
             categoryName={key}
             categoryElements={pick(data.items, itemIds)}
+            dnd
           />
         );
       })}
