@@ -2,26 +2,26 @@ import React, { FunctionComponent } from "react";
 import DraggableListItem, {
   DraggablePropsWithoutChildren
 } from "./DraggableListItem";
+import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
 
-type ListItemProps = {
-  className?: string;
+export interface ListItemProps extends BaseListItemPropsWithoutRef {
   draggableProps?: DraggablePropsWithoutChildren;
-};
+}
 
 const ListItem: FunctionComponent<ListItemProps> = ({
   children,
-  className,
-  draggableProps
+  draggableProps,
+  ...other
 }) => {
   if (draggableProps) {
     return (
-      <DraggableListItem className={className} draggableProps={draggableProps}>
+      <DraggableListItem draggableProps={draggableProps} {...other}>
         {children}
       </DraggableListItem>
     );
   }
 
-  return <li className={className}>{children}</li>;
+  return <BaseListItem {...other}>{children}</BaseListItem>;
 };
 
 export default ListItem;

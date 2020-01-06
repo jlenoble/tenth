@@ -6,32 +6,34 @@ import {
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
 import clsx from "clsx";
+import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
 
 export type DraggablePropsWithoutChildren = Omit<DraggableProps, "children">;
 
-type DraggableListItemProps = {
-  className?: string;
+export interface DraggableListItemProps extends BaseListItemPropsWithoutRef {
   draggableProps: DraggablePropsWithoutChildren;
-};
+}
 
 const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
   children,
   className,
-  draggableProps
+  draggableProps,
+  ...other
 }) => (
   <Draggable {...draggableProps}>
     {(
       { innerRef, draggableProps, dragHandleProps }: DraggableProvided,
       { isDragging }: DraggableStateSnapshot
     ) => (
-      <li
+      <BaseListItem
         className={clsx(className, { isDragging })}
         ref={innerRef}
         {...draggableProps}
         {...dragHandleProps}
+        {...other}
       >
         {children}
-      </li>
+      </BaseListItem>
     )}
   </Draggable>
 );

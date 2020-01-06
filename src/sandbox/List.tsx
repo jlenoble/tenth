@@ -1,25 +1,25 @@
 import React, { FunctionComponent } from "react";
 import DroppableList, { DroppablePropsWithoutChildren } from "./DroppableList";
+import BaseList, { BaseListPropsWithoutRef } from "./BaseList";
 
-type ListProps = {
-  className?: string;
+export interface ListProps extends BaseListPropsWithoutRef {
   droppableProps?: DroppablePropsWithoutChildren;
-};
+}
 
 const List: FunctionComponent<ListProps> = ({
   children,
-  className,
-  droppableProps
+  droppableProps,
+  ...other
 }) => {
   if (droppableProps) {
     return (
-      <DroppableList className={className} droppableProps={droppableProps}>
+      <DroppableList droppableProps={droppableProps} {...other}>
         {children}
       </DroppableList>
     );
   }
 
-  return <ul className={className}>{children}</ul>;
+  return <BaseList {...other}>{children}</BaseList>;
 };
 
 export default List;
