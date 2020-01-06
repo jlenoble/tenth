@@ -51,7 +51,6 @@ function App() {
       {layout.map(key => {
         return (
           <Category
-            className="tenth"
             key={key}
             categoryName={key}
             categoryElements={pick(items, categories[key])}

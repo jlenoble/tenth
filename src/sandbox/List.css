@@ -1,25 +1,7 @@
-ul.tenth,
-li.tenth {
-  border: lightgrey solid 1px;
-  background-color: white;
-}
-
-ul.tenth {
-  margin: 8px;
-  padding: 8px 8px 0px 8px;
-  list-style-type: none;
-}
-
-ul.tenth.isDraggingOver {
+.MuiList-root.isDraggingOver {
   background-color: lightgreen;
 }
 
-li.tenth {
-  margin-bottom: 8px;
-  padding: 8px;
-  list-style-type: none;
-}
-
-li.tenth.isDragging {
+.MuiListItem-root.isDragging {
   background-color: yellow;
 }
