@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import Paper from "@material-ui/core/Paper";
 import List from "./List";
 import ListItem from "./ListItem";
 import ListItemText from "./ListItemText";
@@ -16,42 +17,30 @@ const Category: FunctionComponent<CategoryProps> = ({
   categoryElements,
   dnd
 }) => {
-  if (dnd) {
-    return (
-      <div>
-        <h3>{categoryName}</h3>
+  const pairs = Object.entries(categoryElements);
+
+  return (
+    <div>
+      <h3>{categoryName}</h3>
+      <Paper>
         <List
           className={className}
-          droppableProps={{ droppableId: categoryName }}
+          droppableProps={dnd && { droppableId: categoryName }}
         >
-          {Object.entries(categoryElements).map(([key, value], index) => {
+          {pairs.map(([key, value], index) => {
             return (
               <ListItem
                 className={className}
                 key={key}
-                draggableProps={{ draggableId: key, index }}
+                divider={index !== pairs.length}
+                draggableProps={dnd && { draggableId: key, index }}
               >
                 <ListItemText primary={value} />
               </ListItem>
             );
           })}
         </List>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h3>{categoryName}</h3>
-      <List className={className}>
-        {Object.entries(categoryElements).map(([key, value], index) => {
-          return (
-            <ListItem className={className} key={key}>
-              <ListItemText primary={value} />
-            </ListItem>
-          );
-        })}
-      </List>
+      </Paper>
     </div>
   );
 };

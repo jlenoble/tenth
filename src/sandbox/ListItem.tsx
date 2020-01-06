@@ -5,7 +5,7 @@ import DraggableListItem, {
 import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
 
 export interface ListItemProps extends BaseListItemPropsWithoutRef {
-  draggableProps?: DraggablePropsWithoutChildren;
+  draggableProps?: DraggablePropsWithoutChildren | false;
 }
 
 const ListItem: FunctionComponent<ListItemProps> = ({

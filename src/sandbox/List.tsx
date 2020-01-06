@@ -3,7 +3,7 @@ import DroppableList, { DroppablePropsWithoutChildren } from "./DroppableList";
 import BaseList, { BaseListPropsWithoutRef } from "./BaseList";
 
 export interface ListProps extends BaseListPropsWithoutRef {
-  droppableProps?: DroppablePropsWithoutChildren;
+  droppableProps?: DroppablePropsWithoutChildren | false;
 }
 
 const List: FunctionComponent<ListProps> = ({
