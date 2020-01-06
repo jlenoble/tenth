@@ -32,7 +32,7 @@ const Category: FunctionComponent<CategoryProps> = ({
               <ListItem
                 className={className}
                 key={key}
-                divider={index !== pairs.length}
+                divider={index !== pairs.length - 1}
                 draggableProps={dnd && { draggableId: key, index }}
               >
                 <ListItemText primary={value} />
