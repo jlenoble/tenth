@@ -10,6 +10,10 @@ ul.tenth {
   list-style-type: none;
 }
 
+ul.tenth.isDraggingOver {
+  background-color: lightgreen;
+}
+
 li.tenth {
   margin-bottom: 8px;
   padding: 8px;

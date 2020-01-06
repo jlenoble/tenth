@@ -5,6 +5,7 @@ import {
   DroppableProvided,
   DroppableStateSnapshot
 } from "react-beautiful-dnd";
+import clsx from "clsx";
 
 export type DroppablePropsWithoutChildren = Omit<DroppableProps, "children">;
 
@@ -19,14 +20,17 @@ const DroppableList: FunctionComponent<DroppableListProps> = ({
   droppableProps
 }) => (
   <Droppable {...droppableProps}>
-    {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+    {(
+      { innerRef, droppableProps, placeholder }: DroppableProvided,
+      { isDraggingOver }: DroppableStateSnapshot
+    ) => (
       <ul
-        className={className}
-        ref={provided.innerRef}
-        {...provided.droppableProps}
+        className={clsx(className, { isDraggingOver })}
+        ref={innerRef}
+        {...droppableProps}
       >
         {children}
-        {provided.placeholder}
+        {placeholder}
       </ul>
     )}
   </Droppable>
