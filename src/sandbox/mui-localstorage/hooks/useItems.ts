@@ -12,12 +12,12 @@ function useItems(
 ) {
   const [items, setItems] = useState(initialValue);
 
-  const setItemsAndCallBack = (items: Item[]): void => {
-    setItems(items);
-    if (callback) {
-      callback(items);
-    }
-  };
+  const setItemsAndCallBack = callback
+    ? (items: Item[]): void => {
+        setItems(items);
+        callback(items);
+      }
+    : setItems;
 
   return {
     items,
