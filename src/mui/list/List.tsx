@@ -1,8 +1,6 @@
 import React, { FunctionComponent } from "react";
-import DroppableList, {
-  DroppablePropsWithoutChildren
-} from "../../mui/list/DroppableList";
-import BaseList, { BaseListPropsWithoutRef } from "../../mui/list/BaseList";
+import DroppableList, { DroppablePropsWithoutChildren } from "./DroppableList";
+import BaseList, { BaseListPropsWithoutRef } from "./BaseList";
 
 export interface ListProps extends BaseListPropsWithoutRef {
   droppableProps?: DroppablePropsWithoutChildren | false;
