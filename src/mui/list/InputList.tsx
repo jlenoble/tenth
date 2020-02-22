@@ -11,7 +11,7 @@ import AddItem from "./AddItem";
 import useInputValue from "./hooks/useInputValue";
 import useItems, { Item } from "./hooks/useItems";
 
-let currentId = 0;
+let currentId = Date.now();
 const tmpId = () => "item" + currentId++;
 
 export interface InputListProps {
