@@ -6,14 +6,17 @@ export type Item = {
   checked: boolean;
 };
 
-export const todoListKey = "todolist";
-
-function useItems(initialValue: Item[] = []) {
+function useItems(
+  initialValue: Item[] = [],
+  callback?: (items: Item[]) => void
+) {
   const [items, setItems] = useState(initialValue);
 
-  const setItemsAndSave = (items: Item[]): void => {
+  const setItemsAndCallBack = (items: Item[]): void => {
     setItems(items);
-    localStorage.setItem(todoListKey, JSON.stringify(items));
+    if (callback) {
+      callback(items);
+    }
   };
 
   return {
@@ -21,7 +24,7 @@ function useItems(initialValue: Item[] = []) {
 
     addItem: (text: string, id: string) => {
       if (text !== "") {
-        setItemsAndSave(
+        setItemsAndCallBack(
           items.concat({
             id,
             text,
@@ -32,7 +35,7 @@ function useItems(initialValue: Item[] = []) {
     },
 
     checkItem: (id: string) => {
-      setItemsAndSave(
+      setItemsAndCallBack(
         items.map(item => {
           if (id === item.id) {
             return {
@@ -48,7 +51,7 @@ function useItems(initialValue: Item[] = []) {
     },
 
     removeItem: (id: string) => {
-      setItemsAndSave(items.filter(item => id !== item.id));
+      setItemsAndCallBack(items.filter(item => id !== item.id));
     }
   };
 }

@@ -1,6 +1,5 @@
 import React from "react";
-import InputList from "./InputList";
-import { todoListKey } from "./hooks/useItems";
+import InputList, { todoListKey } from "./InputList";
 
 function App() {
   return (

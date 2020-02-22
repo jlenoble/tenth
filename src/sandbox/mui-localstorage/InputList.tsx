@@ -18,9 +18,19 @@ interface InputListProps {
   defaultItems: Item[];
 }
 
+export const todoListKey = "todolist";
+
 const InputList: FunctionComponent<InputListProps> = ({ defaultItems }) => {
   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
-  const { items, addItem, checkItem, removeItem } = useItems(defaultItems);
+
+  const saveItems = (items: Item[]): void => {
+    localStorage.setItem(todoListKey, JSON.stringify(items));
+  };
+
+  const { items, addItem, checkItem, removeItem } = useItems(
+    defaultItems,
+    saveItems
+  );
 
   const clearInputAndAddItem = () => {
     clearInput();
