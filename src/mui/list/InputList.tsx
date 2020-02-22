@@ -7,20 +7,28 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
-import AddItem from "../../mui/list/AddItem";
-import useInputValue from "../../mui/list/hooks/useInputValue";
-import useItems, { Item } from "../../mui/list/hooks/useItems";
+import AddItem from "./AddItem";
+import useInputValue from "./hooks/useInputValue";
+import useItems, { Item } from "./hooks/useItems";
 
 let currentId = 0;
 const tmpId = () => "item" + currentId++;
 
-interface InputListProps {
+export interface InputListProps {
   defaultItems: Item[];
+  onSetItems?: (items: Item[]) => void;
 }
 
-const InputList: FunctionComponent<InputListProps> = ({ defaultItems }) => {
+const InputList: FunctionComponent<InputListProps> = ({
+  defaultItems,
+  onSetItems
+}) => {
   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
-  const { items, addItem, checkItem, removeItem } = useItems(defaultItems);
+
+  const { items, addItem, checkItem, removeItem } = useItems(
+    defaultItems,
+    onSetItems
+  );
 
   const clearInputAndAddItem = () => {
     clearInput();
