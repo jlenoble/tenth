@@ -7,7 +7,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
-import AddItem from "./AddItem";
+import AddItem from "../../mui/list/AddItem";
 import useInputValue from "./hooks/useInputValue";
 import useItems, { Item } from "./hooks/useItems";
 
