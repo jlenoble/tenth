@@ -12,16 +12,18 @@ import useInputValue from "./hooks/useInputValue";
 import useItems, { Item } from "./hooks/useItems";
 
 let currentId = Date.now();
-const tmpId = () => "item" + currentId++;
+const defaultTmpId = () => "item" + currentId++;
 
 export interface InputListProps {
   defaultItems: Item[];
   onSetItems?: (items: Item[]) => void;
+  tmpId?: () => string;
 }
 
 const InputList: FunctionComponent<InputListProps> = ({
   defaultItems,
-  onSetItems
+  onSetItems,
+  tmpId = defaultTmpId
 }) => {
   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
 
