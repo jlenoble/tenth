@@ -6,7 +6,9 @@ import {
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
 import clsx from "clsx";
-import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
+import BaseListItem, {
+  BaseListItemPropsWithoutRef
+} from "../../mui/list/BaseListItem";
 
 export type DraggablePropsWithoutChildren = Omit<DraggableProps, "children">;
 

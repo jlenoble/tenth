@@ -2,7 +2,9 @@ import React, { FunctionComponent } from "react";
 import DraggableListItem, {
   DraggablePropsWithoutChildren
 } from "./DraggableListItem";
-import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
+import BaseListItem, {
+  BaseListItemPropsWithoutRef
+} from "../../mui/list/BaseListItem";
 
 export interface ListItemProps extends BaseListItemPropsWithoutRef {
   draggableProps?: DraggablePropsWithoutChildren | false;
