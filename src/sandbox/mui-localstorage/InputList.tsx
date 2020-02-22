@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 import AddItem from "../../mui/list/AddItem";
 import useInputValue from "../../mui/list/hooks/useInputValue";
-import useItems, { Item } from "./hooks/useItems";
+import useItems, { Item } from "../../mui/list/hooks/useItems";
 
 let currentId = 0;
 const tmpId = () => "item" + currentId++;
