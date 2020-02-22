@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import DraggableListItem, {
   DraggablePropsWithoutChildren
-} from "./DraggableListItem";
+} from "../../mui/list/DraggableListItem";
 import BaseListItem, {
   BaseListItemPropsWithoutRef
 } from "../../mui/list/BaseListItem";

@@ -6,7 +6,7 @@ import {
   DroppableStateSnapshot
 } from "react-beautiful-dnd";
 import clsx from "clsx";
-import BaseList, { BaseListPropsWithoutRef } from "../../mui/list/BaseList";
+import BaseList, { BaseListPropsWithoutRef } from "./BaseList";
 
 export type DroppablePropsWithoutChildren = Omit<DroppableProps, "children">;
 
