@@ -18,7 +18,7 @@ let currentId = Date.now();
 const defaultTmpId = () => "item" + currentId++;
 
 export interface InputListProps {
-  defaultItems: Item[];
+  defaultItems?: Item[];
   onSetItems?: (items: Item[]) => void;
   tmpId?: () => string;
   dnd?: boolean;
@@ -27,7 +27,7 @@ export interface InputListProps {
 }
 
 const InputList: FunctionComponent<InputListProps> = ({
-  defaultItems,
+  defaultItems = [],
   onSetItems,
   tmpId = defaultTmpId,
   dnd,
