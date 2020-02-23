@@ -21,6 +21,7 @@ function useItems(
 
   return {
     items,
+    setItems: setItemsAndCallBack,
 
     addItem: (text: string, id: string) => {
       if (text !== "") {
