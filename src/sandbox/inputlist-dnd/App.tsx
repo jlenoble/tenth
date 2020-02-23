@@ -27,7 +27,7 @@ function App() {
         }
       }}
     >
-      <InputList defaultItems={items} dnd itemHooks={itemHooks} />
+      <InputList dnd itemHooks={itemHooks} />
     </DragDropContext>
   );
 }
