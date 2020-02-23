@@ -21,19 +21,24 @@ export interface InputListProps {
   defaultItems: Item[];
   onSetItems?: (items: Item[]) => void;
   tmpId?: () => string;
+  dnd?: boolean;
+  listId?: string;
+  itemHooks?: ReturnType<typeof useItems>;
 }
 
 const InputList: FunctionComponent<InputListProps> = ({
   defaultItems,
   onSetItems,
-  tmpId = defaultTmpId
+  tmpId = defaultTmpId,
+  dnd,
+  listId = defaultTmpId(),
+  itemHooks
 }) => {
   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
 
-  const { items, addItem, checkItem, removeItem } = useItems(
-    defaultItems,
-    onSetItems
-  );
+  const localItemHooks = useItems(defaultItems, onSetItems);
+
+  const { items, addItem, checkItem, removeItem } = itemHooks || localItemHooks;
 
   const clearInputAndAddItem = () => {
     clearInput();
@@ -51,10 +56,14 @@ const InputList: FunctionComponent<InputListProps> = ({
         }
       />
       <Paper>
-        <List>
+        <List droppableProps={dnd && { droppableId: listId }}>
           {items.map(({ id, text, checked }, index) => {
             return (
-              <ListItem key={id} divider={index !== items.length - 1}>
+              <ListItem
+                key={id}
+                divider={index !== items.length - 1}
+                draggableProps={dnd && { draggableId: id, index }}
+              >
                 <Checkbox
                   onClick={() => checkItem(id)}
                   checked={checked}
