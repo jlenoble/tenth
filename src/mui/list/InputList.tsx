@@ -7,8 +7,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 
-import List from "./List";
-import ListItem from "./ListItem";
+import List from "../../core/List";
+import ListItem from "../../core/ListItem";
 import AddItem from "./AddItem";
 
 import useInputValue from "./hooks/useInputValue";
