@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import InputList from "..";
 
-describe("Items can be removed from InputList", () => {
+describe("Items can be checked in InputList", () => {
   it("without any attributes", async () => {
     const { getByText, getByRole, getAllByRole } = render(<InputList />);
     const list = getByRole("list");
