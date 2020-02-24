@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { render } from "@testing-library/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import InputList, { useItems, Item } from "..";
 
@@ -34,20 +34,17 @@ describe("InputList renders without crashing", () => {
   it("without any attributes", () => {
     // Items can be added, removed, checked
     // They cannot be edited, persisted, reordered
-    const div = document.createElement("div");
-    ReactDOM.render(<InputList />, div);
+    render(<InputList />);
   });
 
   it("with persistence", () => {
     // Items can be added, removed, checked, persisted
     // They cannot be edited, reordered
-    const div = document.createElement("div");
-    ReactDOM.render(
+    render(
       <InputList
         defaultItems={JSON.parse(localStorage.getItem(listId) || "[]")}
         onSetItems={saveItems(listId)}
-      />,
-      div
+      />
     );
   });
 
@@ -64,8 +61,7 @@ describe("InputList renders without crashing", () => {
       );
     }
 
-    const div = document.createElement("div");
-    ReactDOM.render(<App />, div);
+    render(<App />);
   });
 
   it("with DnD and persistence", () => {
@@ -84,7 +80,6 @@ describe("InputList renders without crashing", () => {
       );
     }
 
-    const div = document.createElement("div");
-    ReactDOM.render(<App />, div);
+    render(<App />);
   });
 });
