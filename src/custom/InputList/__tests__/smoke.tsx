@@ -1,15 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { DragDropContext } from "react-beautiful-dnd";
-import InputList, { useItems } from "..";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import InputList, { useItems, Item } from "..";
 
 const listId = "todolist";
 
-const saveItems = listId => items => {
+const saveItems = (listId: string) => (items: Item[]) => {
   localStorage.setItem(listId, JSON.stringify(items));
 };
 
-const onDragEnd = ({ items, setItems }) => ({ source, destination }) => {
+const onDragEnd = ({ items, setItems }: ReturnType<typeof useItems>) => ({
+  source,
+  destination
+}: DropResult) => {
   if (!destination) {
     return;
   }
