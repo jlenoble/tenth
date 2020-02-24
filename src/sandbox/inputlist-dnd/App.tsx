@@ -1,7 +1,6 @@
 import React from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import useItems from "../../mui/list/hooks/useItems";
-import InputList from "../../mui/list/InputList";
+import InputList, { useItems } from "../../custom/InputList";
 
 function App() {
   const itemHooks = useItems([]);

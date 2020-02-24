@@ -1,6 +1,5 @@
 import React from "react";
-import InputList from "../../mui/list/InputList";
-import { Item } from "../../mui/list/hooks/useItems";
+import InputList, { Item } from "../../custom/InputList";
 
 const todoListKey = "todolist";
 
