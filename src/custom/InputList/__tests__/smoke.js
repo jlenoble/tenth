@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import { DragDropContext } from "react-beautiful-dnd";
 import InputList, { useItems } from "..";
 
-const todoListKey = "todolist";
+const listId = "todolist";
 
-const saveItems = items => {
-  localStorage.setItem(todoListKey, JSON.stringify(items));
+const saveItems = listId => items => {
+  localStorage.setItem(listId, JSON.stringify(items));
 };
 
 const onDragEnd = ({ items, setItems }) => ({ source, destination }) => {
@@ -41,8 +41,8 @@ describe("InputList renders without crashing", () => {
     const div = document.createElement("div");
     ReactDOM.render(
       <InputList
-        defaultItems={JSON.parse(localStorage.getItem(todoListKey) || "[]")}
-        onSetItems={saveItems}
+        defaultItems={JSON.parse(localStorage.getItem(listId) || "[]")}
+        onSetItems={saveItems(listId)}
       />,
       div
     );
@@ -53,6 +53,26 @@ describe("InputList renders without crashing", () => {
     // They cannot be edited, persisted
     function App() {
       const itemHooks = useItems([]);
+
+      return (
+        <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
+          <InputList dnd itemHooks={itemHooks} />
+        </DragDropContext>
+      );
+    }
+
+    const div = document.createElement("div");
+    ReactDOM.render(<App />, div);
+  });
+
+  it("with DnD and persistence", () => {
+    // Items can be added, removed, checked, reordered, persisted
+    // They cannot be edited
+    function App() {
+      const itemHooks = useItems(
+        JSON.parse(localStorage.getItem(listId) || "[]"),
+        saveItems(listId)
+      );
 
       return (
         <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
