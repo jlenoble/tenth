@@ -36,7 +36,7 @@ function App() {
         }
       }}
     >
-      <InputList dnd listId={todoListKey} itemHooks={itemHooks} />
+      <InputList dnd itemHooks={itemHooks} />
     </DragDropContext>
   );
 }
