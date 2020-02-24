@@ -1,34 +1,8 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import InputList, { useItems, Item } from "..";
-
-const listId = "todolist";
-
-const saveItems = (listId: string) => (items: Item[]) => {
-  localStorage.setItem(listId, JSON.stringify(items));
-};
-
-const onDragEnd = ({ items, setItems }: ReturnType<typeof useItems>) => ({
-  source,
-  destination
-}: DropResult) => {
-  if (!destination) {
-    return;
-  }
-
-  if (destination.droppableId === source.droppableId) {
-    if (destination.index === source.index) {
-      return;
-    }
-
-    const newItems = items.concat();
-    newItems.splice(source.index, 1);
-    newItems.splice(destination.index, 0, items[source.index]);
-
-    setItems(newItems);
-  }
-};
+import { DragDropContext } from "react-beautiful-dnd";
+import InputList, { useItems } from "..";
+import { listId, saveItems, onDragEnd } from "../__helpers__";
 
 describe("InputList renders without crashing", () => {
   it("without any attributes", () => {
