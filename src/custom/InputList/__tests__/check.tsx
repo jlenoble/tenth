@@ -6,38 +6,43 @@ import InputList from "..";
 describe("Items can be removed from InputList", () => {
   it("without any attributes", async () => {
     const { getByText, getByRole, getAllByRole } = render(<InputList />);
+    const list = getByRole("list");
+    const textbox = getByRole("textbox");
+    const addButton = getByText(/add/i);
 
-    expect(getByRole("list")).toBeEmpty();
+    expect(list).toBeEmpty();
 
-    await userEvents.type(getByRole("textbox"), "foo");
-    userEvents.click(getByText(/add/i));
-    await userEvents.type(getByRole("textbox"), "bar");
-    userEvents.click(getByText(/add/i));
-    await userEvents.type(getByRole("textbox"), "quux");
-    userEvents.click(getByText(/add/i));
+    await userEvents.type(textbox, "foo");
+    userEvents.click(addButton);
+    await userEvents.type(textbox, "bar");
+    userEvents.click(addButton);
+    await userEvents.type(textbox, "quux");
+    userEvents.click(addButton);
 
-    expect(getAllByRole("checkbox")).toHaveLength(3);
-    expect(getAllByRole("checkbox")[0]).not.toBeChecked();
-    expect(getAllByRole("checkbox")[1]).not.toBeChecked();
-    expect(getAllByRole("checkbox")[2]).not.toBeChecked();
+    const checkboxes = getAllByRole("checkbox");
+
+    expect(checkboxes).toHaveLength(3);
+    expect(checkboxes[0]).not.toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).not.toBeChecked();
 
     userEvents.click(getAllByRole("checkbox")[0]);
 
-    expect(getAllByRole("checkbox")[0]).toBeChecked();
-    expect(getAllByRole("checkbox")[1]).not.toBeChecked();
-    expect(getAllByRole("checkbox")[2]).not.toBeChecked();
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).not.toBeChecked();
 
     userEvents.click(getAllByRole("checkbox")[2]);
 
-    expect(getAllByRole("checkbox")[0]).toBeChecked();
-    expect(getAllByRole("checkbox")[1]).not.toBeChecked();
-    expect(getAllByRole("checkbox")[2]).toBeChecked();
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
 
     userEvents.click(getAllByRole("checkbox")[0]);
 
-    expect(getAllByRole("checkbox")[0]).not.toBeChecked();
-    expect(getAllByRole("checkbox")[1]).not.toBeChecked();
-    expect(getAllByRole("checkbox")[2]).toBeChecked();
-    expect(getAllByRole("checkbox")).toHaveLength(3);
+    expect(checkboxes[0]).not.toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
+    expect(checkboxes).toHaveLength(3);
   });
 });

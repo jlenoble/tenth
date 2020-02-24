@@ -6,26 +6,29 @@ import InputList from "..";
 describe("Items can be added to InputList", () => {
   it("without any attributes", async () => {
     const { getByText, getByRole } = render(<InputList />);
+    const list = getByRole("list");
+    const textbox = getByRole("textbox");
+    const addButton = getByText(/add/i);
 
-    expect(getByRole("textbox")).toBeInTheDocument();
-    expect(getByText(/add/i)).toBeInTheDocument();
-    expect(getByRole("list")).toBeEmpty();
+    expect(textbox).toBeInTheDocument();
+    expect(addButton).toBeInTheDocument();
+    expect(list).toBeEmpty();
 
-    await userEvents.type(getByRole("textbox"), "foo");
-    expect(getByRole("list")).toBeEmpty();
+    await userEvents.type(textbox, "foo");
+    expect(list).toBeEmpty();
 
-    userEvents.click(getByText(/add/i));
-    expect(getByRole("list")).toHaveTextContent("foo");
+    userEvents.click(addButton);
+    expect(list).toHaveTextContent("foo");
 
-    await userEvents.type(getByRole("textbox"), "bar");
-    expect(getByRole("list")).toHaveTextContent("foo");
+    await userEvents.type(textbox, "bar");
+    expect(list).toHaveTextContent("foo");
 
-    fireEvent.keyPress(getByRole("textbox"), {
+    fireEvent.keyPress(textbox, {
       key: "Enter",
       code: 13,
       charCode: 13,
       keyCode: 13
     });
-    expect(getByRole("list")).toHaveTextContent("foobar");
+    expect(list).toHaveTextContent("foobar");
   });
 });

@@ -14,28 +14,31 @@ const getNthButton = (
 describe("Items can be removed from InputList", () => {
   it("without any attributes", async () => {
     const { getByText, getByRole } = render(<InputList />);
+    const list = getByRole("list");
+    const textbox = getByRole("textbox");
+    const addButton = getByText(/add/i);
 
-    expect(getByRole("list")).toBeEmpty();
+    expect(list).toBeEmpty();
 
-    await userEvents.type(getByRole("textbox"), "foo");
-    userEvents.click(getByText(/add/i));
-    await userEvents.type(getByRole("textbox"), "bar");
-    userEvents.click(getByText(/add/i));
-    await userEvents.type(getByRole("textbox"), "quux");
-    userEvents.click(getByText(/add/i));
+    await userEvents.type(textbox, "foo");
+    userEvents.click(addButton);
+    await userEvents.type(textbox, "bar");
+    userEvents.click(addButton);
+    await userEvents.type(textbox, "quux");
+    userEvents.click(addButton);
 
-    expect(getByRole("list")).toHaveTextContent("foobarquux");
+    expect(list).toHaveTextContent("foobarquux");
 
-    userEvents.click(getNthButton(getByRole("list"), 1, "Delete item"));
+    userEvents.click(getNthButton(list, 1, "Delete item"));
 
-    expect(getByRole("list")).toHaveTextContent("barquux");
+    expect(list).toHaveTextContent("barquux");
 
-    userEvents.click(getNthButton(getByRole("list"), 2, "Delete item"));
+    userEvents.click(getNthButton(list, 2, "Delete item"));
 
-    expect(getByRole("list")).toHaveTextContent("bar");
+    expect(list).toHaveTextContent("bar");
 
-    userEvents.click(getNthButton(getByRole("list"), 1, "Delete item"));
+    userEvents.click(getNthButton(list, 1, "Delete item"));
 
-    expect(getByRole("list")).toBeEmpty();
+    expect(list).toBeEmpty();
   });
 });
