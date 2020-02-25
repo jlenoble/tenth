@@ -37,6 +37,13 @@ export const fillWith = async (
   }
 };
 
+export const haveTextContents = (list: HTMLUListElement, items: string[]) => {
+  const texts = Array.from(list.querySelectorAll("li")).map(
+    li => li.textContent
+  );
+  expect(texts).toEqual(items);
+};
+
 export const saveItems = (listId: string) => (items: Item[]) => {
   localStorage.setItem(listId, JSON.stringify(items));
 };
