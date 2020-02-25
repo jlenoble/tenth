@@ -1,14 +1,12 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import InputList from "..";
+import { render } from "../__helpers__";
 
 describe("Items can be added to InputList", () => {
   it("without any attributes", async () => {
-    const { getByText, getByRole } = render(<InputList />);
-    const list = getByRole("list");
-    const textbox = getByRole("textbox");
-    const addButton = getByText(/add/i);
+    const { list, textbox, addButton } = render(<InputList />);
 
     expect(textbox).toBeInTheDocument();
     expect(addButton).toBeInTheDocument();

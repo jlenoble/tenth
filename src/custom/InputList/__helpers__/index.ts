@@ -1,7 +1,24 @@
 import { DropResult } from "react-beautiful-dnd";
+import { render as rtlRender } from "@testing-library/react";
 import { useItems, Item } from "..";
+import { ReactElement } from "react";
 
 export const listId = "todolist";
+
+export const render = (ui: ReactElement) => {
+  const renderResult = rtlRender(ui);
+  const { getByText, getByRole } = renderResult;
+  const list = getByRole("list");
+  const textbox = getByRole("textbox");
+  const addButton = getByText(/add/i);
+
+  return {
+    list,
+    textbox,
+    addButton,
+    ...renderResult
+  };
+};
 
 export const saveItems = (listId: string) => (items: Item[]) => {
   localStorage.setItem(listId, JSON.stringify(items));
