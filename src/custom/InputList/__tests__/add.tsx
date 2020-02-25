@@ -2,7 +2,7 @@ import React from "react";
 import { fireEvent } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import InputList from "..";
-import { render } from "../__helpers__";
+import { render, haveTextContents } from "../__helpers__";
 
 describe("Items can be added to InputList", () => {
   it("without any attributes", async () => {
@@ -16,10 +16,10 @@ describe("Items can be added to InputList", () => {
     expect(list).toBeEmpty();
 
     userEvents.click(addButton);
-    expect(list).toHaveTextContent("foo");
+    haveTextContents(list, ["foo"]);
 
     await userEvents.type(textbox, "bar");
-    expect(list).toHaveTextContent("foo");
+    haveTextContents(list, ["foo"]);
 
     fireEvent.keyPress(textbox, {
       key: "Enter",
@@ -27,6 +27,6 @@ describe("Items can be added to InputList", () => {
       charCode: 13,
       keyCode: 13
     });
-    expect(list).toHaveTextContent("foobar");
+    haveTextContents(list, ["foo", "bar"]);
   });
 });
