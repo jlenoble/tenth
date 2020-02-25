@@ -44,6 +44,13 @@ export const haveTextContents = (list: HTMLUListElement, items: string[]) => {
   expect(texts).toEqual(items);
 };
 
+export const haveChecks = (
+  checkboxes: HTMLInputElement[],
+  items: boolean[]
+) => {
+  expect(checkboxes.map(input => input.checked)).toEqual(items);
+};
+
 export const saveItems = (listId: string) => (items: Item[]) => {
   localStorage.setItem(listId, JSON.stringify(items));
 };
