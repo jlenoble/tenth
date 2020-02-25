@@ -1,5 +1,9 @@
 import { DropResult } from "react-beautiful-dnd";
-import { render as rtlRender } from "@testing-library/react";
+import {
+  render as rtlRender,
+  RenderResult as RtlRenderResult
+} from "@testing-library/react";
+import userEvents from "@testing-library/user-event";
 import { useItems, Item } from "..";
 import { ReactElement } from "react";
 
@@ -8,9 +12,9 @@ export const listId = "todolist";
 export const render = (ui: ReactElement) => {
   const renderResult = rtlRender(ui);
   const { getByText, getByRole } = renderResult;
-  const list = getByRole("list");
-  const textbox = getByRole("textbox");
-  const addButton = getByText(/add/i);
+  const list = getByRole("list") as HTMLUListElement;
+  const textbox = getByRole("textbox") as HTMLInputElement;
+  const addButton = getByText(/add/i) as HTMLButtonElement;
 
   return {
     list,
@@ -18,6 +22,19 @@ export const render = (ui: ReactElement) => {
     addButton,
     ...renderResult
   };
+};
+
+export const fillWith = async (
+  textbox: HTMLInputElement,
+  addButton: HTMLButtonElement,
+  items: string[]
+) => {
+  const l = items.length;
+
+  for (let i = 0; i < l; i++) {
+    await userEvents.type(textbox, items[i]);
+    userEvents.click(addButton);
+  }
 };
 
 export const saveItems = (listId: string) => (items: Item[]) => {

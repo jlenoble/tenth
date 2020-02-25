@@ -1,7 +1,7 @@
 import React from "react";
 import userEvents from "@testing-library/user-event";
 import InputList from "..";
-import { render } from "../__helpers__";
+import { render, fillWith } from "../__helpers__";
 
 describe("Items can be checked in InputList", () => {
   it("without any attributes", async () => {
@@ -9,12 +9,7 @@ describe("Items can be checked in InputList", () => {
 
     expect(list).toBeEmpty();
 
-    await userEvents.type(textbox, "foo");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "bar");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "quux");
-    userEvents.click(addButton);
+    await fillWith(textbox, addButton, ["foo", "bar", "quux"]);
 
     const checkboxes = getAllByRole("checkbox");
 
