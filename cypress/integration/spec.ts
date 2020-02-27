@@ -5,7 +5,7 @@ context("InputList", () => {
   const textbox = `${root} input.MuiInput-input`;
   const addButton = `${root} button.MuiButton-root`;
   const list = `${root} ul.MuiList-root`;
-  const listItem = `${list} li.MuiListItem-container`;
+  const listItem = `${list} li.MuiListItem-root`;
   const checkbox = `${listItem} span.MuiCheckbox-root input[type="checkbox"]`;
   const text = `${listItem} span.MuiListItemTextPrimary`;
   const deleteButton = `${listItem} button[aria-label="Delete item"].MuiIconButton-root`;
@@ -16,6 +16,41 @@ context("InputList", () => {
   const addItems = (items = defaultItems) => {
     items.forEach(item => {
       cy.get(textbox).type(`${item}{enter}`);
+    });
+  };
+
+  const BUTTON_INDEX = 0;
+  const SLOPPY_CLICK_THRESHOLD = 10;
+
+  const dragAndDrop = (subject: string, target: string) => {
+    cy.get(target).then($target => {
+      let coordsDrop = $target[0].getBoundingClientRect();
+      cy.get(subject).then(subject => {
+        const coordsDrag = subject[0].getBoundingClientRect();
+        cy.wrap(subject)
+          .trigger("mousedown", {
+            button: BUTTON_INDEX,
+            clientX: coordsDrag.x,
+            clientY: coordsDrag.y,
+            force: true
+          })
+          .trigger("mousemove", {
+            button: BUTTON_INDEX,
+            clientX: coordsDrag.x + SLOPPY_CLICK_THRESHOLD,
+            clientY: coordsDrag.y,
+            force: true
+          });
+
+        cy.get("body")
+          .trigger("mousemove", {
+            button: BUTTON_INDEX,
+            clientX: coordsDrop.x,
+            clientY: coordsDrop.y,
+            force: true
+          })
+          .trigger("mouseup")
+          .wait(350);
+      });
     });
   };
 
@@ -36,6 +71,7 @@ context("InputList", () => {
   };
 
   beforeEach(() => {
+    cy.viewport(800, 600);
     cy.visit(baseUrl);
   });
 
@@ -113,5 +149,37 @@ context("InputList", () => {
     it("check all");
     it("uncheck all");
     it("toggle all");
+  });
+
+  describe("can drag and drop items", () => {
+    beforeEach(() => {
+      addItems();
+    });
+
+    it("one by one", () => {
+      dragAndDrop(
+        "li.MuiListItem-root:nth-child(1)",
+        "li.MuiListItem-root:nth-child(2)"
+      );
+      testTextContents(["bar", "foo", "baz"]);
+
+      dragAndDrop(
+        "li.MuiListItem-root:nth-child(2)",
+        "li.MuiListItem-root:nth-child(3)"
+      );
+      testTextContents(["bar", "baz", "foo"]);
+
+      dragAndDrop(
+        "li.MuiListItem-root:nth-child(1)",
+        "li.MuiListItem-root:nth-child(3)"
+      );
+      testTextContents(["baz", "foo", "bar"]);
+
+      dragAndDrop(
+        "li.MuiListItem-root:nth-child(2)",
+        "li.MuiListItem-root:nth-child(1)"
+      );
+      testTextContents(["foo", "baz", "bar"]);
+    });
   });
 });
