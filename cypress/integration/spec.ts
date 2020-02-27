@@ -49,7 +49,7 @@ context("InputList", () => {
             force: true
           })
           .trigger("mouseup")
-          .wait(350);
+          .wait(500);
       });
     });
   };
@@ -71,7 +71,6 @@ context("InputList", () => {
   };
 
   beforeEach(() => {
-    cy.viewport(800, 600);
     cy.visit(baseUrl);
   });
 
