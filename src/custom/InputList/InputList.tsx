@@ -2,7 +2,6 @@ import React, { FunctionComponent, KeyboardEvent } from "react";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
@@ -70,14 +69,12 @@ const InputList: FunctionComponent<InputListProps> = ({
                   disableRipple
                 />
                 <ListItemText primary={text} />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    aria-label="Delete item"
-                    onClick={() => removeItem(id)}
-                  >
-                    <DeleteOutlined />
-                  </IconButton>
-                </ListItemSecondaryAction>
+                <IconButton
+                  aria-label="Delete item"
+                  onClick={() => removeItem(id)}
+                >
+                  <DeleteOutlined />
+                </IconButton>
               </ListItem>
             );
           })}
