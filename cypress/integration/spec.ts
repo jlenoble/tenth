@@ -23,35 +23,39 @@ context("InputList", () => {
   const SLOPPY_CLICK_THRESHOLD = 10;
 
   const dragAndDrop = (subject: string, target: string) => {
-    cy.get(target).then($target => {
-      let coordsDrop = $target[0].getBoundingClientRect();
-      cy.get(subject).then(subject => {
-        const coordsDrag = subject[0].getBoundingClientRect();
-        cy.wrap(subject)
-          .trigger("mousedown", {
-            button: BUTTON_INDEX,
-            clientX: coordsDrag.x,
-            clientY: coordsDrag.y,
-            force: true
-          })
-          .trigger("mousemove", {
-            button: BUTTON_INDEX,
-            clientX: coordsDrag.x + SLOPPY_CLICK_THRESHOLD,
-            clientY: coordsDrag.y,
-            force: true
-          });
+    cy.get(target)
+      .first()
+      .then($target => {
+        let coordsDrop = $target[0].getBoundingClientRect();
+        cy.get(subject)
+          .first()
+          .then($subject => {
+            const coordsDrag = $subject[0].getBoundingClientRect();
+            cy.wrap($subject)
+              .trigger("mousedown", {
+                button: BUTTON_INDEX,
+                clientX: coordsDrag.x,
+                clientY: coordsDrag.y,
+                force: true
+              })
+              .trigger("mousemove", {
+                button: BUTTON_INDEX,
+                clientX: coordsDrag.x + SLOPPY_CLICK_THRESHOLD,
+                clientY: coordsDrag.y,
+                force: true
+              });
 
-        cy.get("body")
-          .trigger("mousemove", {
-            button: BUTTON_INDEX,
-            clientX: coordsDrop.x,
-            clientY: coordsDrop.y,
-            force: true
-          })
-          .trigger("mouseup")
-          .wait(500);
+            cy.get("body")
+              .trigger("mousemove", {
+                button: BUTTON_INDEX,
+                clientX: coordsDrop.x,
+                clientY: coordsDrop.y,
+                force: true
+              })
+              .trigger("mouseup")
+              .wait(500);
+          });
       });
-    });
   };
 
   const testTextContents = (items = defaultItems) => {
@@ -156,28 +160,16 @@ context("InputList", () => {
     });
 
     it("one by one", () => {
-      dragAndDrop(
-        "li.MuiListItem-root:nth-child(1)",
-        "li.MuiListItem-root:nth-child(2)"
-      );
+      dragAndDrop(`${listItem}:nth-child(1)`, `${listItem}:nth-child(2)`);
       testTextContents(["bar", "foo", "baz"]);
 
-      dragAndDrop(
-        "li.MuiListItem-root:nth-child(2)",
-        "li.MuiListItem-root:nth-child(3)"
-      );
+      dragAndDrop(`${listItem}:nth-child(2)`, `${listItem}:nth-child(3)`);
       testTextContents(["bar", "baz", "foo"]);
 
-      dragAndDrop(
-        "li.MuiListItem-root:nth-child(1)",
-        "li.MuiListItem-root:nth-child(3)"
-      );
+      dragAndDrop(`${listItem}:nth-child(1)`, `${listItem}:nth-child(3)`);
       testTextContents(["baz", "foo", "bar"]);
 
-      dragAndDrop(
-        "li.MuiListItem-root:nth-child(2)",
-        "li.MuiListItem-root:nth-child(1)"
-      );
+      dragAndDrop(`${listItem}:nth-child(2)`, `${listItem}:nth-child(1)`);
       testTextContents(["foo", "baz", "bar"]);
     });
   });
