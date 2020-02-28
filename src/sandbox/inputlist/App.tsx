@@ -1,6 +1,7 @@
 import React from "react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
 import InputList, { Item, useItems } from "../../custom/InputList";
+import { onDragEnd } from "../../custom/InputList/__helpers__";
 
 const todoListKey = "todolist";
 
@@ -14,28 +15,8 @@ function App() {
     saveItems
   );
 
-  const { items, setItems } = itemHooks;
-
   return (
-    <DragDropContext
-      onDragEnd={({ source, destination }: DropResult) => {
-        if (!destination) {
-          return;
-        }
-
-        if (destination.droppableId === source.droppableId) {
-          if (destination.index === source.index) {
-            return;
-          }
-
-          const newItems = items.concat();
-          newItems.splice(source.index, 1);
-          newItems.splice(destination.index, 0, items[source.index]);
-
-          setItems(newItems);
-        }
-      }}
-    >
+    <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
       <InputList dnd itemHooks={itemHooks} />
     </DragDropContext>
   );

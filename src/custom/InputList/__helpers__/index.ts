@@ -1,10 +1,6 @@
-import { DropResult } from "react-beautiful-dnd";
-import {
-  render as rtlRender,
-  RenderResult as RtlRenderResult
-} from "@testing-library/react";
+import { render as rtlRender } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { useItems, Item } from "..";
+import { Item } from "..";
 import { ReactElement } from "react";
 
 export const listId = "todolist";
