@@ -1,6 +1,6 @@
-import { Item, defaultTmpId } from "..";
+import { Item } from "..";
 
-export const createItemFromText = (tmpId: () => string = defaultTmpId) => (
+export const createItemFromText = (tmpId: () => string) => (
   text: string
 ): Item => {
   return {
@@ -10,7 +10,7 @@ export const createItemFromText = (tmpId: () => string = defaultTmpId) => (
   };
 };
 
-export const createItemsFromTexts = (tmpId: () => string = defaultTmpId) => {
+export const createItemsFromTexts = (tmpId: () => string) => {
   const createItem = createItemFromText(tmpId);
   return (texts: string[]): Item[] => texts.map(createItem);
 };
