@@ -46,7 +46,7 @@ describe("Items in InputList can be persisted", () => {
 
   it("by setting onSetItems only: Previous data are lost", async () => {
     const {
-      fillWith,
+      add,
       checkNthChild,
       removeNthChild,
       expectTextContents,
@@ -61,7 +61,7 @@ describe("Items in InputList can be persisted", () => {
       savedChecks: [false, true, false]
     });
 
-    await fillWith(["qux", "quux"]);
+    await add(["qux", "quux"]);
     expectProps({
       texts: ["qux", "quux"],
       checks: [false, false]
@@ -82,7 +82,7 @@ describe("Items in InputList can be persisted", () => {
 
   it("by setting defaultItems and onSetItems: Previous data are recovered", async () => {
     const {
-      fillWith,
+      add,
       checkChildren,
       removeChildren,
       expectTextContents,
@@ -95,7 +95,7 @@ describe("Items in InputList can be persisted", () => {
       checks: [false, true, false]
     });
 
-    await fillWith(["qux", "quux"]);
+    await add(["qux", "quux"]);
     expectProps({
       texts: ["foo", "bar", "baz", "qux", "quux"],
       checks: [false, true, false, false, false]
