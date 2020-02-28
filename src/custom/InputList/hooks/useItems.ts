@@ -23,12 +23,11 @@ function useItems(
     items,
     setItems: setItemsAndCallBack,
 
-    addItem: (text: string, id: string) => {
-      if (text !== "") {
+    addItem: (item: { id: string; text: string }) => {
+      if (item.text !== "") {
         setItemsAndCallBack(
           items.concat({
-            id,
-            text,
+            ...item,
             checked: false
           })
         );
@@ -40,8 +39,7 @@ function useItems(
         items.map(item => {
           if (id === item.id) {
             return {
-              id,
-              text: item.text,
+              ...item,
               checked: !item.checked
             };
           }

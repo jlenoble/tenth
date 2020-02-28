@@ -41,7 +41,7 @@ const InputList: FunctionComponent<InputListProps> = ({
 
   const clearInputAndAddItem = () => {
     clearInput();
-    addItem(inputValue, tmpId());
+    addItem({ id: tmpId(), text: inputValue });
   };
 
   return (
