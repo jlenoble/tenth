@@ -3,21 +3,20 @@ import InputList, { Item, defaultTmpId } from "..";
 import {
   render,
   saveItems,
+  getItemsFromLocalStorage,
+  setItemsInLocalStorage,
   todoListKey,
   createItemsFromTexts
 } from "../__helpers__";
 
-const getItems = () => JSON.parse(localStorage.getItem(todoListKey)!) as Item[];
-const setItems = (items: Item[]) =>
-  localStorage.setItem(todoListKey, JSON.stringify(items));
+const getItems = getItemsFromLocalStorage(todoListKey);
+const setItems = setItemsInLocalStorage(todoListKey);
+const createItems = createItemsFromTexts(defaultTmpId);
 
 describe("Items in InputList can be persisted", () => {
   beforeEach(() => {
-    const createItems = createItemsFromTexts(defaultTmpId);
     const items = createItems(["foo", "bar", "baz"]);
-
     items[1].checked = true;
-
     setItems(items);
   });
 
