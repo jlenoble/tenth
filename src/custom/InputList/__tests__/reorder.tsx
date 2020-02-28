@@ -4,7 +4,6 @@ import { DragDropContext } from "react-beautiful-dnd";
 import InputList, { useItems } from "..";
 import {
   render,
-  fillWith,
   onDragEnd,
   getDroppables,
   getDraggables,
@@ -79,13 +78,12 @@ describe("Items can moved within InputList", () => {
 
     const {
       container,
-      textbox,
-      addButton,
+      fillWith,
       haveTextContents,
       getAllByRole,
       getByText
     } = render(<App />);
-    await fillWith(textbox, addButton, ["foo", "bar", "baz"]);
+    await fillWith(["foo", "bar", "baz"]);
 
     const getItems = () => getAllByRole("listitem");
     const droppables = getDroppables(container);

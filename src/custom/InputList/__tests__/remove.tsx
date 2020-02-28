@@ -1,7 +1,7 @@
 import React from "react";
 import userEvents from "@testing-library/user-event";
 import InputList from "..";
-import { render, fillWith } from "../__helpers__";
+import { render } from "../__helpers__";
 
 const getNthButton = (
   container: HTMLElement,
@@ -13,12 +13,10 @@ const getNthButton = (
 
 describe("Items can be removed from InputList", () => {
   it("without any attributes", async () => {
-    const { list, textbox, addButton, haveTextContents } = render(
-      <InputList />
-    );
+    const { list, fillWith, haveTextContents } = render(<InputList />);
     expect(list).toBeEmpty();
 
-    await fillWith(textbox, addButton, ["foo", "bar", "quux"]);
+    await fillWith(["foo", "bar", "quux"]);
     haveTextContents(["foo", "bar", "quux"]);
 
     userEvents.click(getNthButton(list, 1, "Delete item"));
