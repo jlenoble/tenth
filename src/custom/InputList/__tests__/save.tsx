@@ -49,6 +49,7 @@ describe("Items in InputList can be persisted", () => {
     const {
       fillWith,
       checkNthChild,
+      removeNthChild,
       expectTextContents,
       expectChecks
     } = render(<InputList onSetItems={saveItems(todoListKey)} />);
@@ -72,12 +73,19 @@ describe("Items in InputList can be persisted", () => {
       texts: ["qux", "quux"],
       checks: [true, false]
     });
+
+    removeNthChild(0);
+    expectProps({
+      texts: ["quux"],
+      checks: [false]
+    });
   });
 
   it("by setting defaultItems and onSetItems: Previous data are recovered", async () => {
     const {
       fillWith,
       checkChildren,
+      removeChildren,
       expectTextContents,
       expectChecks
     } = render(
@@ -103,6 +111,12 @@ describe("Items in InputList can be persisted", () => {
     expectProps({
       texts: ["foo", "bar", "baz", "qux", "quux"],
       checks: [true, false, false, false, true]
+    });
+
+    removeChildren([1, 4, 2]);
+    expectProps({
+      texts: ["foo", "qux"],
+      checks: [true, false]
     });
   });
 

@@ -21,6 +21,8 @@ export const render = (ui: ReactElement) => {
 
   const checkNthChild = (nth: number) =>
     userEvents.click(renderResult.getAllByRole("checkbox")[nth]);
+  const removeNthChild = (nth: number) =>
+    userEvents.click(getNthButton(list, nth, "Delete item"));
 
   return {
     list,
@@ -32,8 +34,12 @@ export const render = (ui: ReactElement) => {
     checkNthChild,
     checkChildren: (indices: number[]) => indices.forEach(checkNthChild),
 
-    removeNthChild: (nth: number) =>
-      userEvents.click(getNthButton(list, nth, "Delete item")),
+    removeNthChild,
+    removeChildren: (indices: number[]) =>
+      indices
+        .sort()
+        .reverse()
+        .forEach(removeNthChild),
 
     expectTextContents: (items: string[]) => expectTextContents(list, items),
     expectChecks: (items: boolean[]) => expectChecks(list, items),
