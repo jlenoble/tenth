@@ -37,11 +37,11 @@ export const haveTextContents = (list: HTMLUListElement, items: string[]) => {
   expect(texts).toEqual(items);
 };
 
-export const haveChecks = (
-  checkboxes: HTMLInputElement[],
-  items: boolean[]
-) => {
-  expect(checkboxes.map(input => input.checked)).toEqual(items);
+export const haveChecks = (list: HTMLUListElement, items: boolean[]) => {
+  const checks = (Array.from(
+    list.querySelectorAll('input[type="checkbox"]')
+  ) as HTMLInputElement[]).map(input => input.checked);
+  expect(checks).toEqual(items);
 };
 
 export * from "./dnd";

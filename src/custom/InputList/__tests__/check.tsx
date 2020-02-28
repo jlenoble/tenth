@@ -9,16 +9,15 @@ describe("Items can be checked in InputList", () => {
     expect(list).toBeEmpty();
 
     await fillWith(textbox, addButton, ["foo", "bar", "quux"]);
-    const checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
-    haveChecks(checkboxes, [false, false, false]);
+    haveChecks(list, [false, false, false]);
 
     userEvents.click(getAllByRole("checkbox")[0]);
-    haveChecks(checkboxes, [true, false, false]);
+    haveChecks(list, [true, false, false]);
 
     userEvents.click(getAllByRole("checkbox")[2]);
-    haveChecks(checkboxes, [true, false, true]);
+    haveChecks(list, [true, false, true]);
 
     userEvents.click(getAllByRole("checkbox")[0]);
-    haveChecks(checkboxes, [false, false, true]);
+    haveChecks(list, [false, false, true]);
   });
 });
