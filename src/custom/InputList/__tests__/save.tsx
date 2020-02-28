@@ -77,7 +77,7 @@ describe("Items in InputList can be persisted", () => {
   it("by setting defaultItems and onSetItems: Previous data are recovered", async () => {
     const {
       fillWith,
-      checkNthChild,
+      checkChildren,
       expectTextContents,
       expectChecks
     } = render(
@@ -99,9 +99,7 @@ describe("Items in InputList can be persisted", () => {
       checks: [false, true, false, false, false]
     });
 
-    checkNthChild(0);
-    checkNthChild(1);
-    checkNthChild(4);
+    checkChildren([0, 1, 4]);
     expectProps({
       texts: ["foo", "bar", "baz", "qux", "quux"],
       checks: [true, false, false, false, true]

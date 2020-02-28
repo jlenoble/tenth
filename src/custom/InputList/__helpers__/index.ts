@@ -19,14 +19,19 @@ export const render = (ui: ReactElement) => {
   const textbox = getByRole("textbox") as HTMLInputElement;
   const addButton = getByText(/add/i) as HTMLButtonElement;
 
+  const checkNthChild = (nth: number) =>
+    userEvents.click(renderResult.getAllByRole("checkbox")[nth]);
+
   return {
     list,
     textbox,
     addButton,
 
     fillWith: (items: string[]) => fillWith(textbox, addButton, items),
-    checkNthChild: (nth: number) =>
-      userEvents.click(renderResult.getAllByRole("checkbox")[nth]),
+
+    checkNthChild,
+    checkChildren: (indices: number[]) => indices.forEach(checkNthChild),
+
     removeNthChild: (nth: number) =>
       userEvents.click(getNthButton(list, nth, "Delete item")),
 
