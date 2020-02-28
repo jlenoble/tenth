@@ -13,17 +13,17 @@ const getNthButton = (
 
 describe("Items can be removed from InputList", () => {
   it("without any attributes", async () => {
-    const { list, fillWith, haveTextContents } = render(<InputList />);
+    const { list, fillWith, expectTextContents } = render(<InputList />);
     expect(list).toBeEmpty();
 
     await fillWith(["foo", "bar", "quux"]);
-    haveTextContents(["foo", "bar", "quux"]);
+    expectTextContents(["foo", "bar", "quux"]);
 
     userEvents.click(getNthButton(list, 1, "Delete item"));
-    haveTextContents(["bar", "quux"]);
+    expectTextContents(["bar", "quux"]);
 
     userEvents.click(getNthButton(list, 2, "Delete item"));
-    haveTextContents(["bar"]);
+    expectTextContents(["bar"]);
 
     userEvents.click(getNthButton(list, 1, "Delete item"));
     expect(list).toBeEmpty();

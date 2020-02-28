@@ -6,7 +6,7 @@ import { render } from "../__helpers__";
 
 describe("Items can be added to InputList", () => {
   it("without any attributes", async () => {
-    const { list, textbox, addButton, haveTextContents } = render(
+    const { list, textbox, addButton, expectTextContents } = render(
       <InputList />
     );
 
@@ -18,10 +18,10 @@ describe("Items can be added to InputList", () => {
     expect(list).toBeEmpty();
 
     userEvents.click(addButton);
-    haveTextContents(["foo"]);
+    expectTextContents(["foo"]);
 
     await userEvents.type(textbox, "bar");
-    haveTextContents(["foo"]);
+    expectTextContents(["foo"]);
 
     fireEvent.keyPress(textbox, {
       key: "Enter",
@@ -29,6 +29,6 @@ describe("Items can be added to InputList", () => {
       charCode: 13,
       keyCode: 13
     });
-    haveTextContents(["foo", "bar"]);
+    expectTextContents(["foo", "bar"]);
   });
 });

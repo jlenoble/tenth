@@ -4,19 +4,21 @@ import { render } from "../__helpers__";
 
 describe("Items can be checked in InputList", () => {
   it("without any attributes", async () => {
-    const { list, fillWith, checkNthChild, haveChecks } = render(<InputList />);
+    const { list, fillWith, checkNthChild, expectChecks } = render(
+      <InputList />
+    );
     expect(list).toBeEmpty();
 
     await fillWith(["foo", "bar", "quux"]);
-    haveChecks([false, false, false]);
+    expectChecks([false, false, false]);
 
     checkNthChild(0);
-    haveChecks([true, false, false]);
+    expectChecks([true, false, false]);
 
     checkNthChild(2);
-    haveChecks([true, false, true]);
+    expectChecks([true, false, true]);
 
     checkNthChild(0);
-    haveChecks([false, false, true]);
+    expectChecks([false, false, true]);
   });
 });

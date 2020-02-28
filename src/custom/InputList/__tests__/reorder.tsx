@@ -79,7 +79,7 @@ describe("Items can moved within InputList", () => {
     const {
       container,
       fillWith,
-      haveTextContents,
+      expectTextContents,
       getAllByRole,
       getByText
     } = render(<App />);
@@ -95,12 +95,12 @@ describe("Items can moved within InputList", () => {
     });
 
     await dnd(0, 2, { getByText, getItems });
-    haveTextContents(["bar", "baz", "foo"]);
+    expectTextContents(["bar", "baz", "foo"]);
 
     await dnd(0, 2, { getByText, getItems });
-    haveTextContents(["baz", "foo", "bar"]);
+    expectTextContents(["baz", "foo", "bar"]);
 
     await dnd(1, 0, { getByText, getItems });
-    haveTextContents(["foo", "baz", "bar"]);
+    expectTextContents(["foo", "baz", "bar"]);
   });
 });

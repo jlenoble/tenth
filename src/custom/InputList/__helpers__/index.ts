@@ -1,7 +1,7 @@
 import { render as rtlRender } from "@testing-library/react";
 import { ReactElement } from "react";
 import userEvents from "@testing-library/user-event";
-import { haveTextContents, haveChecks } from "./expect";
+import { expectTextContents, expectChecks } from "./expect";
 import { fillWith } from "./type";
 
 export const render = (ui: ReactElement) => {
@@ -20,8 +20,8 @@ export const render = (ui: ReactElement) => {
     checkNthChild: (nth: number) =>
       userEvents.click(renderResult.getAllByRole("checkbox")[nth]),
 
-    haveTextContents: (items: string[]) => haveTextContents(list, items),
-    haveChecks: (items: boolean[]) => haveChecks(list, items),
+    expectTextContents: (items: string[]) => expectTextContents(list, items),
+    expectChecks: (items: boolean[]) => expectChecks(list, items),
 
     ...renderResult
   };

@@ -1,11 +1,11 @@
-export const haveTextContents = (list: HTMLUListElement, items: string[]) => {
+export const expectTextContents = (list: HTMLUListElement, items: string[]) => {
   const texts = Array.from(list.querySelectorAll("li")).map(
     li => li.textContent
   );
   expect(texts).toEqual(items);
 };
 
-export const haveChecks = (list: HTMLUListElement, items: boolean[]) => {
+export const expectChecks = (list: HTMLUListElement, items: boolean[]) => {
   const checks = (Array.from(
     list.querySelectorAll('input[type="checkbox"]')
   ) as HTMLInputElement[]).map(input => input.checked);
