@@ -13,6 +13,31 @@ const getItems = getItemsFromLocalStorage(todoListKey);
 const setItems = setItemsInLocalStorage(todoListKey);
 const createItems = createItemsFromTexts(defaultTmpId);
 
+const makeExpectProps = ({
+  expectTextContents,
+  expectChecks
+}: {
+  expectTextContents: (items: string[]) => void;
+  expectChecks: (items: boolean[]) => void;
+}) => ({
+  texts,
+  checks,
+  savedTexts,
+  savedChecks
+}: {
+  texts: string[];
+  checks: boolean[];
+  savedTexts?: string[];
+  savedChecks?: boolean[];
+}) => {
+  expectTextContents(texts);
+  expectChecks(checks);
+
+  const items = getItems();
+  expect(items.map(item => item.text)).toEqual(savedTexts || texts);
+  expect(items.map(item => item.checked)).toEqual(savedChecks || checks);
+};
+
 describe("Items in InputList can be persisted", () => {
   beforeEach(() => {
     const items = createItems(["foo", "bar", "baz"]);
@@ -27,24 +52,26 @@ describe("Items in InputList can be persisted", () => {
       expectTextContents,
       expectChecks
     } = render(<InputList onSetItems={saveItems(todoListKey)} />);
-    expectTextContents([]);
-    expectChecks([]);
+    const expectProps = makeExpectProps({ expectTextContents, expectChecks });
+
+    expectProps({
+      texts: [],
+      checks: [],
+      savedTexts: ["foo", "bar", "baz"],
+      savedChecks: [false, true, false]
+    });
 
     await fillWith(["qux", "quux"]);
-    expectTextContents(["qux", "quux"]);
-    expectChecks([false, false]);
-
-    let items = getItems();
-    expect(items.map(item => item.text)).toEqual(["qux", "quux"]);
-    expect(items.map(item => item.checked)).toEqual([false, false]);
+    expectProps({
+      texts: ["qux", "quux"],
+      checks: [false, false]
+    });
 
     checkNthChild(0);
-    expectTextContents(["qux", "quux"]);
-    expectChecks([true, false]);
-
-    items = getItems();
-    expect(items.map(item => item.text)).toEqual(["qux", "quux"]);
-    expect(items.map(item => item.checked)).toEqual([true, false]);
+    expectProps({
+      texts: ["qux", "quux"],
+      checks: [true, false]
+    });
   });
 
   it("by setting defaultItems and onSetItems: Previous data are recovered", async () => {
@@ -59,52 +86,26 @@ describe("Items in InputList can be persisted", () => {
         onSetItems={saveItems(todoListKey)}
       />
     );
-    expectTextContents(["foo", "bar", "baz"]);
-    expectChecks([false, true, false]);
+    const expectProps = makeExpectProps({ expectTextContents, expectChecks });
+
+    expectProps({
+      texts: ["foo", "bar", "baz"],
+      checks: [false, true, false]
+    });
 
     await fillWith(["qux", "quux"]);
-    expectTextContents(["foo", "bar", "baz", "qux", "quux"]);
-    expectChecks([false, true, false, false, false]);
-
-    let items = getItems();
-
-    expect(items.map(item => item.text)).toEqual([
-      "foo",
-      "bar",
-      "baz",
-      "qux",
-      "quux"
-    ]);
-    expect(items.map(item => item.checked)).toEqual([
-      false,
-      true,
-      false,
-      false,
-      false
-    ]);
+    expectProps({
+      texts: ["foo", "bar", "baz", "qux", "quux"],
+      checks: [false, true, false, false, false]
+    });
 
     checkNthChild(0);
     checkNthChild(1);
     checkNthChild(4);
-    expectTextContents(["foo", "bar", "baz", "qux", "quux"]);
-    expectChecks([true, false, false, false, true]);
-
-    items = getItems();
-
-    expect(items.map(item => item.text)).toEqual([
-      "foo",
-      "bar",
-      "baz",
-      "qux",
-      "quux"
-    ]);
-    expect(items.map(item => item.checked)).toEqual([
-      true,
-      false,
-      false,
-      false,
-      true
-    ]);
+    expectProps({
+      texts: ["foo", "bar", "baz", "qux", "quux"],
+      checks: [true, false, false, false, true]
+    });
   });
 
   test.todo("by setting itemHooks");
