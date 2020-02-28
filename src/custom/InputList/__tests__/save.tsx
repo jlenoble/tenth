@@ -3,14 +3,13 @@ import InputList, { Item, defaultTmpId } from "..";
 import {
   render,
   saveItems,
-  getItemsFromLocalStorage,
-  setItemsInLocalStorage,
+  fetchItems,
   todoListKey,
   createItemsFromTexts
 } from "../__helpers__";
 
-const getItems = getItemsFromLocalStorage(todoListKey);
-const setItems = setItemsInLocalStorage(todoListKey);
+const getItems = fetchItems(todoListKey);
+const setItems = saveItems(todoListKey);
 const createItems = createItemsFromTexts(defaultTmpId);
 
 const makeExpectProps = ({
@@ -45,14 +44,14 @@ describe("Items in InputList can be persisted", () => {
     setItems(items);
   });
 
-  it("by setting onSetItems: Previous data are lost", async () => {
+  it("by setting onSetItems only: Previous data are lost", async () => {
     const {
       fillWith,
       checkNthChild,
       removeNthChild,
       expectTextContents,
       expectChecks
-    } = render(<InputList onSetItems={saveItems(todoListKey)} />);
+    } = render(<InputList onSetItems={setItems} />);
     const expectProps = makeExpectProps({ expectTextContents, expectChecks });
 
     expectProps({
@@ -88,12 +87,7 @@ describe("Items in InputList can be persisted", () => {
       removeChildren,
       expectTextContents,
       expectChecks
-    } = render(
-      <InputList
-        defaultItems={JSON.parse(localStorage.getItem(todoListKey) || "[]")}
-        onSetItems={saveItems(todoListKey)}
-      />
-    );
+    } = render(<InputList defaultItems={getItems()} onSetItems={setItems} />);
     const expectProps = makeExpectProps({ expectTextContents, expectChecks });
 
     expectProps({
