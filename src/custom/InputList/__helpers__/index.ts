@@ -1,6 +1,7 @@
 import { render as rtlRender } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { ReactElement } from "react";
+import { haveTextContents, haveChecks } from "./expect";
 
 export const render = (ui: ReactElement) => {
   const renderResult = rtlRender(ui);
@@ -13,6 +14,8 @@ export const render = (ui: ReactElement) => {
     list,
     textbox,
     addButton,
+    haveTextContents: (items: string[]) => haveTextContents(list, items),
+    haveChecks: (items: boolean[]) => haveChecks(list, items),
     ...renderResult
   };
 };
@@ -28,20 +31,6 @@ export const fillWith = async (
     await userEvents.type(textbox, items[i]);
     userEvents.click(addButton);
   }
-};
-
-export const haveTextContents = (list: HTMLUListElement, items: string[]) => {
-  const texts = Array.from(list.querySelectorAll("li")).map(
-    li => li.textContent
-  );
-  expect(texts).toEqual(items);
-};
-
-export const haveChecks = (list: HTMLUListElement, items: boolean[]) => {
-  const checks = (Array.from(
-    list.querySelectorAll('input[type="checkbox"]')
-  ) as HTMLInputElement[]).map(input => input.checked);
-  expect(checks).toEqual(items);
 };
 
 export * from "./dnd";

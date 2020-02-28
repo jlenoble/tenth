@@ -5,7 +5,6 @@ import InputList, { useItems } from "..";
 import {
   render,
   fillWith,
-  haveTextContents,
   onDragEnd,
   getDroppables,
   getDraggables,
@@ -80,9 +79,9 @@ describe("Items can moved within InputList", () => {
 
     const {
       container,
-      list,
       textbox,
       addButton,
+      haveTextContents,
       getAllByRole,
       getByText
     } = render(<App />);
@@ -98,12 +97,12 @@ describe("Items can moved within InputList", () => {
     });
 
     await dnd(0, 2, { getByText, getItems });
-    haveTextContents(list, ["bar", "baz", "foo"]);
+    haveTextContents(["bar", "baz", "foo"]);
 
     await dnd(0, 2, { getByText, getItems });
-    haveTextContents(list, ["baz", "foo", "bar"]);
+    haveTextContents(["baz", "foo", "bar"]);
 
     await dnd(1, 0, { getByText, getItems });
-    haveTextContents(list, ["foo", "baz", "bar"]);
+    haveTextContents(["foo", "baz", "bar"]);
   });
 });
