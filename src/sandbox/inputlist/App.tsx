@@ -1,18 +1,16 @@
 import React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-import InputList, { Item, useItems } from "../../custom/InputList";
-import { onDragEnd } from "../../custom/InputList/__helpers__";
-
-const todoListKey = "todolist";
-
-const saveItems = (items: Item[]): void => {
-  localStorage.setItem(todoListKey, JSON.stringify(items));
-};
+import InputList, { useItems } from "../../custom/InputList";
+import {
+  onDragEnd,
+  todoListKey,
+  saveItems
+} from "../../custom/InputList/__helpers__";
 
 function App() {
   const itemHooks = useItems(
     JSON.parse(localStorage.getItem(todoListKey) || "[]"),
-    saveItems
+    saveItems(todoListKey)
   );
 
   return (

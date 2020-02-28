@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { DragDropContext } from "react-beautiful-dnd";
 import InputList, { useItems } from "..";
-import { listId, saveItems, onDragEnd } from "../__helpers__";
+import { todoListKey, saveItems, onDragEnd } from "../__helpers__";
 
 describe("InputList renders without crashing", () => {
   it("without any attributes", () => {
@@ -16,8 +16,8 @@ describe("InputList renders without crashing", () => {
     // They cannot be edited, reordered
     render(
       <InputList
-        defaultItems={JSON.parse(localStorage.getItem(listId) || "[]")}
-        onSetItems={saveItems(listId)}
+        defaultItems={JSON.parse(localStorage.getItem(todoListKey) || "[]")}
+        onSetItems={saveItems(todoListKey)}
       />
     );
   });
@@ -43,8 +43,8 @@ describe("InputList renders without crashing", () => {
     // They cannot be edited
     function App() {
       const itemHooks = useItems(
-        JSON.parse(localStorage.getItem(listId) || "[]"),
-        saveItems(listId)
+        JSON.parse(localStorage.getItem(todoListKey) || "[]"),
+        saveItems(todoListKey)
       );
 
       return (

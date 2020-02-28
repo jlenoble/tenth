@@ -1,9 +1,6 @@
 import { render as rtlRender } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { Item } from "..";
 import { ReactElement } from "react";
-
-export const listId = "todolist";
 
 export const render = (ui: ReactElement) => {
   const renderResult = rtlRender(ui);
@@ -47,9 +44,6 @@ export const haveChecks = (
   expect(checkboxes.map(input => input.checked)).toEqual(items);
 };
 
-export const saveItems = (listId: string) => (items: Item[]) => {
-  localStorage.setItem(listId, JSON.stringify(items));
-};
-
 export * from "./dnd";
+export * from "./localstorage";
 export * from "./mock";
