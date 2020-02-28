@@ -35,10 +35,17 @@ describe("Items in InputList can be persisted", () => {
     expectTextContents(["qux", "quux"]);
     expectChecks([false, false]);
 
-    const items = getItems();
-
+    let items = getItems();
     expect(items.map(item => item.text)).toEqual(["qux", "quux"]);
     expect(items.map(item => item.checked)).toEqual([false, false]);
+
+    checkNthChild(0);
+    expectTextContents(["qux", "quux"]);
+    expectChecks([true, false]);
+
+    items = getItems();
+    expect(items.map(item => item.text)).toEqual(["qux", "quux"]);
+    expect(items.map(item => item.checked)).toEqual([true, false]);
   });
 
   it("by setting defaultItems and onSetItems: Previous data are recovered", async () => {
@@ -60,7 +67,7 @@ describe("Items in InputList can be persisted", () => {
     expectTextContents(["foo", "bar", "baz", "qux", "quux"]);
     expectChecks([false, true, false, false, false]);
 
-    const items = getItems();
+    let items = getItems();
 
     expect(items.map(item => item.text)).toEqual([
       "foo",
@@ -76,8 +83,34 @@ describe("Items in InputList can be persisted", () => {
       false,
       false
     ]);
+
+    checkNthChild(0);
+    checkNthChild(1);
+    checkNthChild(4);
+    expectTextContents(["foo", "bar", "baz", "qux", "quux"]);
+    expectChecks([true, false, false, false, true]);
+
+    items = getItems();
+
+    expect(items.map(item => item.text)).toEqual([
+      "foo",
+      "bar",
+      "baz",
+      "qux",
+      "quux"
+    ]);
+    expect(items.map(item => item.checked)).toEqual([
+      true,
+      false,
+      false,
+      false,
+      true
+    ]);
   });
 
   test.todo("by setting itemHooks");
   test.todo("by setting defaultItems and itemHooks");
+
+  test.todo("by setting localStorageKey");
+  test.todo("by setting localStorageKey and itemHooks");
 });
