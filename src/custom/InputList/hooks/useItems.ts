@@ -24,7 +24,7 @@ function useItems(
     setItems: setItemsAndCallBack,
 
     addItem: (item: { id: string; text: string }) => {
-      if (item.text !== "") {
+      if (item.text !== "" && items.findIndex(it => item.id === it.id) === -1) {
         setItemsAndCallBack(
           items.concat({
             ...item,
