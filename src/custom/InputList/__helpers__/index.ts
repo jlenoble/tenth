@@ -4,6 +4,14 @@ import userEvents from "@testing-library/user-event";
 import { expectTextContents, expectChecks } from "./expect";
 import { fillWith } from "./type";
 
+const getNthButton = (
+  container: HTMLElement,
+  nth: number,
+  ariaLabel: string
+) => {
+  return container.querySelectorAll(`[aria-label="${ariaLabel}"]`)[nth];
+};
+
 export const render = (ui: ReactElement) => {
   const renderResult = rtlRender(ui);
   const { getByText, getByRole } = renderResult;
@@ -19,6 +27,8 @@ export const render = (ui: ReactElement) => {
     fillWith: (items: string[]) => fillWith(textbox, addButton, items),
     checkNthChild: (nth: number) =>
       userEvents.click(renderResult.getAllByRole("checkbox")[nth]),
+    removeNthChild: (nth: number) =>
+      userEvents.click(getNthButton(list, nth, "Delete item")),
 
     expectTextContents: (items: string[]) => expectTextContents(list, items),
     expectChecks: (items: boolean[]) => expectChecks(list, items),
