@@ -30,6 +30,8 @@ const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
         ref={innerRef}
         {...draggableProps}
         {...dragHandleProps}
+        role="listitem"
+        draggable
         {...other}
       >
         {children}
