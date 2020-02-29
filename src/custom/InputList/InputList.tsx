@@ -2,7 +2,7 @@ import React, { FunctionComponent, KeyboardEvent } from "react";
 
 import Paper from "@material-ui/core/Paper";
 
-import defaultTmpId from "./defaultTmpId";
+import defaultTmpId from "../defaultTmpId";
 import AddItem from "./AddItem";
 import DnDList, { DnDListProps } from "./DnDList";
 

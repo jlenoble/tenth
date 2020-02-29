@@ -9,7 +9,7 @@ import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 import List from "../../core/List";
 import ListItem from "../../core/ListItem";
 
-import defaultTmpId from "./defaultTmpId";
+import defaultTmpId from "../defaultTmpId";
 import useItems, { Item } from "./hooks/useItems";
 
 export interface DnDListProps {
