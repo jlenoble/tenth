@@ -1,9 +1,13 @@
 import React, { FunctionComponent } from "react";
-
-import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 
-import { List, ListItem, Checkbox, DeleteButton } from "../../core";
+import {
+  List,
+  ListItem,
+  Checkbox,
+  ListItemText,
+  DeleteButton
+} from "../../core";
 
 import defaultTmpId from "../defaultTmpId";
 import useItems, { Item } from "./hooks/useItems";
@@ -33,7 +37,7 @@ const DnDList: FunctionComponent<DnDListProps> = ({
     <Paper>
       <List droppableProps={dnd && { droppableId: listId }}>
         {items.map((item, index) => {
-          const { id, text } = item;
+          const { id } = item;
 
           return (
             <ListItem
@@ -42,7 +46,7 @@ const DnDList: FunctionComponent<DnDListProps> = ({
               draggableProps={dnd && { draggableId: id, index }}
             >
               <Checkbox item={item} itemHooks={itemHooks!} />
-              <ListItemText primary={text} />
+              <ListItemText item={item} />
               <DeleteButton item={item} itemHooks={itemHooks!} />
             </ListItem>
           );
