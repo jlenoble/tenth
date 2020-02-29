@@ -1,14 +1,15 @@
 import React, { FunctionComponent } from "react";
-import DraggableListItem, {
+import {
+  DraggableListItem,
   DraggablePropsWithoutChildren
 } from "./DraggableListItem";
-import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
+import { BaseListItem, BaseListItemPropsWithoutRef } from "./BaseListItem";
 
 export interface ListItemProps extends BaseListItemPropsWithoutRef {
   draggableProps?: DraggablePropsWithoutChildren | false;
 }
 
-const ListItem: FunctionComponent<ListItemProps> = ({
+export const ListItem: FunctionComponent<ListItemProps> = ({
   children,
   draggableProps,
   ...other
@@ -23,5 +24,3 @@ const ListItem: FunctionComponent<ListItemProps> = ({
 
   return <BaseListItem {...other}>{children}</BaseListItem>;
 };
-
-export default ListItem;

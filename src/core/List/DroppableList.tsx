@@ -6,7 +6,7 @@ import {
   DroppableStateSnapshot
 } from "react-beautiful-dnd";
 import clsx from "clsx";
-import BaseList, { BaseListPropsWithoutRef } from "./BaseList";
+import { BaseList, BaseListPropsWithoutRef } from "./BaseList";
 
 export type DroppablePropsWithoutChildren = Omit<DroppableProps, "children">;
 
@@ -14,7 +14,7 @@ export interface DroppableListProps extends BaseListPropsWithoutRef {
   droppableProps: DroppablePropsWithoutChildren;
 }
 
-const DroppableList: FunctionComponent<DroppableListProps> = ({
+export const DroppableList: FunctionComponent<DroppableListProps> = ({
   children,
   className,
   droppableProps,
@@ -37,5 +37,3 @@ const DroppableList: FunctionComponent<DroppableListProps> = ({
     )}
   </Droppable>
 );
-
-export default DroppableList;

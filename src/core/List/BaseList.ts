@@ -1,6 +1,6 @@
-import MuiList, { ListProps as MuiListProps } from "@material-ui/core/List";
+import { ListProps } from "@material-ui/core/List";
 
-export type BaseListProps = MuiListProps;
+export type BaseListProps = ListProps;
 export type BaseListPropsWithoutRef = Omit<BaseListProps, "ref">;
 
-export default MuiList;
+export { default as BaseList } from "@material-ui/core/List";

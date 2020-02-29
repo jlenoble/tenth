@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from "react";
-import DroppableList, { DroppablePropsWithoutChildren } from "./DroppableList";
-import BaseList, { BaseListPropsWithoutRef } from "./BaseList";
+import { DroppableList, DroppablePropsWithoutChildren } from "./DroppableList";
+import { BaseList, BaseListPropsWithoutRef } from "./BaseList";
 
 export interface ListProps extends BaseListPropsWithoutRef {
   droppableProps?: DroppablePropsWithoutChildren | false;
 }
 
-const List: FunctionComponent<ListProps> = ({
+export const List: FunctionComponent<ListProps> = ({
   children,
   droppableProps,
   ...other
@@ -21,5 +21,3 @@ const List: FunctionComponent<ListProps> = ({
 
   return <BaseList {...other}>{children}</BaseList>;
 };
-
-export default List;

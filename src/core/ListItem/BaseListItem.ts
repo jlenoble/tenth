@@ -1,8 +1,6 @@
-import MuiListItem, {
-  ListItemProps as MuiListItemProps
-} from "@material-ui/core/ListItem";
+import { ListItemProps } from "@material-ui/core/ListItem";
 
-export type BaseListItemProps = MuiListItemProps<"li", { button?: false }>;
+export type BaseListItemProps = ListItemProps<"li", { button?: false }>;
 export type BaseListItemPropsWithoutRef = Omit<BaseListItemProps, "ref">;
 
-export default MuiListItem;
+export { default as BaseListItem } from "@material-ui/core/ListItem";

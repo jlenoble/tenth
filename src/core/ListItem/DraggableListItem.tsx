@@ -6,7 +6,7 @@ import {
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
 import clsx from "clsx";
-import BaseListItem, { BaseListItemPropsWithoutRef } from "./BaseListItem";
+import { BaseListItem, BaseListItemPropsWithoutRef } from "./BaseListItem";
 
 export type DraggablePropsWithoutChildren = Omit<DraggableProps, "children">;
 
@@ -14,7 +14,7 @@ export interface DraggableListItemProps extends BaseListItemPropsWithoutRef {
   draggableProps: DraggablePropsWithoutChildren;
 }
 
-const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
+export const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
   children,
   className,
   draggableProps,
@@ -39,5 +39,3 @@ const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
     )}
   </Draggable>
 );
-
-export default DraggableListItem;
