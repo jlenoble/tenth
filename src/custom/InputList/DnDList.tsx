@@ -1,13 +1,11 @@
 import React, { FunctionComponent } from "react";
 
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 
-import List from "../../core/List";
-import ListItem from "../../core/ListItem";
+import { List, ListItem, Checkbox } from "../../core";
 
 import defaultTmpId from "../defaultTmpId";
 import useItems, { Item } from "./hooks/useItems";
@@ -28,23 +26,21 @@ const DnDList: FunctionComponent<DnDListProps> = ({
   itemHooks
 }) => {
   const localItemHooks = useItems(defaultItems, onSetItems);
-  const { items, checkItem, removeItem } = itemHooks || localItemHooks;
+  const { items, removeItem } = itemHooks || localItemHooks;
 
   return (
     <Paper>
       <List droppableProps={dnd && { droppableId: listId }}>
-        {items.map(({ id, text, checked }, index) => {
+        {items.map((item, index) => {
+          const { id, text } = item;
+
           return (
             <ListItem
               key={id}
               divider={index !== items.length - 1}
               draggableProps={dnd && { draggableId: id, index }}
             >
-              <Checkbox
-                onClick={() => checkItem(id)}
-                checked={checked}
-                disableRipple
-              />
+              <Checkbox item={item} itemHooks={itemHooks || localItemHooks} />
               <ListItemText primary={text} />
               <IconButton
                 aria-label="Delete item"
