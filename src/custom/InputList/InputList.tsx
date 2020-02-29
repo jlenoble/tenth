@@ -4,18 +4,13 @@ import Paper from "@material-ui/core/Paper";
 
 import defaultTmpId from "./defaultTmpId";
 import AddItem from "./AddItem";
-import DnDList from "./DnDList";
+import DnDList, { DnDListProps } from "./DnDList";
 
 import useInputValue from "./hooks/useInputValue";
-import useItems, { Item } from "./hooks/useItems";
+import useItems from "./hooks/useItems";
 
-export interface InputListProps {
-  defaultItems?: Item[];
-  onSetItems?: (items: Item[]) => void;
+export interface InputListProps extends DnDListProps {
   tmpId?: () => string;
-  dnd?: boolean;
-  listId?: string;
-  itemHooks?: ReturnType<typeof useItems>;
 }
 
 const InputList: FunctionComponent<InputListProps> = ({
@@ -49,7 +44,6 @@ const InputList: FunctionComponent<InputListProps> = ({
       <DnDList
         defaultItems={defaultItems}
         onSetItems={onSetItems}
-        tmpId={tmpId}
         dnd={dnd}
         listId={listId}
         itemHooks={childHooks}

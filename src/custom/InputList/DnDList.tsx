@@ -1,4 +1,4 @@
-import React, { FunctionComponent, KeyboardEvent } from "react";
+import React, { FunctionComponent } from "react";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
@@ -12,10 +12,9 @@ import ListItem from "../../core/ListItem";
 import defaultTmpId from "./defaultTmpId";
 import useItems, { Item } from "./hooks/useItems";
 
-interface DnDListProps {
+export interface DnDListProps {
   defaultItems?: Item[];
   onSetItems?: (items: Item[]) => void;
-  tmpId?: () => string;
   dnd?: boolean;
   listId?: string;
   itemHooks?: ReturnType<typeof useItems>;
