@@ -46,7 +46,7 @@ const DnDList: FunctionComponent<DnDListProps> = ({
               draggableProps={dnd && { draggableId: id, index }}
             >
               <Checkbox item={item} itemHooks={itemHooks!} />
-              <ListItemText item={item} />
+              <ListItemText item={item} itemHooks={itemHooks!} />
               <DeleteButton item={item} itemHooks={itemHooks!} />
             </ListItem>
           );
