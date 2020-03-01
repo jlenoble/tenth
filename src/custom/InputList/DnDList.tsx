@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 
 import { List } from "../../core";
-import ListItem from "../ListItem";
+import { ListItem } from "../list";
 
 import defaultTmpId from "../defaultTmpId";
 import useItems, { Item } from "./hooks/useItems";
