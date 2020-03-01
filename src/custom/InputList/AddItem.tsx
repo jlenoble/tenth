@@ -1,45 +1,32 @@
-import React, { FunctionComponent, ChangeEvent, KeyboardEvent } from "react";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
+import React, { FunctionComponent, KeyboardEvent } from "react";
+import BaseAddItem from "./BaseAddItem";
+import useInputValue from "./hooks/useInputValue";
+import useItems from "./hooks/useItems";
 
 export interface AddItemProps {
-  inputValue: string;
-  onInputChange(event: ChangeEvent<HTMLInputElement>): void;
-  onInputKeyPress(event: KeyboardEvent<HTMLInputElement>): void;
-  onButtonClick(): void;
+  tmpId: () => string;
+  itemHooks: ReturnType<typeof useItems>;
 }
 
-const AddItem: FunctionComponent<AddItemProps> = ({
-  inputValue,
-  onInputChange,
-  onInputKeyPress,
-  onButtonClick
-}) => (
-  <Paper style={{ margin: 16, padding: 16 }}>
-    <Grid container>
-      <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
-        <TextField
-          placeholder="Add item here"
-          value={inputValue}
-          onChange={onInputChange}
-          onKeyPress={onInputKeyPress}
-          fullWidth
-        />
-      </Grid>
-      <Grid xs={2} md={1} item>
-        <Button
-          fullWidth
-          color="secondary"
-          variant="outlined"
-          onClick={onButtonClick}
-        >
-          Add
-        </Button>
-      </Grid>
-    </Grid>
-  </Paper>
-);
+const AddItem: FunctionComponent<AddItemProps> = ({ tmpId, itemHooks }) => {
+  const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
+  const { addItem } = itemHooks;
+
+  const clearInputAndAddItem = () => {
+    clearInput();
+    addItem({ id: tmpId(), text: inputValue });
+  };
+
+  return (
+    <BaseAddItem
+      inputValue={inputValue}
+      onInputChange={changeInput}
+      onButtonClick={clearInputAndAddItem}
+      onInputKeyPress={(event: KeyboardEvent<HTMLInputElement>) =>
+        keyInput(event, clearInputAndAddItem)
+      }
+    />
+  );
+};
 
 export default AddItem;
