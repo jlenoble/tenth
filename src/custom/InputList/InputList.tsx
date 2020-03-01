@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 
 import defaultTmpId from "../defaultTmpId";
 import AddItem from "./AddItem";
-import { List, ListProps, Item } from "../list";
+import { DisplayList, ListProps, Item } from "../list";
 
 import useInputValue from "./hooks/useInputValue";
 import useItems from "./hooks/useItems";
@@ -45,9 +45,7 @@ const InputList: FunctionComponent<InputListProps> = ({
           keyInput(event, clearInputAndAddItem)
         }
       />
-      <Paper>
-        <List listId={listId} itemHooks={childHooks} dnd={dnd} />
-      </Paper>
+      <DisplayList listId={listId} itemHooks={childHooks} dnd={dnd} />
     </Paper>
   );
 };
