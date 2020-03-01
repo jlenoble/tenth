@@ -6,7 +6,7 @@ import {
 
 export interface CheckboxItem {
   id: string;
-  checked?: boolean;
+  checked: boolean;
 }
 
 export interface CheckboxItemHooks {
