@@ -1,13 +1,8 @@
 import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 
-import {
-  List,
-  ListItem,
-  Checkbox,
-  ListItemText,
-  DeleteButton
-} from "../../core";
+import { List } from "../../core";
+import ListItem from "../ListItem";
 
 import defaultTmpId from "../defaultTmpId";
 import useItems, { Item } from "./hooks/useItems";
@@ -36,21 +31,16 @@ const DnDList: FunctionComponent<DnDListProps> = ({
   return (
     <Paper>
       <List droppableProps={dnd && { droppableId: listId }}>
-        {items.map((item, index) => {
-          const { id } = item;
-
-          return (
-            <ListItem
-              key={id}
-              divider={index !== items.length - 1}
-              draggableProps={dnd && { draggableId: id, index }}
-            >
-              <Checkbox item={item} itemHooks={itemHooks!} />
-              <ListItemText item={item} itemHooks={itemHooks!} />
-              <DeleteButton item={item} itemHooks={itemHooks!} />
-            </ListItem>
-          );
-        })}
+        {items.map((item, index) => (
+          <ListItem
+            key={item.id}
+            divider={index !== items.length - 1}
+            dnd={dnd}
+            index={index}
+            item={item}
+            itemHooks={itemHooks!}
+          />
+        ))}
       </List>
     </Paper>
   );
