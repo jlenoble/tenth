@@ -18,13 +18,14 @@ export const List: FunctionComponent<ListProps> = ({
   ...other
 }) => {
   const items = itemHooks.items;
+  const lastIndex = items.length - 1;
 
   return (
     <BaseList droppableProps={dnd && { droppableId: listId }} {...other}>
       {items.map((item, index) => (
         <ListItem
           key={item.id}
-          divider={index !== items.length - 1}
+          divider={index !== lastIndex}
           dnd={dnd}
           index={index}
           item={item}
