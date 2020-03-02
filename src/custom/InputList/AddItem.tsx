@@ -1,7 +1,7 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
 import BaseAddItem from "./BaseAddItem";
 import useInputValue from "./hooks/useInputValue";
-import useItems from "./hooks/useItems";
+import { useItems } from "../../core/list";
 
 export interface AddItemProps {
   tmpId: () => string;
@@ -14,7 +14,7 @@ const AddItem: FunctionComponent<AddItemProps> = ({ tmpId, itemHooks }) => {
 
   const clearInputAndAddItem = () => {
     clearInput();
-    addItem({ id: tmpId(), text: inputValue });
+    addItem({ id: tmpId(), text: inputValue, checked: false });
   };
 
   return (
