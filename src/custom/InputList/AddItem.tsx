@@ -1,5 +1,5 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
-import BaseAddItem from "./BaseAddItem";
+import BaseAddItem from "../../core/list/AddItem";
 import useInputValue from "./hooks/useInputValue";
 import { useItems } from "../../core/list";
 

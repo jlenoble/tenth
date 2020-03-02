@@ -4,14 +4,14 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 
-export interface AddItemProps {
+export interface Props {
   inputValue: string;
   onInputChange(event: ChangeEvent<HTMLInputElement>): void;
   onInputKeyPress(event: KeyboardEvent<HTMLInputElement>): void;
   onButtonClick(): void;
 }
 
-const AddItem: FunctionComponent<AddItemProps> = ({
+export const AddItem: FunctionComponent<Props> = ({
   inputValue,
   onInputChange,
   onInputKeyPress,
@@ -41,5 +41,3 @@ const AddItem: FunctionComponent<AddItemProps> = ({
     </Grid>
   </Paper>
 );
-
-export default AddItem;
