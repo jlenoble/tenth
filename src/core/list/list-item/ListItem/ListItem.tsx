@@ -2,23 +2,23 @@ import React, { FunctionComponent } from "react";
 import {
   ListItem as BaseListItem,
   ListItemProps as BaseListItemProps
-} from "../../core";
+} from "../../../base";
 import {
   ListItemContent,
-  ListItemContentProps,
-  ListItemContentItem,
-  ListItemContentItemHooks
-} from "./ListItemContent";
+  Item as ListItemContentItem,
+  ItemHooks as ListItemContentItemHooks,
+  Props as ListItemContentProps
+} from "../ListItemContent/ListItemContent";
 
-export type ListItemItem = ListItemContentItem;
-export type ListItemItemHooks = ListItemContentItemHooks;
+export type Item = ListItemContentItem;
+export type ItemHooks = ListItemContentItemHooks;
 
-export interface ListItemProps extends BaseListItemProps, ListItemContentProps {
+export interface Props extends BaseListItemProps, ListItemContentProps {
   dnd?: boolean;
   index: number;
 }
 
-export const ListItem: FunctionComponent<ListItemProps> = ({
+export const ListItem: FunctionComponent<Props> = ({
   item,
   itemHooks,
   dnd,

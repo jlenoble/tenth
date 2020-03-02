@@ -1,21 +1,20 @@
 import React, { FunctionComponent } from "react";
-import {
-  default as BaseListItemText,
-  ListItemTextProps as BaseListItemTextProps
+import BaseListItemText, {
+  ListItemTextProps
 } from "@material-ui/core/ListItemText";
 
-export interface ListItemTextItem {
+export interface Item {
   text: string;
 }
 
-export interface ListItemTextItemHooks {}
+export interface ItemHooks {}
 
-export interface ListItemTextProps extends BaseListItemTextProps {
-  item: ListItemTextItem;
-  itemHooks: ListItemTextItemHooks;
+export interface Props extends ListItemTextProps {
+  item: Item;
+  itemHooks: ItemHooks;
 }
 
-export const ListItemText: FunctionComponent<ListItemTextProps> = ({
+export const ListItemText: FunctionComponent<Props> = ({
   item: { text },
   itemHooks,
   ...other

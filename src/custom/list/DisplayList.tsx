@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import { List, ListProps } from "./List";
+import { List, ListProps } from "../../core/list";
 
 export interface DisplayListProps extends ListProps {
   paperStyle?: CSSProperties;

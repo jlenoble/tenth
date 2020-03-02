@@ -1,2 +1,6 @@
-export { ListItemText as default } from "./ListItemText";
-export * from "./ListItemText";
+import { ListItemText, Props } from "./ListItemText";
+
+export type ListItemTextProps = Props;
+
+export default ListItemText;
+export { ListItemText };
