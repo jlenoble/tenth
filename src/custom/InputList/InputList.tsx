@@ -27,7 +27,15 @@ const InputList: FunctionComponent<InputListProps> = ({
   return (
     <Paper>
       <AddItem tmpId={tmpId} itemHooks={childHooks} />
-      <DisplayList listId={listId} itemHooks={childHooks} dnd={dnd} />
+      <DisplayList
+        listId={listId}
+        itemHooks={childHooks}
+        dnd={dnd}
+        listItemUI={{
+          selectable: true,
+          deletable: true
+        }}
+      />
     </Paper>
   );
 };
