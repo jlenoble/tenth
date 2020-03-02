@@ -4,3 +4,5 @@ export type AddItemProps = Props;
 
 export default AddItem;
 export { AddItem };
+
+export * from "./hooks";

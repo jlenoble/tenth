@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react";
 
-const useInputValue = (initialValue = "") => {
+export const useInputValue = (initialValue = "") => {
   const [inputValue, setInputValue] = useState(initialValue);
 
   return {
@@ -21,5 +21,3 @@ const useInputValue = (initialValue = "") => {
     }
   };
 };
-
-export default useInputValue;

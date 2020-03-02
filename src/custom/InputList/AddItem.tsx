@@ -1,7 +1,6 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
 import BaseAddItem from "../../core/list/AddItem";
-import useInputValue from "./hooks/useInputValue";
-import { useItems } from "../../core/list";
+import { useItems, useInputValue } from "../../core/list";
 
 export interface AddItemProps {
   tmpId: () => string;
