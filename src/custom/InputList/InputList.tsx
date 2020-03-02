@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import defaultTmpId from "../defaultTmpId";
 import AddItem from "./AddItem";
-import { DisplayList, ListProps, Item } from "../list";
+import { ListView, ListProps, Item } from "../list";
 import useItems from "./hooks/useItems";
 
 export interface InputListProps extends Omit<ListProps, "listId"> {
@@ -27,7 +27,7 @@ const InputList: FunctionComponent<InputListProps> = ({
   return (
     <Paper>
       <AddItem tmpId={tmpId} itemHooks={childHooks} />
-      <DisplayList
+      <ListView
         listId={listId}
         itemHooks={childHooks}
         dnd={dnd}
