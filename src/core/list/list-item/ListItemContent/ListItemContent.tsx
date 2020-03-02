@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement } from "react";
+import React, { FunctionComponent } from "react";
 import * as Checkbox from "../ListItemCheckbox/ListItemCheckbox";
 import * as DeleteButton from "../ListItemDeleteButton/ListItemDeleteButton";
 import * as Text from "../ListItemText/ListItemText";
