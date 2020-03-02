@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import defaultTmpId from "../defaultTmpId";
-import AddItem from "./AddItem";
+import { AddItem } from "../../core/list";
 import { ListView, ListProps, Item, useItems } from "../list";
 
 export interface InputListProps extends Omit<ListProps, "listId"> {

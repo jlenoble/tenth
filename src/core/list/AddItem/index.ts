@@ -1,4 +1,4 @@
-import { AddItem, Props } from "./AddItem";
+import { StatefulAddItem as AddItem, Props } from "./StatefulAddItem";
 
 export type AddItemProps = Props;
 

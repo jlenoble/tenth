@@ -1,13 +1,17 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
-import BaseAddItem from "../../core/list/AddItem";
-import { useItems, useInputValue } from "../../core/list";
+import { AddItem } from "./AddItem";
+import { useInputValue } from "./hooks";
+import { ItemHooks } from "../List";
 
-export interface AddItemProps {
+export interface Props {
   tmpId: () => string;
-  itemHooks: ReturnType<typeof useItems>;
+  itemHooks: ItemHooks;
 }
 
-const AddItem: FunctionComponent<AddItemProps> = ({ tmpId, itemHooks }) => {
+export const StatefulAddItem: FunctionComponent<Props> = ({
+  tmpId,
+  itemHooks
+}) => {
   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
   const { addItem } = itemHooks;
 
@@ -17,7 +21,7 @@ const AddItem: FunctionComponent<AddItemProps> = ({ tmpId, itemHooks }) => {
   };
 
   return (
-    <BaseAddItem
+    <AddItem
       inputValue={inputValue}
       onInputChange={changeInput}
       onButtonClick={clearInputAndAddItem}
@@ -27,5 +31,3 @@ const AddItem: FunctionComponent<AddItemProps> = ({ tmpId, itemHooks }) => {
     />
   );
 };
-
-export default AddItem;
