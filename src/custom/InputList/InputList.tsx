@@ -1,43 +1,36 @@
 import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import defaultTmpId from "../defaultTmpId";
-import {
-  InputList as BaseInputList,
-  ListProps,
-  Item,
-  useItems
-} from "../../core";
+import { List, ListProps, Item, useItems } from "../../core";
 
-export interface InputListProps extends Omit<ListProps, "listId"> {
+export interface Props extends Partial<ListProps> {
   defaultItems?: Item[];
   onSetItems?: (items: Item[]) => void;
-  itemHooks: ReturnType<typeof useItems>;
-  listId?: string;
-  tmpId?: () => string;
 }
 
-const InputList: FunctionComponent<InputListProps> = ({
+const InputList: FunctionComponent<Props> = ({
   defaultItems = [],
   onSetItems,
   tmpId = defaultTmpId,
-  dnd,
   listId = defaultTmpId(),
-  itemHooks
+  itemHooks,
+  ...other
 }) => {
   const localItemHooks = useItems(defaultItems, onSetItems);
   const childHooks = itemHooks || localItemHooks;
 
   return (
     <Paper>
-      <BaseInputList
+      <List
         tmpId={tmpId}
         listId={listId}
         itemHooks={childHooks}
-        dnd={dnd}
         listItemUI={{
           selectable: true,
           deletable: true
         }}
+        ui={{ addItem: true }}
+        {...other}
       />
     </Paper>
   );

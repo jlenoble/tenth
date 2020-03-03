@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import { AddItem, AddItemProps } from "../AddItem";
-import { List, Props as ListProps } from "./List";
+import { BaseList, Props as BaseListProps } from "./BaseList";
 
-export interface InputListProps extends AddItemProps, ListProps {}
+export interface Props extends AddItemProps, BaseListProps {}
 
-export const InputList: FunctionComponent<InputListProps> = ({
+export const InputList: FunctionComponent<Props> = ({
   tmpId,
   itemHooks,
   ...other
@@ -13,7 +13,7 @@ export const InputList: FunctionComponent<InputListProps> = ({
   <>
     <AddItem tmpId={tmpId} itemHooks={itemHooks} />
     <Paper>
-      <List itemHooks={itemHooks} {...other} />
+      <BaseList itemHooks={itemHooks} {...other} />
     </Paper>
   </>
 );
