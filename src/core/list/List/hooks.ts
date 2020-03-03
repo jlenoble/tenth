@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Item, ItemHooks as BaseItemHooks } from "./List";
+import { Item, ItemHooks } from "./item";
 
-type Callback = (items: Item[]) => void;
+type Callback = ItemHooks["setItems"];
 
 export type OnSetItems =
   | {
@@ -9,12 +9,6 @@ export type OnSetItems =
       onSetItems?: Callback;
     }
   | Callback;
-
-export type ItemHooks = BaseItemHooks & {
-  setItems: Callback;
-  addItem: (item: Item) => void;
-  clearItems: () => void;
-};
 
 export const useItems = (
   initialValue: Item[] = [],

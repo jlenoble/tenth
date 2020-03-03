@@ -1,8 +1,12 @@
 import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import defaultTmpId from "../defaultTmpId";
-import { AddItem } from "../../core/list";
-import { ListView, ListProps, Item, useItems } from "../list";
+import {
+  InputList as BaseInputList,
+  ListProps,
+  Item,
+  useItems
+} from "../../core";
 
 export interface InputListProps extends Omit<ListProps, "listId"> {
   defaultItems?: Item[];
@@ -25,8 +29,8 @@ const InputList: FunctionComponent<InputListProps> = ({
 
   return (
     <Paper>
-      <AddItem tmpId={tmpId} itemHooks={childHooks} />
-      <ListView
+      <BaseInputList
+        tmpId={tmpId}
         listId={listId}
         itemHooks={childHooks}
         dnd={dnd}

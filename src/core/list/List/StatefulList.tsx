@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
-import { List, Props, Item } from "./List";
+import { Item } from "./item";
+import { List, Props } from "./List";
 import { useItems, OnSetItems } from "./hooks";
 
 export interface StatefulListProps extends Omit<Props, "itemHooks"> {

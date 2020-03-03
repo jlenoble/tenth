@@ -1,10 +1,11 @@
-import { List, Item as BaseItem, Props } from "./List";
+import { List, Props } from "./List";
 
-export type Item = BaseItem;
 export type ListProps = Props;
 
 export default List;
 export { List };
 
 export * from "./hooks";
+export * from "./item";
+export * from "./InputList";
 export * from "./StatefulList";
