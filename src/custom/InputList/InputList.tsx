@@ -2,8 +2,10 @@ import React, { FunctionComponent } from "react";
 import Paper from "@material-ui/core/Paper";
 import defaultTmpId from "../defaultTmpId";
 import { List, ListProps, Item, useItems } from "../../core";
+import { Omittable } from "../../generics";
 
-export interface Props extends Partial<ListProps> {
+export interface Props
+  extends Omittable<Omit<ListProps, "ui">, "listId" | "tmpId"> {
   defaultItems?: Item[];
   onSetItems?: (items: Item[]) => void;
 }
