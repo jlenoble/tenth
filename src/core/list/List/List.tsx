@@ -3,7 +3,7 @@ import { BaseList } from "./BaseList";
 import { InputList, Props as InputListProps } from "./InputList";
 
 export interface Props extends InputListProps {
-  ui: UI;
+  ui?: UI;
 }
 
 export interface UI {
@@ -11,7 +11,7 @@ export interface UI {
 }
 
 export const List: FunctionComponent<Props> = ({
-  ui: { addItem },
+  ui: { addItem } = {},
   ...other
 }) => {
   if (addItem) {
