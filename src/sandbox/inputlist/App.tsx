@@ -7,7 +7,7 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-import { DisplayList } from "../../custom";
+import { SelectList as List } from "../../custom";
 
 // function App() {
 //   const itemHooks = useItems(
@@ -24,10 +24,11 @@ import { DisplayList } from "../../custom";
 
 function App() {
   return (
-    <DisplayList
+    <List
       defaultItems={[
         { id: "1", text: "a", checked: true },
-        { id: "2", text: "b", checked: true }
+        { id: "2", text: "b", checked: false },
+        { id: "3", text: "c", checked: true }
       ]}
       listId={"list0"}
     />
