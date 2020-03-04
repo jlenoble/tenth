@@ -7,16 +7,30 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-function App() {
-  const itemHooks = useItems(
-    JSON.parse(localStorage.getItem(todoListKey) || "[]"),
-    saveItems(todoListKey)
-  );
+import { DisplayList } from "../../custom";
 
+// function App() {
+//   const itemHooks = useItems(
+//     JSON.parse(localStorage.getItem(todoListKey) || "[]"),
+//     saveItems(todoListKey)
+//   );
+
+//   return (
+//     <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
+//       <InputList dnd itemHooks={itemHooks} />
+//     </DragDropContext>
+//   );
+// }
+
+function App() {
   return (
-    <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
-      <InputList dnd itemHooks={itemHooks} />
-    </DragDropContext>
+    <DisplayList
+      defaultItems={[
+        { id: "1", text: "a", checked: true },
+        { id: "2", text: "b", checked: true }
+      ]}
+      listId={"list0"}
+    />
   );
 }
 
