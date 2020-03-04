@@ -8,3 +8,9 @@ export const SelectList = makeListComponent(List, {
   tmpId,
   listItemUI: { selectable: true }
 });
+
+export const InputList = makeListComponent(List, {
+  tmpId,
+  ui: { addItem: true },
+  listItemUI: { deletable: true }
+});

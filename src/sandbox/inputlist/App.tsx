@@ -7,7 +7,7 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-import { SelectList as List } from "../../custom";
+import { InputList as List } from "../../custom";
 
 // function App() {
 //   const itemHooks = useItems(
