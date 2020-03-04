@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
-import { ListProps, withItems } from "../core";
-import { withDefaultProps } from "../generics";
-import tmpId from "./defaultTmpId";
+import { ListProps, withItems } from "../../core";
+import { withDefaultProps } from "../../generics";
+import tmpId from "../defaultTmpId";
 
 export const makeListComponent = <P extends ListProps, DP extends Partial<P>>(
   List: FunctionComponent<P>,

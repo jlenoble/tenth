@@ -1,5 +1,5 @@
 import { List } from "../../core";
-import { makeListComponents } from "../ListFactory";
+import { makeListComponents } from "../list/ListFactory";
 
 const { PureList, StatefulList } = makeListComponents(
   List,
