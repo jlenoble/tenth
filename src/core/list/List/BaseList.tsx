@@ -4,18 +4,18 @@ import { ItemHooks } from "./item";
 import { ListItem, ListItemUI } from "../list-item/ListItem";
 
 export interface Props extends ListProps {
-  itemHooks: ItemHooks;
+  itemHooks?: ItemHooks;
   droppableId?: string;
   listItemUI?: ListItemUI;
 }
 
 export const BaseList: FunctionComponent<Props> = ({
-  itemHooks,
+  itemHooks = { items: [] },
   droppableId,
   listItemUI,
   ...other
 }) => {
-  const items = itemHooks.items;
+  const items = itemHooks.items || [];
   const lastIndex = items.length - 1;
   const dnd = Boolean(droppableId);
   const droppableProps = (dnd && { droppableId }) as

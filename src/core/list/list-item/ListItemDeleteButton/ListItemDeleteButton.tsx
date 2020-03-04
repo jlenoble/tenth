@@ -7,7 +7,7 @@ export interface Item {
 }
 
 export interface ItemHooks {
-  removeItem: (id: string) => void;
+  removeItem?: (id: string) => void;
 }
 
 export interface Props extends IconButtonProps {
@@ -22,7 +22,7 @@ export const ListItemDeleteButton: FunctionComponent<Props> = ({
 }) => (
   <IconButton
     aria-label="Delete item"
-    onClick={() => removeItem(id)}
+    onClick={removeItem && (() => removeItem(id))}
     {...other}
   >
     <DeleteOutlined />

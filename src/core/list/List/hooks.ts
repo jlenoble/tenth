@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Item, ItemHooks } from "./item";
 
-type Callback = ItemHooks["setItems"];
+type Callback = NonNullable<ItemHooks["setItems"]>;
 
 export type OnSetItems =
   | {

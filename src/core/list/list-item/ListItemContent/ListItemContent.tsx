@@ -19,13 +19,13 @@ export interface UI {
 
 export interface Props {
   item: Item;
-  itemHooks: ItemHooks;
+  itemHooks?: ItemHooks;
   ui?: UI;
 }
 
 export const ListItemContent: FunctionComponent<Props> = ({
   item,
-  itemHooks,
+  itemHooks = {},
   ui: { checkbox, deleteButton } = {}
 }) => (
   <>

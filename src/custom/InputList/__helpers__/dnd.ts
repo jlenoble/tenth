@@ -1,5 +1,5 @@
 import { DropResult } from "react-beautiful-dnd";
-import { useItems } from "../../../core";
+import { ItemHooks } from "../../../core";
 
 export const DROPPABLE_ATTRIBUTE = "[data-rbd-droppable-id]";
 export const DRAGGABLE_ATTRIBUTE = "[data-rbd-draggable-id]";
@@ -20,23 +20,23 @@ export const getDraggables = (container: HTMLElement): HTMLElement[] => {
   return Array.from(container.querySelectorAll(DRAGGABLE_ATTRIBUTE));
 };
 
-export const onDragEnd = ({
-  items,
+export const onDragEnd = ({ items = [], setItems }: ItemHooks) =>
   setItems
-}: ReturnType<typeof useItems>) => ({ source, destination }: DropResult) => {
-  if (!destination) {
-    return;
-  }
+    ? ({ source, destination }: DropResult) => {
+        if (!destination) {
+          return;
+        }
 
-  if (destination.droppableId === source.droppableId) {
-    if (destination.index === source.index) {
-      return;
-    }
+        if (destination.droppableId === source.droppableId) {
+          if (destination.index === source.index) {
+            return;
+          }
 
-    const newItems = items.concat();
-    newItems.splice(source.index, 1);
-    newItems.splice(destination.index, 0, items[source.index]);
+          const newItems = items.concat();
+          newItems.splice(source.index, 1);
+          newItems.splice(destination.index, 0, items[source.index]);
 
-    setItems(newItems);
-  }
-};
+          setItems(newItems);
+        }
+      }
+    : () => {};

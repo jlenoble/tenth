@@ -11,7 +11,7 @@ export interface ItemHooks {}
 
 export interface Props extends ListItemTextProps {
   item: Item;
-  itemHooks: ItemHooks;
+  itemHooks?: ItemHooks;
 }
 
 export const ListItemText: FunctionComponent<Props> = ({

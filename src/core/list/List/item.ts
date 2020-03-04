@@ -6,8 +6,8 @@ import {
 export type Item = BaseItem;
 
 export type ItemHooks = BaseItemHooks & {
-  items: Item[];
-  setItems: (items: Item[]) => void;
-  addItem: (item: Item) => void;
-  clearItems: () => void;
+  items?: Item[];
+  setItems?: (items: Item[]) => void;
+  addItem?: (item: Item) => void;
+  clearItems?: () => void;
 };

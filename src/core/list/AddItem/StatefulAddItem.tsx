@@ -5,20 +5,22 @@ import { ItemHooks } from "../List";
 
 export interface Props {
   tmpId: () => string;
-  itemHooks: ItemHooks;
+  itemHooks?: ItemHooks;
 }
 
 export const StatefulAddItem: FunctionComponent<Props> = ({
   tmpId,
-  itemHooks
+  itemHooks = {}
 }) => {
   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
   const { addItem } = itemHooks;
 
-  const clearInputAndAddItem = () => {
-    clearInput();
-    addItem({ id: tmpId(), text: inputValue, checked: false });
-  };
+  const clearInputAndAddItem = addItem
+    ? () => {
+        clearInput();
+        addItem({ id: tmpId(), text: inputValue, checked: false });
+      }
+    : clearInput;
 
   return (
     <AddItem

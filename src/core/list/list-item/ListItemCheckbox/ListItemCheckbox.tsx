@@ -7,7 +7,7 @@ export interface Item {
 }
 
 export interface ItemHooks {
-  checkItem: (id: string) => void;
+  checkItem?: (id: string) => void;
 }
 
 export interface Props extends CheckboxProps {
@@ -21,7 +21,7 @@ export const ListItemCheckbox: FunctionComponent<Props> = ({
   ...other
 }) => (
   <Checkbox
-    onClick={() => checkItem(id)}
+    onClick={checkItem && (() => checkItem(id))}
     checked={checked}
     disableRipple
     {...other}

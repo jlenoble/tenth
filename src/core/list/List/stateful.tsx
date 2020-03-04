@@ -3,7 +3,7 @@ import { Item, ItemHooks } from "./item";
 import { useItems, OnSetItems } from "./hooks";
 
 export type Props = {
-  itemHooks: ItemHooks;
+  itemHooks?: ItemHooks;
 };
 
 export type StatefulProps<P> = Omit<P, "itemHooks"> & {
