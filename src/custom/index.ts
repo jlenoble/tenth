@@ -2,7 +2,7 @@ import { List } from "../core";
 import { makeListComponent } from "./ListFactory";
 import tmpId from "./defaultTmpId";
 
-export const DisplayList = makeListComponent(List, { tmpId });
+export * from "./DisplayList";
 
 export const SelectList = makeListComponent(List, {
   tmpId,

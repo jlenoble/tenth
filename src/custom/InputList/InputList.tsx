@@ -2,7 +2,7 @@ import tmpId from "../defaultTmpId";
 import { List } from "../../core";
 import { makeListComponents } from "../ListFactory";
 
-export const { PureList, StatefulList } = makeListComponents(List, {
+const { PureList, StatefulList } = makeListComponents(List, {
   tmpId,
   ui: { addItem: true },
   listItemUI: { checkbox: true, deleteButton: true }
