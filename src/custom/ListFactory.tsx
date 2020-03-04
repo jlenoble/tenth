@@ -1,15 +1,18 @@
 import { FunctionComponent } from "react";
 import { ListProps, withItems } from "../core";
 import { withDefaultProps } from "../generics";
+import tmpId from "./defaultTmpId";
 
 export const makeListComponent = <P extends ListProps, DP extends Partial<P>>(
   List: FunctionComponent<P>,
   defaultProps: DP,
   prefix: string = ""
 ) => {
-  const WrappedComponent = withDefaultProps(defaultProps, List);
+  const WrappedComponent = withDefaultProps({ tmpId, ...defaultProps }, List);
+
   WrappedComponent.displayName =
     prefix + (List.displayName || List.name || "List");
+
   return WrappedComponent;
 };
 
@@ -21,9 +24,14 @@ export const makeStatefulListComponent = <
   defaultProps: DP,
   prefix: string = ""
 ) => {
-  const WrappedComponent = withDefaultProps(defaultProps, withItems(List));
+  const WrappedComponent = withDefaultProps(
+    { tmpId, ...defaultProps },
+    withItems(List)
+  );
+
   WrappedComponent.displayName =
     "Stateful" + prefix + (List.displayName || List.name || "List");
+
   return WrappedComponent;
 };
 

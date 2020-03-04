@@ -1,12 +1,14 @@
-import tmpId from "../defaultTmpId";
 import { List } from "../../core";
 import { makeListComponents } from "../ListFactory";
 
-const { PureList, StatefulList } = makeListComponents(List, {
-  tmpId,
-  ui: { addItem: true },
-  listItemUI: { checkbox: true, deleteButton: true }
-});
+const { PureList, StatefulList } = makeListComponents(
+  List,
+  {
+    ui: { addItem: true },
+    listItemUI: { checkbox: true, deleteButton: true }
+  },
+  "Input"
+);
 
 export default PureList;
 
