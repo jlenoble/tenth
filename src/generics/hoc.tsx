@@ -12,5 +12,8 @@ export const withDefaultProps = <P extends object, DP extends Partial<P>>(
     return <Component {...defaultProps} {...(props as PropsWithChildren<P>)} />;
   };
 
+  WrappedComponent.displayName =
+    Component.displayName || Component.name || "Component";
+
   return WrappedComponent;
 };

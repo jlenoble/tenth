@@ -4,21 +4,34 @@ import { withDefaultProps } from "../generics";
 
 export const makeListComponent = <P extends ListProps, DP extends Partial<P>>(
   List: FunctionComponent<P>,
-  defaultProps: DP
-) => withDefaultProps(defaultProps, List);
+  defaultProps: DP,
+  prefix: string = ""
+) => {
+  const WrappedComponent = withDefaultProps(defaultProps, List);
+  WrappedComponent.displayName =
+    prefix + (List.displayName || List.name || "List");
+  return WrappedComponent;
+};
 
 export const makeStatefulListComponent = <
   P extends ListProps,
   DP extends Partial<P>
 >(
   List: FunctionComponent<P>,
-  defaultProps: DP
-) => withDefaultProps(defaultProps, withItems(List));
+  defaultProps: DP,
+  prefix: string = ""
+) => {
+  const WrappedComponent = withDefaultProps(defaultProps, withItems(List));
+  WrappedComponent.displayName =
+    "Stateful" + prefix + (List.displayName || List.name || "List");
+  return WrappedComponent;
+};
 
 export const makeListComponents = <P extends ListProps, DP extends Partial<P>>(
   List: FunctionComponent<P>,
-  defaultProps: DP
+  defaultProps: DP,
+  prefix: string = ""
 ) => ({
-  PureList: makeListComponent(List, defaultProps),
-  StatefulList: makeStatefulListComponent(List, defaultProps)
+  PureList: makeListComponent(List, defaultProps, prefix),
+  StatefulList: makeStatefulListComponent(List, defaultProps, prefix)
 });
