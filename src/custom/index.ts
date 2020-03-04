@@ -6,11 +6,11 @@ export const DisplayList = makeListComponent(List, { tmpId });
 
 export const SelectList = makeListComponent(List, {
   tmpId,
-  listItemUI: { selectable: true }
+  listItemUI: { checkbox: true }
 });
 
 export const InputList = makeListComponent(List, {
   tmpId,
   ui: { addItem: true },
-  listItemUI: { deletable: true }
+  listItemUI: { deleteButton: true }
 });

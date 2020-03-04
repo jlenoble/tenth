@@ -13,8 +13,8 @@ export type ItemHooks = Checkbox.ItemHooks &
   Text.ItemHooks;
 
 export interface UI {
-  selectable?: boolean;
-  deletable?: boolean;
+  checkbox?: boolean;
+  deleteButton?: boolean;
 }
 
 export interface Props {
@@ -26,11 +26,11 @@ export interface Props {
 export const ListItemContent: FunctionComponent<Props> = ({
   item,
   itemHooks,
-  ui: { selectable, deletable } = {}
+  ui: { checkbox, deleteButton } = {}
 }) => (
   <>
-    {selectable && <ListItemCheckbox item={item} itemHooks={itemHooks} />}
+    {checkbox && <ListItemCheckbox item={item} itemHooks={itemHooks} />}
     <ListItemText item={item} itemHooks={itemHooks} />
-    {deletable && <ListItemDeleteButton item={item} itemHooks={itemHooks} />}
+    {deleteButton && <ListItemDeleteButton item={item} itemHooks={itemHooks} />}
   </>
 );

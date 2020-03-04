@@ -28,8 +28,8 @@ const InputList: FunctionComponent<Props> = ({
         listId={listId}
         itemHooks={childHooks}
         listItemUI={{
-          selectable: true,
-          deletable: true
+          checkbox: true,
+          deleteButton: true
         }}
         ui={{ addItem: true }}
         {...other}
