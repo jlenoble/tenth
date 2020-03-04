@@ -11,11 +11,12 @@ export interface UI {
 }
 
 export const List: FunctionComponent<Props> = ({
+  tmpId,
   ui: { addItem } = {},
   ...other
 }) => {
   if (addItem) {
-    return <InputList {...other} />;
+    return <InputList tmpId={tmpId} {...other} />;
   }
 
   return <BaseList {...other} />;
