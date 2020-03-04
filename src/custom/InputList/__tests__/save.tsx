@@ -1,5 +1,6 @@
 import React from "react";
-import InputList, { useItems, defaultTmpId } from "..";
+import { StatefulInputList as InputList } from "..";
+import defaultTmpId from "../../defaultTmpId";
 import {
   render,
   saveItems,
@@ -114,46 +115,5 @@ describe("Items in InputList can be persisted", () => {
     });
   });
 
-  it("by setting itemHooks: Parent is in charge of state", async () => {
-    function App() {
-      const itemHooks = useItems(getItems(), setItems);
-
-      return <InputList itemHooks={itemHooks} />;
-    }
-
-    const {
-      add,
-      checkChildren,
-      removeChildren,
-      expectTextContents,
-      expectChecks
-    } = render(<App />);
-    const expectProps = makeExpectProps({ expectTextContents, expectChecks });
-
-    expectProps({
-      texts: ["foo", "bar", "baz"],
-      checks: [false, true, false]
-    });
-
-    await add(["qux", "quux"]);
-    expectProps({
-      texts: ["foo", "bar", "baz", "qux", "quux"],
-      checks: [false, true, false, false, false]
-    });
-
-    checkChildren([0, 1, 4]);
-    expectProps({
-      texts: ["foo", "bar", "baz", "qux", "quux"],
-      checks: [true, false, false, false, true]
-    });
-
-    removeChildren([1, 4, 2]);
-    expectProps({
-      texts: ["foo", "qux"],
-      checks: [true, false]
-    });
-  });
-
   test.todo("by setting localStorageKey");
-  test.todo("by setting localStorageKey and itemHooks");
 });

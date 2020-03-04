@@ -1,7 +1,8 @@
 import React from "react";
 import { fireEvent, waitForElement } from "@testing-library/react";
 import { DragDropContext } from "react-beautiful-dnd";
-import InputList, { useItems } from "..";
+import InputList from "..";
+import { useItems } from "../../../core";
 import {
   render,
   onDragEnd,
@@ -71,7 +72,7 @@ describe("Items can moved within InputList", () => {
 
       return (
         <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
-          <InputList dnd itemHooks={itemHooks} />
+          <InputList droppableId={"dropzone"} itemHooks={itemHooks} />
         </DragDropContext>
       );
     }

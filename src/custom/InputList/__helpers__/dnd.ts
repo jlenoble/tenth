@@ -1,5 +1,5 @@
 import { DropResult } from "react-beautiful-dnd";
-import { useItems } from "..";
+import { useItems } from "../../../core";
 
 export const DROPPABLE_ATTRIBUTE = "[data-rbd-droppable-id]";
 export const DRAGGABLE_ATTRIBUTE = "[data-rbd-draggable-id]";

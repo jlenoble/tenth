@@ -1,7 +1,8 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { DragDropContext } from "react-beautiful-dnd";
-import InputList, { useItems } from "..";
+import PureInputList, { StatefulInputList as InputList } from "..";
+import { useItems } from "../../../core";
 import { todoListKey, saveItems, onDragEnd } from "../__helpers__";
 
 describe("InputList renders without crashing", () => {
@@ -30,7 +31,7 @@ describe("InputList renders without crashing", () => {
 
       return (
         <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
-          <InputList dnd itemHooks={itemHooks} />
+          <PureInputList droppableId={"dropzone"} itemHooks={itemHooks} />
         </DragDropContext>
       );
     }
@@ -49,7 +50,7 @@ describe("InputList renders without crashing", () => {
 
       return (
         <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
-          <InputList dnd itemHooks={itemHooks} />
+          <PureInputList droppableId={"dropzone"} itemHooks={itemHooks} />
         </DragDropContext>
       );
     }

@@ -1,5 +1,5 @@
 import React from "react";
-import InputList from "..";
+import { StatefulInputList as InputList } from "..";
 import { render } from "../__helpers__";
 
 describe("Items can be checked in InputList", () => {

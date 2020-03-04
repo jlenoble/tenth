@@ -1,4 +1,4 @@
-import { Item } from "..";
+import { Item } from "../../../core";
 
 export const createItemFromText = (tmpId: () => string) => (
   text: string

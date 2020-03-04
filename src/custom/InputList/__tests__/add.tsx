@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import InputList from "..";
+import { StatefulInputList as InputList } from "..";
 import { render } from "../__helpers__";
 
 describe("Items can be added to InputList", () => {
