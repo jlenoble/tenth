@@ -1,9 +1,9 @@
 import { List } from "../../../core";
 import { makeListComponents } from "../ListFactory";
 
-const { PureList, StatefulList } = makeListComponents(List, {}, "Display");
+const { StatelessList, StatefulList } = makeListComponents(List, {}, "Display");
 
-export default PureList;
+export default StatelessList;
 
-export const DisplayList = PureList;
+export const DisplayList = StatelessList;
 export const StatefulDisplayList = StatefulList;

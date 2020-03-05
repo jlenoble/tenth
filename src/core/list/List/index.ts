@@ -1,5 +1,6 @@
-import { List, Props, UI } from "./List";
+import { List, RawListProps, Props, UI } from "./List";
 
+export type ProtoListProps = RawListProps;
 export type ListProps = Props;
 export type ListUI = UI;
 
@@ -8,5 +9,3 @@ export { List };
 
 export * from "./hooks";
 export * from "./item";
-
-export { withItems } from "./stateful";

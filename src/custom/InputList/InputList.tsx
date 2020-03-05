@@ -1,7 +1,7 @@
 import { List } from "../../core";
 import { makeListComponents } from "../list/ListFactory";
 
-const { PureList, StatefulList } = makeListComponents(
+const { StatelessList, StatefulList } = makeListComponents(
   List,
   {
     ui: { addItem: true },
@@ -10,7 +10,7 @@ const { PureList, StatefulList } = makeListComponents(
   "Input"
 );
 
-export default PureList;
+export default StatelessList;
 
-export const InputList = PureList;
+export const InputList = StatelessList;
 export const StatefulInputList = StatefulList;

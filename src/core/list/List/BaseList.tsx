@@ -3,11 +3,13 @@ import { List, ListProps } from "../../base";
 import { ItemHooks } from "./item";
 import { ListItem, ListItemUI } from "../list-item/ListItem";
 
-export interface Props extends ListProps {
+export interface RawListProps {
   itemHooks?: ItemHooks;
   droppableId?: string;
   listItemUI?: ListItemUI;
 }
+
+export interface Props extends RawListProps, ListProps {}
 
 export const BaseList: FunctionComponent<Props> = ({
   itemHooks = { items: [] },
