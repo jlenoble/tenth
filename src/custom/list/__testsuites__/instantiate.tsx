@@ -15,8 +15,8 @@ export function instantiateStatelessListTestSuite(
       render(<Component />);
     });
 
-    propList.forEach(({ defaultItems, ...props }) => {
-      it(`with props: ${JSON.stringify(props, undefined, 2)}`, () => {
+    propList.forEach(({ defaultItems, ...props }, i) => {
+      it(`with props propList[${i}]`, () => {
         const itemHooks = { items: defaultItems };
         render(<Component itemHooks={itemHooks} {...props} />);
       });
@@ -33,8 +33,8 @@ export function instantiateStatefulListTestSuite(
       render(<Component />);
     });
 
-    propList.forEach(props => {
-      it(`with props: ${JSON.stringify(props, undefined, 2)}`, () => {
+    propList.forEach((props, i) => {
+      it(`with props propList[${i}]`, () => {
         render(<Component {...props} />);
       });
     });
