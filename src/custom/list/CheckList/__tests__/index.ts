@@ -1,4 +1,6 @@
 import { CheckList, StatefulCheckList } from "..";
-import testSuite from "../../DisplayList/__testsuites__/instantiate";
+import instantiateTestSuite from "../../DisplayList/__testsuites__/instantiate";
+import checkTestSuite from "../__testsuites__";
 
-testSuite(CheckList, StatefulCheckList);
+instantiateTestSuite(CheckList, StatefulCheckList);
+checkTestSuite(CheckList, StatefulCheckList);

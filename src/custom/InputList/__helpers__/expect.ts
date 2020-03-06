@@ -5,9 +5,4 @@ export const expectTextContents = (list: HTMLUListElement, items: string[]) => {
   expect(texts).toEqual(items);
 };
 
-export const expectChecks = (list: HTMLUListElement, items: boolean[]) => {
-  const checks = (Array.from(
-    list.querySelectorAll('input[type="checkbox"]')
-  ) as HTMLInputElement[]).map(input => input.checked);
-  expect(checks).toEqual(items);
-};
+export { expectChecks } from "../../list/CheckList/__testsuites__/expect";
