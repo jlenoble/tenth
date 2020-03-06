@@ -1,69 +1,45 @@
-import React from "react";
+import { ReactElement } from "react";
 import { render } from "./render";
 import {
   StatelessListWithDefaults,
-  StatefulListWithDefaults,
-  Props
+  StatefulListWithDefaults
 } from "../../ListFactory";
-import { RequiredKeys } from "../../../../generics";
+import testSuite from "../../__testsuites__";
 
-export function checkStatelessListTestSuite(
-  Component: StatelessListWithDefaults,
-  propList: RequiredKeys<Props, "defaultItems">[] = []
-) {
-  describe(`${Component.displayName} can check elements`, () => {
-    propList.forEach(({ defaultItems, ...props }, i) => {
-      it(`with props propList[${i}]`, () => {
-        const itemHooks = { items: defaultItems };
-        const { checkNthChild, expectChecks } = render(
-          <Component itemHooks={itemHooks} {...props} />
-        );
+type TestOptions = { ui: ReactElement; render: typeof render };
 
-        const result = defaultItems.map(item => item.checked);
-        expectChecks(result);
+const statelessTest = ({ ui, render }: TestOptions) => {
+  const { expectChecks, checkNthChild } = render(ui);
+  const result = defaultItems.map(item => item.checked);
+  expectChecks(result);
 
-        checkNthChild(0);
-        expectChecks(result);
+  checkNthChild(0);
+  expectChecks(result);
 
-        checkNthChild(2);
-        expectChecks(result);
+  checkNthChild(2);
+  expectChecks(result);
 
-        checkNthChild(0);
-        expectChecks(result);
-      });
-    });
-  });
-}
+  checkNthChild(0);
+  expectChecks(result);
+};
 
-export function checkStatefulListTestSuite(
-  Component: StatefulListWithDefaults,
-  propList: RequiredKeys<Props, "defaultItems">[] = []
-) {
-  describe(`${Component.displayName} can check elements`, () => {
-    propList.forEach((props, i) => {
-      it(`with props propList[${i}]`, () => {
-        const { checkNthChild, expectChecks } = render(
-          <Component {...props} />
-        );
+const statefulTest = ({ ui, render }: TestOptions) => {
+  const { expectChecks, checkNthChild } = render(ui);
+  const result = defaultItems.map(item => item.checked);
+  expectChecks(result);
 
-        const result = props.defaultItems.map(item => item.checked);
-        expectChecks(result);
+  checkNthChild(0);
+  result[0] = !result[0];
+  expectChecks(result);
 
-        checkNthChild(0);
-        result[0] = !result[0];
-        expectChecks(result);
+  checkNthChild(2);
+  result[2] = !result[2];
+  expectChecks(result);
 
-        checkNthChild(2);
-        result[2] = !result[2];
-        expectChecks(result);
-
-        checkNthChild(0);
-        result[0] = !result[0];
-        expectChecks(result);
-      });
-    });
-  });
-}
+  checkNthChild(0);
+  result[0] = !result[0];
+  expectChecks(result);
+};
 
 const defaultItems = [
   { id: "1", text: "a", checked: true },
@@ -76,8 +52,15 @@ export function checkTestSuite(
   StatefulList: StatefulListWithDefaults
 ) {
   const propList = [{ defaultItems }];
-  checkStatelessListTestSuite(StatelessList, propList);
-  checkStatefulListTestSuite(StatefulList, propList);
+
+  testSuite({
+    StatelessList,
+    StatefulList,
+    propList,
+    statelessTest,
+    statefulTest,
+    render
+  });
 }
 
 export default checkTestSuite;

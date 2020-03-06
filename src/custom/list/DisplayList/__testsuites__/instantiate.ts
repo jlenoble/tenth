@@ -1,4 +1,5 @@
-import testSuite from "../../__testsuites__/instantiate";
+import testSuite from "../../__testsuites__";
+import { render } from "@testing-library/react";
 import {
   StatefulListWithDefaults,
   StatelessListWithDefaults
@@ -14,7 +15,12 @@ export function instantiateTestSuite(
   StatelessList: StatelessListWithDefaults,
   StatefulList: StatefulListWithDefaults
 ) {
-  testSuite(StatelessList, StatefulList, [{ defaultItems }]);
+  testSuite({
+    StatelessList,
+    StatefulList,
+    propList: [{ defaultItems }],
+    render
+  });
 }
 
 export default instantiateTestSuite;
