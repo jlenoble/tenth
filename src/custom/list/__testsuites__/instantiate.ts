@@ -1,15 +1,10 @@
-import testSuite from "../../__testsuites__";
+import testSuite from "./template";
+import propList from "./propList";
 import { render } from "@testing-library/react";
 import {
   StatefulListWithDefaults,
   StatelessListWithDefaults
-} from "../../ListFactory";
-
-const defaultItems = [
-  { id: "1", text: "a", checked: true },
-  { id: "2", text: "b", checked: false },
-  { id: "3", text: "c", checked: true }
-];
+} from "../ListFactory";
 
 export function instantiateTestSuite(
   StatelessList: StatelessListWithDefaults,
@@ -18,7 +13,7 @@ export function instantiateTestSuite(
   testSuite({
     StatelessList,
     StatefulList,
-    propList: [{ defaultItems }],
+    propList,
     render,
     description: "Instantiating without crashing"
   });

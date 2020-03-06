@@ -17,7 +17,7 @@ export type Test<R> =
   | ((options: TestOptions<R>) => void)[]
   | ((options: TestOptions<R>) => void);
 
-export function statelessListTestSuite<R>({
+function statelessListTestSuite<R>({
   Component,
   propList = [],
   test,
@@ -56,7 +56,7 @@ export function statelessListTestSuite<R>({
   });
 }
 
-export function statefulListTestSuite<R>({
+function statefulListTestSuite<R>({
   Component,
   propList = [],
   test,

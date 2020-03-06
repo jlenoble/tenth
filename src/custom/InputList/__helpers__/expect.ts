@@ -5,4 +5,4 @@ export const expectTextContents = (list: HTMLUListElement, items: string[]) => {
   expect(texts).toEqual(items);
 };
 
-export { expectChecks } from "../../list/CheckList/__testsuites__/expect";
+export { expectChecks } from "../../list/__testsuites__/check/expect";

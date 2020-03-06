@@ -4,7 +4,7 @@ import {
   StatelessListWithDefaults,
   StatefulListWithDefaults
 } from "../../ListFactory";
-import testSuite from "../../__testsuites__";
+import testSuite from "../template";
 
 type TestOptions = { ui: ReactElement; render: typeof render };
 
