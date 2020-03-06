@@ -21,14 +21,16 @@ export function statelessListTestSuite<R>({
   Component,
   propList = [],
   test,
-  render
+  render,
+  description
 }: {
   Component: StatelessListWithDefaults;
   propList: Props[];
   test?: Test<R>;
   render: Render<R>;
+  description: string;
 }) {
-  describe(`${Component.displayName} renders without crashing`, () => {
+  describe(`${Component.displayName}: ${description}`, () => {
     if (!test) {
       it("with no props", () => {
         render(<Component />);
@@ -58,14 +60,16 @@ export function statefulListTestSuite<R>({
   Component,
   propList = [],
   test,
-  render
+  render,
+  description
 }: {
   Component: StatefulListWithDefaults;
   propList: Props[];
   test?: Test<R>;
   render: Render<R>;
+  description: string;
 }) {
-  describe(`${Component.displayName} renders without crashing`, () => {
+  describe(`${Component.displayName}: ${description}`, () => {
     if (!test) {
       it("with no props", () => {
         render(<Component />);
@@ -92,7 +96,8 @@ export default function testSuite<R>({
   propList = [],
   statelessTest,
   statefulTest,
-  render
+  render,
+  description
 }: {
   StatelessList: StatelessListWithDefaults;
   StatefulList: StatefulListWithDefaults;
@@ -100,17 +105,20 @@ export default function testSuite<R>({
   statelessTest?: Test<R>;
   statefulTest?: Test<R>;
   render: Render<R>;
+  description: string;
 }) {
   statelessListTestSuite({
     Component: StatelessList,
     propList,
     test: statelessTest,
-    render
+    render,
+    description
   });
   statefulListTestSuite({
     Component: StatefulList,
     propList,
     test: statefulTest,
-    render
+    render,
+    description
   });
 }

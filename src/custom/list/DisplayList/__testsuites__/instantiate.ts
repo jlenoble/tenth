@@ -19,7 +19,8 @@ export function instantiateTestSuite(
     StatelessList,
     StatefulList,
     propList: [{ defaultItems }],
-    render
+    render,
+    description: "Instantiating without crashing"
   });
 }
 

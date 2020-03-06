@@ -52,6 +52,7 @@ export function checkTestSuite(
   StatefulList: StatefulListWithDefaults
 ) {
   const propList = [{ defaultItems }];
+  const description = "Clicking on checkbox";
 
   testSuite({
     StatelessList,
@@ -59,7 +60,8 @@ export function checkTestSuite(
     propList,
     statelessTest,
     statefulTest,
-    render
+    render,
+    description
   });
 }
 
