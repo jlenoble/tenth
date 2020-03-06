@@ -11,11 +11,13 @@ type Render<R> = (
   options?: Omit<RenderOptions, "queries">
 ) => RenderResult & R;
 
-type TestOptions<R> = { ui: ReactElement; render: Render<R> };
+type TestOptions<R> = { ui: ReactElement; render: Render<R>; props: Props };
 
 export type Test<R> =
   | ((options: TestOptions<R>) => void)[]
   | ((options: TestOptions<R>) => void);
+
+export const dummyTest = <R extends {} = {}>(options: TestOptions<R>) => {};
 
 function statelessListTestSuite<R>({
   Component,
@@ -31,7 +33,7 @@ function statelessListTestSuite<R>({
   description: string;
 }) {
   describe(`${Component.displayName}: ${description}`, () => {
-    if (!test) {
+    if (test === dummyTest) {
       it("with no props", () => {
         render(<Component />);
       });
@@ -48,7 +50,8 @@ function statelessListTestSuite<R>({
         if (typeof test === "function") {
           test({
             ui: <Component itemHooks={itemHooks} {...props} />,
-            render
+            render,
+            props: { defaultItems, ...props }
           });
         }
       });
@@ -70,7 +73,7 @@ function statefulListTestSuite<R>({
   description: string;
 }) {
   describe(`${Component.displayName}: ${description}`, () => {
-    if (!test) {
+    if (test === dummyTest) {
       it("with no props", () => {
         render(<Component />);
       });
@@ -83,7 +86,7 @@ function statefulListTestSuite<R>({
         }
 
         if (typeof test === "function") {
-          test({ ui: <Component {...props} />, render });
+          test({ ui: <Component {...props} />, render, props });
         }
       });
     });
@@ -94,8 +97,8 @@ export default function testSuite<R>({
   StatelessList,
   StatefulList,
   propList = [],
-  statelessTest,
-  statefulTest,
+  statelessTest = dummyTest,
+  statefulTest = dummyTest,
   render,
   description
 }: {

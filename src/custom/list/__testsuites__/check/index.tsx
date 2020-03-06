@@ -2,13 +2,25 @@ import { ReactElement } from "react";
 import { render } from "./render";
 import {
   StatelessListWithDefaults,
-  StatefulListWithDefaults
+  StatefulListWithDefaults,
+  Props
 } from "../../ListFactory";
 import testSuite from "../template";
+import propList from "../propList";
 
-type TestOptions = { ui: ReactElement; render: typeof render };
+type TestOptions = {
+  ui: ReactElement;
+  render: typeof render;
+  props: Props;
+};
 
-const statelessTest = ({ ui, render }: TestOptions) => {
+const statelessTest = ({ ui, render, props }: TestOptions) => {
+  const defaultItems = props.defaultItems;
+
+  if (!defaultItems) {
+    throw new Error("undefined defaultItems");
+  }
+
   const { expectChecks, checkNthChild } = render(ui);
   const result = defaultItems.map(item => item.checked);
   expectChecks(result);
@@ -23,7 +35,13 @@ const statelessTest = ({ ui, render }: TestOptions) => {
   expectChecks(result);
 };
 
-const statefulTest = ({ ui, render }: TestOptions) => {
+const statefulTest = ({ ui, render, props }: TestOptions) => {
+  const defaultItems = props.defaultItems;
+
+  if (!defaultItems) {
+    throw new Error("undefined defaultItems");
+  }
+
   const { expectChecks, checkNthChild } = render(ui);
   const result = defaultItems.map(item => item.checked);
   expectChecks(result);
@@ -41,19 +59,10 @@ const statefulTest = ({ ui, render }: TestOptions) => {
   expectChecks(result);
 };
 
-const defaultItems = [
-  { id: "1", text: "a", checked: true },
-  { id: "2", text: "b", checked: false },
-  { id: "3", text: "c", checked: true }
-];
-
 export function checkTestSuite(
   StatelessList: StatelessListWithDefaults,
   StatefulList: StatefulListWithDefaults
 ) {
-  const propList = [{ defaultItems }];
-  const description = "Clicking on checkbox";
-
   testSuite({
     StatelessList,
     StatefulList,
@@ -61,7 +70,7 @@ export function checkTestSuite(
     statelessTest,
     statefulTest,
     render,
-    description
+    description: "Clicking on checkbox"
   });
 }
 
