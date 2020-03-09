@@ -14,8 +14,12 @@ type Render<R> = (
 type TestOptions<R> = { ui: ReactElement; render: Render<R>; props: Props };
 
 export type Test<R> =
-  | ((options: TestOptions<R>) => void)[]
-  | ((options: TestOptions<R>) => void);
+  | (
+      | ((options: TestOptions<R>) => void)
+      | ((options: TestOptions<R>) => Promise<void>)
+    )[]
+  | ((options: TestOptions<R>) => void)
+  | ((options: TestOptions<R>) => Promise<void>);
 
 export const dummyTest = <R extends {} = {}>(options: TestOptions<R>) => {};
 
