@@ -40,7 +40,7 @@ function statelessListTestSuite<R>({
     }
 
     propList.forEach(({ defaultItems, ...props }, i) => {
-      it(`with props propList[${i}]`, () => {
+      it(`with props propList[${i}]`, async () => {
         const itemHooks = { items: defaultItems };
 
         if (Array.isArray(test)) {
@@ -48,7 +48,7 @@ function statelessListTestSuite<R>({
         }
 
         if (typeof test === "function") {
-          test({
+          await test({
             ui: <Component itemHooks={itemHooks} {...props} />,
             render,
             props: { defaultItems, ...props }
@@ -80,13 +80,13 @@ function statefulListTestSuite<R>({
     }
 
     propList.forEach((props, i) => {
-      it(`with props propList[${i}]`, () => {
+      it(`with props propList[${i}]`, async () => {
         if (Array.isArray(test)) {
           test = test[i];
         }
 
         if (typeof test === "function") {
-          test({ ui: <Component {...props} />, render, props });
+          await test({ ui: <Component {...props} />, render, props });
         }
       });
     });
