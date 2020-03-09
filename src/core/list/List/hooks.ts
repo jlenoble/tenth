@@ -10,12 +10,7 @@ export type OnSetItems =
     }
   | Callback;
 
-export const useItems = (
-  initialValue: Item[] = [],
-  onSetItems?: OnSetItems
-): ItemHooks => {
-  const [items, setItems] = useState(initialValue);
-  let wrappedSetItems: Callback;
+export const wrapSetItems = (setItems: Callback, onSetItems?: OnSetItems) => {
   let onBeforeSetItems: Callback | undefined;
 
   if (typeof onSetItems === "object") {
@@ -23,7 +18,7 @@ export const useItems = (
     onSetItems = onSetItems.onSetItems;
   }
 
-  wrappedSetItems = onBeforeSetItems
+  return onBeforeSetItems
     ? onSetItems
       ? (items: Item[]): void => {
           onBeforeSetItems!(items);
@@ -40,6 +35,14 @@ export const useItems = (
         (onSetItems as Callback)(items);
       }
     : setItems;
+};
+
+export const useItems = (
+  initialValue: Item[] = [],
+  onSetItems?: OnSetItems
+): ItemHooks => {
+  const [items, setItems] = useState(initialValue);
+  const wrappedSetItems = wrapSetItems(setItems, onSetItems);
 
   return {
     items,
