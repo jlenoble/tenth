@@ -1,23 +1,19 @@
 import React, { FunctionComponent } from "react";
-import {
-  ProtoListProps as StatelessListProps,
-  Item,
-  OnSetItems,
-  useItems
-} from "../../core";
+import { ProtoListProps, Item, OnSetItems, useItems } from "../../core";
 import tmpId from "../defaultTmpId";
 
-type ListProps = Omit<StatelessListProps, "itemHooks">;
-type DefaultListProps = Partial<ListProps>;
-type StatefulListProps = ListProps & {
+export type StatelessListProps = ProtoListProps;
+export type ListProps = Omit<StatelessListProps, "itemHooks">;
+export type DefaultListProps = Partial<ListProps>;
+export type StatefulListProps = ListProps & {
   defaultItems?: Item[];
   onSetItems?: OnSetItems;
 };
-type DefaultStatelessListProps = Partial<StatelessListProps>;
-type DefaultStatefulListProps = Partial<StatefulListProps>;
+export type DefaultStatelessListProps = Partial<StatelessListProps>;
+export type DefaultStatefulListProps = Partial<StatefulListProps>;
 
-type StatelessList = FunctionComponent<StatelessListProps>;
-type StatefulList = FunctionComponent<StatefulListProps>;
+export type StatelessList = FunctionComponent<StatelessListProps>;
+export type StatefulList = FunctionComponent<StatefulListProps>;
 
 export type StatelessListWithDefaults = FunctionComponent<
   DefaultStatelessListProps
@@ -26,7 +22,7 @@ export type StatefulListWithDefaults = FunctionComponent<
   DefaultStatefulListProps
 >;
 
-const withItems = (List: StatelessList) => {
+export const withItems = (List: StatelessList) => {
   const WrappedList: StatefulList = ({
     defaultItems,
     onSetItems,
@@ -42,7 +38,7 @@ const withItems = (List: StatelessList) => {
   return WrappedList;
 };
 
-const withDefaultListProps = (
+export const withDefaultListProps = (
   List: StatelessList,
   defaultProps: DefaultListProps,
   prefix: string = ""
@@ -57,7 +53,7 @@ const withDefaultListProps = (
   return WrappedComponent;
 };
 
-const withDefaultStatefulListProps = (
+export const withDefaultStatefulListProps = (
   List: StatelessList,
   defaultProps: DefaultListProps,
   prefix: string = ""

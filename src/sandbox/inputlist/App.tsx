@@ -8,32 +8,32 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-// import { DisplayList as List } from "../../custom";
-
-function App() {
-  const itemHooks = useItems(
-    JSON.parse(localStorage.getItem(todoListKey) || "[]"),
-    saveItems(todoListKey)
-  );
-
-  return (
-    <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
-      <InputList itemHooks={itemHooks} droppableId={"list0"} />
-    </DragDropContext>
-  );
-}
+import { PersistentDisplayList as List } from "../../custom";
 
 // function App() {
+//   const itemHooks = useItems(
+//     JSON.parse(localStorage.getItem(todoListKey) || "[]"),
+//     saveItems(todoListKey)
+//   );
+
 //   return (
-//     <List
-//       defaultItems={[
-//         { id: "1", text: "a", checked: true },
-//         { id: "2", text: "b", checked: false },
-//         { id: "3", text: "c", checked: true }
-//       ]}
-//       listId={"list0"}
-//     />
+//     <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
+//       <InputList itemHooks={itemHooks} droppableId={"list0"} />
+//     </DragDropContext>
 //   );
 // }
+
+function App() {
+  return (
+    <List
+      // defaultItems={[
+      //   { id: "1", text: "a", checked: true },
+      //   { id: "2", text: "b", checked: false },
+      //   { id: "3", text: "c", checked: true }
+      // ]}
+      localStorageId={todoListKey}
+    />
+  );
+}
 
 export default App;
