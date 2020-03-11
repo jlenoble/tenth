@@ -36,7 +36,9 @@ const getIntermediaryElements = (
     return items.slice(start + 1, end);
   }
 
-  return items.reverse().slice(end + 1, start);
+  return Array.from(items)
+    .reverse()
+    .slice(end + 1, start);
 };
 
 export const dragAndDrop = async (
