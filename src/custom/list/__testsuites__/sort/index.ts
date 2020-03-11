@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { getDroppables, getDraggables } from "./dnd";
-import { mockGetComputedStyle, mockGetBoundingClientRect } from "./mock";
+import { mockGetBoundingClientRect } from "./mock";
 import { render } from "./render";
 import {
   StatelessListWithDefaults,

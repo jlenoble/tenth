@@ -9,7 +9,7 @@ import {
 } from "../ListFactory";
 import { onDragEnd } from "./dnd";
 
-const withDnD = (List: StatelessList): StatelessList => {
+export const withDnD = (List: StatelessList): StatelessList => {
   const WrappedList: StatelessList = ({
     itemHooks = {},
     droppableId,
