@@ -44,7 +44,7 @@ const statefulTest = async ({ ui, render, props }: TestOptions) => {
   }
 
   const defaultTexts = defaultItems.map(item => item.text);
-  const { list, removeNthChild, expectTextContents } = render(ui);
+  const { removeNthChild, expectTextContents } = render(ui);
 
   expectTextContents(defaultTexts);
 
@@ -52,10 +52,15 @@ const statefulTest = async ({ ui, render, props }: TestOptions) => {
   expectTextContents(defaultTexts.slice(1));
 
   removeNthChild(1);
-  expectTextContents(defaultTexts.slice(1, 2));
+  expectTextContents(
+    defaultTexts
+      .slice(1)
+      .slice(0, 1)
+      .concat(defaultTexts.slice(3))
+  );
 
   removeNthChild(0);
-  expect(list).toBeEmpty();
+  expectTextContents(defaultTexts.slice(3));
 };
 
 export function deleteTestSuite(
