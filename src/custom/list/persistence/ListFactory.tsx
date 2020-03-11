@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Item, wrapSetItems } from "../../../core";
+import { wrapSetItems } from "../../../core";
 import {
   withItems,
   StatelessList,
@@ -7,6 +7,7 @@ import {
   StatefulList as BaseStatefulList,
   StatefulListProps as BaseStatefulListProps
 } from "../ListFactory";
+import { fetch, save } from "./localstorage";
 import tmpId from "../../defaultTmpId";
 
 export type StatefulListProps = BaseStatefulListProps & {
@@ -31,14 +32,10 @@ const withLocalStorage = (List: BaseStatefulList): StatefulList => {
     ...other
   }) => {
     if (!defaultItems) {
-      defaultItems = JSON.parse(
-        localStorage.getItem(localStorageId) || "[]"
-      ) as Item[];
+      defaultItems = fetch(localStorageId)();
     }
 
-    const saveItems = (items: Item[]) => {
-      localStorage.setItem(localStorageId, JSON.stringify(items));
-    };
+    const saveItems = save(localStorageId);
 
     return (
       <List
