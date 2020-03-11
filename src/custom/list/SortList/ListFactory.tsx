@@ -3,15 +3,24 @@ import { DragDropContext } from "react-beautiful-dnd";
 import {
   StatelessList,
   DefaultListProps,
+  withDefaultListProps,
   withDefaultStatefulListProps,
   Props as BaseProps
 } from "../ListFactory";
 import { onDragEnd } from "./dnd";
 
 const withDnD = (List: StatelessList): StatelessList => {
-  const WrappedList: StatelessList = ({ itemHooks = {}, ...other }) => (
+  const WrappedList: StatelessList = ({
+    itemHooks = {},
+    droppableId,
+    ...other
+  }) => (
     <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
-      <List itemHooks={itemHooks} droppableId={"list0"} {...other} />
+      <List
+        itemHooks={itemHooks}
+        droppableId={droppableId || "drop-area"}
+        {...other}
+      />
     </DragDropContext>
   );
 
@@ -27,5 +36,10 @@ export const makeListComponents = (
   defaultProps: DefaultListProps,
   prefix: string = ""
 ) => ({
-  SortList: withDefaultStatefulListProps(withDnD(List), defaultProps, prefix)
+  StatelessList: withDefaultListProps(withDnD(List), defaultProps, prefix),
+  StatefulList: withDefaultStatefulListProps(
+    withDnD(List),
+    defaultProps,
+    prefix
+  )
 });

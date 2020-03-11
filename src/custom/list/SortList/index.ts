@@ -1,8 +1,9 @@
 import { List } from "../../../core";
 import { makeListComponents } from "./ListFactory";
 
-const { SortList } = makeListComponents(List, {});
+const { StatelessList, StatefulList } = makeListComponents(List, {});
 
-export default SortList;
+export default StatelessList;
 
-export { SortList };
+export const SortList = StatelessList;
+export const StatefulSortList = StatefulList;

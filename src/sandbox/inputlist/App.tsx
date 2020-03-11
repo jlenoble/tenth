@@ -8,7 +8,7 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-import { SortList as List } from "../../custom";
+import { StatefulSortList as List } from "../../custom";
 
 // function App() {
 //   const itemHooks = useItems(
