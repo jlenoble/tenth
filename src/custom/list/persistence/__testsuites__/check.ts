@@ -6,7 +6,7 @@ import propList, {
   localStorageId,
   defaultLocalStorageItems
 } from "./init-data";
-import { fetchItems } from "./localstorage";
+import { fetch } from "../localstorage";
 
 type TestOptions = {
   ui: ReactElement;
@@ -16,10 +16,10 @@ type TestOptions = {
 
 const statefulTest = ({ ui, render, props }: TestOptions) => {
   let defaultItems = props.defaultItems;
-  const fetch = fetchItems(props.localStorageId);
+  const fetchItems = fetch(props.localStorageId);
 
   if (!defaultItems) {
-    defaultItems = fetch();
+    defaultItems = fetchItems();
   }
 
   const { expectChecks, checkNthChild } = render(ui);
@@ -27,26 +27,26 @@ const statefulTest = ({ ui, render, props }: TestOptions) => {
   const storageResult = defaultItems.map(item => ({ ...item }));
 
   expectChecks(result);
-  expect(fetch()).toEqual(defaultLocalStorageItems);
+  expect(fetchItems()).toEqual(defaultLocalStorageItems);
 
   checkNthChild(0);
   result[0] = !result[0];
   storageResult[0].checked = result[0];
   expectChecks(result);
-  expect(fetch()).not.toEqual(defaultLocalStorageItems);
-  expect(fetch()).toEqual(storageResult);
+  expect(fetchItems()).not.toEqual(defaultLocalStorageItems);
+  expect(fetchItems()).toEqual(storageResult);
 
   checkNthChild(2);
   result[2] = !result[2];
   storageResult[2].checked = result[2];
   expectChecks(result);
-  expect(fetch()).toEqual(storageResult);
+  expect(fetchItems()).toEqual(storageResult);
 
   checkNthChild(0);
   result[0] = !result[0];
   storageResult[0].checked = result[0];
   expectChecks(result);
-  expect(fetch()).toEqual(storageResult);
+  expect(fetchItems()).toEqual(storageResult);
 };
 
 export function checkTestSuite(StatefulList: StatefulListWithDefaults) {
