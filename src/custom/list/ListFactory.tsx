@@ -3,7 +3,7 @@ import { ProtoListProps, Item, OnSetItems, useItems } from "../../core";
 import tmpId from "../defaultTmpId";
 
 export type StatelessListProps = ProtoListProps;
-export type ListProps = Omit<StatelessListProps, "itemHooks">;
+export type ListProps = Omit<StatelessListProps, "itemHooks" | "droppableId">;
 export type DefaultListProps = Partial<ListProps>;
 export type StatefulListProps = ListProps & {
   defaultItems?: Item[];
