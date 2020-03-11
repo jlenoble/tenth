@@ -14,6 +14,6 @@ const defaultItems = [
   { id: "3", text: "c", checked: true }
 ];
 
-const propList = [{ defaultItems, localStorageId }];
+const propList = [{ defaultItems, localStorageId }, { localStorageId }];
 
 export default propList;

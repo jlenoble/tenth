@@ -8,7 +8,7 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-import { PersistentDisplayList as List } from "../../custom";
+import { PersistentCheckList as List } from "../../custom";
 
 // function App() {
 //   const itemHooks = useItems(
