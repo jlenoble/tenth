@@ -8,7 +8,7 @@ import {
   saveItems
 } from "../../custom/InputList/__helpers__";
 
-import { PersistentInputList as List } from "../../custom";
+import { SortList as List } from "../../custom";
 
 // function App() {
 //   const itemHooks = useItems(
@@ -26,12 +26,15 @@ import { PersistentInputList as List } from "../../custom";
 function App() {
   return (
     <List
-      // defaultItems={[
-      //   { id: "1", text: "a", checked: true },
-      //   { id: "2", text: "b", checked: false },
-      //   { id: "3", text: "c", checked: true }
-      // ]}
-      localStorageId={todoListKey}
+      defaultItems={[
+        { id: "1", text: "a", checked: true },
+        { id: "2", text: "b", checked: false },
+        { id: "3", text: "c", checked: true }
+      ]}
+      ui={{ addItem: true }}
+      listItemUI={{ deleteButton: true }}
+      // localStorageId={todoListKey}
+      // droppableId={todoListKey}
     />
   );
 }
