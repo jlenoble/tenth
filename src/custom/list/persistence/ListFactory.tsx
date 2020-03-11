@@ -75,7 +75,7 @@ const withDefaultStatefulListProps = (
   };
 
   WrappedComponent.displayName =
-    "Stateful" + prefix + (List.displayName || List.name || "List");
+    "Persistent" + prefix + (List.displayName || List.name || "List");
 
   return WrappedComponent;
 };
