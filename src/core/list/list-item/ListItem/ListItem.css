@@ -1,0 +1,13 @@
+[data-rbd-drag-handle-context-id="0"]:active {
+  cursor: grabbing;
+}
+
+[data-rbd-drag-handle-context-id="0"] .MuiListItemText-root {
+  cursor: default;
+}
+
+[data-rbd-drag-handle-context-id="0"]
+  .MuiListItemText-root
+  .MuiTypography-root {
+  cursor: text;
+}

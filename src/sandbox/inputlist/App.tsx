@@ -7,7 +7,7 @@ function App() {
   return (
     <List
       ui={{ addItem: true }}
-      listItemUI={{ checkbox: true, deleteButton: true }}
+      listItemUI={{ checkbox: true, deleteButton: true, editableText: true }}
       localStorageId={todoListKey}
     />
   );

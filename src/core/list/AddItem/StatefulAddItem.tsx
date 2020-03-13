@@ -18,7 +18,12 @@ export const StatefulAddItem: FunctionComponent<Props> = ({
   const clearInputAndAddItem = addItem
     ? () => {
         clearInput();
-        addItem({ id: tmpId(), text: inputValue, checked: false });
+        addItem({
+          id: tmpId(),
+          text: inputValue,
+          checked: false,
+          edited: false
+        });
       }
     : clearInput;
 

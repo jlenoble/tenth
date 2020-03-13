@@ -46,7 +46,7 @@ const statefulTest = async ({ ui, render, props }: TestOptions) => {
   expect(fetchItems()).not.toEqual(defaultLocalStorageItems);
   expect(fetchItems()).toEqual(
     storageResult.concat([
-      { checked: false, text: "foo", id: prefix + (id0 + 1) }
+      { checked: false, text: "foo", id: prefix + (id0 + 1), edited: false }
     ])
   );
 
@@ -54,7 +54,7 @@ const statefulTest = async ({ ui, render, props }: TestOptions) => {
   expectTextContents(defaultTexts.concat(["foo"]));
   expect(fetchItems()).toEqual(
     storageResult.concat([
-      { checked: false, text: "foo", id: prefix + (id0 + 1) }
+      { checked: false, text: "foo", id: prefix + (id0 + 1), edited: false }
     ])
   );
 
@@ -67,8 +67,8 @@ const statefulTest = async ({ ui, render, props }: TestOptions) => {
   expectTextContents(defaultTexts.concat(["foo", "bar"]));
   expect(fetchItems()).toEqual(
     storageResult.concat([
-      { checked: false, text: "foo", id: prefix + (id0 + 1) },
-      { checked: false, text: "bar", id: prefix + (id0 + 2) }
+      { checked: false, text: "foo", id: prefix + (id0 + 1), edited: false },
+      { checked: false, text: "bar", id: prefix + (id0 + 2), edited: false }
     ])
   );
 };

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Item, ItemHooks } from "./item";
+import { RequiredKeys } from "../../../generics";
 
 type Callback = NonNullable<ItemHooks["setItems"]>;
 
@@ -90,6 +91,16 @@ export const useItems = (
       }
     },
 
+    updateItem: (item: RequiredKeys<Partial<Item>, "id">) => {
+      const index = items.findIndex(it => item.id === it.id);
+
+      if (index !== -1) {
+        const newItems = Array.from(items);
+        newItems[index] = { ...newItems[index], ...item };
+        wrappedSetItems(newItems);
+      }
+    },
+
     checkItem: (id: string) => {
       wrappedSetItems(
         items.map(item => {
@@ -102,6 +113,33 @@ export const useItems = (
 
           return item;
         })
+      );
+    },
+
+    editItem: (id: string) => {
+      wrappedSetItems(
+        items.map(item => {
+          if (id === item.id) {
+            return {
+              ...item,
+              edited: true
+            };
+          }
+
+          return {
+            ...item,
+            edited: false
+          };
+        })
+      );
+    },
+
+    stopEditingItem: (id: string) => {
+      wrappedSetItems(
+        items.map(item => ({
+          ...item,
+          edited: false
+        }))
       );
     },
 
