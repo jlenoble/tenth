@@ -1,7 +1,7 @@
 import React from "react";
-import { todoListKey } from "../../custom/InputList/__helpers__";
-
 import { PersistentSortList as List } from "../../custom";
+
+const todoListKey = "todolist";
 
 function App() {
   return (
