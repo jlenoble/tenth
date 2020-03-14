@@ -91,16 +91,6 @@ export const useItems = (
       }
     },
 
-    updateItem: (item: RequiredKeys<Partial<Item>, "id">) => {
-      const index = items.findIndex(it => item.id === it.id);
-
-      if (index !== -1) {
-        const newItems = Array.from(items);
-        newItems[index] = { ...newItems[index], ...item };
-        wrappedSetItems(newItems);
-      }
-    },
-
     checkItem: (id: string) => {
       wrappedSetItems(
         items.map(item => {
@@ -116,6 +106,10 @@ export const useItems = (
       );
     },
 
+    clearItems: () => {
+      wrappedSetItems([]);
+    },
+
     editItem: (id: string) => {
       wrappedSetItems(
         items.map(item => {
@@ -126,20 +120,16 @@ export const useItems = (
             };
           }
 
-          return {
-            ...item,
-            edited: false
-          };
-        })
-      );
-    },
+          if (item.edited) {
+            // Prevent from editing several items simultaneously
+            return {
+              ...item,
+              edited: false
+            };
+          }
 
-    stopEditingItem: (id: string) => {
-      wrappedSetItems(
-        items.map(item => ({
-          ...item,
-          edited: false
-        }))
+          return item;
+        })
       );
     },
 
@@ -147,8 +137,39 @@ export const useItems = (
       wrappedSetItems(items.filter(item => id !== item.id));
     },
 
-    clearItems: () => {
-      wrappedSetItems([]);
+    stopEditing: () => {
+      wrappedSetItems(
+        items.map(item => {
+          if (item.edited) {
+            return {
+              ...item,
+              edited: false
+            };
+          }
+
+          return item;
+        })
+      );
+    },
+
+    updateItem: (item: RequiredKeys<Partial<Item>, "id">) => {
+      const index = items.findIndex(it => item.id === it.id);
+
+      if (index !== -1) {
+        const newItems = Array.from(items);
+        newItems[index] = { ...newItems[index], ...item };
+        wrappedSetItems(newItems);
+      }
+    },
+
+    updateItemAndStopEditing: (item: RequiredKeys<Partial<Item>, "id">) => {
+      const index = items.findIndex(it => item.id === it.id);
+
+      if (index !== -1) {
+        const newItems = Array.from(items);
+        newItems[index] = { ...newItems[index], ...item, edited: false };
+        wrappedSetItems(newItems);
+      }
     }
   };
 };
