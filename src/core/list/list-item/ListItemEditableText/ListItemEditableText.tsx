@@ -30,7 +30,7 @@ export const ListItemEditableText: FunctionComponent<Props> = ({
     <ListItemText
       item={item}
       itemHooks={itemHooks}
-      onDoubleClick={editItem && (() => editItem(item.id))}
+      onClick={editItem && (() => editItem(item.id))}
     />
   );
 };
