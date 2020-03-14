@@ -1,5 +1,5 @@
 import React from "react";
-import { PersistentSortList as List } from "../../custom";
+import { PersistentDisplayList as List } from "../../custom";
 
 const todoListKey = "todolist";
 

@@ -9,7 +9,6 @@ export type Item = Text.Item & TextField.Item & { id: string; edited: boolean };
 export type ItemHooks = Text.ItemHooks &
   TextField.ItemHooks & {
     editItem?: (id: string) => void;
-    stopEditingItem?: (id: string) => void;
   };
 
 export interface Props extends Text.Props {
@@ -21,17 +20,10 @@ export const ListItemEditableText: FunctionComponent<Props> = ({
   item,
   itemHooks
 }) => {
-  const { editItem, stopEditingItem } = itemHooks;
+  const { editItem } = itemHooks;
 
   if (item.edited) {
-    return (
-      <ListItemTextField
-        autoFocus
-        item={item}
-        itemHooks={itemHooks}
-        onBlur={stopEditingItem && (() => stopEditingItem(item.id))}
-      />
-    );
+    return <ListItemTextField autoFocus item={item} itemHooks={itemHooks} />;
   }
 
   return (
