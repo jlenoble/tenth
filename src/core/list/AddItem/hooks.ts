@@ -12,7 +12,7 @@ export const useInputValue = (initialValue = "") => {
       event: KeyboardEvent<HTMLInputElement>,
       callback: (value: string) => void
     ) => {
-      if (event.which === 13 || event.keyCode === 13) {
+      if (event.key === "Enter") {
         callback(inputValue);
         return true;
       }
