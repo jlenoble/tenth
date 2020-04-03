@@ -83,6 +83,15 @@ function CheckMenu({
       </IconButton>
       <Menu
         id="check-menu"
+        getContentAnchorEl={null}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center"
+        }}
         anchorEl={anchorEl}
         keepMounted
         open={open}
