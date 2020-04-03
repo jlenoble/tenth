@@ -28,8 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
 interface CardProps extends ListProps {}
 type UIProps = Required<Pick<CardProps, "ui" | "listItemUI">>;
 
-const ITEM_HEIGHT = 48;
-
 function CheckMenu({
   UI: {
     ui: { addItem },
@@ -98,7 +96,7 @@ function CheckMenu({
         onClose={handleClose}
         PaperProps={{
           style: {
-            maxHeight: ITEM_HEIGHT * 4.5,
+            maxHeight: 250,
             width: "20ch"
           }
         }}
