@@ -1,7 +1,7 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
 import { AddItem } from "./AddItem";
-import { useInputValue } from "./hooks";
 import { ItemHooks } from "../List";
+import { StatefulAddItem as AddItemWrapper } from "../../base";
 
 export interface Props {
   tmpId: () => string;
@@ -12,29 +12,16 @@ export const StatefulAddItem: FunctionComponent<Props> = ({
   tmpId,
   itemHooks = {}
 }) => {
-  const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
   const { addItem } = itemHooks;
+  const add = (value: string) => {
+    addItem &&
+      addItem({
+        id: tmpId(),
+        text: value,
+        checked: false,
+        edited: false
+      });
+  };
 
-  const clearInputAndAddItem = addItem
-    ? () => {
-        clearInput();
-        addItem({
-          id: tmpId(),
-          text: inputValue,
-          checked: false,
-          edited: false
-        });
-      }
-    : clearInput;
-
-  return (
-    <AddItem
-      inputValue={inputValue}
-      onInputChange={changeInput}
-      onButtonClick={clearInputAndAddItem}
-      onInputKeyPress={(event: KeyboardEvent<HTMLInputElement>) =>
-        keyInput(event, clearInputAndAddItem)
-      }
-    />
-  );
+  return <AddItemWrapper add={add} AddItem={AddItem} />;
 };

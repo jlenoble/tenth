@@ -3,19 +3,13 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
+import { StatelessAddItem } from "../../base";
 
-export interface Props {
-  inputValue: string;
-  onInputChange(event: ChangeEvent<HTMLInputElement>): void;
-  onInputKeyPress(event: KeyboardEvent<HTMLInputElement>): void;
-  onButtonClick(): void;
-}
-
-export const AddItem: FunctionComponent<Props> = ({
+export const AddItem: StatelessAddItem = ({
   inputValue,
-  onInputChange,
-  onInputKeyPress,
-  onButtonClick
+  changeInput,
+  keyInput,
+  clearInputAndAdd
 }) => (
   <Paper style={{ margin: 16, padding: 16 }}>
     <Grid container>
@@ -23,8 +17,8 @@ export const AddItem: FunctionComponent<Props> = ({
         <TextField
           placeholder="Add item here"
           value={inputValue}
-          onChange={onInputChange}
-          onKeyPress={onInputKeyPress}
+          onChange={changeInput}
+          onKeyPress={keyInput}
           fullWidth
         />
       </Grid>
@@ -33,7 +27,7 @@ export const AddItem: FunctionComponent<Props> = ({
           fullWidth
           color="secondary"
           variant="outlined"
-          onClick={onButtonClick}
+          onClick={clearInputAndAdd}
         >
           Add
         </Button>
