@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ChangeEvent, KeyboardEvent } from "react";
+import React, { FunctionComponent } from "react";
 import { useInputValue } from "./useInputValue";
 
 export type StatelessAddItemProps = ReturnType<typeof useInputValue>;
