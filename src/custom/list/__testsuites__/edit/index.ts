@@ -80,7 +80,7 @@ export function editTestSuite(
     StatelessList,
     StatefulList,
     propList,
-    statelessTest,
+    statelessTest: statefulTest,
     statefulTest,
     render,
     description: "Inline editing"

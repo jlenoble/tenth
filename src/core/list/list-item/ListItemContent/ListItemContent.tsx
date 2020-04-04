@@ -3,9 +3,10 @@ import * as Checkbox from "../ListItemCheckbox/ListItemCheckbox";
 import * as DeleteButton from "../ListItemDeleteButton/ListItemDeleteButton";
 import * as EditableText from "../ListItemEditableText/ListItemEditableText";
 import * as Text from "../ListItemText/ListItemText";
+import InlineEdit from "../../InlineEdit";
 
 const ListItemCheckbox = Checkbox.ListItemCheckbox;
-const ListItemEditableText = EditableText.ListItemEditableText;
+//const ListItemEditableText = EditableText.ListItemEditableText;
 const ListItemText = Text.ListItemText;
 const ListItemDeleteButton = DeleteButton.ListItemDeleteButton;
 
@@ -34,7 +35,7 @@ export const ListItemContent: FunctionComponent<Props> = ({
   <>
     {checkbox && <ListItemCheckbox item={item} itemHooks={itemHooks} />}
     {editableText ? (
-      <ListItemEditableText item={item} itemHooks={itemHooks} />
+      <InlineEdit item={item} itemHooks={itemHooks} />
     ) : (
       <ListItemText item={item} itemHooks={itemHooks} />
     )}
