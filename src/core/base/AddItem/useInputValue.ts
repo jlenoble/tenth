@@ -6,10 +6,8 @@ export const useInputValue = (add: (value: string) => void) => {
   const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
     setInputValue(event.target.value);
 
-  const clearInput = () => setInputValue("");
-
   const clearInputAndAdd = () => {
-    clearInput();
+    setInputValue("");
     add(inputValue);
   };
 
@@ -25,7 +23,6 @@ export const useInputValue = (add: (value: string) => void) => {
   return {
     inputValue,
     changeInput,
-    clearInput,
     clearInputAndAdd,
     keyInput
   };
