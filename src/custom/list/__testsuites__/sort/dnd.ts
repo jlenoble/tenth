@@ -1,4 +1,4 @@
-import { fireEvent, waitForElement } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 
 export const DROPPABLE_ATTRIBUTE = "[data-rbd-droppable-id]";
 export const DRAGGABLE_ATTRIBUTE = "[data-rbd-draggable-id]";
@@ -60,12 +60,12 @@ export const dragAndDrop = async (
   fireEvent.keyDown(dragSource, spaceKey);
 
   for (let i = 0; i < elements.length; i++) {
-    await waitForElement(() => getByText(/You have lifted an item/i));
+    await waitFor(() => getByText(/You have lifted an item/i));
     fireEvent.keyDown(dragSource, start < end ? arrowDownKey : arrowUpKey);
-    await waitForElement(() => getByText(/You have moved the item/i));
+    await waitFor(() => getByText(/You have moved the item/i));
   }
 
   fireEvent.keyDown(dragSource, start < end ? arrowDownKey : arrowUpKey);
   fireEvent.keyDown(dragSource, spaceKey);
-  await waitForElement(() => getByText(/You have dropped the item/i));
+  await waitFor(() => getByText(/You have dropped the item/i));
 };
