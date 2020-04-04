@@ -1,4 +1,4 @@
-import React, { FunctionComponent, KeyboardEvent } from "react";
+import React, { FunctionComponent } from "react";
 import { AddItem } from "./AddItem";
 import { ItemHooks } from "../List";
 import { StatefulAddItem as AddItemWrapper } from "../../base";
