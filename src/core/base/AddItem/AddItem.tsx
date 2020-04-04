@@ -12,4 +12,4 @@ export interface StatefulAddItemProps {
 export const StatefulAddItem: FunctionComponent<StatefulAddItemProps> = ({
   add,
   AddItem
-}) => <AddItem {...useInputValue("", add)} />;
+}) => <AddItem {...useInputValue(add)} />;

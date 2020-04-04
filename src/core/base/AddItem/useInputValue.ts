@@ -1,10 +1,7 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react";
 
-export const useInputValue = (
-  initialValue: string,
-  add: (value: string) => void
-) => {
-  const [inputValue, setInputValue] = useState(initialValue);
+export const useInputValue = (add: (value: string) => void) => {
+  const [inputValue, setInputValue] = useState("");
 
   const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
     setInputValue(event.target.value);
