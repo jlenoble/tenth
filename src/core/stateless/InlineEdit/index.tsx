@@ -1,6 +1,5 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import ListItemText from "@material-ui/core/ListItemText";
+import { ListItemText } from "../../base";
 import { StatelessInlineEdit } from "../../stateful";
 
 export const InlineEdit: StatelessInlineEdit = ({
@@ -9,20 +8,19 @@ export const InlineEdit: StatelessInlineEdit = ({
   changeInput,
   keyInput,
   edit,
-  stopEditing,
+  stopEditing
 }) => {
-  if (edited) {
-    return (
-      <TextField
-        defaultValue={inputValue}
-        autoFocus
-        fullWidth
-        onChange={changeInput}
-        onBlur={stopEditing}
-        onKeyPress={keyInput}
-      />
-    );
-  }
+  const props = edited
+    ? {
+        primaryTextFieldProps: {
+          autoFocus: true,
+          fullWidth: true,
+          onChange: changeInput,
+          onBlur: stopEditing,
+          onKeyPress: keyInput
+        }
+      }
+    : { onClick: edit };
 
-  return <ListItemText primary={inputValue} onClick={edit} />;
+  return <ListItemText primary={inputValue} {...props} />;
 };
