@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { InlineEdit } from "./InlineEdit";
+import { StatelessInlineEdit } from "../../stateless";
 import { ItemHooks } from "../List";
 import { StatefulInlineEdit as InlineEditWrapper } from "../../stateful";
 
@@ -10,7 +10,7 @@ export interface Props {
 
 export const StatefulInlineEdit: FunctionComponent<Props> = ({
   item,
-  itemHooks = {},
+  itemHooks = {}
 }) => {
   const { updateItem } = itemHooks;
   const update = (value: string) => {
@@ -21,7 +21,7 @@ export const StatefulInlineEdit: FunctionComponent<Props> = ({
     <InlineEditWrapper
       initialValue={item.text}
       update={update}
-      InlineEdit={InlineEdit}
+      InlineEdit={StatelessInlineEdit}
     />
   );
 };
