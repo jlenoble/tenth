@@ -10,8 +10,10 @@ export interface StatefulInlineEditProps {
   InlineEdit: StatelessInlineEdit;
 }
 
-export const StatefulInlineEdit: FunctionComponent<StatefulInlineEditProps> = ({
+export type StatefulInlineEdit = FunctionComponent<StatefulInlineEditProps>;
+
+export const StatefulInlineEdit: StatefulInlineEdit = ({
   initialValue,
   update,
-  InlineEdit
+  InlineEdit,
 }) => <InlineEdit {...useEditValue(initialValue, update)} />;
