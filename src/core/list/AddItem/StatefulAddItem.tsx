@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { AddItem } from "./AddItem";
 import { ItemHooks } from "../List";
-import { StatefulAddItem as AddItemWrapper } from "../../base";
+import { StatefulAddItem as AddItemWrapper } from "../../stateful";
 
 export interface Props {
   tmpId: () => string;
@@ -10,7 +10,7 @@ export interface Props {
 
 export const StatefulAddItem: FunctionComponent<Props> = ({
   tmpId,
-  itemHooks = {}
+  itemHooks = {},
 }) => {
   const { addItem } = itemHooks;
   const add = (value: string) => {
@@ -19,7 +19,7 @@ export const StatefulAddItem: FunctionComponent<Props> = ({
         id: tmpId(),
         text: value,
         checked: false,
-        edited: false
+        edited: false,
       });
   };
 
