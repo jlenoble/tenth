@@ -8,7 +8,7 @@ describe("Testing AddItem", () => {
   it("Rendering", () => {
     const add = (value: string) => {};
 
-    render(<StatefulAddItem add={add} AddItem={AddItem} />);
+    render(<StatefulAddItem callback={add} AddItem={AddItem} />);
   });
 
   it("Adding: Enter keypress", async () => {
@@ -18,7 +18,7 @@ describe("Testing AddItem", () => {
     };
 
     const { getByRole } = render(
-      <StatefulAddItem add={add} AddItem={AddItem} />
+      <StatefulAddItem callback={add} AddItem={AddItem} />
     );
 
     const textbox = getByRole("textbox") as HTMLInputElement;
@@ -41,7 +41,7 @@ describe("Testing AddItem", () => {
     };
 
     const { getByText, getByRole } = render(
-      <StatefulAddItem add={add} AddItem={AddItem} />
+      <StatefulAddItem callback={add} AddItem={AddItem} />
     );
 
     const textbox = getByRole("textbox") as HTMLInputElement;

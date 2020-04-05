@@ -2,7 +2,7 @@ import { useState, ChangeEvent, KeyboardEvent } from "react";
 
 export const useEditValue = (
   initialValue: string,
-  update: (value: string) => void
+  cb: (value: string) => void
 ) => {
   const [inputValue, setInputValue] = useState(initialValue);
   const [edited, setEdited] = useState(false);
@@ -15,7 +15,7 @@ export const useEditValue = (
 
   const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      update(inputValue);
+      cb(inputValue);
       stopEditing();
       return true;
     }

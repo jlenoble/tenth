@@ -11,7 +11,7 @@ describe("Testing InlineEdit", () => {
     render(
       <StatefulInlineEdit
         initialValue={""}
-        update={update}
+        callback={update}
         InlineEdit={InlineEdit}
       />
     );
@@ -26,7 +26,7 @@ describe("Testing InlineEdit", () => {
     const { getByText, getByRole } = render(
       <StatefulInlineEdit
         initialValue={"foo"}
-        update={update}
+        callback={update}
         InlineEdit={InlineEdit}
       />
     );
@@ -89,7 +89,7 @@ describe("Testing InlineEdit", () => {
     const { getByText, getByRole } = render(
       <StatefulInlineEdit
         initialValue={"foo"}
-        update={update}
+        callback={update}
         InlineEdit={InlineEdit}
       />
     );

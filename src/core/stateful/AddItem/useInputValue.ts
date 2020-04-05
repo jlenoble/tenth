@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react";
 
-export const useInputValue = (add: (value: string) => void) => {
+export const useInputValue = (cb: (value: string) => void) => {
   const [inputValue, setInputValue] = useState("");
 
   const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
@@ -8,7 +8,7 @@ export const useInputValue = (add: (value: string) => void) => {
 
   const clearInputAndAdd = () => {
     setInputValue("");
-    add(inputValue);
+    cb(inputValue);
   };
 
   const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {

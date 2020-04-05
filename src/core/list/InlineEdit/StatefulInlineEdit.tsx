@@ -20,7 +20,7 @@ export const StatefulInlineEdit: FunctionComponent<Props> = ({
   return (
     <InlineEditWrapper
       initialValue={item.text}
-      update={update}
+      callback={update}
       InlineEdit={StatelessInlineEdit}
     />
   );

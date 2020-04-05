@@ -10,7 +10,7 @@ export interface Props {
 
 export const StatefulAddItem: FunctionComponent<Props> = ({
   tmpId,
-  itemHooks = {},
+  itemHooks = {}
 }) => {
   const { addItem } = itemHooks;
   const add = (value: string) => {
@@ -19,9 +19,9 @@ export const StatefulAddItem: FunctionComponent<Props> = ({
         id: tmpId(),
         text: value,
         checked: false,
-        edited: false,
+        edited: false
       });
   };
 
-  return <AddItemWrapper add={add} AddItem={StatelessAddItem} />;
+  return <AddItemWrapper callback={add} AddItem={StatelessAddItem} />;
 };
