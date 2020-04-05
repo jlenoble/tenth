@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { AddItem } from "../../stateless/AddItem";
+import { StatelessAddItem } from "../../stateless";
 import { ItemHooks } from "../List";
 import { StatefulAddItem as AddItemWrapper } from "../../stateful";
 
@@ -23,5 +23,5 @@ export const StatefulAddItem: FunctionComponent<Props> = ({
       });
   };
 
-  return <AddItemWrapper add={add} AddItem={AddItem} />;
+  return <AddItemWrapper add={add} AddItem={StatelessAddItem} />;
 };
