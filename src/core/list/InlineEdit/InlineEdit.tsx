@@ -1,7 +1,7 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import ListItemText from "@material-ui/core/ListItemText";
-import { StatelessInlineEdit } from "../../base";
+import { StatelessInlineEdit } from "../../stateful";
 
 export const InlineEdit: StatelessInlineEdit = ({
   inputValue,
@@ -9,7 +9,7 @@ export const InlineEdit: StatelessInlineEdit = ({
   changeInput,
   keyInput,
   edit,
-  stopEditing
+  stopEditing,
 }) => {
   if (edited) {
     return (
