@@ -9,7 +9,8 @@ export interface StatefulAddItemProps {
   AddItem: StatelessAddItem;
 }
 
-export const StatefulAddItem: FunctionComponent<StatefulAddItemProps> = ({
-  add,
-  AddItem
-}) => <AddItem {...useInputValue(add)} />;
+export type StatefulAddItem = FunctionComponent<StatefulAddItemProps>;
+
+export const StatefulAddItem: StatefulAddItem = ({ add, AddItem }) => (
+  <AddItem {...useInputValue(add)} />
+);
