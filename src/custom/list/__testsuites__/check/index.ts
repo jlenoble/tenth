@@ -22,7 +22,7 @@ const statelessTest = ({ ui, render, props }: TestOptions) => {
   }
 
   const { expectChecks, checkNthChild } = render(ui);
-  const result = defaultItems.map(item => item.checked);
+  const result = defaultItems.map((item) => item.checked);
   expectChecks(result);
 
   checkNthChild(0);
@@ -43,7 +43,7 @@ const statefulTest = ({ ui, render, props }: TestOptions) => {
   }
 
   const { expectChecks, checkNthChild } = render(ui);
-  const result = defaultItems.map(item => item.checked);
+  const result = defaultItems.map((item) => item.checked);
   expectChecks(result);
 
   checkNthChild(0);
@@ -67,7 +67,7 @@ export function checkTestSuite(
     StatelessList,
     StatefulList,
     propList,
-    statelessTest,
+    statelessTest: statefulTest,
     statefulTest,
     render,
     description: "Clicking on checkbox"

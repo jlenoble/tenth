@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
-import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
+import { StatelessCheckbox } from "../../../stateless";
+import { StatefulSelect } from "../../../stateful";
 
 export interface Item {
   id: string;
@@ -10,20 +11,24 @@ export interface ItemHooks {
   checkItem?: (id: string) => void;
 }
 
-export interface Props extends CheckboxProps {
+export interface Props {
   item: Item;
   itemHooks: ItemHooks;
 }
 
 export const ListItemCheckbox: FunctionComponent<Props> = ({
   item: { id, checked },
-  itemHooks: { checkItem },
-  ...other
-}) => (
-  <Checkbox
-    onClick={checkItem && (() => checkItem(id))}
-    checked={checked}
-    disableRipple
-    {...other}
-  />
-);
+  itemHooks: { checkItem }
+}) => {
+  const toggle = () => {
+    checkItem && checkItem(id);
+  };
+
+  return (
+    <StatefulSelect
+      initialValue={checked}
+      callback={toggle}
+      Select={StatelessCheckbox}
+    />
+  );
+};
