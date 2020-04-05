@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { AddItem } from "./AddItem";
+import { AddItem } from "../../stateless/AddItem";
 import { ItemHooks } from "../List";
 import { StatefulAddItem as AddItemWrapper } from "../../stateful";
 

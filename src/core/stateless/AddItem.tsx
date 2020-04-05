@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import { StatelessAddItem } from "../../stateful";
+import { StatelessAddItem } from "../stateful";
 
 export const AddItem: StatelessAddItem = ({
   inputValue,
