@@ -1,19 +1,25 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, PropsWithChildren } from "react";
 import { useOnOff } from "./useOnOff";
 
-export type StatelessOnOffProps = ReturnType<typeof useOnOff>;
-export type StatelessOnOff = FunctionComponent<StatelessOnOffProps>;
+export type StatelessOnOffProps<T> = ReturnType<typeof useOnOff> & {
+  componentProps?: PropsWithChildren<T>;
+};
+export type StatelessOnOff<T> = FunctionComponent<StatelessOnOffProps<T>>;
 
-export interface StatefulOnOffProps {
+export interface StatefulOnOffProps<T> {
   initialValue?: boolean;
   callback?: (value: boolean) => void;
-  Component: StatelessOnOff;
+  Component: StatelessOnOff<T>;
+  componentProps?: PropsWithChildren<T>;
 }
 
-export type StatefulOnOff = FunctionComponent<StatefulOnOffProps>;
+export type StatefulOnOff<T> = FunctionComponent<StatefulOnOffProps<T>>;
 
-export const StatefulOnOff: StatefulOnOff = ({
+export const StatefulOnOff = <T extends {}>({
   initialValue,
   callback,
-  Component
-}) => <Component {...useOnOff(initialValue, callback)} />;
+  Component,
+  componentProps
+}: PropsWithChildren<StatefulOnOffProps<T>>) => (
+  <Component {...useOnOff(initialValue, callback)} {...componentProps} />
+);
