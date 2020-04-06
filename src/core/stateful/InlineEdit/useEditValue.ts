@@ -1,17 +1,15 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react";
+import { useOnOff } from "../OnOff/useOnOff";
 
 export const useEditValue = (
   initialValue: string,
   cb: (value: string) => void
 ) => {
   const [inputValue, setInputValue] = useState(initialValue);
-  const [edited, setEdited] = useState(false);
+  const { state: edited, on: edit, off: stopEditing } = useOnOff();
 
   const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
     setInputValue(event.target.value);
-
-  const edit = () => setEdited(true);
-  const stopEditing = () => setEdited(false);
 
   const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
