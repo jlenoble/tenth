@@ -1,5 +1,5 @@
 import React, { FunctionComponent, PropsWithChildren } from "react";
-import { useOnOff } from "./useOnOff";
+import useOnOff from "./useOnOff";
 
 export type StatelessOnOffProps<T> = ReturnType<typeof useOnOff> & {
   componentProps?: PropsWithChildren<T>;
@@ -23,3 +23,5 @@ export const StatefulOnOff = <T extends {}>({
 }: PropsWithChildren<StatefulOnOffProps<T>>) => (
   <Component {...useOnOff(initialValue, callback)} {...componentProps} />
 );
+
+export default StatefulOnOff;

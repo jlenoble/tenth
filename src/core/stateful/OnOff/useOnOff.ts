@@ -23,3 +23,5 @@ export const useOnOff = (
     }
   };
 };
+
+export default useOnOff;
