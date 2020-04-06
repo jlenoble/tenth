@@ -2,18 +2,29 @@ import React, { PropsWithChildren } from "react";
 import OnOff, { StatelessOnOff } from "./OnOff";
 
 export const withOnOff = <T extends {}>(Component: StatelessOnOff<T>) => {
-  interface OnOffProps<T> {
+  type OnOffProps<T> = {
     initialValue?: boolean;
     callback?: (value: boolean) => void;
-    componentProps?: PropsWithChildren<T>;
-  }
+  } & PropsWithChildren<T>;
 
-  const WrappedComponent = (props: OnOffProps<T>) => (
-    <OnOff {...props} Component={Component} />
+  const WrappedComponent = ({
+    initialValue,
+    callback,
+    ...componentProps
+  }: OnOffProps<T>) => (
+    <OnOff
+      initialValue={initialValue}
+      callback={callback}
+      Component={Component}
+      {...(componentProps as PropsWithChildren<T>)}
+    />
   );
 
-  WrappedComponent.displayName =
-    "Stateful" + (Component.displayName || Component.name || "Component");
+  const displayName = Component.displayName || Component.name || "Component";
+
+  WrappedComponent.displayName = /^Stateful/.test(displayName)
+    ? displayName
+    : "Stateful" + displayName;
 
   return WrappedComponent;
 };

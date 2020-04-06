@@ -4,8 +4,10 @@ import { StatelessOnOff, withOnOff } from "../../stateful/OnOff";
 
 export const StatelessCheckbox: StatelessOnOff<CheckboxProps> = ({
   state,
+  on,
+  off,
   toggle,
-  componentProps
+  ...componentProps
 }) => <Checkbox onClick={toggle} checked={state} {...componentProps} />;
 
 export const StatefulCheckbox = withOnOff(StatelessCheckbox);
