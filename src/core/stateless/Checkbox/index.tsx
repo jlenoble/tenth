@@ -1,7 +1,9 @@
 import React from "react";
-import BaseCheckbox from "@material-ui/core/Checkbox";
-import { StatelessSelect } from "../../stateful";
+import Checkbox from "@material-ui/core/Checkbox";
+import { StatelessOnOff } from "../../stateful/OnOff";
 
-export const Checkbox: StatelessSelect = ({ selected, toggle }) => (
-  <BaseCheckbox onClick={toggle} checked={selected} />
+export const StatelessCheckbox: StatelessOnOff = ({ state, toggle }) => (
+  <Checkbox onClick={toggle} checked={state} />
 );
+
+export default StatelessCheckbox;

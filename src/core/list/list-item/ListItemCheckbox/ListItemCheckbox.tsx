@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { StatelessCheckbox } from "../../../stateless";
-import { StatefulSelect } from "../../../stateful";
+import OnOff from "../../../stateful/OnOff";
 
 export interface Item {
   id: string;
@@ -25,10 +25,10 @@ export const ListItemCheckbox: FunctionComponent<Props> = ({
   };
 
   return (
-    <StatefulSelect
+    <OnOff
       initialValue={checked}
       callback={toggle}
-      Select={StatelessCheckbox}
+      Component={StatelessCheckbox}
     />
   );
 };

@@ -1,19 +1,15 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { Checkbox } from "..";
-import { StatefulSelect } from "../../../stateful";
+import Checkbox from "..";
+import OnOff from "../../../stateful/OnOff";
 
 describe("Testing Checkbox", () => {
   it("Rendering", () => {
-    const select = (value: boolean) => {};
+    const select = () => {};
 
     render(
-      <StatefulSelect
-        initialValue={false}
-        callback={select}
-        Select={Checkbox}
-      />
+      <OnOff initialValue={false} callback={select} Component={Checkbox} />
     );
   });
 
@@ -24,11 +20,7 @@ describe("Testing Checkbox", () => {
     };
 
     const { getByRole } = render(
-      <StatefulSelect
-        initialValue={selected}
-        callback={select}
-        Select={Checkbox}
-      />
+      <OnOff initialValue={selected} callback={select} Component={Checkbox} />
     );
 
     const checkbox = getByRole("checkbox");
