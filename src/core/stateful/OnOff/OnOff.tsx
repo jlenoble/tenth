@@ -5,8 +5,8 @@ export type StatelessOnOffProps = ReturnType<typeof useOnOff>;
 export type StatelessOnOff = FunctionComponent<StatelessOnOffProps>;
 
 export interface StatefulOnOffProps {
-  initialValue: boolean;
-  callback: (selected: boolean) => void;
+  initialValue?: boolean;
+  callback?: (value: boolean) => void;
   Component: StatelessOnOff;
 }
 
