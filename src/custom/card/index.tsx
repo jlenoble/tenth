@@ -4,29 +4,21 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Popper from "@material-ui/core/Popper";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import Popover from "@material-ui/core/Popover";
 import { PersistentSortList as List, ListProps } from "../list";
 import { StatelessListUIProps, useListUI } from "../../core/stateful/ListUI";
 import ListUIFormControl from "../../core/stateless/ListUIFormControl";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      border: "1px solid " + theme.palette.divider,
-      padding: theme.spacing(1),
-      backgroundColor: theme.palette.background.paper
-    }
-  })
-);
-
 function CheckMenu(props: StatelessListUIProps) {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -39,14 +31,22 @@ function CheckMenu(props: StatelessListUIProps) {
       >
         <MoreVertIcon />
       </IconButton>
-      <Popper
+      <Popover
         id="list-ui"
-        anchorEl={anchorEl}
         open={open}
-        className={classes.paper}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center"
+        }}
       >
         <ListUIFormControl {...props} />
-      </Popper>
+      </Popover>
     </div>
   );
 }
