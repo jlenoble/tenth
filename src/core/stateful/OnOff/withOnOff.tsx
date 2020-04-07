@@ -7,17 +7,8 @@ export const withOnOff = <T extends {}>(Component: StatelessOnOff<T>) => {
     callback?: (value: boolean) => void;
   } & PropsWithChildren<T>;
 
-  const WrappedComponent = ({
-    initialValue,
-    callback,
-    ...componentProps
-  }: OnOffProps<T>) => (
-    <OnOff
-      initialValue={initialValue}
-      callback={callback}
-      Component={Component}
-      {...(componentProps as PropsWithChildren<T>)}
-    />
+  const WrappedComponent = (props: OnOffProps<T>) => (
+    <OnOff {...props} Component={Component} />
   );
 
   const displayName = Component.displayName || Component.name || "Component";
