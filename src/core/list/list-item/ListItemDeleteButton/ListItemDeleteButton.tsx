@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
-import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
-import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
+import { IconButtonProps } from "@material-ui/core/IconButton";
+import DeleteButton from "../../../stateless/DeleteButton";
 
 export interface Item {
   id: string;
@@ -19,12 +19,4 @@ export const ListItemDeleteButton: FunctionComponent<Props> = ({
   item: { id },
   itemHooks: { removeItem },
   ...other
-}) => (
-  <IconButton
-    aria-label="Delete item"
-    onClick={removeItem && (() => removeItem(id))}
-    {...other}
-  >
-    <DeleteOutlined />
-  </IconButton>
-);
+}) => <DeleteButton onClick={() => removeItem && removeItem(id)} {...other} />;
