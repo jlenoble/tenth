@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react";
-import { useOnOff } from "../OnOff/useOnOff";
+import useOnOff from "../../states/useOnOff";
 
 export const useEditValue = (
   initialValue: string,
