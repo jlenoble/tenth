@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Popover from "@material-ui/core/Popover";
 import { PersistentSortList as List, ListProps } from "../../custom/list";
-import { StatelessListUIProps, useListUI } from "../../core/stateful/ListUI";
+import useListUI from "../../core/states/useListUI";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function CheckMenu(props: StatelessListUIProps) {
+function CheckMenu(props: ReturnType<typeof useListUI>) {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

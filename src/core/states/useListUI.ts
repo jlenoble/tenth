@@ -1,4 +1,4 @@
-import useOnOff from "../../states/useOnOff";
+import useOnOff from "./useOnOff";
 
 export type ListUIFlags = "add" | "check" | "delete" | "edit";
 
