@@ -1,4 +1,4 @@
-import { StatefulInlineEdit as InlineEdit, Props } from "./StatefulInlineEdit";
+import { InlineEdit, Props } from "./InlineEdit";
 
 export type InlineEditProps = Props;
 
