@@ -5,12 +5,9 @@ import {
 } from "../../../base";
 import {
   ListItemContent,
-  UI as ListItemContentUI,
   Props as ListItemContentProps
 } from "../ListItemContent/ListItemContent";
 import "./ListItem.css";
-
-export type UI = ListItemContentUI;
 
 export interface Props extends BaseListItemProps, ListItemContentProps {
   dnd?: boolean;

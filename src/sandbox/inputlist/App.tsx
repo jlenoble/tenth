@@ -6,8 +6,12 @@ const todoListKey = "todolist";
 function App() {
   return (
     <ListCard
-      ui={{ addItem: true }}
-      listItemUI={{ checkbox: true, deleteButton: true, editableText: true }}
+      ui={{
+        addItem: true,
+        checkbox: true,
+        deleteButton: true,
+        editableText: true
+      }}
       localStorageId={todoListKey}
     />
   );

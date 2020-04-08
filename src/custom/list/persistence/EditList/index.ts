@@ -4,7 +4,7 @@ import { makeListComponents } from "../ListFactory";
 const { StatefulList } = makeListComponents(
   List,
   {
-    listItemUI: { editableText: true }
+    ui: { editableText: true }
   },
   "Edit"
 );

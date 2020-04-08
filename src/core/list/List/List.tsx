@@ -5,26 +5,15 @@ import {
   RawListProps as RawInputListProps,
   Props as InputListProps
 } from "./InputList";
+import { UI } from "../types";
 
-export interface UI {
-  addItem?: boolean;
-}
+export interface RawListProps extends RawInputListProps, UI {}
+export interface Props extends InputListProps, UI {}
 
-interface UIProps {
-  ui?: UI;
-}
-
-export interface RawListProps extends RawInputListProps, UIProps {}
-export interface Props extends InputListProps, UIProps {}
-
-export const List: FunctionComponent<Props> = ({
-  tmpId,
-  ui: { addItem } = {},
-  ...other
-}) => {
-  if (addItem) {
-    return <InputList tmpId={tmpId} {...other} />;
+export const List: FunctionComponent<Props> = ({ tmpId, ui, ...other }) => {
+  if (ui?.addItem) {
+    return <InputList tmpId={tmpId} ui={ui} {...other} />;
   }
 
-  return <BaseList {...other} />;
+  return <BaseList ui={ui} {...other} />;
 };

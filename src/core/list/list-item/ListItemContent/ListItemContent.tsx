@@ -3,13 +3,7 @@ import { ListItemCheckbox } from "../ListItemCheckbox/ListItemCheckbox";
 import { ListItemDeleteButton } from "../ListItemDeleteButton/ListItemDeleteButton";
 import { ListItemText } from "../ListItemText/ListItemText";
 import InlineEdit from "../../InlineEdit";
-import { Item, ItemHooks } from "../../types";
-
-export interface UI {
-  checkbox?: boolean;
-  deleteButton?: boolean;
-  editableText?: boolean;
-}
+import { Item, ItemHooks, UI } from "../../types";
 
 export interface Props {
   item: Item;

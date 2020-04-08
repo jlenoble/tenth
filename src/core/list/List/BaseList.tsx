@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from "react";
 import { List, ListProps } from "../../base";
-import { ListItem, ListItemUI } from "../list-item/ListItem";
-import { Item, ItemHooks } from "../types";
+import { ListItem } from "../list-item/ListItem";
+import { Item, ItemHooks, UI } from "../types";
 
 export interface RawListProps {
   itemHooks: ItemHooks;
   droppableId?: string;
-  listItemUI?: ListItemUI;
+  ui?: UI;
 }
 
 export interface Props extends RawListProps, ListProps {}
@@ -14,7 +14,7 @@ export interface Props extends RawListProps, ListProps {}
 export const BaseList: FunctionComponent<Props> = ({
   itemHooks,
   droppableId,
-  listItemUI,
+  ui,
   ...other
 }) => {
   const items: Item[] = itemHooks.items || [];
@@ -34,7 +34,7 @@ export const BaseList: FunctionComponent<Props> = ({
           index={index}
           item={item}
           itemHooks={itemHooks}
-          ui={listItemUI}
+          ui={ui}
         />
       ))}
     </List>

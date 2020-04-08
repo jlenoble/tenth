@@ -51,20 +51,16 @@ function CheckMenu(props: StatelessListUIProps) {
   );
 }
 
-export const ListCard: FunctionComponent<ListProps> = ({
-  ui,
-  listItemUI,
-  ...other
-}) => {
+export const ListCard: FunctionComponent<ListProps> = ({ ui, ...other }) => {
   const props = useListUI({
     add: ui?.addItem,
-    check: listItemUI?.checkbox,
-    delete: listItemUI?.deleteButton,
-    edit: listItemUI?.editableText
+    check: ui?.checkbox,
+    delete: ui?.deleteButton,
+    edit: ui?.editableText
   });
 
-  ui = { addItem: props.add.state };
-  listItemUI = {
+  ui = {
+    addItem: props.add.state,
     checkbox: props.check.state,
     deleteButton: props.delete.state,
     editableText: props.edit.state
@@ -74,7 +70,7 @@ export const ListCard: FunctionComponent<ListProps> = ({
     <Card>
       <CardHeader action={<CheckMenu {...props} />} title="TODO List" />
       <CardContent>
-        <List ui={ui} listItemUI={listItemUI} {...other} />
+        <List ui={ui} {...other} />
       </CardContent>
     </Card>
   );

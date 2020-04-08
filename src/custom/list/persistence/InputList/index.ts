@@ -4,8 +4,7 @@ import { makeListComponents } from "../ListFactory";
 const { StatefulList } = makeListComponents(
   List,
   {
-    ui: { addItem: true },
-    listItemUI: { deleteButton: true }
+    ui: { addItem: true, deleteButton: true }
   },
   "Input"
 );

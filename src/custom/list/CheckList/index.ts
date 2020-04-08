@@ -4,7 +4,7 @@ import { makeListComponents } from "../ListFactory";
 const { StatelessList, StatefulList } = makeListComponents(
   List,
   {
-    listItemUI: { checkbox: true }
+    ui: { checkbox: true }
   },
   "Check"
 );
