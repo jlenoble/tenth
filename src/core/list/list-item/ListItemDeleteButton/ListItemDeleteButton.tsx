@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
-import { IconButtonProps } from "@material-ui/core/IconButton";
-import DeleteButton from "../../../stateless/DeleteButton";
+import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
+import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
 
 export interface Item {
   id: string;
@@ -17,6 +17,12 @@ export interface Props extends IconButtonProps {
 
 export const ListItemDeleteButton: FunctionComponent<Props> = ({
   item: { id },
-  itemHooks: { removeItem },
-  ...other
-}) => <DeleteButton onClick={() => removeItem && removeItem(id)} {...other} />;
+  itemHooks: { removeItem }
+}) => (
+  <IconButton
+    aria-label="Delete item"
+    onClick={() => removeItem && removeItem(id)}
+  >
+    <DeleteOutlined />
+  </IconButton>
+);
