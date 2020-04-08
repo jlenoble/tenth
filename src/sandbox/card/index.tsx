@@ -5,7 +5,7 @@ import CardContent from "@material-ui/core/CardContent";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Popover from "@material-ui/core/Popover";
-import { PersistentSortList as List, ListProps } from "../list";
+import { PersistentSortList as List, ListProps } from "../../custom/list";
 import { StatelessListUIProps, useListUI } from "../../core/stateful/ListUI";
 import ListUIFormControl from "../../core/stateless/ListUIFormControl";
 
