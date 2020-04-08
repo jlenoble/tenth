@@ -1,14 +1,7 @@
 import React, { FunctionComponent } from "react";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
-
-export interface Item {
-  id: string;
-}
-
-export interface ItemHooks {
-  removeItem?: (id: string) => void;
-}
+import { Item, ItemHooks } from "../../types";
 
 export interface Props extends IconButtonProps {
   item: Item;

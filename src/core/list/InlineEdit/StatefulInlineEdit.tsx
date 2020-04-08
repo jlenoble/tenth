@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { StatelessInlineEdit } from "../../stateless";
-import { ItemHooks } from "../List";
+import { Item, ItemHooks } from "../types";
 import { StatefulInlineEdit as InlineEditWrapper } from "../../stateful";
 
 export interface Props {
-  item: { id: string; text: string };
-  itemHooks?: ItemHooks;
+  item: Item;
+  itemHooks: ItemHooks;
 }
 
 export const StatefulInlineEdit: FunctionComponent<Props> = ({

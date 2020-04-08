@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Item, ItemHooks } from "./item";
+import { Item, ItemHooks } from "../types";
 import { RequiredKeys } from "../../../generics";
 
 type Callback = NonNullable<ItemHooks["setItems"]>;
@@ -74,11 +74,11 @@ export const wrapSetItems = (
   }
 };
 
-export const useItems = (
-  initialValue: Item[] = [],
+export const makeItemsState = (
+  items: Item[] = [],
+  setItems: (items: Item[]) => void = () => {},
   onSetItems?: OnSetItems
-): ItemHooks => {
-  const [items, setItems] = useState(initialValue);
+) => {
   const wrappedSetItems = wrapSetItems(setItems, onSetItems);
 
   return {
@@ -86,14 +86,17 @@ export const useItems = (
     setItems: wrappedSetItems,
 
     addItem: (item: Item) => {
-      if (item.text !== "" && items.findIndex(it => item.id === it.id) === -1) {
+      if (
+        item.text !== "" &&
+        items.findIndex((it) => item.id === it.id) === -1
+      ) {
         wrappedSetItems(items.concat(item));
       }
     },
 
     checkItem: (id: string) => {
       wrappedSetItems(
-        items.map(item => {
+        items.map((item) => {
           if (id === item.id) {
             return {
               ...item,
@@ -112,7 +115,7 @@ export const useItems = (
 
     editItem: (id: string) => {
       wrappedSetItems(
-        items.map(item => {
+        items.map((item) => {
           if (id === item.id) {
             return {
               ...item,
@@ -134,12 +137,12 @@ export const useItems = (
     },
 
     removeItem: (id: string) => {
-      wrappedSetItems(items.filter(item => id !== item.id));
+      wrappedSetItems(items.filter((item) => id !== item.id));
     },
 
     stopEditing: () => {
       wrappedSetItems(
-        items.map(item => {
+        items.map((item) => {
           if (item.edited) {
             return {
               ...item,
@@ -153,7 +156,7 @@ export const useItems = (
     },
 
     updateItem: (item: RequiredKeys<Partial<Item>, "id">) => {
-      const index = items.findIndex(it => item.id === it.id);
+      const index = items.findIndex((it) => item.id === it.id);
 
       if (index !== -1) {
         const newItems = Array.from(items);
@@ -163,7 +166,7 @@ export const useItems = (
     },
 
     updateItemAndStopEditing: (item: RequiredKeys<Partial<Item>, "id">) => {
-      const index = items.findIndex(it => item.id === it.id);
+      const index = items.findIndex((it) => item.id === it.id);
 
       if (index !== -1) {
         const newItems = Array.from(items);
@@ -172,4 +175,13 @@ export const useItems = (
       }
     }
   };
+};
+
+export const useItems = (
+  initialValue: Item[] = [],
+  onSetItems?: OnSetItems
+): ItemHooks => {
+  const [items, setItems] = useState(initialValue);
+
+  return makeItemsState(items, setItems, onSetItems);
 };

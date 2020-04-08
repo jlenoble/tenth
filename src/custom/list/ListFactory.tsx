@@ -1,5 +1,11 @@
 import React, { FunctionComponent } from "react";
-import { ProtoListProps, Item, OnSetItems, useItems } from "../../core";
+import {
+  ProtoListProps,
+  Item,
+  OnSetItems,
+  useItems,
+  makeItemsState
+} from "../../core";
 import tmpId from "../defaultTmpId";
 
 export type StatelessListProps = ProtoListProps;
@@ -43,9 +49,16 @@ export const withDefaultListProps = (
   defaultProps: DefaultListProps,
   prefix: string = ""
 ) => {
-  const WrappedComponent: StatelessListWithDefaults = props => (
-    <List tmpId={tmpId} {...defaultProps} {...props} />
-  );
+  const WrappedComponent: StatelessListWithDefaults = (props) => {
+    return (
+      <List
+        tmpId={tmpId}
+        itemHooks={(!props.itemHooks && makeItemsState()) || props.itemHooks!}
+        {...defaultProps}
+        {...props}
+      />
+    );
+  };
 
   WrappedComponent.displayName =
     prefix + (List.displayName || List.name || "List");
@@ -60,7 +73,7 @@ export const withDefaultStatefulListProps = (
 ) => {
   const ListWithItems = withItems(List);
 
-  const WrappedComponent: StatefulListWithDefaults = props => {
+  const WrappedComponent: StatefulListWithDefaults = (props) => {
     return <ListWithItems tmpId={tmpId} {...defaultProps} {...props} />;
   };
 

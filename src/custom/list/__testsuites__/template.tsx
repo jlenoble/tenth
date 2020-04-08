@@ -5,6 +5,7 @@ import {
   StatefulListWithDefaults,
   Props
 } from "../ListFactory";
+import { makeItemsState } from "../../../core";
 
 type Render<R> = (
   ui: React.ReactElement,
@@ -45,7 +46,7 @@ function statelessListTestSuite<R>({
 
     propList.forEach(({ defaultItems, ...props }, i) => {
       it(`with props propList[${i}]`, async () => {
-        const itemHooks = { items: defaultItems };
+        const itemHooks = makeItemsState(defaultItems);
 
         if (Array.isArray(test)) {
           test = test[i];

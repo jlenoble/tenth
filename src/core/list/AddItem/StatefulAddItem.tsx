@@ -1,16 +1,16 @@
 import React, { FunctionComponent } from "react";
 import { StatelessAddItem } from "../../stateless";
-import { ItemHooks } from "../List";
+import { ItemHooks } from "../types";
 import { StatefulAddItem as AddItemWrapper } from "../../stateful";
 
 export interface Props {
   tmpId: () => string;
-  itemHooks?: ItemHooks;
+  itemHooks: ItemHooks;
 }
 
 export const StatefulAddItem: FunctionComponent<Props> = ({
   tmpId,
-  itemHooks = {}
+  itemHooks
 }) => {
   const { addItem } = itemHooks;
   const add = (value: string) => {

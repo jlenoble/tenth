@@ -10,11 +10,7 @@ import {
 import { onDragEnd } from "./dnd";
 
 export const withDnD = (List: StatelessList): StatelessList => {
-  const WrappedList: StatelessList = ({
-    itemHooks = {},
-    droppableId,
-    ...other
-  }) => (
+  const WrappedList: StatelessList = ({ itemHooks, droppableId, ...other }) => (
     <DragDropContext onDragEnd={onDragEnd(itemHooks)}>
       <List
         itemHooks={itemHooks}

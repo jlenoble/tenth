@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { List, ListProps } from "../../base";
-import { ItemHooks } from "./item";
 import { ListItem, ListItemUI } from "../list-item/ListItem";
+import { Item, ItemHooks } from "../types";
 
 export interface RawListProps {
-  itemHooks?: ItemHooks;
+  itemHooks: ItemHooks;
   droppableId?: string;
   listItemUI?: ListItemUI;
 }
@@ -12,12 +12,12 @@ export interface RawListProps {
 export interface Props extends RawListProps, ListProps {}
 
 export const BaseList: FunctionComponent<Props> = ({
-  itemHooks = { items: [] },
+  itemHooks,
   droppableId,
   listItemUI,
   ...other
 }) => {
-  const items = itemHooks.items || [];
+  const items: Item[] = itemHooks.items || [];
   const lastIndex = items.length - 1;
   const dnd = Boolean(droppableId);
   const droppableProps = (dnd && { droppableId }) as

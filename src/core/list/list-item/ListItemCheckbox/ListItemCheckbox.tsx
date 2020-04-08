@@ -1,14 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { StatefulCheckbox as Checkbox } from "../../../stateless";
-
-export interface Item {
-  id: string;
-  checked: boolean;
-}
-
-export interface ItemHooks {
-  checkItem?: (id: string) => void;
-}
+import { Item, ItemHooks } from "../../types";
 
 export interface Props {
   item: Item;

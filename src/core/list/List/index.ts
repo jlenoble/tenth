@@ -8,4 +8,3 @@ export default List;
 export { List };
 
 export * from "./hooks";
-export * from "./item";
