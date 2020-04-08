@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react";
-import useOnOff from "../../states/useOnOff";
+import useOnOff from "./useOnOff";
 
 export const useEditValue = (
   initialValue: string,
@@ -30,3 +30,5 @@ export const useEditValue = (
     stopEditing
   };
 };
+
+export default useEditValue;
