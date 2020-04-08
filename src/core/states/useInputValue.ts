@@ -27,3 +27,5 @@ export const useInputValue = (cb: (value: string) => void) => {
     keyInput
   };
 };
+
+export default useInputValue;
