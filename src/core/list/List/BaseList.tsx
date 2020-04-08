@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { List, ListProps } from "../../base";
-import { ListItem } from "../list-item/ListItem";
+import { ListItem } from "../ListItem";
 import { Item, ItemHooks, UI } from "../types";
 
 export interface RawListProps {
