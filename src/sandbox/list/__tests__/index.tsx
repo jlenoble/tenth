@@ -3,7 +3,14 @@ import React, { FunctionComponent, useState } from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 
-import { Paper, Grid, TextField, Button, IconButton } from "@material-ui/core";
+import {
+  Paper,
+  Grid,
+  TextField,
+  Button,
+  Checkbox,
+  IconButton
+} from "@material-ui/core";
 import { DeleteOutlined } from "@material-ui/icons";
 
 import {
@@ -17,28 +24,50 @@ import {
 
 import { useInputValue } from "../../../core/states";
 
+interface Item {
+  primary: string;
+  selected: boolean;
+}
+
 const useItems = (initialItems: string[] = []) => {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState(
+    initialItems.map((item) => ({ primary: item, selected: false }))
+  );
 
   return {
     items,
     add: (value: string) => {
-      setItems(items.concat(value));
+      setItems(items.concat({ primary: value, selected: false }));
     },
     remove: (index: number) => {
       setItems(items.filter((_, i) => index !== i));
+    },
+    toggleSelection: (index: number) => {
+      setItems(
+        items.map((item, i) =>
+          i !== index ? item : { ...item, selected: !item.selected }
+        )
+      );
     }
   };
 };
 
 const ListItem: FunctionComponent<
   {
-    hooks: { primary: string; remove: () => void };
+    hooks: Item & {
+      remove: () => void;
+      toggleSelection: () => void;
+    };
     listItemTextProps?: ListItemTextProps;
   } & BaseListItemProps
-> = ({ hooks: { primary, remove }, listItemTextProps, ...listItemProps }) => {
+> = ({
+  hooks: { primary, selected, remove, toggleSelection },
+  listItemTextProps,
+  ...listItemProps
+}) => {
   return (
     <BaseListItem {...listItemProps}>
+      <Checkbox onClick={toggleSelection} checked={selected} />
       <ListItemText primary={primary} {...listItemTextProps} />
       <IconButton aria-label="Delete item" onClick={remove}>
         <DeleteOutlined />
@@ -50,7 +79,7 @@ const ListItem: FunctionComponent<
 const List: FunctionComponent<
   { items?: string[]; listItemProps?: BaseListItemProps } & BaseListProps
 > = ({ items: initialItems = [], listItemProps, ...listProps }) => {
-  const { items, add, remove } = useItems(initialItems);
+  const { items, add, remove, toggleSelection } = useItems(initialItems);
   const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
     add
   );
@@ -83,8 +112,9 @@ const List: FunctionComponent<
       <BaseList {...listProps}>
         {items.map((item, i) => {
           const hooks = {
-            primary: item,
-            remove: () => remove(i)
+            ...item,
+            remove: () => remove(i),
+            toggleSelection: () => toggleSelection(i)
           };
 
           return <ListItem key={i} hooks={hooks} {...listItemProps} />;
@@ -173,5 +203,90 @@ describe("List", () => {
         `Unable to find an accessible element with the role "listitem"`
       );
     }
+  });
+
+  it("Select", () => {
+    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
+
+    const list = getByRole("list") as HTMLUListElement;
+    const { getAllByRole } = within(list);
+
+    const checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      false,
+      false,
+      false
+    ]);
+
+    userEvents.click(checkboxes[0]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      true,
+      false,
+      false
+    ]);
+
+    userEvents.click(checkboxes[1]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      true,
+      true,
+      false
+    ]);
+
+    userEvents.click(checkboxes[0]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      false,
+      true,
+      false
+    ]);
+  });
+
+  it("Select/Add/Remove", async () => {
+    const { getByRole, getByText } = render(
+      <List items={["foo", "bar", "baz"]} />
+    );
+
+    const list = getByRole("list") as HTMLUListElement;
+    const { getAllByRole } = within(list);
+
+    const textbox = getByRole("textbox") as HTMLInputElement;
+    const addButton = getByText(/add/i) as HTMLButtonElement;
+
+    let checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    let listitems = getAllByRole("listitem") as HTMLLIElement[];
+    let buttons = getAllByRole("button") as HTMLButtonElement[];
+
+    userEvents.click(checkboxes[0]);
+    userEvents.click(checkboxes[2]);
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "foo",
+      "bar",
+      "baz"
+    ]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      true,
+      false,
+      true
+    ]);
+
+    userEvents.click(buttons[1]);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    listitems = getAllByRole("listitem") as HTMLLIElement[];
+    expect(listitems.map((li) => li.textContent)).toEqual(["foo", "baz"]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([true, true]);
+
+    await userEvents.type(textbox, "quux");
+    userEvents.click(addButton);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    listitems = getAllByRole("listitem") as HTMLLIElement[];
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "foo",
+      "baz",
+      "quux"
+    ]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      true,
+      true,
+      false
+    ]);
   });
 });
