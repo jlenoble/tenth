@@ -27,5 +27,5 @@ export interface UI {
   editableText?: boolean;
 }
 
-export type Props<T> = T & { itemHooks: ItemHooks; ui: UI };
-export type PropsWithItem<T> = T & { item: Item; itemHooks: ItemHooks; ui: UI };
+export type Props<T> = T & { itemHooks: ItemHooks; ui?: UI };
+export type PropsWithItem<T> = T & Props<{ item: Item }>;

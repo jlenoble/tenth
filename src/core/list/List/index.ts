@@ -1,6 +1,6 @@
-import { List, RawListProps, Props } from "./List";
+import { List, InputListProps, ListProps as Props } from "./List";
 
-export type ProtoListProps = RawListProps;
+export type ProtoListProps = InputListProps;
 export type ListProps = Props;
 
 export default List;
