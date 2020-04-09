@@ -6,7 +6,10 @@ import { List } from "../list";
 function App() {
   return (
     <List
-      items={["toto", "baba"]}
+      items={[
+        { id: "c1", primary: "bobo" },
+        { id: "c2", primary: "toto" }
+      ]}
       // ui={{
       //   addItem: true,
       //   checkbox: true,

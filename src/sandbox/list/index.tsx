@@ -15,67 +15,68 @@ import {
   ListProps as BaseListProps,
   ListItem as BaseListItem,
   ListItemProps as BaseListItemProps,
-  ListItemText,
-  ListItemTextProps
+  ListItemText as BaseListItemText,
+  ListItemTextProps as BaseListItemTextProps
 } from "../../core/base";
 
 import { useInputValue, useEditValue } from "../../core/states";
 
 interface Item {
+  id: string;
   primary: string;
-  selected: boolean;
+  selected?: boolean;
 }
 
-const useItems = (initialItems: string[] = []) => {
+let currentId = Date.now();
+export const tmpId = () => "tmp" + currentId++;
+
+const useItems = (initialItems: readonly Item[] = []) => {
   const [items, setItems] = useState(
-    initialItems.map((item) => ({ primary: item, selected: false }))
+    initialItems.map((item) => ({
+      id: item.id,
+      primary: item.primary,
+      selected: !!item.selected
+    }))
   );
 
   return {
     items,
     add: (value: string) => {
-      setItems(items.concat({ primary: value, selected: false }));
+      setItems(items.concat({ id: tmpId(), primary: value, selected: false }));
     },
-    remove: (index: number) => {
-      setItems(items.filter((_, i) => index !== i));
+    remove: (id: string) => {
+      setItems(items.filter((item) => item.id !== id));
     },
-    update: (index: number, value: string) => {
+    update: (id: string, value: string) => {
       setItems(
-        items.map((item, i) =>
-          i !== index ? item : { ...item, primary: value }
+        items.map((item) =>
+          item.id !== id ? item : { ...item, primary: value }
         )
       );
     },
-    toggleSelection: (index: number) => {
+    toggleSelection: (id: string) => {
       setItems(
-        items.map((item, i) =>
-          i !== index ? item : { ...item, selected: !item.selected }
+        items.map((item) =>
+          item.id !== id ? item : { ...item, selected: !item.selected }
         )
       );
     }
   };
 };
 
-const ListItem: FunctionComponent<
-  {
-    hooks: Item & {
-      remove: () => void;
-      update: (value: string) => void;
-      toggleSelection: () => void;
-    };
-    listItemTextProps?: ListItemTextProps;
-  } & BaseListItemProps
-> = ({
-  hooks: { primary, selected, remove, update, toggleSelection },
-  listItemTextProps,
-  ...listItemProps
-}) => {
-  const { edited, changeInput, keyInput, edit, stopEditing } = useEditValue(
-    primary,
-    update
-  );
+const ListItemText: FunctionComponent<
+  { hooks: { update: (value: string) => void } } & BaseListItemTextProps
+> = ({ primary, hooks: { update }, ...listItemTextProps }) => {
+  const {
+    inputValue,
+    edited,
+    changeInput,
+    keyInput,
+    edit,
+    stopEditing
+  } = useEditValue(primary, update);
 
-  const editProps = edited
+  const props = edited
     ? {
         primaryTextFieldProps: {
           autoFocus: true,
@@ -88,9 +89,32 @@ const ListItem: FunctionComponent<
     : { onClick: edit };
 
   return (
+    <BaseListItemText primary={inputValue} {...props} {...listItemTextProps} />
+  );
+};
+
+const ListItem: FunctionComponent<
+  {
+    hooks: Item & {
+      remove: () => void;
+      update: (value: string) => void;
+      toggleSelection: () => void;
+    };
+    listItemTextProps?: BaseListItemTextProps;
+  } & BaseListItemProps
+> = ({
+  hooks: { primary, selected, remove, update, toggleSelection },
+  listItemTextProps,
+  ...listItemProps
+}) => {
+  return (
     <BaseListItem {...listItemProps}>
       <Checkbox onClick={toggleSelection} checked={selected} />
-      <ListItemText primary={primary} {...editProps} {...listItemTextProps} />
+      <ListItemText
+        primary={primary}
+        hooks={{ update }}
+        {...listItemTextProps}
+      />
       <IconButton aria-label="Delete item" onClick={remove}>
         <DeleteOutlined />
       </IconButton>
@@ -99,7 +123,10 @@ const ListItem: FunctionComponent<
 };
 
 export const List: FunctionComponent<
-  { items?: string[]; listItemProps?: BaseListItemProps } & BaseListProps
+  {
+    items?: Item[];
+    listItemProps?: BaseListItemProps;
+  } & BaseListProps
 > = ({ items: initialItems = [], listItemProps, ...listProps }) => {
   const { items, add, remove, update, toggleSelection } = useItems(
     initialItems
@@ -134,15 +161,16 @@ export const List: FunctionComponent<
         </Grid>
       </Paper>
       <BaseList {...listProps}>
-        {items.map((item, i) => {
+        {items.map((item) => {
+          const id = item.id;
           const hooks = {
             ...item,
-            remove: () => remove(i),
-            update: (value: string) => update(i, value),
-            toggleSelection: () => toggleSelection(i)
+            remove: () => remove(id),
+            update: (value: string) => update(id, value),
+            toggleSelection: () => toggleSelection(id)
           };
 
-          return <ListItem key={i} hooks={hooks} {...listItemProps} />;
+          return <ListItem key={id} hooks={hooks} {...listItemProps} />;
         })}
       </BaseList>
     </>
