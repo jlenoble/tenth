@@ -7,10 +7,10 @@ import { IconButton } from "@material-ui/core";
 import { DeleteOutlined } from "@material-ui/icons";
 
 import {
-  List as MuiList,
-  ListProps as MuiListProps,
-  ListItem as MuiListItem,
-  ListItemProps as MuiListItemProps,
+  List as BaseList,
+  ListProps as BaseListProps,
+  ListItem as BaseListItem,
+  ListItemProps as BaseListItemProps,
   ListItemText,
   ListItemTextProps
 } from "../../../core/base";
@@ -30,25 +30,25 @@ const ListItem: FunctionComponent<
   {
     hooks: { primary: string; remove: () => void };
     listItemTextProps?: ListItemTextProps;
-  } & MuiListItemProps
+  } & BaseListItemProps
 > = ({ hooks: { primary, remove }, listItemTextProps, ...listItemProps }) => {
   return (
-    <MuiListItem {...listItemProps}>
+    <BaseListItem {...listItemProps}>
       <ListItemText primary={primary} {...listItemTextProps} />
       <IconButton aria-label="Delete item" onClick={remove}>
         <DeleteOutlined />
       </IconButton>
-    </MuiListItem>
+    </BaseListItem>
   );
 };
 
 const List: FunctionComponent<
-  { items?: string[]; listItemProps?: MuiListItemProps } & MuiListProps
+  { items?: string[]; listItemProps?: BaseListItemProps } & BaseListProps
 > = ({ items: initialItems = [], listItemProps, ...listProps }) => {
   const { items, remove } = useItems(initialItems);
 
   return (
-    <MuiList {...listProps}>
+    <BaseList {...listProps}>
       {items.map((item, i) => {
         const hooks = {
           primary: item,
@@ -57,7 +57,7 @@ const List: FunctionComponent<
 
         return <ListItem key={i} hooks={hooks} {...listItemProps} />;
       })}
-    </MuiList>
+    </BaseList>
   );
 };
 
