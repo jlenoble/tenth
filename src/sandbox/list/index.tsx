@@ -64,6 +64,40 @@ const useItems = (initialItems: readonly Item[] = []) => {
   };
 };
 
+const TextInput: FunctionComponent<{
+  hooks: { add: (value: string) => void };
+}> = ({ hooks: { add } }) => {
+  const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
+    add
+  );
+
+  return (
+    <Paper style={{ margin: 16, padding: 16 }}>
+      <Grid container>
+        <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
+          <TextField
+            placeholder="Add item here"
+            value={inputValue}
+            onChange={changeInput}
+            onKeyPress={keyInput}
+            fullWidth
+          />
+        </Grid>
+        <Grid xs={2} md={1} item>
+          <Button
+            fullWidth
+            color="secondary"
+            variant="outlined"
+            onClick={clearInputAndAdd}
+          >
+            Add
+          </Button>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
+
 const ListItemText: FunctionComponent<
   { hooks: { update: (value: string) => void } } & BaseListItemTextProps
 > = ({ primary, hooks: { update }, ...listItemTextProps }) => {
@@ -131,35 +165,10 @@ export const List: FunctionComponent<
   const { items, add, remove, update, toggleSelection } = useItems(
     initialItems
   );
-  const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
-    add
-  );
 
   return (
     <>
-      <Paper style={{ margin: 16, padding: 16 }}>
-        <Grid container>
-          <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
-            <TextField
-              placeholder="Add item here"
-              value={inputValue}
-              onChange={changeInput}
-              onKeyPress={keyInput}
-              fullWidth
-            />
-          </Grid>
-          <Grid xs={2} md={1} item>
-            <Button
-              fullWidth
-              color="secondary"
-              variant="outlined"
-              onClick={clearInputAndAdd}
-            >
-              Add
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+      <TextInput hooks={{ add }} />
       <BaseList {...listProps}>
         {items.map((item) => {
           const id = item.id;
