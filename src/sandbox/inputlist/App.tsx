@@ -1,18 +1,19 @@
 import React from "react";
-import { ListCard } from "../card";
+import { List } from "../list";
 
-const todoListKey = "todolist";
+// const todoListKey = "todolist";
 
 function App() {
   return (
-    <ListCard
-      ui={{
-        addItem: true,
-        checkbox: true,
-        deleteButton: true,
-        editableText: true
-      }}
-      localStorageId={todoListKey}
+    <List
+      items={["toto", "baba"]}
+      // ui={{
+      //   addItem: true,
+      //   checkbox: true,
+      //   deleteButton: true,
+      //   editableText: true
+      // }}
+      // localStorageId={todoListKey}
     />
   );
 }

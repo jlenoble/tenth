@@ -1,128 +1,9 @@
-import React, { FunctionComponent, useState } from "react";
+import React from "react";
 
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 
-import {
-  Paper,
-  Grid,
-  TextField,
-  Button,
-  Checkbox,
-  IconButton
-} from "@material-ui/core";
-import { DeleteOutlined } from "@material-ui/icons";
-
-import {
-  List as BaseList,
-  ListProps as BaseListProps,
-  ListItem as BaseListItem,
-  ListItemProps as BaseListItemProps,
-  ListItemText,
-  ListItemTextProps
-} from "../../../core/base";
-
-import { useInputValue } from "../../../core/states";
-
-interface Item {
-  primary: string;
-  selected: boolean;
-}
-
-const useItems = (initialItems: string[] = []) => {
-  const [items, setItems] = useState(
-    initialItems.map((item) => ({ primary: item, selected: false }))
-  );
-
-  return {
-    items,
-    add: (value: string) => {
-      setItems(items.concat({ primary: value, selected: false }));
-    },
-    remove: (index: number) => {
-      setItems(items.filter((_, i) => index !== i));
-    },
-    toggleSelection: (index: number) => {
-      setItems(
-        items.map((item, i) =>
-          i !== index ? item : { ...item, selected: !item.selected }
-        )
-      );
-    }
-  };
-};
-
-const ListItem: FunctionComponent<
-  {
-    hooks: Item & {
-      remove: () => void;
-      toggleSelection: () => void;
-    };
-    listItemTextProps?: ListItemTextProps;
-  } & BaseListItemProps
-> = ({
-  hooks: { primary, selected, remove, toggleSelection },
-  listItemTextProps,
-  ...listItemProps
-}) => {
-  return (
-    <BaseListItem {...listItemProps}>
-      <Checkbox onClick={toggleSelection} checked={selected} />
-      <ListItemText primary={primary} {...listItemTextProps} />
-      <IconButton aria-label="Delete item" onClick={remove}>
-        <DeleteOutlined />
-      </IconButton>
-    </BaseListItem>
-  );
-};
-
-const List: FunctionComponent<
-  { items?: string[]; listItemProps?: BaseListItemProps } & BaseListProps
-> = ({ items: initialItems = [], listItemProps, ...listProps }) => {
-  const { items, add, remove, toggleSelection } = useItems(initialItems);
-  const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
-    add
-  );
-
-  return (
-    <>
-      <Paper style={{ margin: 16, padding: 16 }}>
-        <Grid container>
-          <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
-            <TextField
-              placeholder="Add item here"
-              value={inputValue}
-              onChange={changeInput}
-              onKeyPress={keyInput}
-              fullWidth
-            />
-          </Grid>
-          <Grid xs={2} md={1} item>
-            <Button
-              fullWidth
-              color="secondary"
-              variant="outlined"
-              onClick={clearInputAndAdd}
-            >
-              Add
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-      <BaseList {...listProps}>
-        {items.map((item, i) => {
-          const hooks = {
-            ...item,
-            remove: () => remove(i),
-            toggleSelection: () => toggleSelection(i)
-          };
-
-          return <ListItem key={i} hooks={hooks} {...listItemProps} />;
-        })}
-      </BaseList>
-    </>
-  );
-};
+import { List } from "..";
 
 describe("List", () => {
   it("Initialize", () => {
@@ -287,6 +168,39 @@ describe("List", () => {
       true,
       true,
       false
+    ]);
+  });
+
+  it("Edit", async () => {
+    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
+
+    const list = getByRole("list") as HTMLUListElement;
+    const { getAllByRole } = within(list);
+
+    const listitems = getAllByRole("listitem") as HTMLLIElement[];
+    let listitem = listitems[1];
+    const { getByRole: subGetByRole, getByText } = within(listitem);
+
+    let text = getByText("bar") as HTMLSpanElement;
+
+    userEvents.click(text);
+    expect(text).not.toBeInTheDocument();
+
+    let textbox = subGetByRole("textbox") as HTMLInputElement;
+
+    await userEvents.type(textbox, "bozo");
+    fireEvent.keyPress(textbox, {
+      key: "Enter",
+      code: 13,
+      charCode: 13,
+      keyCode: 13
+    });
+    expect(textbox).not.toBeInTheDocument();
+
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "foo",
+      "barbozo",
+      "baz"
     ]);
   });
 });
