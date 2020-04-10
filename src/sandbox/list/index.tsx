@@ -23,6 +23,8 @@ import {
 
 import { useInputValue, useEditValue } from "../../core/states";
 
+import "./ListItem.css";
+
 interface Item {
   id: string;
   primary: string;
