@@ -1,4 +1,4 @@
-import { ListItemTextProps } from "@material-ui/core/ListItemText";
+import { ListItemText, ListItemTextProps } from "@material-ui/core";
 
 export type BaseListItemTextProps = ListItemTextProps;
 export type BaseListItemTextPropsWithoutRef = Omit<
@@ -6,4 +6,4 @@ export type BaseListItemTextPropsWithoutRef = Omit<
   "ref"
 >;
 
-export { default as BaseListItemText } from "@material-ui/core/ListItemText";
+export { ListItemText as BaseListItemText };

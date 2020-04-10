@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useContext } from "react";
-import Typography from "@material-ui/core/Typography";
+import { Typography, TextField, TextFieldProps } from "@material-ui/core";
 import ListContext from "@material-ui/core/List/ListContext";
-import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import {
   BaseListItemText,
   BaseListItemTextPropsWithoutRef

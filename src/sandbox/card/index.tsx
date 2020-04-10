@@ -1,18 +1,21 @@
 import React, { FunctionComponent } from "react";
-import Card from "@material-ui/core/Card";
-import Checkbox from "@material-ui/core/Checkbox";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Popover from "@material-ui/core/Popover";
+import {
+  Card,
+  Checkbox,
+  CardHeader,
+  CardContent,
+  IconButton,
+  Popover,
+  FormLabel,
+  FormControl,
+  FormGroup,
+  FormControlLabel,
+  Theme
+} from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/styles";
+import { MoreVert } from "@material-ui/icons";
 import { PersistentSortList as List, ListProps } from "../../custom/list";
 import useListUI from "../../core/states/useListUI";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,7 +52,7 @@ function CheckMenu(props: ReturnType<typeof useListUI>) {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <MoreVertIcon />
+        <MoreVert />
       </IconButton>
       <Popover
         id="list-ui"

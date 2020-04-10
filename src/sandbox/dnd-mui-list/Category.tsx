@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from "react";
-import Paper from "@material-ui/core/Paper";
-import ListItemText from "@material-ui/core/ListItemText";
+import { Paper, ListItemText } from "@material-ui/core";
 import List from "../../core/base/List";
 import ListItem from "../../core/base/ListItem";
 

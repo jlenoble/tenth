@@ -1,10 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { ItemHooks } from "./types";
 import { useInputValue } from "../states";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
+import { Button, Grid, Paper, TextField } from "@material-ui/core";
 
 export type AddItemProps = {
   tmpId: () => string;
