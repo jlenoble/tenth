@@ -1,8 +1,5 @@
 import React, { FunctionComponent } from "react";
 
-import { fireEvent, within } from "@testing-library/react";
-import userEvents from "@testing-library/user-event";
-
 import { getDroppables, getDraggables } from "../__testHelpers__/dnd";
 import { mockGetBoundingClientRect } from "../__testHelpers__/dnd-mock";
 import { render } from "../__testHelpers__/dnd-render";
