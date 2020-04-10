@@ -1,22 +1,19 @@
 import React from "react";
-import { StatefulDnDList as List } from "../list";
+import { StatefulDnDList, withLocalStorage } from "../list";
 
-// const todoListKey = "todolist";
+const List = withLocalStorage(StatefulDnDList);
+const todoListKey = "todolist";
 
 function App() {
   return (
     <List
-      defaultItems={[
-        { id: "c1", primary: "bobo" },
-        { id: "c2", primary: "toto" }
-      ]}
       // ui={{
       //   addItem: true,
       //   checkbox: true,
       //   deleteButton: true,
       //   editableText: true
       // }}
-      // localStorageId={todoListKey}
+      localStorageId={todoListKey}
     />
   );
 }

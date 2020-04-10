@@ -23,8 +23,6 @@ import {
 
 import { useInputValue, useEditValue } from "../../core/states";
 
-import "./ListItem.css";
-
 interface Item {
   id: string;
   primary: string;
@@ -59,29 +57,33 @@ const useItems = (
     }))
   );
 
+  const wrappedSetItems = onSetItems
+    ? (items: Required<Item>[]) => {
+        setItems(items);
+        onSetItems(items);
+      }
+    : setItems;
+
   return {
     items,
-    setItems: onSetItems
-      ? (items: Required<Item>[]) => {
-          setItems(items);
-          onSetItems(items);
-        }
-      : setItems,
+    setItems: wrappedSetItems,
     add: (value: string) => {
-      setItems(items.concat({ id: tmpId(), primary: value, selected: false }));
+      wrappedSetItems(
+        items.concat({ id: tmpId(), primary: value, selected: false })
+      );
     },
     remove: (id: string) => {
-      setItems(items.filter((item) => item.id !== id));
+      wrappedSetItems(items.filter((item) => item.id !== id));
     },
     update: (id: string, value: string) => {
-      setItems(
+      wrappedSetItems(
         items.map((item) =>
           item.id !== id ? item : { ...item, primary: value }
         )
       );
     },
     toggleSelection: (id: string) => {
-      setItems(
+      wrappedSetItems(
         items.map((item) =>
           item.id !== id ? item : { ...item, selected: !item.selected }
         )
@@ -133,7 +135,7 @@ export const onDragEnd = ({
       }
     : () => {};
 
-export const withDnD = (List: typeof StatelessList): typeof StatelessList => {
+export const withDnD = (List: typeof StatelessList) => {
   const WrappedList: typeof StatelessList = ({
     hooks,
     droppableId,
@@ -145,6 +147,43 @@ export const withDnD = (List: typeof StatelessList): typeof StatelessList => {
   );
 
   WrappedList.displayName = `WithDnD(${
+    List.displayName || List.name || "List"
+  })`;
+
+  return WrappedList;
+};
+
+export const withLocalStorage = (List: typeof StatefulList) => {
+  const WrappedList: FunctionComponent<
+    StatefulListProps & { localStorageId: string }
+  > = ({ defaultItems, onSetItems, localStorageId, ...other }) => {
+    if (!defaultItems) {
+      defaultItems = JSON.parse(
+        localStorage.getItem(localStorageId) || "[]"
+      ) as Item[];
+    }
+
+    const saveItems = (items: Item[]) => {
+      localStorage.setItem(localStorageId, JSON.stringify(items));
+    };
+
+    return (
+      <List
+        {...other}
+        defaultItems={defaultItems}
+        onSetItems={
+          onSetItems
+            ? (items: Item[]) => {
+                onSetItems(items);
+                saveItems(items);
+              }
+            : saveItems
+        }
+      />
+    );
+  };
+
+  WrappedList.displayName = `WithLocalStorage(${
     List.displayName || List.name || "List"
   })`;
 
