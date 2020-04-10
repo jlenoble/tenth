@@ -6,4 +6,4 @@ export type BaseListItemTextPropsWithoutRef = Omit<
   "ref"
 >;
 
-export { ListItemText as BaseListItemText };
+export const BaseListItemText = ListItemText;
