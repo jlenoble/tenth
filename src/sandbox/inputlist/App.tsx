@@ -1,12 +1,12 @@
 import React from "react";
-import { List } from "../list";
+import { StatefulDnDList as List } from "../list";
 
 // const todoListKey = "todolist";
 
 function App() {
   return (
     <List
-      items={[
+      defaultItems={[
         { id: "c1", primary: "bobo" },
         { id: "c2", primary: "toto" }
       ]}

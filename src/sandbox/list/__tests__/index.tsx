@@ -3,10 +3,12 @@ import React, { FunctionComponent } from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 
-import { List as BaseList, tmpId } from "..";
+import { StatefulList, tmpId } from "..";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => (
-  <BaseList items={items.map((item) => ({ id: tmpId(), primary: item }))} />
+  <StatefulList
+    defaultItems={items.map((item) => ({ id: tmpId(), primary: item }))}
+  />
 );
 
 describe("List", () => {

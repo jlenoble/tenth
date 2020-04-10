@@ -10,6 +10,8 @@ import {
 } from "@material-ui/core";
 import { DeleteOutlined } from "@material-ui/icons";
 
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+
 import {
   List as BaseList,
   ListProps as BaseListProps,
@@ -27,20 +29,42 @@ interface Item {
   selected?: boolean;
 }
 
+type StatelessListProps = {
+  hooks: ReturnType<typeof useItems>;
+  droppableId?: string;
+  listItemProps?: BaseListItemProps;
+} & BaseListProps;
+
+type StatefulListProps = {
+  defaultItems?: Item[];
+  onSetItems?: (items: Item[]) => void;
+  droppableId?: string;
+  listItemProps?: BaseListItemProps;
+} & BaseListProps;
+
 let currentId = Date.now();
 export const tmpId = () => "tmp" + currentId++;
 
-const useItems = (initialItems: readonly Item[] = []) => {
+const useItems = (
+  initialItems: Item[] = [],
+  onSetItems?: (items: Item[]) => void
+) => {
   const [items, setItems] = useState(
     initialItems.map((item) => ({
       id: item.id,
       primary: item.primary,
-      selected: !!item.selected
+      selected: Boolean(item.selected)
     }))
   );
 
   return {
     items,
+    setItems: onSetItems
+      ? (items: Required<Item>[]) => {
+          setItems(items);
+          onSetItems(items);
+        }
+      : setItems,
     add: (value: string) => {
       setItems(items.concat({ id: tmpId(), primary: value, selected: false }));
     },
@@ -62,6 +86,67 @@ const useItems = (initialItems: readonly Item[] = []) => {
       );
     }
   };
+};
+
+export const withItems = (List: typeof StatelessList) => {
+  const WrappedList: FunctionComponent<StatefulListProps> = ({
+    defaultItems,
+    onSetItems,
+    ...other
+  }) => {
+    return <List {...other} hooks={useItems(defaultItems, onSetItems)} />;
+  };
+
+  WrappedList.displayName = `WithItems(${
+    List.displayName || List.name || "List"
+  })`;
+
+  return WrappedList;
+};
+
+export const onDragEnd = ({
+  items = [],
+  setItems
+}: {
+  items: Required<Item>[];
+  setItems: (items: Required<Item>[]) => void;
+}) =>
+  setItems
+    ? ({ source, destination }: DropResult) => {
+        if (!destination) {
+          return;
+        }
+
+        if (destination.droppableId === source.droppableId) {
+          if (destination.index === source.index) {
+            return;
+          }
+
+          const newItems = items.concat();
+          newItems.splice(source.index, 1);
+          newItems.splice(destination.index, 0, items[source.index]);
+
+          setItems(newItems);
+        }
+      }
+    : () => {};
+
+export const withDnD = (List: typeof StatelessList): typeof StatelessList => {
+  const WrappedList: typeof StatelessList = ({
+    hooks,
+    droppableId,
+    ...other
+  }) => (
+    <DragDropContext onDragEnd={onDragEnd(hooks)}>
+      <List hooks={hooks} droppableId={droppableId || "drop-area"} {...other} />
+    </DragDropContext>
+  );
+
+  WrappedList.displayName = `WithDnD(${
+    List.displayName || List.name || "List"
+  })`;
+
+  return WrappedList;
 };
 
 const TextInput: FunctionComponent<{
@@ -134,15 +219,22 @@ const ListItem: FunctionComponent<
       update: (value: string) => void;
       toggleSelection: () => void;
     };
+    dnd?: boolean;
+    index: number;
     listItemTextProps?: BaseListItemTextProps;
   } & BaseListItemProps
 > = ({
-  hooks: { primary, selected, remove, update, toggleSelection },
+  hooks: { id, primary, selected, remove, update, toggleSelection },
+  dnd,
+  index,
   listItemTextProps,
   ...listItemProps
 }) => {
   return (
-    <BaseListItem {...listItemProps}>
+    <BaseListItem
+      draggableProps={dnd && { draggableId: id, index }}
+      {...listItemProps}
+    >
       <Checkbox onClick={toggleSelection} checked={selected} />
       <ListItemText
         primary={primary}
@@ -156,21 +248,23 @@ const ListItem: FunctionComponent<
   );
 };
 
-export const List: FunctionComponent<
-  {
-    items?: Item[];
-    listItemProps?: BaseListItemProps;
-  } & BaseListProps
-> = ({ items: initialItems = [], listItemProps, ...listProps }) => {
-  const { items, add, remove, update, toggleSelection } = useItems(
-    initialItems
-  );
+export const StatelessList: FunctionComponent<StatelessListProps> = ({
+  hooks: { items, add, remove, update, toggleSelection },
+  droppableId,
+  listItemProps,
+  ...listProps
+}) => {
+  const lastIndex = items.length - 1;
+  const dnd = Boolean(droppableId);
+  const droppableProps = (dnd && { droppableId }) as
+    | false
+    | { droppableId: string };
 
   return (
     <>
       <TextInput hooks={{ add }} />
-      <BaseList {...listProps}>
-        {items.map((item) => {
+      <BaseList droppableProps={droppableProps} {...listProps}>
+        {items.map((item, index) => {
           const id = item.id;
           const hooks = {
             ...item,
@@ -179,9 +273,22 @@ export const List: FunctionComponent<
             toggleSelection: () => toggleSelection(id)
           };
 
-          return <ListItem key={id} hooks={hooks} {...listItemProps} />;
+          return (
+            <ListItem
+              key={id}
+              divider={index !== lastIndex}
+              index={index}
+              dnd={dnd}
+              hooks={hooks}
+              {...listItemProps}
+            />
+          );
         })}
       </BaseList>
     </>
   );
 };
+
+export const StatelessDnDList = withDnD(StatelessList);
+export const StatefulList = withItems(StatelessList);
+export const StatefulDnDList = withItems(StatelessDnDList);
