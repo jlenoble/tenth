@@ -70,10 +70,15 @@ export const useToggle = (
   };
 };
 
-export const useListUI = (initialUI: ListUI, cb: (ui: ListUI) => void) => {
-  const inlineEdit = useToggle(initialUI.inlineEdit, (state: boolean) => {
-    cb({ ...initialUI, inlineEdit: state });
-  });
+export const useListUI = (initialUI: ListUI, cb?: (ui: ListUI) => void) => {
+  const inlineEdit = useToggle(
+    initialUI.inlineEdit,
+    cb
+      ? (state: boolean) => {
+          cb({ ...initialUI, inlineEdit: state });
+        }
+      : undefined
+  );
 
   return { inlineEdit };
 };

@@ -11,6 +11,7 @@ import {
   Popover,
   MenuList,
   MenuItem,
+  ListItemText,
   Grid
 } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
@@ -26,7 +27,8 @@ import {
   List,
   ListUI,
   onDragEnd,
-  useEditValue
+  useEditValue,
+  useListUI
 } from "../list";
 
 export interface Collection {
@@ -42,7 +44,13 @@ export type ListCardProps = {
   listProps?: Omit<ListProps, "hooks" | "droppableId">;
 } & Omit<CardProps, "title">;
 
-function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
+function CheckMenu({
+  hooks,
+  ui: { inlineEdit }
+}: {
+  hooks: ReturnType<typeof useItems>;
+  ui: ReturnType<typeof useListUI>;
+}) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -83,7 +91,16 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
           horizontal: "center"
         }}
       >
-        <MenuList>
+        <MenuList dense>
+          <MenuItem
+            disabled={disabled}
+            onClick={() => {
+              inlineEdit.toggle();
+            }}
+          >
+            <ListItemText>Inline edit</ListItemText>
+            <Checkbox disabled={disabled} checked={inlineEdit.state} />
+          </MenuItem>
           <MenuItem
             disabled={disabled}
             onClick={() => {
@@ -91,7 +108,7 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
               else checkAll();
             }}
           >
-            Check all
+            <ListItemText>Check all</ListItemText>
             <Checkbox disabled={disabled} checked={allChecked} />
           </MenuItem>
           <MenuItem
@@ -101,7 +118,7 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
               handleClose();
             }}
           >
-            Clear list
+            <ListItemText>Clear list</ListItemText>
           </MenuItem>
         </MenuList>
       </Popover>
@@ -275,10 +292,13 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
       }
     : { onClick: startEditing };
 
+  const listUI = useListUI(ui);
+  ui = { inlineEdit: listUI.inlineEdit.state };
+
   return (
     <Card {...other}>
       <CardHeader
-        action={<CheckMenu hooks={hooks} />}
+        action={<CheckMenu hooks={hooks} ui={listUI} />}
         {...cardHeaderProps}
         title={inputValue}
       />
