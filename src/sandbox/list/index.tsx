@@ -32,15 +32,8 @@ interface Item {
   checked?: boolean;
 }
 
-type StatelessListProps = {
+type ListProps = {
   hooks: ReturnType<typeof useItems>;
-  droppableId?: string;
-  listItemProps?: BaseListItemProps;
-} & BaseListProps;
-
-type StatefulListProps = {
-  defaultItems?: Item[];
-  onSetItems?: (items: Item[]) => void;
   droppableId?: string;
   listItemProps?: BaseListItemProps;
 } & BaseListProps;
@@ -177,12 +170,13 @@ const useItems = (
   };
 };
 
-export const withItems = (List: typeof StatelessList) => {
-  const WrappedList: FunctionComponent<StatefulListProps> = ({
-    defaultItems,
-    onSetItems,
-    ...other
-  }) => {
+export const withItems = (List: FunctionComponent<ListProps>) => {
+  const WrappedList: FunctionComponent<
+    Omit<ListProps, "hooks"> & {
+      defaultItems?: Item[];
+      onSetItems?: (items: Item[]) => void;
+    }
+  > = ({ defaultItems, onSetItems, ...other }) => {
     return <List {...other} hooks={useItems(defaultItems, onSetItems)} />;
   };
 
@@ -220,8 +214,8 @@ export const onDragEnd = ({
       }
     : () => {};
 
-export const withDnD = (List: typeof StatelessList) => {
-  const WrappedList: typeof StatelessList = ({
+export const withDnD = (List: FunctionComponent<ListProps>) => {
+  const WrappedList: FunctionComponent<ListProps> = ({
     hooks,
     droppableId,
     ...other
@@ -238,9 +232,20 @@ export const withDnD = (List: typeof StatelessList) => {
   return WrappedList;
 };
 
-export const withLocalStorage = (List: typeof StatefulList) => {
+export const withLocalStorage = (
+  List: FunctionComponent<
+    Omit<ListProps, "hooks"> & {
+      defaultItems?: Item[];
+      onSetItems?: (items: Item[]) => void;
+    }
+  >
+) => {
   const WrappedList: FunctionComponent<
-    StatefulListProps & { localStorageId: string }
+    Omit<ListProps, "hooks"> & {
+      defaultItems?: Item[];
+      onSetItems?: (items: Item[]) => void;
+      localStorageId: string;
+    }
   > = ({ defaultItems, onSetItems, localStorageId, ...other }) => {
     if (!defaultItems) {
       defaultItems = JSON.parse(
@@ -374,7 +379,7 @@ const ListItem: FunctionComponent<
   );
 };
 
-export const StatelessList: FunctionComponent<StatelessListProps> = ({
+export const List: FunctionComponent<ListProps> = ({
   hooks: { items, addItem, removeItem, updateItem, toggleCheckItem },
   droppableId,
   listItemProps,
@@ -414,7 +419,3 @@ export const StatelessList: FunctionComponent<StatelessListProps> = ({
     </>
   );
 };
-
-export const StatelessDnDList = withDnD(StatelessList);
-export const StatefulList = withItems(StatelessList);
-export const StatefulDnDList = withItems(StatelessDnDList);

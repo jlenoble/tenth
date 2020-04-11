@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/styles";
 import { MoreVert } from "@material-ui/icons";
-import { StatefulDnDList, useToggle } from "../list";
+import { useToggle } from "../list";
 
 type ListUIKeys = "add" | "edit" | "remove" | "select";
 

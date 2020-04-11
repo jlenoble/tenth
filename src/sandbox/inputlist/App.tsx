@@ -1,7 +1,12 @@
 import React from "react";
-import { StatefulDnDList, withLocalStorage } from "../list";
+import {
+  List as BaseList,
+  withDnD,
+  withItems,
+  withLocalStorage
+} from "../list";
 
-const List = withLocalStorage(StatefulDnDList);
+const List = withLocalStorage(withItems(withDnD(BaseList)));
 const todoListKey = "todolist";
 
 function App() {

@@ -4,10 +4,12 @@ import { getDroppables, getDraggables } from "../__testHelpers__/dnd";
 import { mockGetBoundingClientRect } from "../__testHelpers__/dnd-mock";
 import { render } from "../__testHelpers__/dnd-render";
 
-import { StatefulDnDList, tmpId } from "..";
+import { List as BaseList, withDnD, withItems, tmpId } from "..";
+
+const StandaloneDnDList = withItems(withDnD(BaseList));
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => (
-  <StatefulDnDList
+  <StandaloneDnDList
     defaultItems={items.map((item) => ({ id: tmpId(), primary: item }))}
   />
 );

@@ -3,10 +3,11 @@ import React, { FunctionComponent } from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 
-import { StatefulList, tmpId } from "..";
+import { List as BaseList, withItems, tmpId } from "..";
 
+const StandaloneList = withItems(BaseList);
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => (
-  <StatefulList
+  <StandaloneList
     defaultItems={items.map((item) => ({ id: tmpId(), primary: item }))}
   />
 );
