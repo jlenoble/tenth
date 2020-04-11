@@ -46,7 +46,7 @@ export type ListCardProps = {
 
 function CheckMenu({
   hooks,
-  ui: { inlineEdit }
+  ui: { inlineEdit, dnd }
 }: {
   hooks: ReturnType<typeof useItems>;
   ui: ReturnType<typeof useListUI>;
@@ -100,6 +100,15 @@ function CheckMenu({
           >
             <ListItemText>Inline edit</ListItemText>
             <Checkbox disabled={disabled} checked={inlineEdit.state} />
+          </MenuItem>
+          <MenuItem
+            disabled={disabled}
+            onClick={() => {
+              dnd.toggle();
+            }}
+          >
+            <ListItemText>Drag and drop</ListItemText>
+            <Checkbox disabled={disabled} checked={dnd.state} />
           </MenuItem>
           <MenuItem
             disabled={disabled}
@@ -293,7 +302,7 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
     : { onClick: startEditing };
 
   const listUI = useListUI(ui);
-  ui = { inlineEdit: listUI.inlineEdit.state };
+  ui = { inlineEdit: listUI.inlineEdit.state, dnd: listUI.dnd.state };
 
   return (
     <Card {...other}>
