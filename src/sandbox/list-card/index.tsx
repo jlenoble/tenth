@@ -289,20 +289,21 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
     stopEditing
   } = useEditValue(hooks.title, hooks.setTitle);
 
-  const cardHeaderProps = edited
-    ? {
-        titleTextFieldProps: {
-          autoFocus: true,
-          fullWidth: true,
-          onChange: changeInput,
-          onBlur: stopEditing,
-          onKeyPress: keyInput
-        }
-      }
-    : { onClick: startEditing };
-
   const listUI = useListUI(ui);
   ui = { inlineEdit: listUI.inlineEdit.state, dnd: listUI.dnd.state };
+
+  const cardHeaderProps =
+    ui.inlineEdit && edited
+      ? {
+          titleTextFieldProps: {
+            autoFocus: true,
+            fullWidth: true,
+            onChange: changeInput,
+            onBlur: stopEditing,
+            onKeyPress: keyInput
+          }
+        }
+      : { onClick: startEditing };
 
   return (
     <Card {...other}>
