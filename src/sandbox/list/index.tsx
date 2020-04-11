@@ -29,7 +29,7 @@ import {
 interface Item {
   id: string;
   primary: string;
-  selected?: boolean;
+  checked?: boolean;
 }
 
 type StatelessListProps = {
@@ -105,7 +105,7 @@ export const useEditValue = (
   cb: (value: string) => void
 ) => {
   const [inputValue, setInputValue] = useState(initialValue);
-  const { state: edited, on: edit, off: stopEditing } = useToggle();
+  const { state: edited, on: startEditing, off: stopEditing } = useToggle();
 
   const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
     setInputValue(event.target.value);
@@ -125,7 +125,7 @@ export const useEditValue = (
     edited,
     changeInput,
     keyInput,
-    edit,
+    startEditing,
     stopEditing
   };
 };
@@ -138,7 +138,7 @@ const useItems = (
     initialItems.map((item) => ({
       id: item.id,
       primary: item.primary,
-      selected: Boolean(item.selected)
+      checked: Boolean(item.checked)
     }))
   );
 
@@ -152,25 +152,25 @@ const useItems = (
   return {
     items,
     setItems: wrappedSetItems,
-    add: (value: string) => {
+    addItem: (value: string) => {
       wrappedSetItems(
-        items.concat({ id: tmpId(), primary: value, selected: false })
+        items.concat({ id: tmpId(), primary: value, checked: false })
       );
     },
-    remove: (id: string) => {
+    removeItem: (id: string) => {
       wrappedSetItems(items.filter((item) => item.id !== id));
     },
-    update: (id: string, value: string) => {
+    updateItem: (id: string, value: string) => {
       wrappedSetItems(
         items.map((item) =>
           item.id !== id ? item : { ...item, primary: value }
         )
       );
     },
-    toggleSelection: (id: string) => {
+    toggleCheckItem: (id: string) => {
       wrappedSetItems(
         items.map((item) =>
-          item.id !== id ? item : { ...item, selected: !item.selected }
+          item.id !== id ? item : { ...item, checked: !item.checked }
         )
       );
     }
@@ -276,10 +276,10 @@ export const withLocalStorage = (List: typeof StatefulList) => {
 };
 
 const TextInput: FunctionComponent<{
-  hooks: { add: (value: string) => void };
-}> = ({ hooks: { add } }) => {
+  hooks: { addItem: (value: string) => void };
+}> = ({ hooks: { addItem } }) => {
   const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
-    add
+    addItem
   );
 
   return (
@@ -317,7 +317,7 @@ const ListItemText: FunctionComponent<
     edited,
     changeInput,
     keyInput,
-    edit,
+    startEditing,
     stopEditing
   } = useEditValue(primary, update);
 
@@ -331,7 +331,7 @@ const ListItemText: FunctionComponent<
           onKeyPress: keyInput
         }
       }
-    : { onClick: edit };
+    : { onClick: startEditing };
 
   return (
     <BaseListItemText primary={inputValue} {...props} {...listItemTextProps} />
@@ -343,14 +343,14 @@ const ListItem: FunctionComponent<
     hooks: Item & {
       remove: () => void;
       update: (value: string) => void;
-      toggleSelection: () => void;
+      toggleCheck: () => void;
     };
     dnd?: boolean;
     index: number;
     listItemTextProps?: BaseListItemTextProps;
   } & BaseListItemProps
 > = ({
-  hooks: { id, primary, selected, remove, update, toggleSelection },
+  hooks: { id, primary, checked, remove, update, toggleCheck },
   dnd,
   index,
   listItemTextProps,
@@ -361,7 +361,7 @@ const ListItem: FunctionComponent<
       draggableProps={dnd && { draggableId: id, index }}
       {...listItemProps}
     >
-      <Checkbox onClick={toggleSelection} checked={selected} />
+      <Checkbox onClick={toggleCheck} checked={checked} />
       <ListItemText
         primary={primary}
         hooks={{ update }}
@@ -375,7 +375,7 @@ const ListItem: FunctionComponent<
 };
 
 export const StatelessList: FunctionComponent<StatelessListProps> = ({
-  hooks: { items, add, remove, update, toggleSelection },
+  hooks: { items, addItem, removeItem, updateItem, toggleCheckItem },
   droppableId,
   listItemProps,
   ...listProps
@@ -388,15 +388,15 @@ export const StatelessList: FunctionComponent<StatelessListProps> = ({
 
   return (
     <>
-      <TextInput hooks={{ add }} />
+      <TextInput hooks={{ addItem }} />
       <BaseList droppableProps={droppableProps} {...listProps}>
         {items.map((item, index) => {
           const id = item.id;
           const hooks = {
             ...item,
-            remove: () => remove(id),
-            update: (value: string) => update(id, value),
-            toggleSelection: () => toggleSelection(id)
+            remove: () => removeItem(id),
+            update: (value: string) => updateItem(id, value),
+            toggleCheck: () => toggleCheckItem(id)
           };
 
           return (
