@@ -1,16 +1,18 @@
 import React from "react";
 import {
-  List as BaseList,
+  ListCard as BaseListCard,
   withDnD,
   withItems,
   withLocalStorage
-} from "../list";
+} from "../list-card";
 
-const List = withLocalStorage(withItems(withDnD(BaseList)));
+const title = "TODO List";
 const todoListKey = "todolist";
 
+const ListCard = withLocalStorage(withItems(withDnD(BaseListCard)));
+
 function App() {
-  return <List localStorageId={todoListKey} />;
+  return <ListCard title={title} localStorageId={todoListKey} />;
 }
 
 export default App;
