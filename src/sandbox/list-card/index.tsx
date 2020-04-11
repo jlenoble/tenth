@@ -193,15 +193,18 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
   );
   let items = hooks.items;
   const checkedItems = items.filter((item) => item.checked);
+  const uncheckedItems = items.filter((item) => !item.checked);
 
   const nItems = items.length;
   const nChecked = checkedItems.length;
-  const nUnchecked = nItems - nChecked;
+  const nUnchecked = uncheckedItems.length;
 
   if (filter === "checked") {
     items = checkedItems;
   } else if (filter === "unchecked") {
     items = items.filter((item) => !item.checked);
+  } else {
+    items = uncheckedItems.concat(checkedItems);
   }
 
   hooks = { ...hooks, items };
