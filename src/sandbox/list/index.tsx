@@ -145,22 +145,22 @@ const useItems = (
   return {
     items,
     setItems: wrappedSetItems,
-    addItem: (value: string) => {
+    add: (value: string) => {
       wrappedSetItems(
         items.concat({ id: tmpId(), primary: value, checked: false })
       );
     },
-    removeItem: (id: string) => {
+    remove: (id: string) => {
       wrappedSetItems(items.filter((item) => item.id !== id));
     },
-    updateItem: (id: string, value: string) => {
+    updatePrimary: (id: string, value: string) => {
       wrappedSetItems(
         items.map((item) =>
           item.id !== id ? item : { ...item, primary: value }
         )
       );
     },
-    toggleCheckItem: (id: string) => {
+    toggleCheck: (id: string) => {
       wrappedSetItems(
         items.map((item) =>
           item.id !== id ? item : { ...item, checked: !item.checked }
@@ -281,10 +281,10 @@ export const withLocalStorage = (
 };
 
 const TextInput: FunctionComponent<{
-  hooks: { addItem: (value: string) => void };
-}> = ({ hooks: { addItem } }) => {
+  hooks: { add: (value: string) => void };
+}> = ({ hooks: { add } }) => {
   const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
-    addItem
+    add
   );
 
   return (
@@ -380,7 +380,7 @@ const ListItem: FunctionComponent<
 };
 
 export const List: FunctionComponent<ListProps> = ({
-  hooks: { items, addItem, removeItem, updateItem, toggleCheckItem },
+  hooks: { items, add, remove, updatePrimary, toggleCheck },
   droppableId,
   listItemProps,
   ...listProps
@@ -393,15 +393,15 @@ export const List: FunctionComponent<ListProps> = ({
 
   return (
     <>
-      <TextInput hooks={{ addItem }} />
+      <TextInput hooks={{ add }} />
       <BaseList droppableProps={droppableProps} {...listProps}>
         {items.map((item, index) => {
           const id = item.id;
           const hooks = {
             ...item,
-            remove: () => removeItem(id),
-            update: (value: string) => updateItem(id, value),
-            toggleCheck: () => toggleCheckItem(id)
+            remove: () => remove(id),
+            update: (value: string) => updatePrimary(id, value),
+            toggleCheck: () => toggleCheck(id)
           };
 
           return (
