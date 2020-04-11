@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useState } from "react";
+import React, {
+  FunctionComponent,
+  useState,
+  ChangeEvent,
+  KeyboardEvent
+} from "react";
 
 import {
   Paper,
@@ -21,8 +26,6 @@ import {
   ListItemTextProps as BaseListItemTextProps
 } from "../../core/base";
 
-import { useInputValue, useEditValue } from "../../core/states";
-
 interface Item {
   id: string;
   primary: string;
@@ -44,6 +47,88 @@ type StatefulListProps = {
 
 let currentId = Date.now();
 export const tmpId = () => "tmp" + currentId++;
+
+export const useToggle = (
+  initialValue: boolean = false,
+  cb?: (value: boolean) => void
+) => {
+  const [state, setState] = useState(initialValue);
+
+  return {
+    state,
+    on: () => {
+      setState(true);
+      if (cb) cb(true);
+    },
+    off: () => {
+      setState(false);
+      if (cb) cb(false);
+    },
+    toggle: () => {
+      const newState = !state;
+      setState(newState);
+      if (cb) cb(newState);
+    }
+  };
+};
+
+export const useInputValue = (cb: (value: string) => void) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
+    setInputValue(event.target.value);
+
+  const clearInputAndAdd = () => {
+    setInputValue("");
+    cb(inputValue);
+  };
+
+  const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      clearInputAndAdd();
+      return true;
+    }
+
+    return false;
+  };
+
+  return {
+    inputValue,
+    changeInput,
+    clearInputAndAdd,
+    keyInput
+  };
+};
+
+export const useEditValue = (
+  initialValue: string,
+  cb: (value: string) => void
+) => {
+  const [inputValue, setInputValue] = useState(initialValue);
+  const { state: edited, on: edit, off: stopEditing } = useToggle();
+
+  const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
+    setInputValue(event.target.value);
+
+  const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      cb(inputValue);
+      stopEditing();
+      return true;
+    }
+
+    return false;
+  };
+
+  return {
+    inputValue,
+    edited,
+    changeInput,
+    keyInput,
+    edit,
+    stopEditing
+  };
+};
 
 const useItems = (
   initialItems: Item[] = [],
