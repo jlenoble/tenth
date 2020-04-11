@@ -394,28 +394,30 @@ export const List: FunctionComponent<ListProps> = ({
   return (
     <>
       <TextInput hooks={{ add }} />
-      <BaseList droppableProps={droppableProps} {...listProps}>
-        {items.map((item, index) => {
-          const id = item.id;
-          const hooks = {
-            ...item,
-            remove: () => remove(id),
-            update: (value: string) => updatePrimary(id, value),
-            toggleCheck: () => toggleCheck(id)
-          };
+      <Paper>
+        <BaseList droppableProps={droppableProps} {...listProps}>
+          {items.map((item, index) => {
+            const id = item.id;
+            const hooks = {
+              ...item,
+              remove: () => remove(id),
+              update: (value: string) => updatePrimary(id, value),
+              toggleCheck: () => toggleCheck(id)
+            };
 
-          return (
-            <ListItem
-              key={id}
-              divider={index !== lastIndex}
-              index={index}
-              dnd={dnd}
-              hooks={hooks}
-              {...listItemProps}
-            />
-          );
-        })}
-      </BaseList>
+            return (
+              <ListItem
+                key={id}
+                divider={index !== lastIndex}
+                index={index}
+                dnd={dnd}
+                hooks={hooks}
+                {...listItemProps}
+              />
+            );
+          })}
+        </BaseList>
+      </Paper>
     </>
   );
 };
