@@ -145,6 +145,7 @@ export const useItems = (
   return {
     items,
     setItems: wrappedSetItems,
+
     add: (value: string) => {
       wrappedSetItems(
         items.concat({ id: tmpId(), primary: value, checked: false })
@@ -166,6 +167,13 @@ export const useItems = (
           item.id !== id ? item : { ...item, checked: !item.checked }
         )
       );
+    },
+
+    checkAll: () => {
+      wrappedSetItems(items.map((item) => ({ ...item, checked: true })));
+    },
+    uncheckAll: () => {
+      wrappedSetItems(items.map((item) => ({ ...item, checked: false })));
     }
   };
 };
