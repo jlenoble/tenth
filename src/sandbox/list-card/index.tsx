@@ -3,7 +3,6 @@ import React, { FunctionComponent, useState } from "react";
 import {
   Card,
   CardProps,
-  CardHeader,
   CardContent,
   CardActions,
   Checkbox,
@@ -18,14 +17,28 @@ import { MoreVert } from "@material-ui/icons";
 
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { Item, useItems, ListProps, List, onDragEnd } from "../list";
+import { CardHeader } from "../../core/base";
 
-type ListCardProps = {
+import {
+  Item,
+  useItems,
+  ListProps,
+  List,
+  onDragEnd,
+  useEditValue
+} from "../list";
+
+export interface Collection {
+  id: string;
   title: string;
-  hooks: ReturnType<typeof useItems>;
+  items: Item[];
+}
+
+export type ListCardProps = {
+  hooks: ReturnType<typeof useCollection>;
   droppableId?: string;
   listProps?: Omit<ListProps, "hooks" | "droppableId">;
-} & CardProps;
+} & Omit<CardProps, "title">;
 
 function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -94,14 +107,44 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
   );
 }
 
-export const withItems = (ListCard: FunctionComponent<ListCardProps>) => {
+export const useCollection = (
+  initialCollection: Collection,
+  onSetCollection?: (collection: Collection) => void
+) => {
+  const id = initialCollection.id;
+  const [title, setTitle] = useState(initialCollection.title);
+  const hooks = useItems(
+    initialCollection.items,
+    onSetCollection
+      ? (items: Item[]) => {
+          onSetCollection({ id, title, items });
+        }
+      : undefined
+  );
+  const items = hooks.items;
+
+  const wrappedSetTitle = onSetCollection
+    ? (title: string) => {
+        onSetCollection({ id, title, items });
+      }
+    : setTitle;
+
+  return { ...hooks, title, setTitle: wrappedSetTitle };
+};
+
+export const withCollection = (ListCard: FunctionComponent<ListCardProps>) => {
   const WrappedListCard: FunctionComponent<
     Omit<ListCardProps, "hooks"> & {
-      defaultItems?: Item[];
-      onSetItems?: (items: Item[]) => void;
+      defaultCollection: Collection;
+      onSetCollection?: (collection: Collection) => void;
     }
-  > = ({ defaultItems, onSetItems, ...other }) => {
-    return <ListCard {...other} hooks={useItems(defaultItems, onSetItems)} />;
+  > = ({ defaultCollection, onSetCollection, ...other }) => {
+    return (
+      <ListCard
+        {...other}
+        hooks={useCollection(defaultCollection, onSetCollection)}
+      />
+    );
   };
 
   WrappedListCard.displayName = `WithItems(${
@@ -136,39 +179,39 @@ export const withDnD = (ListCard: FunctionComponent<ListCardProps>) => {
 export const withLocalStorage = (
   ListCard: FunctionComponent<
     Omit<ListCardProps, "hooks"> & {
-      defaultItems?: Item[];
-      onSetItems?: (items: Item[]) => void;
+      defaultCollection: Collection;
+      onSetCollection?: (collection: Collection) => void;
     }
   >
 ) => {
   const WrappedListCard: FunctionComponent<
     Omit<ListCardProps, "hooks"> & {
-      defaultItems?: Item[];
-      onSetItems?: (items: Item[]) => void;
+      defaultCollection?: Collection;
+      onSetCollection?: (collection: Collection) => void;
       localStorageId: string;
     }
-  > = ({ defaultItems, onSetItems, localStorageId, ...other }) => {
-    if (!defaultItems) {
-      defaultItems = JSON.parse(
+  > = ({ defaultCollection, onSetCollection, localStorageId, ...other }) => {
+    if (!defaultCollection) {
+      defaultCollection = JSON.parse(
         localStorage.getItem(localStorageId) || "[]"
-      ) as Item[];
+      ) as Collection;
     }
 
-    const saveItems = (items: Item[]) => {
-      localStorage.setItem(localStorageId, JSON.stringify(items));
+    const saveCollection = (collection: Collection) => {
+      localStorage.setItem(localStorageId, JSON.stringify(collection));
     };
 
     return (
       <ListCard
         {...other}
-        defaultItems={defaultItems}
-        onSetItems={
-          onSetItems
-            ? (items: Item[]) => {
-                onSetItems(items);
-                saveItems(items);
+        defaultCollection={defaultCollection}
+        onSetCollection={
+          onSetCollection
+            ? (collection: Collection) => {
+                onSetCollection(collection);
+                saveCollection(collection);
               }
-            : saveItems
+            : saveCollection
         }
       />
     );
@@ -182,7 +225,6 @@ export const withLocalStorage = (
 };
 
 export const ListCard: FunctionComponent<ListCardProps> = ({
-  title,
   hooks,
   droppableId,
   listProps,
@@ -209,9 +251,34 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
 
   hooks = { ...hooks, items };
 
+  const {
+    inputValue,
+    edited,
+    changeInput,
+    keyInput,
+    startEditing,
+    stopEditing
+  } = useEditValue(hooks.title, hooks.setTitle);
+
+  const cardHeaderProps = edited
+    ? {
+        titleTextFieldProps: {
+          autoFocus: true,
+          fullWidth: true,
+          onChange: changeInput,
+          onBlur: stopEditing,
+          onKeyPress: keyInput
+        }
+      }
+    : { onClick: startEditing };
+
   return (
     <Card {...other}>
-      <CardHeader action={<CheckMenu hooks={hooks} />} title={title} />
+      <CardHeader
+        action={<CheckMenu hooks={hooks} />}
+        {...cardHeaderProps}
+        title={inputValue}
+      />
       <CardActions>
         <Grid container>
           <Grid item xs={4} sm={3} md={2}>
