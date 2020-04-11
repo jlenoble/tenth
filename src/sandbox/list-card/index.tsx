@@ -12,14 +12,15 @@ import {
   FormControl,
   FormGroup,
   FormControlLabel,
-  Theme
+  MenuList,
+  MenuItem
 } from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { MoreVert } from "@material-ui/icons";
 
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { Item, useItems, useToggle, ListProps, List, onDragEnd } from "../list";
+import { Item, useItems, ListProps, List, onDragEnd } from "../list";
 
 type ListCardProps = {
   title: string;
@@ -53,8 +54,9 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
     setAnchorEl(null);
   };
 
-  const { items, checkAll, uncheckAll } = hooks;
-  const allChecked = items.every((item) => item.checked);
+  const { items, checkAll, uncheckAll, clear } = hooks;
+  const disabled = !items.length;
+  const allChecked = !disabled && items.every((item) => item.checked);
 
   return (
     <div>
@@ -80,21 +82,27 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
           horizontal: "center"
         }}
       >
-        <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend">Global actions</FormLabel>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={allChecked}
-                  onClick={allChecked ? uncheckAll : checkAll}
-                  name="checkAll"
-                />
-              }
-              label="Check all"
-            />
-          </FormGroup>
-        </FormControl>
+        <MenuList>
+          <MenuItem
+            disabled={disabled}
+            onClick={() => {
+              if (allChecked) uncheckAll();
+              else checkAll();
+            }}
+          >
+            Check all
+            <Checkbox disabled={disabled} checked={allChecked} />
+          </MenuItem>
+          <MenuItem
+            disabled={disabled}
+            onClick={() => {
+              clear();
+              handleClose();
+            }}
+          >
+            Clear list
+          </MenuItem>
+        </MenuList>
       </Popover>
     </div>
   );

@@ -174,6 +174,9 @@ export const useItems = (
     },
     uncheckAll: () => {
       wrappedSetItems(items.map((item) => ({ ...item, checked: false })));
+    },
+    clear: () => {
+      wrappedSetItems([]);
     }
   };
 };
