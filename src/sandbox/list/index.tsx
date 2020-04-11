@@ -41,6 +41,7 @@ export type ListProps = {
 
 export type ListUI = {
   inlineEdit?: boolean;
+  dnd?: boolean;
 };
 
 let currentId = Date.now();
@@ -72,7 +73,7 @@ export const useToggle = (
 
 export const useListUI = (initialUI: ListUI, cb?: (ui: ListUI) => void) => {
   const inlineEdit = useToggle(
-    initialUI.inlineEdit,
+    Boolean(initialUI.inlineEdit),
     cb
       ? (state: boolean) => {
           cb({ ...initialUI, inlineEdit: state });
@@ -80,7 +81,16 @@ export const useListUI = (initialUI: ListUI, cb?: (ui: ListUI) => void) => {
       : undefined
   );
 
-  return { inlineEdit };
+  const dnd = useToggle(
+    Boolean(initialUI.dnd),
+    cb
+      ? (state: boolean) => {
+          cb({ ...initialUI, dnd: state });
+        }
+      : undefined
+  );
+
+  return { inlineEdit, dnd };
 };
 
 export const useInputValue = (cb: (value: string) => void) => {
@@ -428,7 +438,7 @@ export const List: FunctionComponent<ListProps> = ({
   ...listProps
 }) => {
   const lastIndex = items.length - 1;
-  const dnd = Boolean(droppableId);
+  const dnd = ui.dnd && Boolean(droppableId);
   const droppableProps = (dnd && { droppableId }) as
     | false
     | { droppableId: string };

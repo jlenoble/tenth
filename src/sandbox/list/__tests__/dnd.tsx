@@ -10,6 +10,7 @@ const StandaloneDnDList = withItems(withDnD(BaseList));
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => (
   <StandaloneDnDList
+    ui={{ dnd: true }}
     defaultItems={items.map((item) => ({ id: tmpId(), primary: item }))}
   />
 );
