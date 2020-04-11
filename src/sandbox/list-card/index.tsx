@@ -24,6 +24,7 @@ import {
   useItems,
   ListProps,
   List,
+  ListUI,
   onDragEnd,
   useEditValue
 } from "../list";
@@ -36,6 +37,7 @@ export interface Collection {
 
 export type ListCardProps = {
   hooks: ReturnType<typeof useCollection>;
+  ui?: ListUI;
   droppableId?: string;
   listProps?: Omit<ListProps, "hooks" | "droppableId">;
 } & Omit<CardProps, "title">;
@@ -226,6 +228,7 @@ export const withLocalStorage = (
 
 export const ListCard: FunctionComponent<ListCardProps> = ({
   hooks,
+  ui = {},
   droppableId,
   listProps,
   ...other
@@ -320,7 +323,7 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
         </Grid>
       </CardActions>
       <CardContent>
-        <List hooks={hooks} droppableId={droppableId} {...listProps} />
+        <List hooks={hooks} ui={ui} droppableId={droppableId} {...listProps} />
       </CardContent>
     </Card>
   );

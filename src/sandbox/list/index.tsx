@@ -34,9 +34,14 @@ export interface Item {
 
 export type ListProps = {
   hooks: ReturnType<typeof useItems>;
+  ui?: ListUI;
   droppableId?: string;
   listItemProps?: BaseListItemProps;
 } & BaseListProps;
+
+export type ListUI = {
+  inlineEdit?: boolean;
+};
 
 let currentId = Date.now();
 export const tmpId = () => "tmp" + currentId++;
@@ -63,6 +68,14 @@ export const useToggle = (
       if (cb) cb(newState);
     }
   };
+};
+
+export const useListUI = (initialUI: ListUI, cb: (ui: ListUI) => void) => {
+  const inlineEdit = useToggle(initialUI.inlineEdit, (state: boolean) => {
+    cb({ ...initialUI, inlineEdit: state });
+  });
+
+  return { inlineEdit };
 };
 
 export const useInputValue = (cb: (value: string) => void) => {
@@ -326,8 +339,16 @@ const TextInput: FunctionComponent<{
 };
 
 const ListItemText: FunctionComponent<
-  { hooks: { update: (value: string) => void } } & BaseListItemTextProps
-> = ({ primary, hooks: { update }, ...listItemTextProps }) => {
+  {
+    hooks: { update: (value: string) => void };
+    ui: ListUI;
+  } & BaseListItemTextProps
+> = ({
+  primary,
+  hooks: { update },
+  ui: { inlineEdit },
+  ...listItemTextProps
+}) => {
   const {
     inputValue,
     edited,
@@ -337,17 +358,18 @@ const ListItemText: FunctionComponent<
     stopEditing
   } = useEditValue(primary, update);
 
-  const props = edited
-    ? {
-        primaryTextFieldProps: {
-          autoFocus: true,
-          fullWidth: true,
-          onChange: changeInput,
-          onBlur: stopEditing,
-          onKeyPress: keyInput
+  const props =
+    inlineEdit && edited
+      ? {
+          primaryTextFieldProps: {
+            autoFocus: true,
+            fullWidth: true,
+            onChange: changeInput,
+            onBlur: stopEditing,
+            onKeyPress: keyInput
+          }
         }
-      }
-    : { onClick: startEditing };
+      : { onClick: startEditing };
 
   return (
     <BaseListItemText primary={inputValue} {...props} {...listItemTextProps} />
@@ -361,12 +383,14 @@ const ListItem: FunctionComponent<
       update: (value: string) => void;
       toggleCheck: () => void;
     };
+    ui: ListUI;
     dnd?: boolean;
     index: number;
     listItemTextProps?: BaseListItemTextProps;
   } & BaseListItemProps
 > = ({
   hooks: { id, primary, checked, remove, update, toggleCheck },
+  ui,
   dnd,
   index,
   listItemTextProps,
@@ -381,6 +405,7 @@ const ListItem: FunctionComponent<
       <ListItemText
         primary={primary}
         hooks={{ update }}
+        ui={ui}
         {...listItemTextProps}
       />
       <IconButton aria-label="Delete item" onClick={remove}>
@@ -392,6 +417,7 @@ const ListItem: FunctionComponent<
 
 export const List: FunctionComponent<ListProps> = ({
   hooks: { items, add, remove, updatePrimary, toggleCheck },
+  ui = {},
   droppableId,
   listItemProps,
   ...listProps
@@ -423,6 +449,7 @@ export const List: FunctionComponent<ListProps> = ({
                 index={index}
                 dnd={dnd}
                 hooks={hooks}
+                ui={ui}
                 {...listItemProps}
               />
             );

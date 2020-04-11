@@ -177,37 +177,4 @@ describe("List", () => {
       false
     ]);
   });
-
-  it("Edit", async () => {
-    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
-
-    const list = getByRole("list") as HTMLUListElement;
-    const { getAllByRole } = within(list);
-
-    const listitems = getAllByRole("listitem") as HTMLLIElement[];
-    let listitem = listitems[1];
-    const { getByRole: subGetByRole, getByText } = within(listitem);
-
-    let text = getByText("bar") as HTMLSpanElement;
-
-    userEvents.click(text);
-    expect(text).not.toBeInTheDocument();
-
-    let textbox = subGetByRole("textbox") as HTMLInputElement;
-
-    await userEvents.type(textbox, "bozo");
-    fireEvent.keyPress(textbox, {
-      key: "Enter",
-      code: 13,
-      charCode: 13,
-      keyCode: 13
-    });
-    expect(textbox).not.toBeInTheDocument();
-
-    expect(listitems.map((li) => li.textContent)).toEqual([
-      "foo",
-      "barbozo",
-      "baz"
-    ]);
-  });
 });
