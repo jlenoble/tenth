@@ -26,13 +26,13 @@ import {
   ListItemTextProps as BaseListItemTextProps
 } from "../../core/base";
 
-interface Item {
+export interface Item {
   id: string;
   primary: string;
   checked?: boolean;
 }
 
-type ListProps = {
+export type ListProps = {
   hooks: ReturnType<typeof useItems>;
   droppableId?: string;
   listItemProps?: BaseListItemProps;
@@ -123,7 +123,7 @@ export const useEditValue = (
   };
 };
 
-const useItems = (
+export const useItems = (
   initialItems: Item[] = [],
   onSetItems?: (items: Item[]) => void
 ) => {
@@ -288,7 +288,7 @@ const TextInput: FunctionComponent<{
   );
 
   return (
-    <Paper style={{ margin: 16, padding: 16 }}>
+    <Paper elevation={0} style={{ marginBottom: 16, padding: 16 }}>
       <Grid container>
         <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
           <TextField
@@ -394,7 +394,7 @@ export const List: FunctionComponent<ListProps> = ({
   return (
     <>
       <TextInput hooks={{ add }} />
-      <Paper>
+      <Paper elevation={0}>
         <BaseList droppableProps={droppableProps} {...listProps}>
           {items.map((item, index) => {
             const id = item.id;
