@@ -1,21 +1,19 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 
 import {
   Card,
   CardProps,
-  Checkbox,
   CardHeader,
   CardContent,
+  CardActions,
+  Checkbox,
+  Button,
   IconButton,
   Popover,
-  FormLabel,
-  FormControl,
-  FormGroup,
-  FormControlLabel,
   MenuList,
-  MenuItem
+  MenuItem,
+  Grid
 } from "@material-ui/core";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { MoreVert } from "@material-ui/icons";
 
 import { DragDropContext } from "react-beautiful-dnd";
@@ -29,20 +27,7 @@ type ListCardProps = {
   listProps?: Omit<ListProps, "hooks" | "droppableId">;
 } & CardProps;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: "flex"
-    },
-    formControl: {
-      margin: theme.spacing(1)
-    }
-  })
-);
-
 function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
-  const classes = useStyles();
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -55,6 +40,7 @@ function CheckMenu({ hooks }: { hooks: ReturnType<typeof useItems> }) {
   };
 
   const { items, checkAll, uncheckAll, clear } = hooks;
+
   const disabled = !items.length;
   const allChecked = !disabled && items.every((item) => item.checked);
 
@@ -202,9 +188,67 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
   listProps,
   ...other
 }) => {
+  const [filter, setFilter] = useState(
+    "all" as "all" | "checked" | "unchecked"
+  );
+  let items = hooks.items;
+  const checkedItems = items.filter((item) => item.checked);
+
+  const nItems = items.length;
+  const nChecked = checkedItems.length;
+  const nUnchecked = nItems - nChecked;
+
+  if (filter === "checked") {
+    items = checkedItems;
+  } else if (filter === "unchecked") {
+    items = items.filter((item) => !item.checked);
+  }
+
+  hooks = { ...hooks, items };
+
   return (
     <Card {...other}>
       <CardHeader action={<CheckMenu hooks={hooks} />} title={title} />
+      <CardActions>
+        <Grid container>
+          <Grid item xs={4} sm={3} md={2}>
+            <Button
+              variant={filter === "all" ? "contained" : "outlined"}
+              fullWidth
+              disableRipple
+              size="small"
+              color="primary"
+              onClick={() => setFilter("all")}
+            >
+              All ({nItems})
+            </Button>
+          </Grid>
+          <Grid item xs={4} sm={3} md={2}>
+            <Button
+              variant={filter === "checked" ? "contained" : "outlined"}
+              fullWidth
+              disableRipple
+              size="small"
+              color="primary"
+              onClick={() => setFilter("checked")}
+            >
+              Checked ({nChecked})
+            </Button>
+          </Grid>
+          <Grid item xs={4} sm={3} md={2}>
+            <Button
+              variant={filter === "unchecked" ? "contained" : "outlined"}
+              fullWidth
+              disableRipple
+              size="small"
+              color="primary"
+              onClick={() => setFilter("unchecked")}
+            >
+              Unchecked ({nUnchecked})
+            </Button>
+          </Grid>
+        </Grid>
+      </CardActions>
       <CardContent>
         <List hooks={hooks} droppableId={droppableId} {...listProps} />
       </CardContent>
