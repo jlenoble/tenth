@@ -93,7 +93,7 @@ describe("List", () => {
     }
   });
 
-  it("Select", () => {
+  it("Check", () => {
     const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
@@ -128,7 +128,7 @@ describe("List", () => {
     ]);
   });
 
-  it("Select/Add/Remove", async () => {
+  it("Check/Add/Remove", async () => {
     const { getByRole, getByText } = render(
       <List items={["foo", "bar", "baz"]} />
     );
