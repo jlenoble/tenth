@@ -11,7 +11,7 @@ const todoListKey = "todolist";
 const ListCard = withLocalStorage(withCollection(withDnD(BaseListCard)));
 
 function App() {
-  return <ListCard localStorageId={todoListKey} />;
+  return <ListCard ui={{ inlineEdit: true }} localStorageId={todoListKey} />;
 }
 
 export default App;

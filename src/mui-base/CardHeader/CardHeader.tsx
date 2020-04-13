@@ -1,12 +1,13 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactNode } from "react";
 import { TextField, TextFieldProps } from "@material-ui/core";
 import {
   BaseCardHeader,
   BaseCardHeaderPropsWithoutRef
 } from "./BaseCardHeader";
 
-export interface CardHeaderProps extends BaseCardHeaderPropsWithoutRef {
-  title: string;
+export interface CardHeaderProps
+  extends Omit<BaseCardHeaderPropsWithoutRef, "title"> {
+  title: ReactNode;
   titleTextFieldProps?: TextFieldProps;
 }
 
