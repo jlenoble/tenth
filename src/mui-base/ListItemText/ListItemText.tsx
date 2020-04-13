@@ -7,8 +7,6 @@ import {
 } from "./BaseListItemText";
 
 export interface ListItemTextProps extends BaseListItemTextPropsWithoutRef {
-  primary: string;
-  secondary?: string;
   primaryTextFieldProps?: TextFieldProps;
   secondaryTextFieldProps?: TextFieldProps;
 }

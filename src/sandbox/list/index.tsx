@@ -14,6 +14,7 @@ import {
   IconButton
 } from "@material-ui/core";
 import { DeleteOutlined } from "@material-ui/icons";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
@@ -26,10 +27,18 @@ import {
   ListItemTextProps as BaseListItemTextProps
 } from "../../mui-base";
 
+import { ErrorTooltip } from "../../core";
+
+import { RequiredKeys } from "../../generics";
+
 export interface Item {
   id: string;
   primary: string;
   checked?: boolean;
+
+  error?: true;
+  primaryHelperText?: string;
+  primaryLabel?: string;
 }
 
 export type ListProps = {
@@ -156,15 +165,18 @@ export const useItems = (
   onSetItems?: (items: Item[]) => void
 ) => {
   const [items, setItems] = useState(
-    initialItems.map((item) => ({
-      id: item.id,
-      primary: item.primary,
-      checked: Boolean(item.checked)
-    }))
+    initialItems.map(
+      // Make sure checkboxes are controlled
+      (item) =>
+        ({ ...item, checked: Boolean(item.checked) } as RequiredKeys<
+          Item,
+          "checked"
+        >)
+    )
   );
 
   const wrappedSetItems = onSetItems
-    ? (items: Required<Item>[]) => {
+    ? (items: RequiredKeys<Item, "checked">[]) => {
         setItems(items);
         onSetItems(items);
       }
@@ -230,8 +242,8 @@ export const onDragEnd = ({
   items = [],
   setItems
 }: {
-  items: Required<Item>[];
-  setItems: (items: Required<Item>[]) => void;
+  items: RequiredKeys<Item, "checked">[];
+  setItems: (items: RequiredKeys<Item, "checked">[]) => void;
 }) =>
   setItems
     ? ({ source, destination }: DropResult) => {
@@ -355,13 +367,20 @@ const TextInput: FunctionComponent<{
 
 const ListItemText: FunctionComponent<
   {
+    primary: string;
     hooks: { update: (value: string) => void };
     ui: ListUI;
-  } & BaseListItemTextProps
+    error?: true;
+    primaryHelperText?: string;
+    primaryLabel?: string;
+  } & Omit<BaseListItemTextProps, "primary">
 > = ({
   primary,
   hooks: { update },
   ui: { inlineEdit },
+  error,
+  primaryHelperText,
+  primaryLabel = "Item",
   ...listItemTextProps
 }) => {
   const {
@@ -373,6 +392,10 @@ const ListItemText: FunctionComponent<
     stopEditing
   } = useEditValue(primary, update);
 
+  if (!primaryHelperText && error) {
+    primaryHelperText = "Invalid item";
+  }
+
   const props =
     inlineEdit && edited
       ? {
@@ -381,13 +404,31 @@ const ListItemText: FunctionComponent<
             fullWidth: true,
             onChange: changeInput,
             onBlur: stopEditing,
-            onKeyPress: keyInput
+            onKeyPress: keyInput,
+            error,
+            helperText: primaryHelperText,
+            label: primaryLabel,
+            required: true
           }
         }
       : { onClick: startEditing };
 
   return (
-    <BaseListItemText primary={inputValue} {...props} {...listItemTextProps} />
+    <BaseListItemText
+      primary={
+        (inlineEdit && edited) || !error ? (
+          inputValue
+        ) : (
+          <ErrorTooltip title={primaryHelperText!}>
+            <Alert variant="outlined" severity="error">
+              <AlertTitle>{inputValue}</AlertTitle>
+            </Alert>
+          </ErrorTooltip>
+        )
+      }
+      {...props}
+      {...listItemTextProps}
+    />
   );
 };
 
@@ -401,10 +442,20 @@ const ListItem: FunctionComponent<
     ui: ListUI;
     dnd?: boolean;
     index: number;
-    listItemTextProps?: BaseListItemTextProps;
+    listItemTextProps?: Omit<BaseListItemTextProps, "primary">;
   } & BaseListItemProps
 > = ({
-  hooks: { id, primary, checked, remove, update, toggleCheck },
+  hooks: {
+    id,
+    primary,
+    checked,
+    error,
+    primaryHelperText,
+    primaryLabel,
+    remove,
+    update,
+    toggleCheck
+  },
   ui,
   dnd,
   index,
@@ -421,6 +472,9 @@ const ListItem: FunctionComponent<
         primary={primary}
         hooks={{ update }}
         ui={ui}
+        error={error}
+        primaryHelperText={primaryHelperText}
+        primaryLabel={primaryLabel}
         {...listItemTextProps}
       />
       <IconButton aria-label="Delete item" onClick={remove}>
