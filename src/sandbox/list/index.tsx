@@ -24,7 +24,7 @@ import {
   ListItemProps as BaseListItemProps,
   ListItemText as BaseListItemText,
   ListItemTextProps as BaseListItemTextProps
-} from "../../core/base";
+} from "../../mui-base";
 
 export interface Item {
   id: string;

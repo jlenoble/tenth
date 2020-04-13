@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Paper, ListItemText } from "@material-ui/core";
-import List from "../../core/base/List";
-import ListItem from "../../core/base/ListItem";
+import List from "../../mui-base/List";
+import ListItem from "../../mui-base/ListItem";
 
 type CategoryProps = {
   className?: string;

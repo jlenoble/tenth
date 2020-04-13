@@ -18,7 +18,7 @@ import { MoreVert } from "@material-ui/icons";
 
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { CardHeader } from "../../core/base";
+import { CardHeader } from "../../mui-base";
 
 import {
   Item,
