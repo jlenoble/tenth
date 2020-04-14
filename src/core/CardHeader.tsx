@@ -1,50 +1,41 @@
 import React, { FunctionComponent } from "react";
-import { TextFieldProps } from "@material-ui/core";
-import { Alert, AlertTitle } from "@material-ui/lab";
 import {
   CardHeader as BaseCardHeader,
-  CardHeaderProps as BaseCardHeaderProps
-} from "../mui-base";
-import { ErrorTooltip } from "./Tooltip";
+  CardHeaderProps as BaseCardHeaderProps,
+  TextFieldProps
+} from "@material-ui/core";
+import InlineText from "./InlineText";
 
 export interface CardHeaderProps extends BaseCardHeaderProps {
+  title: string;
+  titleEdited?: boolean;
   titleLabel?: string;
   titleHelperText?: string;
+  titleError?: boolean;
   titleTextFieldProps?: TextFieldProps;
-  error?: boolean;
 }
 
 export const CardHeader: FunctionComponent<CardHeaderProps> = ({
-  disableTypography,
   title,
-  titleLabel = "Title",
+  titleEdited,
+  titleLabel,
   titleHelperText,
+  titleError,
   titleTextFieldProps,
-  error,
   ...other
 }) => {
   return (
     <BaseCardHeader
-      disableTypography={disableTypography || error}
+      disableTypography={titleEdited || titleError}
       title={
-        titleTextFieldProps || !error ? (
-          title
-        ) : (
-          <ErrorTooltip title={titleHelperText || "Invalid title"}>
-            <Alert variant="outlined" severity="error">
-              <AlertTitle>{title}</AlertTitle>
-            </Alert>
-          </ErrorTooltip>
-        )
-      }
-      titleTextFieldProps={
-        titleTextFieldProps && {
-          ...titleTextFieldProps,
-          error,
-          helperText: titleHelperText,
-          label: titleLabel,
-          required: true
-        }
+        <InlineText
+          text={title}
+          edited={titleEdited}
+          label={titleLabel}
+          helperText={titleHelperText}
+          error={titleError}
+          textFieldProps={titleTextFieldProps}
+        />
       }
       {...other}
     />

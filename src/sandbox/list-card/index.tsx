@@ -325,6 +325,8 @@ export const ListCard: FunctionComponent<ListCardProps> = ({
   const cardHeaderProps =
     ui.inlineEdit && edited
       ? {
+          titleEdited: true,
+          titleLabel: "Title",
           titleTextFieldProps: {
             autoFocus: true,
             fullWidth: true,
