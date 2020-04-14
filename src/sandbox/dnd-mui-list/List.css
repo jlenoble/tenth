@@ -1,8 +1,0 @@
-.MuiList-root.isDraggingOver .MuiListItem-root {
-  background-color: rgba(0, 0, 0, 0.06);
-}
-
-.MuiList-root.isDraggingOver .MuiListItem-root.isDragging {
-  background-color: rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-}
