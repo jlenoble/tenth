@@ -36,7 +36,7 @@ export interface Item {
   primary: string;
   checked?: boolean;
 
-  error?: true;
+  error?: boolean;
   primaryHelperText?: string;
   primaryLabel?: string;
 }
@@ -162,12 +162,18 @@ export const useEditValue = (
 
 export const useItems = (
   initialItems: Item[] = [],
-  onSetItems?: (items: Item[]) => void
+  callbacks: {
+    onSetItems?: (items: Item[]) => void;
+    validatePrimary?: (
+      item: RequiredKeys<Item, "checked">
+    ) => RequiredKeys<Item, "checked">;
+  } = {}
 ) => {
+  const { onSetItems, validatePrimary } = callbacks;
   const [items, setItems] = useState(
     initialItems.map(
-      // Make sure checkboxes are controlled
       (item) =>
+        // Make sure checkboxes are controlled consistently
         ({ ...item, checked: Boolean(item.checked) } as RequiredKeys<
           Item,
           "checked"
@@ -182,24 +188,12 @@ export const useItems = (
       }
     : setItems;
 
-  return {
+  const hooks = {
     items,
     setItems: wrappedSetItems,
 
-    add: (value: string) => {
-      wrappedSetItems(
-        items.concat({ id: tmpId(), primary: value, checked: false })
-      );
-    },
     remove: (id: string) => {
       wrappedSetItems(items.filter((item) => item.id !== id));
-    },
-    updatePrimary: (id: string, value: string) => {
-      wrappedSetItems(
-        items.map((item) =>
-          item.id !== id ? item : { ...item, primary: value }
-        )
-      );
     },
     toggleCheck: (id: string) => {
       wrappedSetItems(
@@ -219,6 +213,42 @@ export const useItems = (
       wrappedSetItems([]);
     }
   };
+
+  return validatePrimary
+    ? {
+        ...hooks,
+        add: (value: string) => {
+          wrappedSetItems(
+            items.concat(
+              validatePrimary({ id: tmpId(), primary: value, checked: false })
+            )
+          );
+        },
+        updatePrimary: (id: string, value: string) => {
+          wrappedSetItems(
+            items.map((item) =>
+              item.id !== id
+                ? item
+                : validatePrimary({ ...item, primary: value })
+            )
+          );
+        }
+      }
+    : {
+        ...hooks,
+        add: (value: string) => {
+          wrappedSetItems(
+            items.concat({ id: tmpId(), primary: value, checked: false })
+          );
+        },
+        updatePrimary: (id: string, value: string) => {
+          wrappedSetItems(
+            items.map((item) =>
+              item.id !== id ? item : { ...item, primary: value }
+            )
+          );
+        }
+      };
 };
 
 export const withItems = (List: FunctionComponent<ListProps>) => {
@@ -226,9 +256,24 @@ export const withItems = (List: FunctionComponent<ListProps>) => {
     Omit<ListProps, "hooks"> & {
       defaultItems?: Item[];
       onSetItems?: (items: Item[]) => void;
+      validators?: {
+        validatePrimary?: (
+          item: RequiredKeys<Item, "checked">
+        ) => RequiredKeys<Item, "checked">;
+      };
     }
-  > = ({ defaultItems, onSetItems, ...other }) => {
-    return <List {...other} hooks={useItems(defaultItems, onSetItems)} />;
+  > = ({
+    defaultItems,
+    onSetItems,
+    validators: { validatePrimary } = {},
+    ...other
+  }) => {
+    return (
+      <List
+        {...other}
+        hooks={useItems(defaultItems, { onSetItems, validatePrimary })}
+      />
+    );
   };
 
   WrappedList.displayName = `WithItems(${
@@ -370,7 +415,7 @@ const ListItemText: FunctionComponent<
     primary: string;
     hooks: { update: (value: string) => void };
     ui: ListUI;
-    error?: true;
+    error?: boolean;
     primaryHelperText?: string;
     primaryLabel?: string;
   } & Omit<BaseListItemTextProps, "primary">

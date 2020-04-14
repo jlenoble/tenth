@@ -20,6 +20,8 @@ import { DragDropContext } from "react-beautiful-dnd";
 
 import { CardHeader } from "../../core";
 
+import { RequiredKeys } from "../../generics";
+
 import {
   Item,
   useItems,
@@ -137,18 +139,24 @@ function CheckMenu({
 
 export const useCollection = (
   initialCollection: Collection,
-  onSetCollection?: (collection: Collection) => void
+  callbacks: {
+    onSetCollection?: (collection: Collection) => void;
+    validatePrimary?: (
+      item: RequiredKeys<Item, "checked">
+    ) => RequiredKeys<Item, "checked">;
+  } = {}
 ) => {
+  const { onSetCollection, validatePrimary } = callbacks;
   const id = initialCollection.id;
   const [title, setTitle] = useState(initialCollection.title);
-  const hooks = useItems(
-    initialCollection.items,
-    onSetCollection
-      ? (items: Item[]) => {
-          onSetCollection({ id, title, items });
-        }
-      : undefined
-  );
+  const hooks = useItems(initialCollection.items, {
+    onSetItems:
+      onSetCollection &&
+      ((items: Item[]) => {
+        onSetCollection({ id, title, items });
+      }),
+    validatePrimary
+  });
   const items = hooks.items;
 
   const wrappedSetTitle = onSetCollection
@@ -165,12 +173,25 @@ export const withCollection = (ListCard: FunctionComponent<ListCardProps>) => {
     Omit<ListCardProps, "hooks"> & {
       defaultCollection: Collection;
       onSetCollection?: (collection: Collection) => void;
+      validators?: {
+        validatePrimary?: (
+          item: RequiredKeys<Item, "checked">
+        ) => RequiredKeys<Item, "checked">;
+      };
     }
-  > = ({ defaultCollection, onSetCollection, ...other }) => {
+  > = ({
+    defaultCollection,
+    onSetCollection,
+    validators: { validatePrimary } = {},
+    ...other
+  }) => {
     return (
       <ListCard
         {...other}
-        hooks={useCollection(defaultCollection, onSetCollection)}
+        hooks={useCollection(defaultCollection, {
+          onSetCollection,
+          validatePrimary
+        })}
       />
     );
   };
@@ -209,6 +230,11 @@ export const withLocalStorage = (
     Omit<ListCardProps, "hooks"> & {
       defaultCollection: Collection;
       onSetCollection?: (collection: Collection) => void;
+      validators?: {
+        validatePrimary?: (
+          item: RequiredKeys<Item, "checked">
+        ) => RequiredKeys<Item, "checked">;
+      };
     }
   >
 ) => {
@@ -216,6 +242,11 @@ export const withLocalStorage = (
     Omit<ListCardProps, "hooks"> & {
       defaultCollection?: Collection;
       onSetCollection?: (collection: Collection) => void;
+      validators?: {
+        validatePrimary?: (
+          item: RequiredKeys<Item, "checked">
+        ) => RequiredKeys<Item, "checked">;
+      };
       localStorageId: string;
     }
   > = ({ defaultCollection, onSetCollection, localStorageId, ...other }) => {
