@@ -12,5 +12,3 @@ export const ErrorTooltip = withStyles((theme: Theme) => ({
     border: "1px solid " + theme.palette.error.light
   }
 }))(Tooltip);
-
-export default Tooltip;
