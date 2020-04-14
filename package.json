@@ -40,10 +40,13 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.49",
     "@types/react-beautiful-dnd": "^12.1.2",
+    "@types/react-redux": "^7.1.7",
     "clsx": "^1.1.0",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.1.2",
