@@ -1,13 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 
-import {
-  Paper,
-  Grid,
-  TextField,
-  Button,
-  Checkbox,
-  IconButton
-} from "@material-ui/core";
+import { Paper, Checkbox, IconButton } from "@material-ui/core";
 import { DeleteOutlined } from "@material-ui/icons";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
@@ -22,12 +15,7 @@ import {
   ListItemTextProps as BaseListItemTextProps
 } from "../../mui-base";
 
-import {
-  ErrorTooltip,
-  useToggle,
-  useEditValue,
-  useInputValue
-} from "../../core";
+import { ErrorTooltip, useToggle, useEditValue, AddItem } from "../../core";
 
 import { RequiredKeys } from "../../generics";
 
@@ -294,40 +282,6 @@ export const withLocalStorage = (
   return WrappedList;
 };
 
-const TextInput: FunctionComponent<{
-  hooks: { add: (value: string) => void };
-}> = ({ hooks: { add } }) => {
-  const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
-    add
-  );
-
-  return (
-    <Paper elevation={0} style={{ marginBottom: 16, padding: 16 }}>
-      <Grid container>
-        <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
-          <TextField
-            placeholder="Add item here"
-            value={inputValue}
-            onChange={changeInput}
-            onKeyPress={keyInput}
-            fullWidth
-          />
-        </Grid>
-        <Grid xs={2} md={1} item>
-          <Button
-            fullWidth
-            color="secondary"
-            variant="outlined"
-            onClick={clearInputAndAdd}
-          >
-            Add
-          </Button>
-        </Grid>
-      </Grid>
-    </Paper>
-  );
-};
-
 const ListItemText: FunctionComponent<
   {
     primary: string;
@@ -462,7 +416,7 @@ export const List: FunctionComponent<ListProps> = ({
 
   return (
     <>
-      <TextInput hooks={{ add }} />
+      <AddItem add={add} />
       <Paper elevation={0}>
         <BaseList droppableProps={droppableProps} {...listProps}>
           {items.map((item, index) => {
