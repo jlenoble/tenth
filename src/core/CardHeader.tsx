@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core";
 import InlineText from "./InlineText";
 
-export interface CardHeaderProps extends BaseCardHeaderProps {
+export interface CardHeaderProps {
   title: string;
   titleEdited?: boolean;
   titleLabel?: string;
@@ -15,7 +15,9 @@ export interface CardHeaderProps extends BaseCardHeaderProps {
   titleTextFieldProps?: TextFieldProps;
 }
 
-export const CardHeader: FunctionComponent<CardHeaderProps> = ({
+export const CardHeader: FunctionComponent<
+  CardHeaderProps & BaseCardHeaderProps
+> = ({
   title,
   titleEdited,
   titleLabel,
