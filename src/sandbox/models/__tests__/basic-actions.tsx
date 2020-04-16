@@ -25,7 +25,7 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   );
 };
 
-describe("List", () => {
+describe("TodoList", () => {
   it("Initialize", () => {
     const { getAllByRole } = render(<List items={["foo", "bar", "baz"]} />);
 
@@ -179,15 +179,54 @@ describe("List", () => {
     userEvents.click(addButton);
     checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     listitems = getAllByRole("listitem") as HTMLLIElement[];
+
+    // autosort is on by default: unchecked first
     expect(listitems.map((li) => li.textContent)).toEqual([
+      "quux",
       "foo",
-      "baz",
-      "quux"
+      "baz"
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
+      false,
       true,
+      true
+    ]);
+
+    await userEvents.type(textbox, "foobar");
+    userEvents.click(addButton);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    listitems = getAllByRole("listitem") as HTMLLIElement[];
+
+    // autosort is on by default: unchecked first
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "quux",
+      "foobar",
+      "foo",
+      "baz"
+    ]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      false,
+      false,
       true,
-      false
+      true
+    ]);
+
+    userEvents.click(checkboxes[2]);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    listitems = getAllByRole("listitem") as HTMLLIElement[];
+
+    // autosort is on by default: unchecked first
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "foo",
+      "quux",
+      "foobar",
+      "baz"
+    ]);
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      false,
+      false,
+      false,
+      true
     ]);
   });
 });

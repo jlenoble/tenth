@@ -8,10 +8,15 @@ import { AddItem, List } from "../../core";
 export const combinedReducer = combineReducers({ todos, visibilityFilter });
 
 export function TodoList() {
-  const todos = useSelector(
+  let todos = useSelector(
     (state: ReturnType<typeof combinedReducer>) => state.todos
   );
   const dispatch = useDispatch();
+
+  const completedTodos = todos.filter((todo) => todo.completed);
+  const pendingTodos = todos.filter((todo) => !todo.completed);
+
+  todos = [...pendingTodos, ...completedTodos];
 
   return (
     <>
