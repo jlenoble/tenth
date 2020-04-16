@@ -45,7 +45,7 @@ export const ListItem: FunctionComponent<FullListItemProps> = ({
 }) => {
   return (
     <MuiListItem {...other}>
-      <Checkbox checked={checked} {...checkboxProps} />
+      {checkboxProps && <Checkbox checked={checked} {...checkboxProps} />}
       <ListItemText
         primary={primary}
         primaryEdited={primaryEdited}
@@ -55,9 +55,11 @@ export const ListItem: FunctionComponent<FullListItemProps> = ({
         primaryTextFieldProps={primaryTextFieldProps}
         {...listItemTextProps}
       />
-      <IconButton aria-label="Delete item" {...deleteButtonProps}>
-        <DeleteOutlined />
-      </IconButton>
+      {deleteButtonProps && (
+        <IconButton aria-label="Delete item" {...deleteButtonProps}>
+          <DeleteOutlined />
+        </IconButton>
+      )}
     </MuiListItem>
   );
 };
