@@ -15,7 +15,9 @@ import {
   ListItemTextProps as BaseListItemTextProps
 } from "../../mui-base";
 
-import { ErrorTooltip, useToggle, useEditValue, AddItem } from "../../core";
+import { ErrorTooltip } from "../../core";
+import { useToggle, useEditValue } from "./use";
+import { AddItem } from "./AddItem";
 
 import { RequiredKeys } from "../../generics";
 

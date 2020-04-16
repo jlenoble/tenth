@@ -1,39 +1,40 @@
 import React, { FunctionComponent } from "react";
-import { Paper, Grid, TextField, Button } from "@material-ui/core";
-import { useInputValue } from "./use";
+import {
+  Paper,
+  Grid,
+  TextField,
+  TextFieldProps,
+  Button,
+  ButtonProps
+} from "@material-ui/core";
 
-export interface AddItemProps {
-  add: (value: string) => void;
-}
+export type AddItemProps = TextFieldProps & {
+  buttonProps?: ButtonProps;
+};
 
-export const AddItem: FunctionComponent<AddItemProps> = ({ add }) => {
-  const { inputValue, changeInput, keyInput, clearInputAndAdd } = useInputValue(
-    add
-  );
-
+export const AddItem: FunctionComponent<AddItemProps> = ({
+  buttonProps,
+  ...other
+}) => {
   return (
     <Paper elevation={0} style={{ marginBottom: 16, padding: 16 }}>
-      <Grid container>
-        <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
-          <TextField
-            placeholder="Add item here"
-            value={inputValue}
-            onChange={changeInput}
-            onKeyPress={keyInput}
-            fullWidth
-          />
+      {(buttonProps && (
+        <Grid container>
+          <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
+            <TextField placeholder="Add item here" fullWidth {...other} />
+          </Grid>
+          <Grid xs={2} md={1} item>
+            <Button
+              fullWidth
+              color="secondary"
+              variant="outlined"
+              {...buttonProps}
+            >
+              Add
+            </Button>
+          </Grid>
         </Grid>
-        <Grid xs={2} md={1} item>
-          <Button
-            fullWidth
-            color="secondary"
-            variant="outlined"
-            onClick={clearInputAndAdd}
-          >
-            Add
-          </Button>
-        </Grid>
-      </Grid>
+      )) || <TextField placeholder="Add item here" fullWidth {...other} />}
     </Paper>
   );
 };

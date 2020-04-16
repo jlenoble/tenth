@@ -4,25 +4,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { todos, addTodo, deleteTodo, updateTodo, toggleTodo } from "./todo";
 import { visibilityFilter } from "./visibility";
 import {
-  currentEdit,
-  startCurrentEdit,
-  updateCurrentEdit,
-  stopCurrentEdit
-} from "./current-edit";
+  currentInput,
+  startCurrentInput,
+  updateCurrentInput,
+  stopCurrentInput
+} from "./current-input";
 import { List } from "../../core";
 
 export const combinedReducer = combineReducers({
   todos,
   visibilityFilter,
-  currentEdit
+  currentInput
 });
 
 export function TodoList() {
   let todos = useSelector(
     (state: ReturnType<typeof combinedReducer>) => state.todos
   );
-  const { elementId, value: currentEditValue } = useSelector(
-    (state: ReturnType<typeof combinedReducer>) => state.currentEdit
+  const { elementId, value: currentInput } = useSelector(
+    (state: ReturnType<typeof combinedReducer>) => state.currentInput
   );
   const dispatch = useDispatch();
 
@@ -34,7 +34,26 @@ export function TodoList() {
   return (
     <>
       <List
-        addItemProps={{ add: (value: string) => dispatch(addTodo(value)) }}
+        addItemProps={{
+          value: currentInput,
+          onChange: (event: ChangeEvent<HTMLInputElement>) =>
+            dispatch(updateCurrentInput(event.target.value)),
+          onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Enter") {
+              dispatch(updateCurrentInput(""));
+              dispatch(addTodo(currentInput));
+              return true;
+            }
+
+            return false;
+          },
+          buttonProps: {
+            onClick: () => {
+              dispatch(updateCurrentInput(""));
+              dispatch(addTodo(currentInput));
+            }
+          }
+        }}
         listItems={todos.map((todo, i) => ({
           itemId: todo.id,
           primary: todo.title,
@@ -42,16 +61,16 @@ export function TodoList() {
           primaryTextFieldProps: {
             onChange: (event: ChangeEvent<HTMLInputElement>) =>
               dispatch(
-                updateCurrentEdit({
+                updateCurrentInput({
                   elementId: String(i),
                   value: event.target.value
                 })
               ),
-            onBlur: () => dispatch(stopCurrentEdit()),
+            onBlur: () => dispatch(stopCurrentInput()),
             onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => {
               if (event.key === "Enter") {
-                dispatch(stopCurrentEdit());
-                dispatch(updateTodo({ ...todo, title: currentEditValue }));
+                dispatch(stopCurrentInput());
+                dispatch(updateTodo({ ...todo, title: currentInput }));
                 return true;
               }
 
@@ -63,7 +82,7 @@ export function TodoList() {
           listItemTextProps: {
             onClick: () =>
               dispatch(
-                startCurrentEdit({ elementId: String(i), value: todo.title })
+                startCurrentInput({ elementId: String(i), value: todo.title })
               )
           },
           deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
