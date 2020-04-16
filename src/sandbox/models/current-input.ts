@@ -29,20 +29,20 @@ export type CurrentInputActionType =
   | CurrentInputStopAction;
 
 export const startCurrentInput = (
-  state: CurrentInput | string
+  state: CurrentInput
 ): CurrentInputActionType => {
   return {
     type: CURRENT_INPUT_START,
-    payload: typeof state === "string" ? { elementId: "", value: state } : state
+    payload: state
   };
 };
 
 export const updateCurrentInput = (
-  state: CurrentInput | string
+  state: CurrentInput
 ): CurrentInputActionType => {
   return {
     type: CURRENT_INPUT_UPDATE,
-    payload: typeof state === "string" ? { elementId: "", value: state } : state
+    payload: state
   };
 };
 

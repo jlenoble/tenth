@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import { combineReducers } from "redux";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, batch } from "react-redux";
 import { todos, addTodo, deleteTodo, updateTodo, toggleTodo } from "./todo";
 import { visibilityFilter } from "./visibility";
 import {
@@ -17,13 +17,14 @@ export const combinedReducer = combineReducers({
   currentInput
 });
 
+export const getTodos = (state: ReturnType<typeof combinedReducer>) =>
+  state.todos;
+export const getCurrentInput = (state: ReturnType<typeof combinedReducer>) =>
+  state.currentInput;
+
 export function TodoList() {
-  let todos = useSelector(
-    (state: ReturnType<typeof combinedReducer>) => state.todos
-  );
-  const { elementId, value: currentInput } = useSelector(
-    (state: ReturnType<typeof combinedReducer>) => state.currentInput
-  );
+  let todos = useSelector(getTodos);
+  const { elementId, value: currentInput } = useSelector(getCurrentInput);
   const dispatch = useDispatch();
 
   const completedTodos = todos.filter((todo) => todo.completed);
@@ -31,63 +32,74 @@ export function TodoList() {
 
   todos = [...pendingTodos, ...completedTodos];
 
+  const addItemId = "addItem";
+
   return (
-    <>
-      <List
-        addItemProps={{
-          value: currentInput,
+    <List
+      addItemProps={{
+        value: elementId === addItemId ? currentInput : undefined,
+        onChange: (event: ChangeEvent<HTMLInputElement>) =>
+          dispatch(
+            updateCurrentInput({
+              elementId: addItemId,
+              value: event.target.value
+            })
+          ),
+        onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => {
+          if (event.key === "Enter") {
+            batch(() => {
+              dispatch(updateCurrentInput({ elementId: addItemId, value: "" }));
+              dispatch(addTodo(currentInput));
+            });
+            return true;
+          }
+
+          return false;
+        },
+        buttonProps: {
+          onClick: () => {
+            batch(() => {
+              dispatch(updateCurrentInput({ elementId: addItemId, value: "" }));
+              dispatch(addTodo(currentInput));
+            });
+          }
+        }
+      }}
+      listItems={todos.map((todo, i) => ({
+        itemId: todo.id,
+        primary: todo.title,
+        primaryEdited: elementId === String(i),
+        primaryTextFieldProps: {
           onChange: (event: ChangeEvent<HTMLInputElement>) =>
-            dispatch(updateCurrentInput(event.target.value)),
+            dispatch(
+              updateCurrentInput({
+                elementId: String(i),
+                value: event.target.value
+              })
+            ),
+          onBlur: () => dispatch(stopCurrentInput()),
           onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => {
             if (event.key === "Enter") {
-              dispatch(updateCurrentInput(""));
-              dispatch(addTodo(currentInput));
+              batch(() => {
+                dispatch(stopCurrentInput());
+                dispatch(updateTodo({ ...todo, title: currentInput }));
+              });
               return true;
             }
 
             return false;
-          },
-          buttonProps: {
-            onClick: () => {
-              dispatch(updateCurrentInput(""));
-              dispatch(addTodo(currentInput));
-            }
           }
-        }}
-        listItems={todos.map((todo, i) => ({
-          itemId: todo.id,
-          primary: todo.title,
-          primaryEdited: elementId === String(i),
-          primaryTextFieldProps: {
-            onChange: (event: ChangeEvent<HTMLInputElement>) =>
-              dispatch(
-                updateCurrentInput({
-                  elementId: String(i),
-                  value: event.target.value
-                })
-              ),
-            onBlur: () => dispatch(stopCurrentInput()),
-            onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => {
-              if (event.key === "Enter") {
-                dispatch(stopCurrentInput());
-                dispatch(updateTodo({ ...todo, title: currentInput }));
-                return true;
-              }
-
-              return false;
-            }
-          },
-          checked: todo.completed,
-          checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
-          listItemTextProps: {
-            onClick: () =>
-              dispatch(
-                startCurrentInput({ elementId: String(i), value: todo.title })
-              )
-          },
-          deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
-        }))}
-      />
-    </>
+        },
+        checked: todo.completed,
+        checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
+        listItemTextProps: {
+          onClick: () =>
+            dispatch(
+              startCurrentInput({ elementId: String(i), value: todo.title })
+            )
+        },
+        deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
+      }))}
+    />
   );
 }
