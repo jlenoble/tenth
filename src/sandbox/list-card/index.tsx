@@ -18,7 +18,7 @@ import { MoreVert } from "@material-ui/icons";
 
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { CardHeader } from "../../core";
+import { CardHeader } from "./CardHeader";
 import { useEditValue } from "../list/use";
 
 import { RequiredKeys } from "../../generics";
