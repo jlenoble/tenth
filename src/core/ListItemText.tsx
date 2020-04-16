@@ -46,3 +46,5 @@ export const ListItemText: FunctionComponent<FullListItemTextProps> = ({
     />
   );
 };
+
+export default ListItemText;

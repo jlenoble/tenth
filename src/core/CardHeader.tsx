@@ -44,3 +44,5 @@ export const CardHeader: FunctionComponent<FullCardHeaderProps> = ({
     />
   );
 };
+
+export default CardHeader;
