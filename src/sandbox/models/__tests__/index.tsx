@@ -1,47 +1,65 @@
 import React, { FunctionComponent } from "react";
 import { createStore } from "redux";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
+import { resetTodos, tmpId } from "../todo";
 
-const List: FunctionComponent = () => {
+const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const store = createStore(combinedReducer);
+  const InnerList: FunctionComponent = () => {
+    const dispatch = useDispatch();
+    dispatch(
+      resetTodos(
+        items.map((item) => ({ id: tmpId(), title: item, completed: false }))
+      )
+    );
+    return <TodoList />;
+  };
 
   return (
     <Provider store={store}>
-      <TodoList />
+      <InnerList />
     </Provider>
   );
 };
 
 describe("List", () => {
   it("Initialize", () => {
-    const { getByRole } = render(<List />);
-    const list = getByRole("list") as HTMLUListElement;
-    expect(list.textContent).toEqual("");
+    const { getAllByRole } = render(<List items={["foo", "bar", "baz"]} />);
+
+    const listitems = getAllByRole("listitem") as HTMLLIElement[];
+
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "foo",
+      "bar",
+      "baz"
+    ]);
   });
 
   it("Add", async () => {
-    const { getByRole, getByText, getAllByRole } = render(<List />);
+    const { getByRole, getByText, getAllByRole } = render(
+      <List items={["foo"]} />
+    );
 
     const textbox = getByRole("textbox") as HTMLInputElement;
     const addButton = getByText(/add/i) as HTMLButtonElement;
 
     await userEvents.type(textbox, "bar");
 
-    const list = getByRole("list") as HTMLUListElement;
-    expect(list.textContent).toEqual("");
+    let listitems = getAllByRole("listitem") as HTMLLIElement[];
+    expect(listitems.map((li) => li.textContent)).toEqual(["foo"]);
 
     userEvents.click(addButton);
 
-    let listitems = getAllByRole("listitem") as HTMLLIElement[];
-    expect(listitems.map((li) => li.textContent)).toEqual(["bar"]);
+    listitems = getAllByRole("listitem") as HTMLLIElement[];
+    expect(listitems.map((li) => li.textContent)).toEqual(["foo", "bar"]);
 
     await userEvents.type(textbox, "baz");
 
     listitems = getAllByRole("listitem") as HTMLLIElement[];
-    expect(listitems.map((li) => li.textContent)).toEqual(["bar"]);
+    expect(listitems.map((li) => li.textContent)).toEqual(["foo", "bar"]);
 
     fireEvent.keyPress(textbox, {
       key: "Enter",
@@ -51,24 +69,17 @@ describe("List", () => {
     });
 
     listitems = getAllByRole("listitem") as HTMLLIElement[];
-    expect(listitems.map((li) => li.textContent)).toEqual(["bar", "baz"]);
+    expect(listitems.map((li) => li.textContent)).toEqual([
+      "foo",
+      "bar",
+      "baz"
+    ]);
   });
 
-  it("Remove", async () => {
-    const { getByRole, getByText } = render(<List />);
+  it("Remove", () => {
+    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
-
-    const textbox = getByRole("textbox") as HTMLInputElement;
-    const addButton = getByText(/add/i) as HTMLButtonElement;
-
-    await userEvents.type(textbox, "foo");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "bar");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "baz");
-    userEvents.click(addButton);
-
     const { getAllByRole } = within(list);
 
     let buttons = getAllByRole("button") as HTMLButtonElement[];
@@ -95,21 +106,10 @@ describe("List", () => {
     }
   });
 
-  it("Check", async () => {
-    const { getByRole, getByText } = render(<List />);
+  it("Check", () => {
+    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
-
-    const textbox = getByRole("textbox") as HTMLInputElement;
-    const addButton = getByText(/add/i) as HTMLButtonElement;
-
-    await userEvents.type(textbox, "foo");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "bar");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "baz");
-    userEvents.click(addButton);
-
     const { getAllByRole } = within(list);
 
     const checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
@@ -142,21 +142,15 @@ describe("List", () => {
   });
 
   it("Check/Add/Remove", async () => {
-    const { getByRole, getByText } = render(<List />);
+    const { getByRole, getByText } = render(
+      <List items={["foo", "bar", "baz"]} />
+    );
 
     const list = getByRole("list") as HTMLUListElement;
+    const { getAllByRole } = within(list);
 
     const textbox = getByRole("textbox") as HTMLInputElement;
     const addButton = getByText(/add/i) as HTMLButtonElement;
-
-    await userEvents.type(textbox, "foo");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "bar");
-    userEvents.click(addButton);
-    await userEvents.type(textbox, "baz");
-    userEvents.click(addButton);
-
-    const { getAllByRole } = within(list);
 
     let checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     let listitems = getAllByRole("listitem") as HTMLLIElement[];

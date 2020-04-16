@@ -11,6 +11,10 @@ export const DELETE_TODO = "DELETE_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 
+export const RESET_TODOS = "RESET_TODOS";
+export const LOAD_TODOS = "LOAD_TODOS";
+export const SAVE_TODOS = "SAVE_TODOS";
+
 export interface TodoAddAction {
   type: typeof ADD_TODO;
   meta: { title: string };
@@ -31,11 +35,29 @@ export interface TodoToggleAction {
   meta: { id: string };
 }
 
+export interface TodoResetAction {
+  type: typeof RESET_TODOS;
+  payload: TodoState;
+}
+
+export interface TodoLoadAction {
+  type: typeof LOAD_TODOS;
+  meta: { localStorageId: string };
+}
+
+export interface TodoSaveAction {
+  type: typeof SAVE_TODOS;
+  meta: { localStorageId: string };
+}
+
 export type TodoActionType =
   | TodoAddAction
   | TodoDeleteAction
   | TodoUpdateAction
-  | TodoToggleAction;
+  | TodoToggleAction
+  | TodoResetAction
+  | TodoLoadAction
+  | TodoSaveAction;
 
 export const addTodo = (title: string): TodoActionType => {
   return {
@@ -65,7 +87,26 @@ export const toggleTodo = (id: string): TodoActionType => {
   };
 };
 
-export const localStorageId = "todos";
+export const resetTodos = (todos: TodoState): TodoActionType => {
+  return {
+    type: RESET_TODOS,
+    payload: todos
+  };
+};
+
+export const loadTodos = (localStorageId: string): TodoActionType => {
+  return {
+    type: LOAD_TODOS,
+    meta: { localStorageId }
+  };
+};
+
+export const saveTodos = (localStorageId: string): TodoActionType => {
+  return {
+    type: SAVE_TODOS,
+    meta: { localStorageId }
+  };
+};
 
 export const initialState: TodoState = [];
 
@@ -98,6 +139,18 @@ export const todos = (
           ? todo
           : { ...todo, completed: !todo.completed }
       );
+
+    case RESET_TODOS:
+      return action.payload;
+
+    case LOAD_TODOS:
+      return JSON.parse(
+        localStorage.getItem(action.meta.localStorageId) || "[]"
+      ) as Todo[];
+
+    case SAVE_TODOS:
+      localStorage.setItem(action.meta.localStorageId, JSON.stringify(state));
+      return state;
 
     default:
       return state;
