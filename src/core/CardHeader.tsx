@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import {
-  CardHeader as BaseCardHeader,
-  CardHeaderProps as BaseCardHeaderProps,
+  CardHeader as MuiCardHeader,
+  CardHeaderProps as MuiCardHeaderProps,
   TextFieldProps
 } from "@material-ui/core";
 import InlineText from "./InlineText";
@@ -15,9 +15,10 @@ export interface CardHeaderProps {
   titleTextFieldProps?: TextFieldProps;
 }
 
-export const CardHeader: FunctionComponent<
-  CardHeaderProps & BaseCardHeaderProps
-> = ({
+export type BaseCardHeaderProps = Omit<MuiCardHeaderProps, "title">;
+export type FullCardHeaderProps = CardHeaderProps & BaseCardHeaderProps;
+
+export const CardHeader: FunctionComponent<FullCardHeaderProps> = ({
   title,
   titleEdited,
   titleLabel,
@@ -27,7 +28,7 @@ export const CardHeader: FunctionComponent<
   ...other
 }) => {
   return (
-    <BaseCardHeader
+    <MuiCardHeader
       disableTypography={titleEdited || titleError}
       title={
         <InlineText
