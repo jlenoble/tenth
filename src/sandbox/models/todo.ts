@@ -130,7 +130,7 @@ export const todos = (
 
     case UPDATE_TODO:
       return state.map((todo) =>
-        todo.id !== action.payload.id ? todo : { ...todo, ...action.payload }
+        todo.id !== action.payload.id ? todo : action.payload
       );
 
     case TOGGLE_TODO:
