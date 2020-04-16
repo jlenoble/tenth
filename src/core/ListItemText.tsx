@@ -29,7 +29,9 @@ export const ListItemText: FunctionComponent<FullListItemTextProps> = ({
 }) => {
   return (
     <MuiListItemText
-      disableTypography={primaryEdited || primaryError}
+      disableTypography={
+        (primaryTextFieldProps && primaryEdited) || primaryError
+      }
       primary={
         <InlineText
           text={primary}

@@ -20,7 +20,7 @@ export const InlineText: FunctionComponent<InlineTextProps> = ({
   error,
   textFieldProps
 }) => {
-  if (edited) {
+  if (edited && textFieldProps) {
     return (
       <TextField
         defaultValue={text}
