@@ -7,8 +7,10 @@ import {
 } from "@material-ui/core";
 import { BaseListItemTextProps } from "./ListItemText";
 import { ListItem, ListItemProps } from "./ListItem";
+import { AddItem, AddItemProps } from "./AddItem";
 
 export interface ListProps {
+  addItemProps?: AddItemProps;
   listItems?: ListItemProps[];
   checkboxProps?: Omit<CheckboxProps, "checked">;
   listItemTextProps?: BaseListItemTextProps;
@@ -19,6 +21,7 @@ export type BaseListProps = MuiListProps;
 export type FullListProps = ListProps & BaseListProps;
 
 export const List: FunctionComponent<FullListProps> = ({
+  addItemProps,
   listItems,
   checkboxProps,
   listItemTextProps,
@@ -26,18 +29,21 @@ export const List: FunctionComponent<FullListProps> = ({
   ...other
 }) => {
   return (
-    <MuiList {...other}>
-      {listItems &&
-        listItems.map((listItem) => (
-          <ListItem
-            key={listItem.itemId}
-            checkboxProps={checkboxProps}
-            listItemTextProps={listItemTextProps}
-            deleteButtonProps={deleteButtonProps}
-            {...listItem}
-          />
-        ))}
-    </MuiList>
+    <>
+      {addItemProps && <AddItem {...addItemProps} />}
+      <MuiList {...other}>
+        {listItems &&
+          listItems.map((listItem) => (
+            <ListItem
+              key={listItem.itemId}
+              checkboxProps={checkboxProps}
+              listItemTextProps={listItemTextProps}
+              deleteButtonProps={deleteButtonProps}
+              {...listItem}
+            />
+          ))}
+      </MuiList>
+    </>
   );
 };
 

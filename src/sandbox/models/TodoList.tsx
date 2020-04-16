@@ -9,7 +9,7 @@ import {
   updateCurrentEdit,
   stopCurrentEdit
 } from "./current-edit";
-import { AddItem, List } from "../../core";
+import { List } from "../../core";
 
 export const combinedReducer = combineReducers({
   todos,
@@ -33,8 +33,8 @@ export function TodoList() {
 
   return (
     <>
-      <AddItem add={(value: string) => dispatch(addTodo(value))} />
       <List
+        addItemProps={{ add: (value: string) => dispatch(addTodo(value)) }}
         listItems={todos.map((todo, i) => ({
           itemId: todo.id,
           primary: todo.title,
