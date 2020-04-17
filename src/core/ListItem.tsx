@@ -32,10 +32,10 @@ export const ListItem: FunctionComponent<FullListItemProps> = ({
   checkboxProps,
 
   primary,
-  primaryEdited,
   primaryLabel,
   primaryHelperText,
   primaryError,
+  primaryEnter,
   primaryTextFieldProps,
   listItemTextProps,
 
@@ -48,10 +48,10 @@ export const ListItem: FunctionComponent<FullListItemProps> = ({
       {checkboxProps && <Checkbox checked={checked} {...checkboxProps} />}
       <ListItemText
         primary={primary}
-        primaryEdited={primaryEdited}
         primaryLabel={primaryLabel}
         primaryHelperText={primaryHelperText}
         primaryError={primaryError}
+        primaryEnter={primaryEnter}
         primaryTextFieldProps={primaryTextFieldProps}
         {...listItemTextProps}
       />

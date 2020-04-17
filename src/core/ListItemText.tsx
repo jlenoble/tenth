@@ -4,14 +4,14 @@ import {
   ListItemTextProps as MuiListItemTextProps,
   TextFieldProps
 } from "@material-ui/core";
-import InlineText from "./InlineText";
+import { StatefulInlineText as InlineText } from "./InlineText";
 
 export interface ListItemTextProps {
   primary: string;
-  primaryEdited?: boolean;
   primaryLabel?: string;
   primaryHelperText?: string;
   primaryError?: boolean;
+  primaryEnter?: (value: string) => void;
   primaryTextFieldProps?: TextFieldProps;
 }
 
@@ -20,30 +20,30 @@ export type FullListItemTextProps = ListItemTextProps & BaseListItemTextProps;
 
 export const ListItemText: FunctionComponent<FullListItemTextProps> = ({
   primary,
-  primaryEdited,
   primaryLabel,
   primaryHelperText,
   primaryError,
+  primaryEnter,
   primaryTextFieldProps,
   ...other
 }) => {
-  return (
+  return primaryEnter ? (
     <MuiListItemText
-      disableTypography={
-        (primaryTextFieldProps && primaryEdited) || primaryError
-      }
+      disableTypography
       primary={
         <InlineText
           text={primary}
-          edited={primaryEdited}
           label={primaryLabel}
           helperText={primaryHelperText}
           error={primaryError}
+          enter={primaryEnter}
           textFieldProps={primaryTextFieldProps}
         />
       }
       {...other}
     />
+  ) : (
+    <MuiListItemText primary={primary} {...other} />
   );
 };
 
