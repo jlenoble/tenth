@@ -16,12 +16,16 @@ export const AddItem: FunctionComponent<AddItemProps> = ({
   buttonProps,
   ...other
 }) => {
+  const textField = (
+    <TextField placeholder="Add item here" fullWidth {...other} />
+  );
+
   return (
     <Paper elevation={0} style={{ marginBottom: 16, padding: 16 }}>
-      {(buttonProps && (
+      {buttonProps ? (
         <Grid container>
           <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
-            <TextField placeholder="Add item here" fullWidth {...other} />
+            {textField}
           </Grid>
           <Grid xs={2} md={1} item>
             <Button
@@ -34,7 +38,9 @@ export const AddItem: FunctionComponent<AddItemProps> = ({
             </Button>
           </Grid>
         </Grid>
-      )) || <TextField placeholder="Add item here" fullWidth {...other} />}
+      ) : (
+        textField
+      )}
     </Paper>
   );
 };
