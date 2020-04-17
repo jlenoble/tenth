@@ -7,7 +7,10 @@ import {
 } from "@material-ui/core";
 import { BaseListItemTextProps } from "./ListItemText";
 import { ListItem, ListItemProps } from "./ListItem";
-import { AddItem, AddItemProps } from "./AddItem";
+import {
+  StatefulAddItem as AddItem,
+  StatefulAddItemProps as AddItemProps
+} from "./AddItem";
 
 export interface ListProps {
   addItemProps?: AddItemProps;

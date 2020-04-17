@@ -32,39 +32,9 @@ export function TodoList() {
 
   todos = [...pendingTodos, ...completedTodos];
 
-  const addItemId = "addItem";
-
   return (
     <List
-      addItemProps={{
-        value: elementId === addItemId ? currentInput : undefined,
-        onChange: (event: ChangeEvent<HTMLInputElement>) =>
-          dispatch(
-            updateCurrentInput({
-              elementId: addItemId,
-              value: event.target.value
-            })
-          ),
-        onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => {
-          if (event.key === "Enter") {
-            batch(() => {
-              dispatch(updateCurrentInput({ elementId: addItemId, value: "" }));
-              dispatch(addTodo(currentInput));
-            });
-            return true;
-          }
-
-          return false;
-        },
-        buttonProps: {
-          onClick: () => {
-            batch(() => {
-              dispatch(updateCurrentInput({ elementId: addItemId, value: "" }));
-              dispatch(addTodo(currentInput));
-            });
-          }
-        }
-      }}
+      addItemProps={{ add: (value: string) => dispatch(addTodo(value)) }}
       listItems={todos.map((todo, i) => ({
         itemId: todo.id,
         primary: todo.title,
