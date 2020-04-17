@@ -36,6 +36,7 @@ export const ListItemText: FunctionComponent<FullListItemTextProps> = ({
       primary={
         <InlineText
           text={primary}
+          textClassName="MuiListItemText-primary"
           textVariant={primaryVariant}
           label={primaryLabel}
           helperText={primaryHelperText}

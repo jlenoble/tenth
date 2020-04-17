@@ -6,6 +6,7 @@ import { ErrorTooltip } from "./Tooltip";
 
 export interface InlineTextProps {
   text: string;
+  textClassName: string;
   textVariant: TypographyVariant;
   edited?: boolean;
   label?: string;
@@ -18,6 +19,7 @@ export interface InlineTextProps {
 
 export const InlineText: FunctionComponent<InlineTextProps> = ({
   text,
+  textClassName,
   textVariant,
   edited,
   label,
@@ -57,6 +59,7 @@ export const InlineText: FunctionComponent<InlineTextProps> = ({
   return (
     <Typography
       variant={textVariant}
+      className={textClassName}
       component="span"
       display="block"
       onClick={edit}
@@ -71,6 +74,7 @@ export const StatefulInlineText: FunctionComponent<Omit<
   "edited" | "edit"
 >> = ({
   text,
+  textClassName,
   textVariant,
   label,
   helperText,
@@ -83,6 +87,7 @@ export const StatefulInlineText: FunctionComponent<Omit<
   return (
     <InlineText
       text={text}
+      textClassName={textClassName}
       textVariant={textVariant}
       edited={edited}
       label={label}

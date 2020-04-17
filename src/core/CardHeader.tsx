@@ -36,6 +36,7 @@ export const CardHeader: FunctionComponent<FullCardHeaderProps> = ({
       title={
         <InlineText
           text={title}
+          textClassName="MuiCardHeader-title"
           textVariant={titleVariant}
           label={titleLabel}
           helperText={titleHelperText}
