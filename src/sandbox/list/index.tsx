@@ -10,10 +10,12 @@ import {
   List as BaseList,
   ListProps as BaseListProps,
   ListItem as BaseListItem,
-  ListItemProps as BaseListItemProps,
+  ListItemProps as BaseListItemProps
+} from "../../mui-base";
+import {
   ListItemText as BaseListItemText,
   ListItemTextProps as BaseListItemTextProps
-} from "../../mui-base";
+} from "./ListItemText";
 
 import { ErrorTooltip } from "../../core";
 import { useToggle, useEditValue } from "./use";
