@@ -3,7 +3,7 @@ import { createStore } from "redux";
 import { Provider, useDispatch } from "react-redux";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { TodoList, combinedReducer } from "../TodoList";
+import { TodoList, combinedReducer, defaultTitle } from "../TodoList";
 import { resetTodos, tmpId } from "../todo";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
@@ -25,7 +25,6 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   );
 };
 
-const defaultTitle = "Test ListCard";
 const CONTENT_ATTRIBUTE = ".MuiCardHeader-content";
 const TITLE_ATTRIBUTE = ".MuiCardHeader-title";
 
@@ -63,33 +62,33 @@ describe("TodoList", () => {
     ]);
   });
 
-  // it("Edit title", async () => {
-  //   const { container } = render(<List items={["foo", "bar", "baz"]} />);
+  it("Edit title", async () => {
+    const { container } = render(<List items={["foo", "bar", "baz"]} />);
 
-  //   const cardHeaderContent = container.querySelector(
-  //     CONTENT_ATTRIBUTE
-  //   ) as HTMLElement;
-  //   const { getByRole, getByText } = within(cardHeaderContent);
+    const cardHeaderContent = container.querySelector(
+      CONTENT_ATTRIBUTE
+    ) as HTMLElement;
+    const { getByRole, getByText } = within(cardHeaderContent);
 
-  //   const text = getByText(defaultTitle) as HTMLSpanElement;
+    const text = getByText(defaultTitle) as HTMLSpanElement;
 
-  //   userEvents.click(text);
-  //   expect(text).not.toBeInTheDocument();
+    userEvents.click(text);
+    expect(text).not.toBeInTheDocument();
 
-  //   const textbox = getByRole("textbox") as HTMLInputElement;
+    const textbox = getByRole("textbox") as HTMLInputElement;
 
-  //   await userEvents.type(textbox, "bozo");
-  //   fireEvent.keyPress(textbox, {
-  //     key: "Enter",
-  //     code: 13,
-  //     charCode: 13,
-  //     keyCode: 13
-  //   });
-  //   expect(textbox).not.toBeInTheDocument();
+    await userEvents.type(textbox, "bozo");
+    fireEvent.keyPress(textbox, {
+      key: "Enter",
+      code: 13,
+      charCode: 13,
+      keyCode: 13
+    });
+    expect(textbox).not.toBeInTheDocument();
 
-  //   const title = cardHeaderContent.querySelector(
-  //     TITLE_ATTRIBUTE
-  //   ) as HTMLElement;
-  //   expect(title.textContent).toEqual(defaultTitle + "bozo");
-  // });
+    const title = cardHeaderContent.querySelector(
+      TITLE_ATTRIBUTE
+    ) as HTMLElement;
+    expect(title.textContent).toEqual(defaultTitle + "bozo");
+  });
 });

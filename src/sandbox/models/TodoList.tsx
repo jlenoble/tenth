@@ -10,13 +10,15 @@ export const combinedReducer = combineReducers({
   visibilityFilter
 });
 
+export const defaultTitle = "TODOS";
+
 export const getTodos = (state: ReturnType<typeof combinedReducer>) =>
   state.todos;
 
 export function TodoList() {
   let todos = useSelector(getTodos);
   const dispatch = useDispatch();
-  const [title, setTitle] = useState("TODOS");
+  const [title, setTitle] = useState(defaultTitle);
 
   const completedTodos = todos.filter((todo) => todo.completed);
   const pendingTodos = todos.filter((todo) => !todo.completed);
