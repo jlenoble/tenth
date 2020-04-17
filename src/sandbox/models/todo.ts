@@ -172,11 +172,10 @@ export function* watchChangesAndSaveToLocalStorage(localStorageId: string) {
     yield saveToLocalStorage(localStorageId);
   };
 
-  yield takeLatest(ADD_TODO, save);
-  yield takeLatest(DELETE_TODO, save);
-  yield takeLatest(UPDATE_TODO, save);
-  yield takeLatest(TOGGLE_TODO, save);
-  yield takeLatest(RESET_TODOS, save);
+  yield takeLatest(
+    [ADD_TODO, DELETE_TODO, UPDATE_TODO, TOGGLE_TODO, RESET_TODOS],
+    save
+  );
 }
 
 export function* enableLocalStorage(localStorageId: string) {
