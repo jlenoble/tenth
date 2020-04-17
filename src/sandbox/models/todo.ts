@@ -1,3 +1,5 @@
+import { put, select, takeEvery } from "redux-saga/effects";
+
 export interface Todo {
   id: string;
   title: string;
@@ -156,3 +158,28 @@ export const todos = (
       return state;
   }
 };
+
+export function* loadFromLocalStorage(localStorageId: string) {
+  yield put(loadTodos(localStorageId));
+}
+
+export function* saveToLocalStorage(localStorageId: string) {
+  yield put(saveTodos(localStorageId));
+}
+
+export function* watchChangesAndSaveToLocalStorage(localStorageId: string) {
+  const save = function* () {
+    yield saveToLocalStorage(localStorageId);
+  };
+
+  yield takeEvery(ADD_TODO, save);
+  yield takeEvery(DELETE_TODO, save);
+  yield takeEvery(UPDATE_TODO, save);
+  yield takeEvery(TOGGLE_TODO, save);
+  yield takeEvery(RESET_TODOS, save);
+}
+
+export function* enableLocalStorage(localStorageId: string) {
+  yield loadFromLocalStorage(localStorageId);
+  yield watchChangesAndSaveToLocalStorage(localStorageId);
+}
