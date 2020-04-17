@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import { TodoList, combinedReducer } from "./TodoList";
 import { enableLocalStorage } from "./todo";
+import { CurrentTodo } from "./CurrentTodo";
 
 const localStorageId = "todos";
 
@@ -19,6 +20,7 @@ sagaMiddleware.run(enableLocalStorage, localStorageId);
 function App() {
   return (
     <Provider store={store}>
+      <CurrentTodo />
       <TodoList />
     </Provider>
   );
