@@ -2,16 +2,18 @@ import React, { FunctionComponent } from "react";
 import {
   CardHeader as MuiCardHeader,
   CardHeaderProps as MuiCardHeaderProps,
-  TextFieldProps
+  TextFieldProps,
+  TypographyVariant
 } from "@material-ui/core";
-import InlineText from "./InlineText";
+import { StatefulInlineText as InlineText } from "./InlineText";
 
 export interface CardHeaderProps {
   title: string;
-  titleEdited?: boolean;
+  titleVariant?: TypographyVariant;
   titleLabel?: string;
   titleHelperText?: string;
   titleError?: boolean;
+  titleEnter?: (title: string) => void;
   titleTextFieldProps?: TextFieldProps;
 }
 
@@ -20,28 +22,32 @@ export type FullCardHeaderProps = CardHeaderProps & BaseCardHeaderProps;
 
 export const CardHeader: FunctionComponent<FullCardHeaderProps> = ({
   title,
-  titleEdited,
+  titleVariant = "h5",
   titleLabel,
   titleHelperText,
   titleError,
+  titleEnter,
   titleTextFieldProps,
   ...other
 }) => {
-  return (
+  return titleEnter ? (
     <MuiCardHeader
-      disableTypography={titleEdited || titleError}
+      disableTypography
       title={
         <InlineText
           text={title}
-          edited={titleEdited}
+          textVariant={titleVariant}
           label={titleLabel}
           helperText={titleHelperText}
           error={titleError}
+          enter={titleEnter}
           textFieldProps={titleTextFieldProps}
         />
       }
       {...other}
     />
+  ) : (
+    <MuiCardHeader title={title} {...other} />
   );
 };
 

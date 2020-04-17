@@ -2,12 +2,14 @@ import React, { FunctionComponent } from "react";
 import {
   ListItemText as MuiListItemText,
   ListItemTextProps as MuiListItemTextProps,
-  TextFieldProps
+  TextFieldProps,
+  TypographyVariant
 } from "@material-ui/core";
 import { StatefulInlineText as InlineText } from "./InlineText";
 
 export interface ListItemTextProps {
   primary: string;
+  primaryVariant?: TypographyVariant;
   primaryLabel?: string;
   primaryHelperText?: string;
   primaryError?: boolean;
@@ -20,6 +22,7 @@ export type FullListItemTextProps = ListItemTextProps & BaseListItemTextProps;
 
 export const ListItemText: FunctionComponent<FullListItemTextProps> = ({
   primary,
+  primaryVariant = "body1",
   primaryLabel,
   primaryHelperText,
   primaryError,
@@ -33,6 +36,7 @@ export const ListItemText: FunctionComponent<FullListItemTextProps> = ({
       primary={
         <InlineText
           text={primary}
+          textVariant={primaryVariant}
           label={primaryLabel}
           helperText={primaryHelperText}
           error={primaryError}

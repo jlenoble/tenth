@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, memo } from "react";
 import {
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps,
@@ -25,43 +25,52 @@ export interface ListItemProps extends ListItemTextProps {
 export type BaseListItemProps = MuiListItemProps<"li", { button?: false }>;
 export type FullListItemProps = ListItemProps & BaseListItemProps;
 
-export const ListItem: FunctionComponent<FullListItemProps> = ({
-  itemId,
+export const ListItem: FunctionComponent<FullListItemProps> = memo(
+  ({
+    itemId,
 
-  checked,
-  checkboxProps,
+    checked,
+    checkboxProps,
 
-  primary,
-  primaryLabel,
-  primaryHelperText,
-  primaryError,
-  primaryEnter,
-  primaryTextFieldProps,
-  listItemTextProps,
+    primary,
+    primaryLabel,
+    primaryHelperText,
+    primaryError,
+    primaryEnter,
+    primaryTextFieldProps,
+    listItemTextProps,
 
-  deleteButtonProps,
+    deleteButtonProps,
 
-  ...other
-}) => {
-  return (
-    <MuiListItem {...other}>
-      {checkboxProps && <Checkbox checked={checked} {...checkboxProps} />}
-      <ListItemText
-        primary={primary}
-        primaryLabel={primaryLabel}
-        primaryHelperText={primaryHelperText}
-        primaryError={primaryError}
-        primaryEnter={primaryEnter}
-        primaryTextFieldProps={primaryTextFieldProps}
-        {...listItemTextProps}
-      />
-      {deleteButtonProps && (
-        <IconButton aria-label="Delete item" {...deleteButtonProps}>
-          <DeleteOutlined />
-        </IconButton>
-      )}
-    </MuiListItem>
-  );
-};
+    ...other
+  }) => {
+    return (
+      <MuiListItem {...other}>
+        {checkboxProps && <Checkbox checked={checked} {...checkboxProps} />}
+        <ListItemText
+          primary={primary}
+          primaryLabel={primaryLabel}
+          primaryHelperText={primaryHelperText}
+          primaryError={primaryError}
+          primaryEnter={primaryEnter}
+          primaryTextFieldProps={primaryTextFieldProps}
+          {...listItemTextProps}
+        />
+        {deleteButtonProps && (
+          <IconButton aria-label="Delete item" {...deleteButtonProps}>
+            <DeleteOutlined />
+          </IconButton>
+        )}
+      </MuiListItem>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.itemId === nextProps.itemId &&
+      prevProps.primary === nextProps.primary &&
+      prevProps.checked === nextProps.checked
+    );
+  }
+);
 
 export default ListItem;

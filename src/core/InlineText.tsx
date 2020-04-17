@@ -1,11 +1,12 @@
 import React, { FunctionComponent, useState } from "react";
-import { Typography } from "@material-ui/core";
+import { Typography, TypographyVariant } from "@material-ui/core";
 import { StatefulTextField as TextField, TextFieldProps } from "./TextField";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import { ErrorTooltip } from "./Tooltip";
 
 export interface InlineTextProps {
   text: string;
+  textVariant: TypographyVariant;
   edited?: boolean;
   label?: string;
   helperText?: string;
@@ -17,6 +18,7 @@ export interface InlineTextProps {
 
 export const InlineText: FunctionComponent<InlineTextProps> = ({
   text,
+  textVariant,
   edited,
   label,
   helperText,
@@ -54,7 +56,7 @@ export const InlineText: FunctionComponent<InlineTextProps> = ({
 
   return (
     <Typography
-      variant={"body1"}
+      variant={textVariant}
       component="span"
       display="block"
       onClick={edit}
@@ -67,12 +69,21 @@ export const InlineText: FunctionComponent<InlineTextProps> = ({
 export const StatefulInlineText: FunctionComponent<Omit<
   InlineTextProps,
   "edited" | "edit"
->> = ({ text, label, helperText, error, enter, textFieldProps }) => {
+>> = ({
+  text,
+  textVariant,
+  label,
+  helperText,
+  error,
+  enter,
+  textFieldProps
+}) => {
   const [edited, setEdited] = useState(false);
 
   return (
     <InlineText
       text={text}
+      textVariant={textVariant}
       edited={edited}
       label={label}
       helperText={helperText}
