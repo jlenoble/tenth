@@ -1,4 +1,4 @@
-import { put, select, takeEvery } from "redux-saga/effects";
+import { put, select, takeLatest } from "redux-saga/effects";
 
 export interface Todo {
   id: string;
@@ -172,11 +172,11 @@ export function* watchChangesAndSaveToLocalStorage(localStorageId: string) {
     yield saveToLocalStorage(localStorageId);
   };
 
-  yield takeEvery(ADD_TODO, save);
-  yield takeEvery(DELETE_TODO, save);
-  yield takeEvery(UPDATE_TODO, save);
-  yield takeEvery(TOGGLE_TODO, save);
-  yield takeEvery(RESET_TODOS, save);
+  yield takeLatest(ADD_TODO, save);
+  yield takeLatest(DELETE_TODO, save);
+  yield takeLatest(UPDATE_TODO, save);
+  yield takeLatest(TOGGLE_TODO, save);
+  yield takeLatest(RESET_TODOS, save);
 }
 
 export function* enableLocalStorage(localStorageId: string) {
