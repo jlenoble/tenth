@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { combineReducers } from "redux";
 import { useSelector, useDispatch } from "react-redux";
 import { todos, addTodo, deleteTodo, updateTodo, toggleTodo } from "./todo";
@@ -15,7 +16,18 @@ export const defaultTitle = "TODOS";
 export const getTodos = (state: ReturnType<typeof combinedReducer>) =>
   state.todos;
 
+export const useStyles = makeStyles((theme: Theme) => ({
+  card: {
+    borderRadius: 0,
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.primary.contrastText,
+    boxShadow: "none"
+  }
+}));
+
 export function TodoList() {
+  const classes = useStyles();
+
   let todos = useSelector(getTodos);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(defaultTitle);
@@ -27,6 +39,7 @@ export function TodoList() {
 
   return (
     <List
+      classes={{ root: classes.card }}
       title={title}
       titleEnter={(title: string) => {
         setTitle(title);

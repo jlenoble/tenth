@@ -8,15 +8,16 @@ import {
   Button
 } from "@material-ui/core";
 import { Todo, toggleTodo } from "./todo";
-import { getTodos } from "./TodoList";
+import { getTodos, useStyles } from "./TodoList";
 
 export function CurrentTodo() {
+  const classes = useStyles();
   let todos = useSelector(getTodos);
   const dispatch = useDispatch();
   const todo: Todo | undefined = todos.find((todo) => !todo.completed);
 
   return (
-    <Card>
+    <Card classes={{ root: classes.card }}>
       <CardHeader
         action={
           todo && (
