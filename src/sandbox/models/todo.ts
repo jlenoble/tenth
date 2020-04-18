@@ -7,7 +7,14 @@ export interface Todo {
   completed: boolean;
 }
 
-export type TodoState = Todo[];
+export interface TodoState {
+  id: string;
+  title: string;
+  checked: boolean;
+}
+
+export type Todos = Todo[];
+export type TodosState = TodoState[];
 
 export const ADD_TODO = "ADD_TODO";
 export const DELETE_TODO = "DELETE_TODO";
@@ -31,7 +38,7 @@ export interface TodoDeleteAction {
 
 export interface TodoUpdateAction {
   type: typeof UPDATE_TODO;
-  payload: Todo;
+  payload: TodoState;
 }
 
 export interface TodoToggleAction {
@@ -46,7 +53,7 @@ export interface TodoMoveAction {
 
 export interface TodoResetAction {
   type: typeof RESET_TODOS;
-  payload: TodoState;
+  payload: Todos;
 }
 
 export interface TodoLoadAction {
@@ -83,7 +90,7 @@ export const deleteTodo = (id: string): TodoActionType => {
   };
 };
 
-export const updateTodo = (todo: Todo): TodoActionType => {
+export const updateTodo = (todo: TodoState): TodoActionType => {
   return {
     type: UPDATE_TODO,
     payload: todo
@@ -104,7 +111,7 @@ export const moveTodo = (dropResult: DropResult): TodoActionType => {
   };
 };
 
-export const resetTodos = (todos: TodoState): TodoActionType => {
+export const resetTodos = (todos: Todos): TodoActionType => {
   return {
     type: RESET_TODOS,
     payload: todos
@@ -125,7 +132,7 @@ export const saveTodos = (localStorageId: string): TodoActionType => {
   };
 };
 
-export const initialState: TodoState = [];
+export const initialState: TodosState = [];
 
 let currentId = Date.now();
 export const tmpId = () => "todo" + currentId++;
@@ -133,13 +140,13 @@ export const tmpId = () => "todo" + currentId++;
 export const todos = (
   state = initialState,
   action: TodoActionType
-): TodoState => {
+): TodosState => {
   switch (action.type) {
     case ADD_TODO:
       return state.concat({
         id: tmpId(),
         title: action.meta.title,
-        completed: false
+        checked: false
       });
 
     case DELETE_TODO:
@@ -152,9 +159,7 @@ export const todos = (
 
     case TOGGLE_TODO:
       return state.map((todo) =>
-        todo.id !== action.meta.id
-          ? todo
-          : { ...todo, completed: !todo.completed }
+        todo.id !== action.meta.id ? todo : { ...todo, checked: !todo.checked }
       );
 
     case MOVE_TODO: {
@@ -180,15 +185,32 @@ export const todos = (
     }
 
     case RESET_TODOS:
-      return action.payload;
+      return action.payload.map((todo) => ({
+        id: todo.id,
+        title: todo.title,
+        checked: todo.completed
+      }));
 
     case LOAD_TODOS:
-      return JSON.parse(
+      return (JSON.parse(
         localStorage.getItem(action.meta.localStorageId) || "[]"
-      ) as Todo[];
+      ) as Todos).map((todo) => ({
+        id: todo.id,
+        title: todo.title,
+        checked: todo.completed
+      }));
 
     case SAVE_TODOS:
-      localStorage.setItem(action.meta.localStorageId, JSON.stringify(state));
+      localStorage.setItem(
+        action.meta.localStorageId,
+        JSON.stringify(
+          state.map((todo) => ({
+            id: todo.id,
+            title: todo.title,
+            completed: todo.checked
+          }))
+        )
+      );
       return state;
 
     default:
