@@ -57,15 +57,23 @@ export function TodoList() {
           setTitle(title);
         }}
         addItemProps={{ add: (value: string) => dispatch(addTodo(value)) }}
-        listItems={todos.map((todo) => ({
-          itemId: todo.id,
-          primary: todo.title,
-          primaryEnter: (value: string) =>
-            dispatch(updateTodoTitle(todo.id, value)),
-          checked: todo.checked,
-          checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
-          deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
-        }))}
+        listItems={todos.map((todo) => {
+          const errors = todo.errors;
+          const primaryError = Boolean(errors);
+          const primaryHelperText = errors && errors.join(", ");
+
+          return {
+            itemId: todo.id,
+            primary: todo.title,
+            primaryError,
+            primaryHelperText,
+            primaryEnter: (value: string) =>
+              dispatch(updateTodoTitle(todo.id, value)),
+            checked: todo.checked,
+            checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
+            deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
+          };
+        })}
       />
     </DragDropContext>
   );

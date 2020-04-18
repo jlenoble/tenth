@@ -1,4 +1,5 @@
-import { put, select, takeLatest, takeEvery } from "redux-saga/effects";
+import { SagaIterator } from "redux-saga";
+import { fork, put, take, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 
 export interface Todo {
@@ -11,38 +12,44 @@ export interface TodoState {
   id: string;
   title: string;
   checked: boolean;
+  validated: boolean;
+  errors?: string[];
 }
 
 export type Todos = Todo[];
 export type TodosState = TodoState[];
 
-export const ADD_TODO = "ADD_TODO";
+const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
+const ADD_TODO_RESPONSE = "ADD_TODO_RESPONSE";
+const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
+const UPDATE_TODO_TITLE_RESPONSE = "UPDATE_TODO_TITLE_RESPONSE";
 export const DELETE_TODO = "DELETE_TODO";
-export const UPDATE_TODO = "UPDATE_TODO";
-export const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
 export const RESET_TODOS = "RESET_TODOS";
 const RESET_TODOS_NOSAVE = "RESET_TODOS_NOSAVE";
 
-export interface TodoAddAction {
-  type: typeof ADD_TODO;
+interface AddTodoRequestAction {
+  type: typeof ADD_TODO_REQUEST;
   meta: { title: string };
+}
+interface AddTodoResponseAction {
+  type: typeof ADD_TODO_RESPONSE;
+  payload: TodoState;
+}
+
+interface UpdateTodoTitleRequestAction {
+  type: typeof UPDATE_TODO_TITLE_REQUEST;
+  meta: { id: string; title: string };
+}
+interface UpdateTodoTitleResponseAction {
+  type: typeof UPDATE_TODO_TITLE_RESPONSE;
+  payload: TodoState;
 }
 
 export interface TodoDeleteAction {
   type: typeof DELETE_TODO;
   meta: { id: string };
-}
-
-export interface TodoUpdateAction {
-  type: typeof UPDATE_TODO;
-  payload: TodoState;
-}
-
-export interface TodoUpdateTitleAction {
-  type: typeof UPDATE_TODO_TITLE;
-  meta: { id: string; title: string };
 }
 
 export interface TodoToggleAction {
@@ -65,11 +72,12 @@ interface TodosResetNoSaveAction {
   payload: Todos;
 }
 
-export type TodoActionType =
-  | TodoAddAction
+type TodoActionType =
+  | AddTodoRequestAction
+  | AddTodoResponseAction
+  | UpdateTodoTitleRequestAction
+  | UpdateTodoTitleResponseAction
   | TodoDeleteAction
-  | TodoUpdateAction
-  | TodoUpdateTitleAction
   | TodoToggleAction
   | TodoMoveAction
   | TodosResetAction
@@ -77,8 +85,27 @@ export type TodoActionType =
 
 export const addTodo = (title: string): TodoActionType => {
   return {
-    type: ADD_TODO,
+    type: ADD_TODO_REQUEST,
     meta: { title }
+  };
+};
+const addTodoResponse = (todo: TodoState): TodoActionType => {
+  return {
+    type: ADD_TODO_RESPONSE,
+    payload: todo
+  };
+};
+
+export const updateTodoTitle = (id: string, title: string): TodoActionType => {
+  return {
+    type: UPDATE_TODO_TITLE_REQUEST,
+    meta: { id, title }
+  };
+};
+const updateTodoTitleResponse = (todo: TodoState): TodoActionType => {
+  return {
+    type: UPDATE_TODO_TITLE_RESPONSE,
+    payload: todo
   };
 };
 
@@ -86,20 +113,6 @@ export const deleteTodo = (id: string): TodoActionType => {
   return {
     type: DELETE_TODO,
     meta: { id }
-  };
-};
-
-export const updateTodo = (todo: TodoState): TodoActionType => {
-  return {
-    type: UPDATE_TODO,
-    payload: todo
-  };
-};
-
-export const updateTodoTitle = (id: string, title: string): TodoActionType => {
-  return {
-    type: UPDATE_TODO_TITLE,
-    meta: { id, title }
   };
 };
 
@@ -131,37 +144,23 @@ const resetTodosNoSave = (todos: Todos): TodoActionType => {
   };
 };
 
-export const initialState: TodosState = [];
-
-let currentId = Date.now();
-export const tmpId = () => "todo" + currentId++;
+const initialState: TodosState = [];
 
 export const todos = (
   state = initialState,
   action: TodoActionType
 ): TodosState => {
   switch (action.type) {
-    case ADD_TODO:
-      return state.concat({
-        id: tmpId(),
-        title: action.meta.title,
-        checked: false
-      });
+    case ADD_TODO_RESPONSE:
+      return state.concat(action.payload);
 
-    case DELETE_TODO:
-      return state.filter((todo) => todo.id !== action.meta.id);
-
-    case UPDATE_TODO:
+    case UPDATE_TODO_TITLE_RESPONSE:
       return state.map((todo) =>
         todo.id !== action.payload.id ? todo : action.payload
       );
 
-    case UPDATE_TODO_TITLE:
-      return state.map((todo) =>
-        todo.id !== action.meta.id
-          ? todo
-          : { ...todo, title: action.meta.title }
-      );
+    case DELETE_TODO:
+      return state.filter((todo) => todo.id !== action.meta.id);
 
     case TOGGLE_TODO:
       return state.map((todo) =>
@@ -195,7 +194,8 @@ export const todos = (
       return action.payload.map((todo) => ({
         id: todo.id,
         title: todo.title,
-        checked: todo.completed
+        checked: todo.completed,
+        validated: false
       }));
 
     default:
@@ -203,7 +203,7 @@ export const todos = (
   }
 };
 
-export function* loadFromLocalStorage(localStorageId: string) {
+function* loadFromLocalStorage(localStorageId: string) {
   const todos = JSON.parse(
     localStorage.getItem(localStorageId) || "[]"
   ) as Todos;
@@ -211,7 +211,7 @@ export function* loadFromLocalStorage(localStorageId: string) {
   yield put(resetTodosNoSave(todos));
 }
 
-export function* saveToLocalStorage(localStorageId: string) {
+function* saveToLocalStorage(localStorageId: string) {
   const todos: TodosState = yield select(
     (state: { todos: TodosState }) => state.todos
   );
@@ -228,13 +228,12 @@ export function* saveToLocalStorage(localStorageId: string) {
   );
 }
 
-export function* enableSaveToLocalStorage(localStorageId: string) {
+function* enableSaveToLocalStorage(localStorageId: string) {
   yield takeLatest(
     [
-      ADD_TODO,
+      ADD_TODO_RESPONSE,
+      UPDATE_TODO_TITLE_RESPONSE,
       DELETE_TODO,
-      UPDATE_TODO,
-      UPDATE_TODO_TITLE,
       TOGGLE_TODO,
       MOVE_TODO,
       RESET_TODOS
@@ -249,10 +248,67 @@ export function* enableLocalStorage(localStorageId: string) {
   yield enableSaveToLocalStorage(localStorageId);
 }
 
-export function* validateInput() {
-  function* validate(...args: any[]) {
-    console.log(...args);
+let currentId = Date.now();
+export const tmpId = () => "todo" + currentId++;
+
+const validateTitle = (title: string) => {
+  const errors: string[] = [];
+
+  if (title === "") {
+    errors.push("Empty string");
   }
 
-  yield takeEvery(ADD_TODO, validate);
+  return errors;
+};
+
+function* watchAddTodo(): SagaIterator {
+  while (1) {
+    const {
+      meta: { title }
+    }: AddTodoRequestAction = yield take(ADD_TODO_REQUEST);
+    const id = tmpId();
+    const errors = validateTitle(title);
+
+    yield put(
+      addTodoResponse(
+        errors.length
+          ? {
+              id,
+              title,
+              checked: false,
+              validated: false,
+              errors
+            }
+          : { id, title, checked: false, validated: true }
+      )
+    );
+  }
+}
+
+function* watchUpdateTodo(): SagaIterator {
+  while (1) {
+    const {
+      meta: { id, title }
+    }: UpdateTodoTitleRequestAction = yield take(UPDATE_TODO_TITLE_REQUEST);
+    const errors = validateTitle(title);
+
+    yield put(
+      updateTodoTitleResponse(
+        errors.length
+          ? {
+              id,
+              title,
+              checked: false,
+              validated: false,
+              errors
+            }
+          : { id, title, checked: false, validated: true }
+      )
+    );
+  }
+}
+
+export function* watchInputs(): SagaIterator {
+  yield fork(watchAddTodo);
+  yield fork(watchUpdateTodo);
 }

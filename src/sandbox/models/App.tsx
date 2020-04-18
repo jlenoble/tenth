@@ -13,7 +13,7 @@ import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import clsx from "clsx";
 import { TodoList, combinedReducer } from "./TodoList";
-import { enableLocalStorage } from "./todo";
+import { enableLocalStorage, watchInputs } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 
 const localStorageId = "todos";
@@ -26,6 +26,7 @@ export const store = createStore(
 );
 
 sagaMiddleware.run(enableLocalStorage, localStorageId);
+sagaMiddleware.run(watchInputs);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
