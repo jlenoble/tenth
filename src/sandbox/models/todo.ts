@@ -1,4 +1,4 @@
-import { put, select, takeLatest } from "redux-saga/effects";
+import { put, select, takeLatest, takeEvery } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 
 export interface Todo {
@@ -247,4 +247,12 @@ export function* enableSaveToLocalStorage(localStorageId: string) {
 export function* enableLocalStorage(localStorageId: string) {
   yield loadFromLocalStorage(localStorageId);
   yield enableSaveToLocalStorage(localStorageId);
+}
+
+export function* validateInput() {
+  function* validate(...args: any[]) {
+    console.log(...args);
+  }
+
+  yield takeEvery(ADD_TODO, validate);
 }
