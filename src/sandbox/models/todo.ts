@@ -22,9 +22,7 @@ export const UPDATE_TODO = "UPDATE_TODO";
 export const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
-
 export const RESET_TODOS = "RESET_TODOS";
-export const LOAD_TODOS = "LOAD_TODOS";
 export const SAVE_TODOS = "SAVE_TODOS";
 
 export interface TodoAddAction {
@@ -62,11 +60,6 @@ export interface TodoResetAction {
   payload: Todos;
 }
 
-export interface TodoLoadAction {
-  type: typeof LOAD_TODOS;
-  meta: { localStorageId: string };
-}
-
 export interface TodoSaveAction {
   type: typeof SAVE_TODOS;
   meta: { localStorageId: string };
@@ -80,7 +73,6 @@ export type TodoActionType =
   | TodoToggleAction
   | TodoMoveAction
   | TodoResetAction
-  | TodoLoadAction
   | TodoSaveAction;
 
 export const addTodo = (title: string): TodoActionType => {
@@ -129,13 +121,6 @@ export const resetTodos = (todos: Todos): TodoActionType => {
   return {
     type: RESET_TODOS,
     payload: todos
-  };
-};
-
-export const loadTodos = (localStorageId: string): TodoActionType => {
-  return {
-    type: LOAD_TODOS,
-    meta: { localStorageId }
   };
 };
 
@@ -212,15 +197,6 @@ export const todos = (
         checked: todo.completed
       }));
 
-    case LOAD_TODOS:
-      return (JSON.parse(
-        localStorage.getItem(action.meta.localStorageId) || "[]"
-      ) as Todos).map((todo) => ({
-        id: todo.id,
-        title: todo.title,
-        checked: todo.completed
-      }));
-
     case SAVE_TODOS:
       localStorage.setItem(
         action.meta.localStorageId,
@@ -240,7 +216,11 @@ export const todos = (
 };
 
 export function* loadFromLocalStorage(localStorageId: string) {
-  yield put(loadTodos(localStorageId));
+  const todos = JSON.parse(
+    localStorage.getItem(localStorageId) || "[]"
+  ) as Todos;
+
+  yield put(resetTodos(todos));
 }
 
 export function* saveToLocalStorage(localStorageId: string) {
