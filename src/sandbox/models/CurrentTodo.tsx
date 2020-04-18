@@ -7,14 +7,14 @@ import {
   Typography,
   Button
 } from "@material-ui/core";
-import { Todo, toggleTodo } from "./todo";
+import { TodoState, toggleTodo } from "./todo";
 import { getTodos, useStyles } from "./TodoList";
 
 export function CurrentTodo() {
   const classes = useStyles();
   let todos = useSelector(getTodos);
   const dispatch = useDispatch();
-  const todo: Todo | undefined = todos.find((todo) => !todo.completed);
+  const todo: TodoState | undefined = todos.find((todo) => !todo.checked);
 
   return (
     <Card classes={{ root: classes.card }}>
