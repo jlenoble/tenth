@@ -4,7 +4,21 @@ import React, {
   ChangeEvent,
   KeyboardEvent
 } from "react";
-import { TextField, StandardTextFieldProps } from "@material-ui/core";
+
+// Dummy fix for helping Babel:
+// The exported identifier "_TextField" is not declared in Babel's scope tracker
+// as a JavaScript value binding, and "@babel/plugin-transform-typescript"
+// never encountered it as a TypeScript type declaration.
+// It will be treated as a JavaScript value.
+//
+// This problem is likely caused by another plugin injecting
+// "_TextField" without registering it in the scope tracker. If you are the author
+//  of that plugin, please use "scope.registerDeclaration(declarationPath)".
+import {
+  TextField as MuiTextField,
+  StandardTextFieldProps
+} from "@material-ui/core";
+const TextField = MuiTextField;
 
 export const useTextField = (
   initialValue: string,
