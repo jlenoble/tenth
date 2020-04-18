@@ -1,4 +1,4 @@
-import { put, takeLatest } from "redux-saga/effects";
+import { put, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 
 export interface Todo {
@@ -23,7 +23,7 @@ export const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
 export const RESET_TODOS = "RESET_TODOS";
-export const SAVE_TODOS = "SAVE_TODOS";
+const RESET_TODOS_NOSAVE = "RESET_TODOS_NOSAVE";
 
 export interface TodoAddAction {
   type: typeof ADD_TODO;
@@ -55,14 +55,14 @@ export interface TodoMoveAction {
   meta: DropResult;
 }
 
-export interface TodoResetAction {
+export interface TodosResetAction {
   type: typeof RESET_TODOS;
   payload: Todos;
 }
 
-export interface TodoSaveAction {
-  type: typeof SAVE_TODOS;
-  meta: { localStorageId: string };
+interface TodosResetNoSaveAction {
+  type: typeof RESET_TODOS_NOSAVE;
+  payload: Todos;
 }
 
 export type TodoActionType =
@@ -72,8 +72,8 @@ export type TodoActionType =
   | TodoUpdateTitleAction
   | TodoToggleAction
   | TodoMoveAction
-  | TodoResetAction
-  | TodoSaveAction;
+  | TodosResetAction
+  | TodosResetNoSaveAction;
 
 export const addTodo = (title: string): TodoActionType => {
   return {
@@ -124,10 +124,10 @@ export const resetTodos = (todos: Todos): TodoActionType => {
   };
 };
 
-export const saveTodos = (localStorageId: string): TodoActionType => {
+const resetTodosNoSave = (todos: Todos): TodoActionType => {
   return {
-    type: SAVE_TODOS,
-    meta: { localStorageId }
+    type: RESET_TODOS_NOSAVE,
+    payload: todos
   };
 };
 
@@ -191,24 +191,12 @@ export const todos = (
     }
 
     case RESET_TODOS:
+    case RESET_TODOS_NOSAVE:
       return action.payload.map((todo) => ({
         id: todo.id,
         title: todo.title,
         checked: todo.completed
       }));
-
-    case SAVE_TODOS:
-      localStorage.setItem(
-        action.meta.localStorageId,
-        JSON.stringify(
-          state.map((todo) => ({
-            id: todo.id,
-            title: todo.title,
-            completed: todo.checked
-          }))
-        )
-      );
-      return state;
 
     default:
       return state;
@@ -220,18 +208,27 @@ export function* loadFromLocalStorage(localStorageId: string) {
     localStorage.getItem(localStorageId) || "[]"
   ) as Todos;
 
-  yield put(resetTodos(todos));
+  yield put(resetTodosNoSave(todos));
 }
 
 export function* saveToLocalStorage(localStorageId: string) {
-  yield put(saveTodos(localStorageId));
+  const todos: TodosState = yield select(
+    (state: { todos: TodosState }) => state.todos
+  );
+
+  localStorage.setItem(
+    localStorageId,
+    JSON.stringify(
+      todos.map((todo) => ({
+        id: todo.id,
+        title: todo.title,
+        completed: todo.checked
+      })) as Todos
+    )
+  );
 }
 
-export function* watchChangesAndSaveToLocalStorage(localStorageId: string) {
-  const save = function* () {
-    yield saveToLocalStorage(localStorageId);
-  };
-
+export function* enableSaveToLocalStorage(localStorageId: string) {
   yield takeLatest(
     [
       ADD_TODO,
@@ -242,11 +239,12 @@ export function* watchChangesAndSaveToLocalStorage(localStorageId: string) {
       MOVE_TODO,
       RESET_TODOS
     ],
-    save
+    saveToLocalStorage,
+    localStorageId
   );
 }
 
 export function* enableLocalStorage(localStorageId: string) {
   yield loadFromLocalStorage(localStorageId);
-  yield watchChangesAndSaveToLocalStorage(localStorageId);
+  yield enableSaveToLocalStorage(localStorageId);
 }
