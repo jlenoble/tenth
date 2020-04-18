@@ -1,10 +1,6 @@
 import React, { FunctionComponent } from "react";
-import {
-  List as MuiList,
-  ListProps as MuiListProps,
-  CheckboxProps,
-  IconButtonProps
-} from "@material-ui/core";
+import { CheckboxProps, IconButtonProps } from "@material-ui/core";
+import { List as MuiList, ListProps as MuiListProps } from "../mui-base";
 import { BaseListItemTextProps } from "./ListItemText";
 import { ListItem, ListItemProps } from "./ListItem";
 import {
@@ -13,6 +9,7 @@ import {
 } from "./AddItem";
 
 export interface ListProps {
+  droppableId?: string;
   addItemProps?: AddItemProps;
   listItems?: ListItemProps[];
   checkboxProps?: Omit<CheckboxProps, "checked">;
@@ -24,6 +21,7 @@ export type BaseListProps = MuiListProps;
 export type FullListProps = ListProps & BaseListProps;
 
 export const List: FunctionComponent<FullListProps> = ({
+  droppableId,
   addItemProps,
   listItems,
   checkboxProps,
@@ -31,20 +29,30 @@ export const List: FunctionComponent<FullListProps> = ({
   deleteButtonProps,
   ...other
 }) => {
+  const dnd = Boolean(droppableId);
+  const droppableProps = (dnd && { droppableId }) as
+    | false
+    | { droppableId: string };
+
   return (
     <>
       {addItemProps && <AddItem {...addItemProps} />}
-      <MuiList {...other}>
+      <MuiList droppableProps={droppableProps} {...other}>
         {listItems &&
-          listItems.map((listItem) => (
-            <ListItem
-              key={listItem.itemId}
-              checkboxProps={checkboxProps}
-              listItemTextProps={listItemTextProps}
-              deleteButtonProps={deleteButtonProps}
-              {...listItem}
-            />
-          ))}
+          listItems.map((listItem, index) => {
+            const id = listItem.itemId;
+
+            return (
+              <ListItem
+                draggableProps={dnd && { draggableId: id, index }}
+                key={id}
+                checkboxProps={checkboxProps}
+                listItemTextProps={listItemTextProps}
+                deleteButtonProps={deleteButtonProps}
+                {...listItem}
+              />
+            );
+          })}
       </MuiList>
     </>
   );

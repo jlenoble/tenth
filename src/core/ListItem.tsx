@@ -1,13 +1,15 @@
 import React, { FunctionComponent, memo } from "react";
 import {
-  ListItem as MuiListItem,
-  ListItemProps as MuiListItemProps,
   Checkbox,
   CheckboxProps,
   IconButton,
   IconButtonProps
 } from "@material-ui/core";
 import { DeleteOutlined } from "@material-ui/icons";
+import {
+  ListItem as MuiListItem,
+  ListItemProps as MuiListItemProps
+} from "../mui-base";
 import {
   ListItemText,
   ListItemTextProps,
@@ -22,7 +24,7 @@ export interface ListItemProps extends ListItemTextProps {
   deleteButtonProps?: IconButtonProps;
 }
 
-export type BaseListItemProps = MuiListItemProps<"li", { button?: false }>;
+export type BaseListItemProps = MuiListItemProps;
 export type FullListItemProps = ListItemProps & BaseListItemProps;
 
 export const ListItem: FunctionComponent<FullListItemProps> = memo(
@@ -65,11 +67,21 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
     );
   },
   (prevProps, nextProps) => {
-    return (
+    let eq =
       prevProps.itemId === nextProps.itemId &&
       prevProps.primary === nextProps.primary &&
-      prevProps.checked === nextProps.checked
-    );
+      prevProps.checked === nextProps.checked;
+
+    const pdp = prevProps.draggableProps;
+    const ndp = nextProps.draggableProps;
+
+    if (pdp && ndp) {
+      eq = eq && pdp.index === ndp.index;
+    } else {
+      eq = eq && pdp === ndp;
+    }
+
+    return eq;
   }
 );
 

@@ -12,6 +12,8 @@ export type BaseListCardProps = CardProps;
 export type FullListCardProps = ListCardProps & CardProps;
 
 export const ListCard: FunctionComponent<FullListCardProps> = ({
+  droppableId,
+
   title,
   titleVariant,
   titleLabel,
@@ -43,6 +45,7 @@ export const ListCard: FunctionComponent<FullListCardProps> = ({
       />
       <CardContent>
         <List
+          droppableId={droppableId}
           addItemProps={addItemProps}
           listItems={listItems}
           checkboxProps={checkboxProps}

@@ -1,4 +1,5 @@
 import { put, takeLatest } from "redux-saga/effects";
+import { DropResult } from "react-beautiful-dnd";
 
 export interface Todo {
   id: string;
@@ -12,6 +13,7 @@ export const ADD_TODO = "ADD_TODO";
 export const DELETE_TODO = "DELETE_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
+export const MOVE_TODO = "MOVE_TODO";
 
 export const RESET_TODOS = "RESET_TODOS";
 export const LOAD_TODOS = "LOAD_TODOS";
@@ -37,6 +39,11 @@ export interface TodoToggleAction {
   meta: { id: string };
 }
 
+export interface TodoMoveAction {
+  type: typeof MOVE_TODO;
+  meta: DropResult;
+}
+
 export interface TodoResetAction {
   type: typeof RESET_TODOS;
   payload: TodoState;
@@ -57,6 +64,7 @@ export type TodoActionType =
   | TodoDeleteAction
   | TodoUpdateAction
   | TodoToggleAction
+  | TodoMoveAction
   | TodoResetAction
   | TodoLoadAction
   | TodoSaveAction;
@@ -86,6 +94,13 @@ export const toggleTodo = (id: string): TodoActionType => {
   return {
     type: TOGGLE_TODO,
     meta: { id }
+  };
+};
+
+export const moveTodo = (dropResult: DropResult): TodoActionType => {
+  return {
+    type: MOVE_TODO,
+    meta: dropResult
   };
 };
 
@@ -142,6 +157,28 @@ export const todos = (
           : { ...todo, completed: !todo.completed }
       );
 
+    case MOVE_TODO: {
+      const { source, destination } = action.meta;
+
+      if (!destination) {
+        return state;
+      }
+
+      if (destination.droppableId === source.droppableId) {
+        if (destination.index === source.index) {
+          return state;
+        }
+
+        const newTodos = state.concat();
+        newTodos.splice(source.index, 1);
+        newTodos.splice(destination.index, 0, state[source.index]);
+
+        return newTodos;
+      }
+
+      return state;
+    }
+
     case RESET_TODOS:
       return action.payload;
 
@@ -173,7 +210,7 @@ export function* watchChangesAndSaveToLocalStorage(localStorageId: string) {
   };
 
   yield takeLatest(
-    [ADD_TODO, DELETE_TODO, UPDATE_TODO, TOGGLE_TODO, RESET_TODOS],
+    [ADD_TODO, DELETE_TODO, UPDATE_TODO, TOGGLE_TODO, MOVE_TODO, RESET_TODOS],
     save
   );
 }
