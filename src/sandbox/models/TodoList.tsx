@@ -7,7 +7,7 @@ import {
   todos,
   addTodo,
   deleteTodo,
-  updateTodo,
+  updateTodoTitle,
   toggleTodo,
   moveTodo
 } from "./todo";
@@ -61,7 +61,7 @@ export function TodoList() {
           itemId: todo.id,
           primary: todo.title,
           primaryEnter: (value: string) =>
-            dispatch(updateTodo({ ...todo, title: value })),
+            dispatch(updateTodoTitle(todo.id, value)),
           checked: todo.checked,
           checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
           deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
