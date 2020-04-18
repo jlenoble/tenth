@@ -112,7 +112,7 @@ describe("TodoList", () => {
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
 
-    const checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    let checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     expect(checkboxes.map((input) => input.checked)).toEqual([
       false,
       false,
@@ -120,24 +120,30 @@ describe("TodoList", () => {
     ]);
 
     userEvents.click(checkboxes[0]);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    // autosort is on by default: unchecked first
     expect(checkboxes.map((input) => input.checked)).toEqual([
-      true,
       false,
-      false
+      false,
+      true
     ]);
 
     userEvents.click(checkboxes[1]);
-    expect(checkboxes.map((input) => input.checked)).toEqual([
-      true,
-      true,
-      false
-    ]);
-
-    userEvents.click(checkboxes[0]);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    // autosort is on by default: unchecked first
     expect(checkboxes.map((input) => input.checked)).toEqual([
       false,
       true,
-      false
+      true
+    ]);
+
+    userEvents.click(checkboxes[2]);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
+    // autosort is on by default: unchecked first
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      false,
+      false,
+      true
     ]);
   });
 
