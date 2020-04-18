@@ -40,8 +40,8 @@ export function TodoList() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState(defaultTitle);
 
-  const completedTodos = todos.filter((todo) => todo.completed);
-  const pendingTodos = todos.filter((todo) => !todo.completed);
+  const completedTodos = todos.filter((todo) => todo.checked);
+  const pendingTodos = todos.filter((todo) => !todo.checked);
 
   todos = [...pendingTodos, ...completedTodos];
 
@@ -62,7 +62,7 @@ export function TodoList() {
           primary: todo.title,
           primaryEnter: (value: string) =>
             dispatch(updateTodo({ ...todo, title: value })),
-          checked: todo.completed,
+          checked: todo.checked,
           checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
           deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
         }))}

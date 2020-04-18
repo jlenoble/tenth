@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { createStore } from "redux";
 import { Provider, useDispatch } from "react-redux";
+import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
 import { resetTodos, tmpId } from "../todo";
 import { getDroppables, getDraggables } from "../../list/__testHelpers__/dnd";
@@ -87,4 +88,6 @@ describe("DnD List", () => {
       "quux"
     ]);
   });
+
+  test.todo("Drag and drop/Check: BEWARE OF VIEW/AUTOSORT");
 });
