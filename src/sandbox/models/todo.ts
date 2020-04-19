@@ -382,7 +382,7 @@ function* updateView(): SagaIterator {
       view = todos;
       break;
 
-    case VisibilityFilter.SHOW_REMAINING:
+    case VisibilityFilter.SHOW_ACTIVE:
       view = todos.filter((todo) => !todo.checked);
       break;
 

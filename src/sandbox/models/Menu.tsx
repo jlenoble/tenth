@@ -50,8 +50,8 @@ export const Menu: FunctionComponent = () => {
           <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ALL)}>
             Show all
           </MenuItem>
-          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_REMAINING)}>
-            Show remaining
+          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ACTIVE)}>
+            Show active
           </MenuItem>
           <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_COMPLETED)}>
             Show completed
