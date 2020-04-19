@@ -1,15 +1,12 @@
-import React, { useState, MouseEvent } from "react";
-import {
-  IconButton,
-  Popover,
-  MenuList,
-  MenuItem,
-  ListItemText
-} from "@material-ui/core";
+import React, { FunctionComponent, useState, MouseEvent } from "react";
+import { useDispatch } from "react-redux";
+import { IconButton, Popover, MenuList, MenuItem } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
+import { VisibilityFilter, setVisibilityFilter } from "./visibility";
 
-export default function CheckMenu({}: {}) {
+export const Menu: FunctionComponent = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useDispatch();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -18,6 +15,11 @@ export default function CheckMenu({}: {}) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const changeFilter = (filter: VisibilityFilter) => () => {
+    dispatch(setVisibilityFilter(filter));
+    handleClose();
   };
 
   return (
@@ -45,12 +47,22 @@ export default function CheckMenu({}: {}) {
         }}
       >
         <MenuList dense>
-          <MenuItem onClick={handleClose}>Show all</MenuItem>
-          <MenuItem onClick={handleClose}>Show remaining</MenuItem>
-          <MenuItem onClick={handleClose}>Show completed</MenuItem>
-          <MenuItem onClick={handleClose}>Show invalid</MenuItem>
+          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ALL)}>
+            Show all
+          </MenuItem>
+          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_REMAINING)}>
+            Show remaining
+          </MenuItem>
+          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_COMPLETED)}>
+            Show completed
+          </MenuItem>
+          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_INVALID)}>
+            Show invalid
+          </MenuItem>
         </MenuList>
       </Popover>
     </div>
   );
-}
+};
+
+export default Menu;
