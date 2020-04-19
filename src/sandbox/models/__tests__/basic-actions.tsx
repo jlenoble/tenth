@@ -125,29 +125,26 @@ describe("TodoList", () => {
 
     userEvents.click(checkboxes[0]);
     checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
-    // autosort is on by default: unchecked first
     expect(checkboxes.map((input) => input.checked)).toEqual([
+      true,
       false,
-      false,
-      true
+      false
     ]);
 
     userEvents.click(checkboxes[1]);
     checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
-    // autosort is on by default: unchecked first
+    expect(checkboxes.map((input) => input.checked)).toEqual([
+      true,
+      true,
+      false
+    ]);
+
+    userEvents.click(checkboxes[0]);
+    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     expect(checkboxes.map((input) => input.checked)).toEqual([
       false,
       true,
-      true
-    ]);
-
-    userEvents.click(checkboxes[2]);
-    checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
-    // autosort is on by default: unchecked first
-    expect(checkboxes.map((input) => input.checked)).toEqual([
-      false,
-      false,
-      true
+      false
     ]);
   });
 
@@ -190,16 +187,15 @@ describe("TodoList", () => {
     checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     listitems = getAllByRole("listitem") as HTMLLIElement[];
 
-    // autosort is on by default: unchecked first
     expect(listitems.map((li) => li.textContent)).toEqual([
-      "quux",
       "foo",
-      "baz"
+      "baz",
+      "quux"
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
-      false,
       true,
-      true
+      true,
+      false
     ]);
 
     await userEvents.type(textbox, "foobar");
@@ -207,36 +203,34 @@ describe("TodoList", () => {
     checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     listitems = getAllByRole("listitem") as HTMLLIElement[];
 
-    // autosort is on by default: unchecked first
     expect(listitems.map((li) => li.textContent)).toEqual([
-      "quux",
-      "foobar",
       "foo",
-      "baz"
+      "baz",
+      "quux",
+      "foobar"
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
-      false,
-      false,
       true,
-      true
+      true,
+      false,
+      false
     ]);
 
     userEvents.click(checkboxes[2]);
     checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     listitems = getAllByRole("listitem") as HTMLLIElement[];
 
-    // autosort is on by default: unchecked first
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
+      "baz",
       "quux",
-      "foobar",
-      "baz"
+      "foobar"
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
-      false,
-      false,
-      false,
-      true
+      true,
+      true,
+      true,
+      false
     ]);
   });
 });

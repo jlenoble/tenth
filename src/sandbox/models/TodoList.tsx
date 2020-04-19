@@ -41,11 +41,6 @@ export function TodoList() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState(defaultTitle);
 
-  const completedTodos = todos.filter((todo) => todo.checked);
-  const pendingTodos = todos.filter((todo) => !todo.checked);
-
-  todos = [...pendingTodos, ...completedTodos];
-
   return (
     <DragDropContext
       onDragEnd={(dropResult: DropResult) => dispatch(moveTodo(dropResult))}
