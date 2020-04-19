@@ -5,7 +5,7 @@ import React, {
   KeyboardEvent
 } from "react";
 
-// Dummy fix for helping Babel:
+// Dummy fix to help Babel:
 // The exported identifier "_TextField" is not declared in Babel's scope tracker
 // as a JavaScript value binding, and "@babel/plugin-transform-typescript"
 // never encountered it as a TypeScript type declaration.
@@ -30,12 +30,18 @@ export const useTextField = (
     setValue(event.target.value);
 
   const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      enter(value);
-      return true;
-    }
+    switch (event.key) {
+      case "Enter":
+        enter(value);
+        return true;
 
-    return false;
+      case "Escape":
+        enter(initialValue);
+        return true;
+
+      default:
+        return false;
+    }
   };
 
   return {
@@ -70,7 +76,7 @@ export const StatefulTextField: FunctionComponent<StatefulTextFieldProps> = ({
       value={value}
       onChange={changeInput}
       onBlur={() => enter(value)}
-      onKeyPress={keyInput}
+      onKeyDown={keyInput}
       {...other}
     />
   );
