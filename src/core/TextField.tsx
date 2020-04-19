@@ -75,7 +75,7 @@ export const StatefulTextField: FunctionComponent<StatefulTextFieldProps> = ({
       fullWidth
       value={value}
       onChange={changeInput}
-      onBlur={() => enter(value)}
+      onBlur={() => enter(defaultValue)}
       onKeyDown={keyInput}
       {...other}
     />
