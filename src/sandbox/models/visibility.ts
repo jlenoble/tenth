@@ -1,33 +1,29 @@
-enum VisibilityFilter {
+export enum VisibilityFilter {
   SHOW_ALL,
   SHOW_REMAINING,
   SHOW_COMPLETED,
   SHOW_INVALID
 }
 
-type VisibilityState = VisibilityFilter;
-
-const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
+export const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
 
 interface VisibilityFilterAction {
   type: typeof SET_VISIBILITY_FILTER;
   filter: VisibilityFilter;
 }
 
-type VisibilityFilterActionType = VisibilityFilterAction;
-
 export const setVisibilityFilter = (
   filter: VisibilityFilter
-): VisibilityFilterActionType => {
+): VisibilityFilterAction => {
   return { type: SET_VISIBILITY_FILTER, filter };
 };
 
-const initialState: VisibilityState = VisibilityFilter.SHOW_ALL;
+const initialState: VisibilityFilter = VisibilityFilter.SHOW_ALL;
 
 export const visibilityFilter = (
   state = initialState,
-  action: VisibilityFilterActionType
-): VisibilityState => {
+  action: VisibilityFilterAction
+): VisibilityFilter => {
   switch (action.type) {
     case SET_VISIBILITY_FILTER:
       return action.filter;

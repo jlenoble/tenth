@@ -11,22 +11,25 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
+import { createLogger } from "redux-logger";
 import clsx from "clsx";
 import { TodoList, combinedReducer } from "./TodoList";
-import { enableLocalStorage, watchInputs } from "./todo";
+import { enableLocalStorage, watchInputs, watchVisibilityFilter } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 
 const localStorageId = "todos";
 
+const logger = createLogger({ collapsed: true });
 const sagaMiddleware = createSagaMiddleware();
 
 export const store = createStore(
   combinedReducer,
-  applyMiddleware(sagaMiddleware)
+  applyMiddleware(logger, sagaMiddleware)
 );
 
-sagaMiddleware.run(enableLocalStorage, localStorageId);
+sagaMiddleware.run(watchVisibilityFilter);
 sagaMiddleware.run(watchInputs);
+sagaMiddleware.run(enableLocalStorage, localStorageId);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

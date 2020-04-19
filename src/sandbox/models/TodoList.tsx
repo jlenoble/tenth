@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
 export function TodoList() {
   const classes = useStyles();
 
-  const { todos } = useSelector(getTodos);
+  const { view: todos } = useSelector(getTodos);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(defaultTitle);
 

@@ -1,6 +1,7 @@
 import { SagaIterator } from "redux-saga";
 import { fork, put, take, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
+import { VisibilityFilter, SET_VISIBILITY_FILTER } from "./visibility";
 
 export type Todo = Readonly<{
   id: string;
@@ -17,10 +18,16 @@ export type TodoState = Readonly<{
 }>;
 
 export type Todos = readonly Todo[];
-export type TodosState = Readonly<{ todos: readonly TodoState[] }>;
+export type TodoStates = readonly TodoState[];
+export type TodosView = TodoStates;
+export type TodosState = Readonly<{
+  todos: TodoStates;
+  view: TodosView;
+}>;
 
 const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
+const SET_VIEW = "SET_VIEW";
 
 const ADD_TODO = "ADD_TODO";
 const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
@@ -32,11 +39,15 @@ const MOVE_TODO = "MOVE_TODO";
 
 interface SetTodosAction {
   type: typeof SET_TODOS;
-  payload: readonly TodoState[];
+  payload: TodoStates;
 }
 interface SetTodosNoSaveAction {
   type: typeof SET_TODOS_NOSAVE;
-  payload: readonly TodoState[];
+  payload: TodoStates;
+}
+interface SetViewAction {
+  type: typeof SET_VIEW;
+  payload: TodosView;
 }
 
 interface AddTodoAction {
@@ -68,6 +79,7 @@ interface TodoMoveAction {
 type TodoActionType =
   | SetTodosAction
   | SetTodosNoSaveAction
+  | SetViewAction
   | AddTodoAction
   | UpdateTodoTitleAction
   | ResetTodosAction
@@ -75,16 +87,22 @@ type TodoActionType =
   | TodoToggleAction
   | TodoMoveAction;
 
-const setTodos = (todos: readonly TodoState[]): TodoActionType => {
+const setTodos = (todos: TodoStates): TodoActionType => {
   return {
     type: SET_TODOS,
     payload: todos
   };
 };
-const setTodosNoSave = (todos: readonly TodoState[]): TodoActionType => {
+const setTodosNoSave = (todos: TodoStates): TodoActionType => {
   return {
     type: SET_TODOS_NOSAVE,
     payload: todos
+  };
+};
+const setView = (view: TodosView): TodoActionType => {
+  return {
+    type: SET_VIEW,
+    payload: view
   };
 };
 
@@ -126,7 +144,7 @@ export const moveTodo = (dropResult: DropResult): TodoActionType => {
   };
 };
 
-const initialState: TodosState = { todos: [] };
+const initialState: TodosState = { todos: [], view: [] };
 
 export const todos = (
   state = initialState,
@@ -174,6 +192,9 @@ export const todos = (
 
       return state;
     }
+
+    case SET_VIEW:
+      return { ...state, view: action.payload };
 
     default:
       return state;
@@ -307,7 +328,7 @@ function* watchUpdateTodo(): SagaIterator {
 
 function* putResetTodos(
   todos: Todos,
-  resetTodosResponse: (todos: readonly TodoState[]) => TodoActionType
+  resetTodosResponse: (todos: TodoStates) => TodoActionType
 ): SagaIterator {
   yield put(
     resetTodosResponse(
@@ -345,4 +366,51 @@ export function* watchInputs(): SagaIterator {
   yield fork(watchAddTodo);
   yield fork(watchUpdateTodo);
   yield fork(watchResetTodos);
+}
+
+function* updateView(): SagaIterator {
+  const { todos }: TodosState = yield select(
+    (state: { todos: TodosState }) => state.todos
+  );
+  const filter: VisibilityFilter = yield select(
+    (state: { visibilityFilter: VisibilityFilter }) => state.visibilityFilter
+  );
+  let view: TodosView;
+
+  switch (filter) {
+    case VisibilityFilter.SHOW_ALL:
+      view = todos;
+      break;
+
+    case VisibilityFilter.SHOW_REMAINING:
+      view = todos.filter((todo) => !todo.checked);
+      break;
+
+    case VisibilityFilter.SHOW_COMPLETED:
+      view = todos.filter((todo) => todo.checked);
+      break;
+
+    case VisibilityFilter.SHOW_INVALID:
+      view = todos.filter((todo) => !todo.validated);
+      break;
+
+    default:
+      view = [];
+  }
+
+  yield put(setView(view));
+}
+
+export function* watchVisibilityFilter() {
+  yield takeLatest(
+    [
+      SET_TODOS,
+      SET_TODOS_NOSAVE,
+      DELETE_TODO,
+      TOGGLE_TODO,
+      MOVE_TODO,
+      SET_VISIBILITY_FILTER
+    ],
+    updateView
+  );
 }
