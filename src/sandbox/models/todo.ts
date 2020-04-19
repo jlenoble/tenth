@@ -27,7 +27,6 @@ const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
 const UPDATE_TODO_TITLE_RESPONSE = "UPDATE_TODO_TITLE_RESPONSE";
 const RESET_TODOS_REQUEST = "RESET_TODOS_REQUEST";
 const RESET_TODOS_RESPONSE = "RESET_TODOS_RESPONSE";
-const RESET_TODOS_RESPONSE_NOSAVE = "RESET_TODOS_RESPONSE_NOSAVE";
 export const DELETE_TODO = "DELETE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
@@ -67,10 +66,6 @@ interface ResetTodosResponseAction {
   type: typeof RESET_TODOS_RESPONSE;
   payload: TodosState;
 }
-interface ResetTodosResponseNoSaveAction {
-  type: typeof RESET_TODOS_RESPONSE_NOSAVE;
-  payload: TodosState;
-}
 
 export interface TodoDeleteAction {
   type: typeof DELETE_TODO;
@@ -96,7 +91,6 @@ type TodoActionType =
   | UpdateTodoTitleResponseAction
   | ResetTodosRequestAction
   | ResetTodosResponseAction
-  | ResetTodosResponseNoSaveAction
   | TodoDeleteAction
   | TodoToggleAction
   | TodoMoveAction;
@@ -152,12 +146,6 @@ const resetTodosResponse = (todos: TodosState): TodoActionType => {
     payload: todos
   };
 };
-const resetTodosResponseNoSave = (todos: TodosState): TodoActionType => {
-  return {
-    type: RESET_TODOS_RESPONSE_NOSAVE,
-    payload: todos
-  };
-};
 
 export const deleteTodo = (id: string): TodoActionType => {
   return {
@@ -198,7 +186,6 @@ export const todos = (
     case SET_TODOS:
     case SET_TODOS_NOSAVE:
     case RESET_TODOS_RESPONSE:
-    case RESET_TODOS_RESPONSE_NOSAVE:
       return action.payload;
 
     case DELETE_TODO:
@@ -241,7 +228,7 @@ function* loadFromLocalStorage(localStorageId: string) {
     localStorage.getItem(localStorageId) || "[]"
   ) as Todos;
 
-  yield putResetTodos(todos, resetTodosResponseNoSave);
+  yield putResetTodos(todos, setTodosNoSave);
 }
 
 function* saveToLocalStorage(localStorageId: string) {
