@@ -17,7 +17,7 @@ export type TodoState = Readonly<{
 }>;
 
 export type Todos = readonly Todo[];
-export type TodosState = readonly TodoState[];
+export type TodosState = Readonly<{ todos: readonly TodoState[] }>;
 
 const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
@@ -32,11 +32,11 @@ const MOVE_TODO = "MOVE_TODO";
 
 interface SetTodosAction {
   type: typeof SET_TODOS;
-  payload: TodosState;
+  payload: readonly TodoState[];
 }
 interface SetTodosNoSaveAction {
   type: typeof SET_TODOS_NOSAVE;
-  payload: TodosState;
+  payload: readonly TodoState[];
 }
 
 interface AddTodoAction {
@@ -75,13 +75,13 @@ type TodoActionType =
   | TodoToggleAction
   | TodoMoveAction;
 
-const setTodos = (todos: TodosState): TodoActionType => {
+const setTodos = (todos: readonly TodoState[]): TodoActionType => {
   return {
     type: SET_TODOS,
     payload: todos
   };
 };
-const setTodosNoSave = (todos: TodosState): TodoActionType => {
+const setTodosNoSave = (todos: readonly TodoState[]): TodoActionType => {
   return {
     type: SET_TODOS_NOSAVE,
     payload: todos
@@ -126,7 +126,7 @@ export const moveTodo = (dropResult: DropResult): TodoActionType => {
   };
 };
 
-const initialState: TodosState = [];
+const initialState: TodosState = { todos: [] };
 
 export const todos = (
   state = initialState,
@@ -135,15 +135,23 @@ export const todos = (
   switch (action.type) {
     case SET_TODOS:
     case SET_TODOS_NOSAVE:
-      return action.payload;
+      return { ...state, todos: action.payload };
 
     case DELETE_TODO:
-      return state.filter((todo) => todo.id !== action.meta.id);
+      return {
+        ...state,
+        todos: state.todos.filter((todo) => todo.id !== action.meta.id)
+      };
 
     case TOGGLE_TODO:
-      return state.map((todo) =>
-        todo.id !== action.meta.id ? todo : { ...todo, checked: !todo.checked }
-      );
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo.id !== action.meta.id
+            ? todo
+            : { ...todo, checked: !todo.checked }
+        )
+      };
 
     case MOVE_TODO: {
       const { source, destination } = action.meta;
@@ -157,11 +165,11 @@ export const todos = (
           return state;
         }
 
-        const newTodos = state.concat();
+        const newTodos = state.todos.concat();
         newTodos.splice(source.index, 1);
-        newTodos.splice(destination.index, 0, state[source.index]);
+        newTodos.splice(destination.index, 0, state.todos[source.index]);
 
-        return newTodos;
+        return { ...state, todos: newTodos };
       }
 
       return state;
@@ -181,7 +189,7 @@ function* loadFromLocalStorage(localStorageId: string) {
 }
 
 function* saveToLocalStorage(localStorageId: string) {
-  const todos: TodosState = yield select(
+  const { todos }: TodosState = yield select(
     (state: { todos: TodosState }) => state.todos
   );
 
@@ -231,7 +239,7 @@ function* watchAddTodo(): SagaIterator {
     const id = tmpId();
     const errors = validateTitle(title);
 
-    const todos: TodosState = yield select(
+    const { todos }: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos
     );
 
@@ -258,7 +266,7 @@ function* watchUpdateTodo(): SagaIterator {
     const {
       meta: { id, title }
     }: UpdateTodoTitleAction = yield take(UPDATE_TODO_TITLE);
-    const todos: TodosState = yield select(
+    const { todos }: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos
     );
 
@@ -299,7 +307,7 @@ function* watchUpdateTodo(): SagaIterator {
 
 function* putResetTodos(
   todos: Todos,
-  resetTodosResponse: (todos: TodosState) => TodoActionType
+  resetTodosResponse: (todos: readonly TodoState[]) => TodoActionType
 ): SagaIterator {
   yield put(
     resetTodosResponse(
