@@ -26,9 +26,9 @@ const ADD_TODO = "ADD_TODO";
 const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
 const RESET_TODOS = "RESET_TODOS";
 
-export const DELETE_TODO = "DELETE_TODO";
-export const TOGGLE_TODO = "TOGGLE_TODO";
-export const MOVE_TODO = "MOVE_TODO";
+const DELETE_TODO = "DELETE_TODO";
+const TOGGLE_TODO = "TOGGLE_TODO";
+const MOVE_TODO = "MOVE_TODO";
 
 interface SetTodosAction {
   type: typeof SET_TODOS;
@@ -52,17 +52,15 @@ interface ResetTodosAction {
   payload: Todos;
 }
 
-export interface TodoDeleteAction {
+interface TodoDeleteAction {
   type: typeof DELETE_TODO;
   meta: { id: string };
 }
-
-export interface TodoToggleAction {
+interface TodoToggleAction {
   type: typeof TOGGLE_TODO;
   meta: { id: string };
 }
-
-export interface TodoMoveAction {
+interface TodoMoveAction {
   type: typeof MOVE_TODO;
   meta: DropResult;
 }
@@ -115,14 +113,12 @@ export const deleteTodo = (id: string): TodoActionType => {
     meta: { id }
   };
 };
-
 export const toggleTodo = (id: string): TodoActionType => {
   return {
     type: TOGGLE_TODO,
     meta: { id }
   };
 };
-
 export const moveTodo = (dropResult: DropResult): TodoActionType => {
   return {
     type: MOVE_TODO,
