@@ -19,6 +19,8 @@ export type TodoState = Readonly<{
 export type Todos = readonly Todo[];
 export type TodosState = readonly TodoState[];
 
+const SET_TODOS = "SET_TODOS";
+const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
 const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
 const ADD_TODO_RESPONSE = "ADD_TODO_RESPONSE";
 const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
@@ -29,6 +31,15 @@ const RESET_TODOS_RESPONSE_NOSAVE = "RESET_TODOS_RESPONSE_NOSAVE";
 export const DELETE_TODO = "DELETE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
+
+interface SetTodosAction {
+  type: typeof SET_TODOS;
+  payload: TodosState;
+}
+interface SetTodosNoSaveAction {
+  type: typeof SET_TODOS_NOSAVE;
+  payload: TodosState;
+}
 
 interface AddTodoRequestAction {
   type: typeof ADD_TODO_REQUEST;
@@ -77,6 +88,8 @@ export interface TodoMoveAction {
 }
 
 type TodoActionType =
+  | SetTodosAction
+  | SetTodosNoSaveAction
   | AddTodoRequestAction
   | AddTodoResponseAction
   | UpdateTodoTitleRequestAction
@@ -87,6 +100,19 @@ type TodoActionType =
   | TodoDeleteAction
   | TodoToggleAction
   | TodoMoveAction;
+
+const setTodos = (todos: TodosState): TodoActionType => {
+  return {
+    type: SET_TODOS,
+    payload: todos
+  };
+};
+const setTodosNoSave = (todos: TodosState): TodoActionType => {
+  return {
+    type: SET_TODOS_NOSAVE,
+    payload: todos
+  };
+};
 
 export const addTodo = (title: string): TodoActionType => {
   return {
@@ -169,6 +195,8 @@ export const todos = (
         todo.id !== action.payload.id ? todo : action.payload
       );
 
+    case SET_TODOS:
+    case SET_TODOS_NOSAVE:
     case RESET_TODOS_RESPONSE:
     case RESET_TODOS_RESPONSE_NOSAVE:
       return action.payload;
@@ -236,6 +264,7 @@ function* saveToLocalStorage(localStorageId: string) {
 function* enableSaveToLocalStorage(localStorageId: string) {
   yield takeLatest(
     [
+      SET_TODOS,
       ADD_TODO_RESPONSE,
       UPDATE_TODO_TITLE_RESPONSE,
       RESET_TODOS_RESPONSE,
