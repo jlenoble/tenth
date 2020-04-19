@@ -1,11 +1,14 @@
 import React, { FunctionComponent, useState, MouseEvent } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IconButton, Popover, MenuList, MenuItem } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
 import { VisibilityFilter, setVisibilityFilter } from "./visibility";
 
 export const Menu: FunctionComponent = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const visibilityFilter = useSelector<{ visibilityFilter: VisibilityFilter }>(
+    (state) => state.visibilityFilter
+  );
   const dispatch = useDispatch();
   const open = Boolean(anchorEl);
 
@@ -47,18 +50,26 @@ export const Menu: FunctionComponent = () => {
         }}
       >
         <MenuList dense>
-          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ALL)}>
-            Show all
-          </MenuItem>
-          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ACTIVE)}>
-            Show active
-          </MenuItem>
-          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_COMPLETED)}>
-            Show completed
-          </MenuItem>
-          <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_INVALID)}>
-            Show invalid
-          </MenuItem>
+          {visibilityFilter !== VisibilityFilter.SHOW_ALL && (
+            <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ALL)}>
+              Show all
+            </MenuItem>
+          )}
+          {visibilityFilter !== VisibilityFilter.SHOW_ACTIVE && (
+            <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_ACTIVE)}>
+              Show active
+            </MenuItem>
+          )}
+          {visibilityFilter !== VisibilityFilter.SHOW_COMPLETED && (
+            <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_COMPLETED)}>
+              Show completed
+            </MenuItem>
+          )}
+          {visibilityFilter !== VisibilityFilter.SHOW_INVALID && (
+            <MenuItem onClick={changeFilter(VisibilityFilter.SHOW_INVALID)}>
+              Show invalid
+            </MenuItem>
+          )}
         </MenuList>
       </Popover>
     </div>
