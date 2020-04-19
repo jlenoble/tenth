@@ -22,9 +22,9 @@ export type TodosState = readonly TodoState[];
 const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
 
-const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
-const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
-const RESET_TODOS_REQUEST = "RESET_TODOS_REQUEST";
+const ADD_TODO = "ADD_TODO";
+const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
+const RESET_TODOS = "RESET_TODOS";
 
 export const DELETE_TODO = "DELETE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
@@ -39,18 +39,16 @@ interface SetTodosNoSaveAction {
   payload: TodosState;
 }
 
-interface AddTodoRequestAction {
-  type: typeof ADD_TODO_REQUEST;
+interface AddTodoAction {
+  type: typeof ADD_TODO;
   meta: { title: string };
 }
-
-interface UpdateTodoTitleRequestAction {
-  type: typeof UPDATE_TODO_TITLE_REQUEST;
+interface UpdateTodoTitleAction {
+  type: typeof UPDATE_TODO_TITLE;
   meta: { id: string; title: string };
 }
-
-interface ResetTodosRequestAction {
-  type: typeof RESET_TODOS_REQUEST;
+interface ResetTodosAction {
+  type: typeof RESET_TODOS;
   payload: Todos;
 }
 
@@ -72,9 +70,9 @@ export interface TodoMoveAction {
 type TodoActionType =
   | SetTodosAction
   | SetTodosNoSaveAction
-  | AddTodoRequestAction
-  | UpdateTodoTitleRequestAction
-  | ResetTodosRequestAction
+  | AddTodoAction
+  | UpdateTodoTitleAction
+  | ResetTodosAction
   | TodoDeleteAction
   | TodoToggleAction
   | TodoMoveAction;
@@ -94,21 +92,19 @@ const setTodosNoSave = (todos: TodosState): TodoActionType => {
 
 export const addTodo = (title: string): TodoActionType => {
   return {
-    type: ADD_TODO_REQUEST,
+    type: ADD_TODO,
     meta: { title }
   };
 };
-
 export const updateTodoTitle = (id: string, title: string): TodoActionType => {
   return {
-    type: UPDATE_TODO_TITLE_REQUEST,
+    type: UPDATE_TODO_TITLE,
     meta: { id, title }
   };
 };
-
 export const resetTodos = (todos: Todos): TodoActionType => {
   return {
-    type: RESET_TODOS_REQUEST,
+    type: RESET_TODOS,
     payload: todos
   };
 };
@@ -235,7 +231,7 @@ function* watchAddTodo(): SagaIterator {
   while (1) {
     const {
       meta: { title }
-    }: AddTodoRequestAction = yield take(ADD_TODO_REQUEST);
+    }: AddTodoAction = yield take(ADD_TODO);
     const id = tmpId();
     const errors = validateTitle(title);
 
@@ -265,7 +261,7 @@ function* watchUpdateTodo(): SagaIterator {
   while (1) {
     const {
       meta: { id, title }
-    }: UpdateTodoTitleRequestAction = yield take(UPDATE_TODO_TITLE_REQUEST);
+    }: UpdateTodoTitleAction = yield take(UPDATE_TODO_TITLE);
     const todos: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos
     );
@@ -335,9 +331,7 @@ function* putResetTodos(
 
 function* watchResetTodos() {
   while (1) {
-    const { payload }: ResetTodosRequestAction = yield take(
-      RESET_TODOS_REQUEST
-    );
+    const { payload }: ResetTodosAction = yield take(RESET_TODOS);
 
     yield putResetTodos(payload, setTodos);
   }
