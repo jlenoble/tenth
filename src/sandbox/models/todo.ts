@@ -24,7 +24,6 @@ const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
 const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
 const ADD_TODO_RESPONSE = "ADD_TODO_RESPONSE";
 const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
-const UPDATE_TODO_TITLE_RESPONSE = "UPDATE_TODO_TITLE_RESPONSE";
 const RESET_TODOS_REQUEST = "RESET_TODOS_REQUEST";
 export const DELETE_TODO = "DELETE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
@@ -51,10 +50,6 @@ interface AddTodoResponseAction {
 interface UpdateTodoTitleRequestAction {
   type: typeof UPDATE_TODO_TITLE_REQUEST;
   meta: { id: string; title: string };
-}
-interface UpdateTodoTitleResponseAction {
-  type: typeof UPDATE_TODO_TITLE_RESPONSE;
-  payload: TodoState;
 }
 
 interface ResetTodosRequestAction {
@@ -83,7 +78,6 @@ type TodoActionType =
   | AddTodoRequestAction
   | AddTodoResponseAction
   | UpdateTodoTitleRequestAction
-  | UpdateTodoTitleResponseAction
   | ResetTodosRequestAction
   | TodoDeleteAction
   | TodoToggleAction
@@ -119,12 +113,6 @@ export const updateTodoTitle = (id: string, title: string): TodoActionType => {
   return {
     type: UPDATE_TODO_TITLE_REQUEST,
     meta: { id, title }
-  };
-};
-const updateTodoTitleResponse = (todo: TodoState): TodoActionType => {
-  return {
-    type: UPDATE_TODO_TITLE_RESPONSE,
-    payload: todo
   };
 };
 
@@ -165,11 +153,6 @@ export const todos = (
   switch (action.type) {
     case ADD_TODO_RESPONSE:
       return state.concat(action.payload);
-
-    case UPDATE_TODO_TITLE_RESPONSE:
-      return state.map((todo) =>
-        todo.id !== action.payload.id ? todo : action.payload
-      );
 
     case SET_TODOS:
     case SET_TODOS_NOSAVE:
@@ -237,14 +220,7 @@ function* saveToLocalStorage(localStorageId: string) {
 
 function* enableSaveToLocalStorage(localStorageId: string) {
   yield takeLatest(
-    [
-      SET_TODOS,
-      ADD_TODO_RESPONSE,
-      UPDATE_TODO_TITLE_RESPONSE,
-      DELETE_TODO,
-      TOGGLE_TODO,
-      MOVE_TODO
-    ],
+    [SET_TODOS, ADD_TODO_RESPONSE, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
     saveToLocalStorage,
     localStorageId
   );
@@ -300,30 +276,37 @@ function* watchUpdateTodo(): SagaIterator {
     const todos: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos
     );
+
     const todo = todos.find((todo) => todo.id === id);
 
     if (!todo || title === todo.title) {
       continue;
     }
 
-    const errors = validateTitle(title);
-
     yield put(
-      updateTodoTitleResponse(
-        errors.length
-          ? {
-              id,
-              title,
-              checked: todo.checked,
-              validated: false,
-              errors
-            }
-          : {
-              id,
-              title,
-              checked: todo.checked,
-              validated: true
-            }
+      setTodos(
+        todos.map((todo) => {
+          if (todo.id !== id) {
+            return todo;
+          }
+
+          const errors = validateTitle(title);
+
+          return errors.length
+            ? {
+                id,
+                title,
+                checked: todo.checked,
+                validated: false,
+                errors
+              }
+            : {
+                id,
+                title,
+                checked: todo.checked,
+                validated: true
+              };
+        })
       )
     );
   }
