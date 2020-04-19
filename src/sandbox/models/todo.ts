@@ -184,8 +184,14 @@ export const todos = (
         }
 
         const newTodos = state.todos.concat();
-        newTodos.splice(source.index, 1);
-        newTodos.splice(destination.index, 0, state.todos[source.index]);
+
+        const sId = state.view[source.index].id;
+        const dId = state.view[destination.index].id;
+        const sIndex = newTodos.findIndex((todo) => todo.id === sId);
+        const dIndex = newTodos.findIndex((todo) => todo.id === dId);
+
+        newTodos.splice(sIndex, 1);
+        newTodos.splice(dIndex, 0, state.todos[sIndex]);
 
         return { ...state, todos: newTodos };
       }
