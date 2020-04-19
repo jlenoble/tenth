@@ -13,6 +13,7 @@ import {
 } from "./todo";
 import { visibilityFilter } from "./visibility";
 import { ListCard as List } from "../../core";
+import Menu from "./Menu";
 
 export const combinedReducer = combineReducers({
   todos,
@@ -59,14 +60,12 @@ export function TodoList() {
         addItemProps={{ add: (value: string) => dispatch(addTodo(value)) }}
         listItems={todos.map((todo) => {
           const errors = todo.errors;
-          const primaryError = Boolean(errors);
-          const primaryHelperText = errors && errors.join(", ");
 
           return {
             itemId: todo.id,
             primary: todo.title,
-            primaryError,
-            primaryHelperText,
+            primaryError: Boolean(errors),
+            primaryHelperText: errors && errors.join(", "),
             primaryEnter: (value: string) =>
               dispatch(updateTodoTitle(todo.id, value)),
             checked: todo.checked,
@@ -74,6 +73,9 @@ export function TodoList() {
             deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
           };
         })}
+        cardHeaderProps={{
+          action: <Menu />
+        }}
       />
     </DragDropContext>
   );
