@@ -44,7 +44,7 @@ export const InlineText: FunctionComponent<InlineTextProps> = ({
 
   if (error) {
     const alert = (
-      <Alert variant="outlined" severity="error">
+      <Alert variant="outlined" severity="error" onClick={edit}>
         <AlertTitle>{text}</AlertTitle>
       </Alert>
     );
