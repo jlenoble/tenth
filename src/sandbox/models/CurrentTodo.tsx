@@ -12,7 +12,7 @@ import { getTodos, useStyles } from "./TodoList";
 
 export function CurrentTodo() {
   const classes = useStyles();
-  let todos = useSelector(getTodos);
+  const { todos } = useSelector(getTodos);
   const dispatch = useDispatch();
   const todo: TodoState | undefined = todos.find((todo) => !todo.checked);
 
