@@ -21,10 +21,11 @@ export type TodosState = readonly TodoState[];
 
 const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
+
 const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
-const ADD_TODO_RESPONSE = "ADD_TODO_RESPONSE";
 const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
 const RESET_TODOS_REQUEST = "RESET_TODOS_REQUEST";
+
 export const DELETE_TODO = "DELETE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
@@ -41,10 +42,6 @@ interface SetTodosNoSaveAction {
 interface AddTodoRequestAction {
   type: typeof ADD_TODO_REQUEST;
   meta: { title: string };
-}
-interface AddTodoResponseAction {
-  type: typeof ADD_TODO_RESPONSE;
-  payload: TodoState;
 }
 
 interface UpdateTodoTitleRequestAction {
@@ -76,7 +73,6 @@ type TodoActionType =
   | SetTodosAction
   | SetTodosNoSaveAction
   | AddTodoRequestAction
-  | AddTodoResponseAction
   | UpdateTodoTitleRequestAction
   | ResetTodosRequestAction
   | TodoDeleteAction
@@ -100,12 +96,6 @@ export const addTodo = (title: string): TodoActionType => {
   return {
     type: ADD_TODO_REQUEST,
     meta: { title }
-  };
-};
-const addTodoResponse = (todo: TodoState): TodoActionType => {
-  return {
-    type: ADD_TODO_RESPONSE,
-    payload: todo
   };
 };
 
@@ -151,9 +141,6 @@ export const todos = (
   action: TodoActionType
 ): TodosState => {
   switch (action.type) {
-    case ADD_TODO_RESPONSE:
-      return state.concat(action.payload);
-
     case SET_TODOS:
     case SET_TODOS_NOSAVE:
       return action.payload;
@@ -220,7 +207,7 @@ function* saveToLocalStorage(localStorageId: string) {
 
 function* enableSaveToLocalStorage(localStorageId: string) {
   yield takeLatest(
-    [SET_TODOS, ADD_TODO_RESPONSE, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
+    [SET_TODOS, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
     saveToLocalStorage,
     localStorageId
   );
@@ -252,17 +239,23 @@ function* watchAddTodo(): SagaIterator {
     const id = tmpId();
     const errors = validateTitle(title);
 
+    const todos: TodosState = yield select(
+      (state: { todos: TodosState }) => state.todos
+    );
+
     yield put(
-      addTodoResponse(
-        errors.length
-          ? {
-              id,
-              title,
-              checked: false,
-              validated: false,
-              errors
-            }
-          : { id, title, checked: false, validated: true }
+      setTodos(
+        todos.concat(
+          errors.length
+            ? {
+                id,
+                title,
+                checked: false,
+                validated: false,
+                errors
+              }
+            : { id, title, checked: false, validated: true }
+        )
       )
     );
   }
