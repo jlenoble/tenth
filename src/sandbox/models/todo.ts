@@ -23,11 +23,12 @@ const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
 const ADD_TODO_RESPONSE = "ADD_TODO_RESPONSE";
 const UPDATE_TODO_TITLE_REQUEST = "UPDATE_TODO_TITLE_REQUEST";
 const UPDATE_TODO_TITLE_RESPONSE = "UPDATE_TODO_TITLE_RESPONSE";
+const RESET_TODOS_REQUEST = "RESET_TODOS_REQUEST";
+const RESET_TODOS_RESPONSE = "RESET_TODOS_RESPONSE";
+const RESET_TODOS_RESPONSE_NOSAVE = "RESET_TODOS_RESPONSE_NOSAVE";
 export const DELETE_TODO = "DELETE_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const MOVE_TODO = "MOVE_TODO";
-export const RESET_TODOS = "RESET_TODOS";
-const RESET_TODOS_NOSAVE = "RESET_TODOS_NOSAVE";
 
 interface AddTodoRequestAction {
   type: typeof ADD_TODO_REQUEST;
@@ -47,6 +48,19 @@ interface UpdateTodoTitleResponseAction {
   payload: TodoState;
 }
 
+interface ResetTodosRequestAction {
+  type: typeof RESET_TODOS_REQUEST;
+  payload: Todos;
+}
+interface ResetTodosResponseAction {
+  type: typeof RESET_TODOS_RESPONSE;
+  payload: TodosState;
+}
+interface ResetTodosResponseNoSaveAction {
+  type: typeof RESET_TODOS_RESPONSE_NOSAVE;
+  payload: TodosState;
+}
+
 export interface TodoDeleteAction {
   type: typeof DELETE_TODO;
   meta: { id: string };
@@ -62,26 +76,17 @@ export interface TodoMoveAction {
   meta: DropResult;
 }
 
-export interface TodosResetAction {
-  type: typeof RESET_TODOS;
-  payload: Todos;
-}
-
-interface TodosResetNoSaveAction {
-  type: typeof RESET_TODOS_NOSAVE;
-  payload: Todos;
-}
-
 type TodoActionType =
   | AddTodoRequestAction
   | AddTodoResponseAction
   | UpdateTodoTitleRequestAction
   | UpdateTodoTitleResponseAction
+  | ResetTodosRequestAction
+  | ResetTodosResponseAction
+  | ResetTodosResponseNoSaveAction
   | TodoDeleteAction
   | TodoToggleAction
-  | TodoMoveAction
-  | TodosResetAction
-  | TodosResetNoSaveAction;
+  | TodoMoveAction;
 
 export const addTodo = (title: string): TodoActionType => {
   return {
@@ -109,6 +114,25 @@ const updateTodoTitleResponse = (todo: TodoState): TodoActionType => {
   };
 };
 
+export const resetTodos = (todos: Todos): TodoActionType => {
+  return {
+    type: RESET_TODOS_REQUEST,
+    payload: todos
+  };
+};
+const resetTodosResponse = (todos: TodosState): TodoActionType => {
+  return {
+    type: RESET_TODOS_RESPONSE,
+    payload: todos
+  };
+};
+const resetTodosResponseNoSave = (todos: TodosState): TodoActionType => {
+  return {
+    type: RESET_TODOS_RESPONSE_NOSAVE,
+    payload: todos
+  };
+};
+
 export const deleteTodo = (id: string): TodoActionType => {
   return {
     type: DELETE_TODO,
@@ -130,20 +154,6 @@ export const moveTodo = (dropResult: DropResult): TodoActionType => {
   };
 };
 
-export const resetTodos = (todos: Todos): TodoActionType => {
-  return {
-    type: RESET_TODOS,
-    payload: todos
-  };
-};
-
-const resetTodosNoSave = (todos: Todos): TodoActionType => {
-  return {
-    type: RESET_TODOS_NOSAVE,
-    payload: todos
-  };
-};
-
 const initialState: TodosState = [];
 
 export const todos = (
@@ -158,6 +168,10 @@ export const todos = (
       return state.map((todo) =>
         todo.id !== action.payload.id ? todo : action.payload
       );
+
+    case RESET_TODOS_RESPONSE:
+    case RESET_TODOS_RESPONSE_NOSAVE:
+      return action.payload;
 
     case DELETE_TODO:
       return state.filter((todo) => todo.id !== action.meta.id);
@@ -189,15 +203,6 @@ export const todos = (
       return state;
     }
 
-    case RESET_TODOS:
-    case RESET_TODOS_NOSAVE:
-      return action.payload.map((todo) => ({
-        id: todo.id,
-        title: todo.title,
-        checked: todo.completed,
-        validated: false
-      }));
-
     default:
       return state;
   }
@@ -208,7 +213,7 @@ function* loadFromLocalStorage(localStorageId: string) {
     localStorage.getItem(localStorageId) || "[]"
   ) as Todos;
 
-  yield put(resetTodosNoSave(todos));
+  yield putResetTodos(todos, resetTodosResponseNoSave);
 }
 
 function* saveToLocalStorage(localStorageId: string) {
@@ -233,10 +238,10 @@ function* enableSaveToLocalStorage(localStorageId: string) {
     [
       ADD_TODO_RESPONSE,
       UPDATE_TODO_TITLE_RESPONSE,
+      RESET_TODOS_RESPONSE,
       DELETE_TODO,
       TOGGLE_TODO,
-      MOVE_TODO,
-      RESET_TODOS
+      MOVE_TODO
     ],
     saveToLocalStorage,
     localStorageId
@@ -308,7 +313,46 @@ function* watchUpdateTodo(): SagaIterator {
   }
 }
 
+function* putResetTodos(
+  todos: Todos,
+  resetTodosResponse: (todos: TodosState) => TodoActionType
+): SagaIterator {
+  yield put(
+    resetTodosResponse(
+      todos.map((todo) => {
+        const errors = validateTitle(todo.title);
+
+        return errors.length
+          ? {
+              id: todo.id,
+              title: todo.title,
+              checked: todo.completed,
+              validated: false,
+              errors
+            }
+          : {
+              id: todo.id,
+              title: todo.title,
+              checked: todo.completed,
+              validated: true
+            };
+      })
+    )
+  );
+}
+
+function* watchResetTodos() {
+  while (1) {
+    const { payload }: ResetTodosRequestAction = yield take(
+      RESET_TODOS_REQUEST
+    );
+
+    yield putResetTodos(payload, resetTodosResponse);
+  }
+}
+
 export function* watchInputs(): SagaIterator {
   yield fork(watchAddTodo);
   yield fork(watchUpdateTodo);
+  yield fork(watchResetTodos);
 }
