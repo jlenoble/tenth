@@ -2,22 +2,22 @@ import { SagaIterator } from "redux-saga";
 import { fork, put, take, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 
-export interface Todo {
+export type Todo = Readonly<{
   id: string;
   title: string;
   completed: boolean;
-}
+}>;
 
-export interface TodoState {
+export type TodoState = Readonly<{
   id: string;
   title: string;
   checked: boolean;
   validated: boolean;
-  errors?: string[];
-}
+  errors?: readonly string[];
+}>;
 
-export type Todos = Todo[];
-export type TodosState = TodoState[];
+export type Todos = readonly Todo[];
+export type TodosState = readonly TodoState[];
 
 const ADD_TODO_REQUEST = "ADD_TODO_REQUEST";
 const ADD_TODO_RESPONSE = "ADD_TODO_RESPONSE";
@@ -295,6 +295,15 @@ function* watchUpdateTodo(): SagaIterator {
     const {
       meta: { id, title }
     }: UpdateTodoTitleRequestAction = yield take(UPDATE_TODO_TITLE_REQUEST);
+    const todos: TodosState = yield select(
+      (state: { todos: TodosState }) => state.todos
+    );
+    const todo = todos.find((todo) => todo.id === id);
+
+    if (!todo || title === todo.title) {
+      continue;
+    }
+
     const errors = validateTitle(title);
 
     yield put(
@@ -303,11 +312,16 @@ function* watchUpdateTodo(): SagaIterator {
           ? {
               id,
               title,
-              checked: false,
+              checked: todo.checked,
               validated: false,
               errors
             }
-          : { id, title, checked: false, validated: true }
+          : {
+              id,
+              title,
+              checked: todo.checked,
+              validated: true
+            }
       )
     );
   }
