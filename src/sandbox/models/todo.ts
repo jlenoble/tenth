@@ -2,7 +2,6 @@ import { SagaIterator } from "redux-saga";
 import { fork, put, take, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 import { VisibilityFilter, SET_VISIBILITY_FILTER } from "./visibility";
-import { ViewStream } from "@material-ui/icons";
 
 export type Todo = Readonly<{
   id: string;
