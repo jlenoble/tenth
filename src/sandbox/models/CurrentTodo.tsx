@@ -10,7 +10,7 @@ import {
 import { TodoState, toggleTodo } from "./todo";
 import { getTodos, useStyles } from "./TodoList";
 
-export function CurrentTodo() {
+export function CurrentTodo({ viewId }: { viewId: string }) {
   const classes = useStyles();
   const { todos } = useSelector(getTodos);
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ export function CurrentTodo() {
               variant={"contained"}
               disableRipple
               color="secondary"
-              onClick={() => dispatch(toggleTodo(todo.id))}
+              onClick={() => dispatch(toggleTodo({ viewId, id: todo.id }))}
             >
               Done
             </Button>

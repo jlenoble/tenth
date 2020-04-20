@@ -2,10 +2,16 @@ import React, { FunctionComponent } from "react";
 import { createStore, applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { Provider, useDispatch } from "react-redux";
-import { render, fireEvent, within } from "@testing-library/react";
+import { render, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
-import { resetTodos, tmpId, watchInputs, watchVisibilityFilter } from "../todo";
+import {
+  resetTodos,
+  tmpId,
+  watchInputs,
+  watchVisibilityFilter,
+  rootId
+} from "../todo";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const sagaMiddleware = createSagaMiddleware();
@@ -16,15 +22,16 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const InnerList: FunctionComponent = () => {
     const dispatch = useDispatch();
     dispatch(
-      resetTodos(
-        items.map((item, i) => ({
+      resetTodos({
+        viewId: rootId,
+        todos: items.map((item, i) => ({
           id: tmpId(),
           title: i ? item : "",
           completed: !(i % 2)
         }))
-      )
+      })
     );
-    return <TodoList />;
+    return <TodoList viewId={rootId} />;
   };
 
   return (

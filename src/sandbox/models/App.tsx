@@ -14,7 +14,12 @@ import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
 import clsx from "clsx";
 import { TodoList, combinedReducer } from "./TodoList";
-import { enableLocalStorage, watchInputs, watchVisibilityFilter } from "./todo";
+import {
+  enableLocalStorage,
+  watchInputs,
+  watchVisibilityFilter,
+  rootId
+} from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 
 const localStorageId = "todos";
@@ -65,7 +70,7 @@ function App() {
     <Provider store={store}>
       <Card classes={{ root: classes.card }}>
         <CardContent>
-          <CurrentTodo />
+          <CurrentTodo viewId={rootId} />
         </CardContent>
         <CardActions disableSpacing>
           <IconButton
@@ -81,7 +86,7 @@ function App() {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
-            <TodoList />
+            <TodoList viewId={rootId} />
           </CardContent>
         </Collapse>
       </Card>

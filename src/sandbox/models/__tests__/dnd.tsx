@@ -3,7 +3,13 @@ import { createStore, applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { Provider, useDispatch } from "react-redux";
 import { TodoList, combinedReducer } from "../TodoList";
-import { resetTodos, tmpId, watchInputs, watchVisibilityFilter } from "../todo";
+import {
+  resetTodos,
+  tmpId,
+  watchInputs,
+  watchVisibilityFilter,
+  rootId
+} from "../todo";
 import { getDroppables, getDraggables } from "../../list/__testHelpers__/dnd";
 import { mockGetBoundingClientRect } from "../../list/__testHelpers__/dnd-mock";
 import { render } from "../../list/__testHelpers__/dnd-render";
@@ -17,11 +23,16 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const InnerList: FunctionComponent = () => {
     const dispatch = useDispatch();
     dispatch(
-      resetTodos(
-        items.map((item) => ({ id: tmpId(), title: item, completed: false }))
-      )
+      resetTodos({
+        viewId: rootId,
+        todos: items.map((item) => ({
+          id: tmpId(),
+          title: item,
+          completed: false
+        }))
+      })
     );
-    return <TodoList />;
+    return <TodoList viewId={rootId} />;
   };
 
   return (

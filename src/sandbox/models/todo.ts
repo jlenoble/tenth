@@ -43,11 +43,11 @@ const MOVE_TODO = "MOVE_TODO";
 
 interface SetTodosAction {
   type: typeof SET_TODOS;
-  payload: TodoStates;
+  meta: { viewId: string; todos: TodoStates };
 }
 interface SetTodosNoSaveAction {
   type: typeof SET_TODOS_NOSAVE;
-  payload: TodoStates;
+  meta: { viewId: string; todos: TodoStates };
 }
 interface SetViewAction {
   type: typeof SET_VIEW;
@@ -56,28 +56,28 @@ interface SetViewAction {
 
 interface AddTodoAction {
   type: typeof ADD_TODO;
-  meta: { title: string };
+  meta: { viewId: string; title: string };
 }
 interface UpdateTodoTitleAction {
   type: typeof UPDATE_TODO_TITLE;
-  meta: { id: string; title: string };
+  meta: { viewId: string; id: string; title: string };
 }
 interface ResetTodosAction {
   type: typeof RESET_TODOS;
-  payload: Todos;
+  meta: { viewId: string; todos: Todos };
 }
 
 interface TodoDeleteAction {
   type: typeof DELETE_TODO;
-  meta: { id: string };
+  meta: { viewId: string; id: string };
 }
 interface TodoToggleAction {
   type: typeof TOGGLE_TODO;
-  meta: { id: string };
+  meta: { viewId: string; id: string };
 }
 interface TodoMoveAction {
   type: typeof MOVE_TODO;
-  meta: DropResult;
+  meta: { viewId: string; dropResult: DropResult };
 }
 
 type TodoActionType =
@@ -91,64 +91,90 @@ type TodoActionType =
   | TodoToggleAction
   | TodoMoveAction;
 
-const setTodos = (todos: TodoStates): TodoActionType => {
+const setTodos = (meta: {
+  viewId: string;
+  todos: TodoStates;
+}): TodoActionType => {
   return {
     type: SET_TODOS,
-    payload: todos
+    meta
   };
 };
-const setTodosNoSave = (todos: TodoStates): TodoActionType => {
+const setTodosNoSave = (meta: {
+  viewId: string;
+  todos: TodoStates;
+}): TodoActionType => {
   return {
     type: SET_TODOS_NOSAVE,
-    payload: todos
+    meta
   };
 };
-const setView = (viewId: string, view: TodosView): TodoActionType => {
+const setView = (meta: { viewId: string; view: TodosView }): TodoActionType => {
   return {
     type: SET_VIEW,
-    meta: { viewId, view }
+    meta
   };
 };
 
-export const addTodo = (title: string): TodoActionType => {
+export const addTodo = (meta: {
+  viewId: string;
+  title: string;
+}): TodoActionType => {
   return {
     type: ADD_TODO,
-    meta: { title }
+    meta
   };
 };
-export const updateTodoTitle = (id: string, title: string): TodoActionType => {
+export const updateTodoTitle = (meta: {
+  viewId: string;
+  id: string;
+  title: string;
+}): TodoActionType => {
   return {
     type: UPDATE_TODO_TITLE,
-    meta: { id, title }
+    meta
   };
 };
-export const resetTodos = (todos: Todos): TodoActionType => {
+export const resetTodos = (meta: {
+  viewId: string;
+  todos: Todos;
+}): TodoActionType => {
   return {
     type: RESET_TODOS,
-    payload: todos
+    meta
   };
 };
 
-export const deleteTodo = (id: string): TodoActionType => {
+export const deleteTodo = (meta: {
+  viewId: string;
+  id: string;
+}): TodoActionType => {
   return {
     type: DELETE_TODO,
-    meta: { id }
+    meta
   };
 };
-export const toggleTodo = (id: string): TodoActionType => {
+export const toggleTodo = (meta: {
+  viewId: string;
+  id: string;
+}): TodoActionType => {
   return {
     type: TOGGLE_TODO,
-    meta: { id }
+    meta
   };
 };
-export const moveTodo = (dropResult: DropResult): TodoActionType => {
+export const moveTodo = (meta: {
+  viewId: string;
+  dropResult: DropResult;
+}): TodoActionType => {
   return {
     type: MOVE_TODO,
-    meta: dropResult
+    meta
   };
 };
 
-const initialState: TodosState = { todos: [], views: { ROOT: [] } };
+export const rootId = "ROOT";
+const initialState: TodosState = { todos: [], views: { [rootId]: [] } };
 
 export const todos = (
   state = initialState,
@@ -157,7 +183,7 @@ export const todos = (
   switch (action.type) {
     case SET_TODOS:
     case SET_TODOS_NOSAVE:
-      return { ...state, todos: action.payload };
+      return { ...state, todos: action.meta.todos };
 
     case DELETE_TODO:
       return {
@@ -176,7 +202,8 @@ export const todos = (
       };
 
     case MOVE_TODO: {
-      const { source, destination } = action.meta;
+      const viewId = action.meta.viewId;
+      const { source, destination } = action.meta.dropResult;
 
       if (!destination) {
         return state;
@@ -189,8 +216,8 @@ export const todos = (
 
         const newTodos = state.todos.concat();
 
-        const sId = state.views["ROOT"][source.index].id;
-        const dId = state.views["ROOT"][destination.index].id;
+        const sId = state.views[viewId][source.index].id;
+        const dId = state.views[viewId][destination.index].id;
         const sIndex = newTodos.findIndex((todo) => todo.id === sId);
         const dIndex = newTodos.findIndex((todo) => todo.id === dId);
 
@@ -218,7 +245,7 @@ function* loadFromLocalStorage(localStorageId: string) {
     localStorage.getItem(localStorageId) || "[]"
   ) as Todos;
 
-  yield putResetTodos(todos, setTodosNoSave);
+  yield putResetTodos({ viewId: rootId, todos }, setTodosNoSave);
 }
 
 function* saveToLocalStorage(localStorageId: string) {
@@ -267,7 +294,7 @@ const validateTitle = (title: string) => {
 function* watchAddTodo(): SagaIterator {
   while (1) {
     const {
-      meta: { title }
+      meta: { viewId, title }
     }: AddTodoAction = yield take(ADD_TODO);
     const id = tmpId();
     const errors = validateTitle(title);
@@ -277,8 +304,9 @@ function* watchAddTodo(): SagaIterator {
     );
 
     yield put(
-      setTodos(
-        todos.concat(
+      setTodos({
+        viewId,
+        todos: todos.concat(
           errors.length
             ? {
                 id,
@@ -289,7 +317,7 @@ function* watchAddTodo(): SagaIterator {
               }
             : { id, title, checked: false, validated: true }
         )
-      )
+      })
     );
   }
 }
@@ -297,7 +325,7 @@ function* watchAddTodo(): SagaIterator {
 function* watchUpdateTodo(): SagaIterator {
   while (1) {
     const {
-      meta: { id, title }
+      meta: { viewId, id, title }
     }: UpdateTodoTitleAction = yield take(UPDATE_TODO_TITLE);
     const { todos }: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos
@@ -310,8 +338,9 @@ function* watchUpdateTodo(): SagaIterator {
     }
 
     yield put(
-      setTodos(
-        todos.map((todo) => {
+      setTodos({
+        viewId,
+        todos: todos.map((todo) => {
           if (todo.id !== id) {
             return todo;
           }
@@ -333,18 +362,19 @@ function* watchUpdateTodo(): SagaIterator {
                 validated: true
               };
         })
-      )
+      })
     );
   }
 }
 
 function* putResetTodos(
-  todos: Todos,
-  resetTodosResponse: (todos: TodoStates) => TodoActionType
+  { viewId, todos }: { viewId: string; todos: Todos },
+  resetTodos: (meta: { viewId: string; todos: TodoStates }) => TodoActionType
 ): SagaIterator {
   yield put(
-    resetTodosResponse(
-      todos.map((todo) => {
+    resetTodos({
+      viewId,
+      todos: todos.map((todo) => {
         const errors = validateTitle(todo.title);
 
         return errors.length
@@ -362,15 +392,15 @@ function* putResetTodos(
               validated: true
             };
       })
-    )
+    })
   );
 }
 
 function* watchResetTodos() {
   while (1) {
-    const { payload }: ResetTodosAction = yield take(RESET_TODOS);
+    const { meta }: ResetTodosAction = yield take(RESET_TODOS);
 
-    yield putResetTodos(payload, setTodos);
+    yield putResetTodos(meta, setTodos);
   }
 }
 
@@ -410,7 +440,7 @@ function* updateView(): SagaIterator {
       view = [];
   }
 
-  yield put(setView("ROOT", view));
+  yield put(setView({ viewId: rootId, view }));
 }
 
 export function* watchVisibilityFilter() {

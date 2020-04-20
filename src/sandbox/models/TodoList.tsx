@@ -34,7 +34,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-export function TodoList() {
+export function TodoList({ viewId }: { viewId: string }) {
   const classes = useStyles();
 
   const {
@@ -45,7 +45,9 @@ export function TodoList() {
 
   return (
     <DragDropContext
-      onDragEnd={(dropResult: DropResult) => dispatch(moveTodo(dropResult))}
+      onDragEnd={(dropResult: DropResult) =>
+        dispatch(moveTodo({ viewId, dropResult }))
+      }
     >
       <List
         droppableId="drop-area"
@@ -54,7 +56,9 @@ export function TodoList() {
         titleEnter={(title: string) => {
           setTitle(title);
         }}
-        addItemProps={{ add: (value: string) => dispatch(addTodo(value)) }}
+        addItemProps={{
+          add: (title: string) => dispatch(addTodo({ viewId, title }))
+        }}
         listItems={todos.map((todo) => {
           const errors = todo.errors;
 
@@ -63,11 +67,15 @@ export function TodoList() {
             primary: todo.title,
             primaryError: Boolean(errors),
             primaryHelperText: errors && errors.join(", "),
-            primaryEnter: (value: string) =>
-              dispatch(updateTodoTitle(todo.id, value)),
+            primaryEnter: (title: string) =>
+              dispatch(updateTodoTitle({ viewId, id: todo.id, title })),
             checked: todo.checked,
-            checkboxProps: { onClick: () => dispatch(toggleTodo(todo.id)) },
-            deleteButtonProps: { onClick: () => dispatch(deleteTodo(todo.id)) }
+            checkboxProps: {
+              onClick: () => dispatch(toggleTodo({ viewId, id: todo.id }))
+            },
+            deleteButtonProps: {
+              onClick: () => dispatch(deleteTodo({ viewId, id: todo.id }))
+            }
           };
         })}
         cardHeaderProps={{
