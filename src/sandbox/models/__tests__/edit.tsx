@@ -52,7 +52,7 @@ describe("TodoList", () => {
     let textbox = subGetByRole("textbox") as HTMLInputElement;
 
     await userEvents.type(textbox, "bozo");
-    fireEvent.keyPress(textbox, {
+    fireEvent.keyDown(textbox, {
       key: "Enter",
       code: 13,
       charCode: 13,
@@ -83,7 +83,7 @@ describe("TodoList", () => {
     const textbox = getByRole("textbox") as HTMLInputElement;
 
     await userEvents.type(textbox, "bozo");
-    fireEvent.keyPress(textbox, {
+    fireEvent.keyDown(textbox, {
       key: "Enter",
       code: 13,
       charCode: 13,
