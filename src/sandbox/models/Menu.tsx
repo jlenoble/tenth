@@ -29,14 +29,14 @@ export const Menu: FunctionComponent = () => {
     <div>
       <IconButton
         aria-label="setting"
-        aria-controls="check-menu"
+        aria-controls="menu"
         aria-haspopup="true"
         onClick={handleClick}
       >
         <MoreVert />
       </IconButton>
       <Popover
-        id="check-menu"
+        id="menu"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
