@@ -2,12 +2,15 @@ import { SagaIterator } from "redux-saga";
 import { fork, put, take, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 import { VisibilityFilter, SET_VISIBILITY_FILTER } from "./visibility";
+import { ViewStream } from "@material-ui/icons";
 
 export type Todo = Readonly<{
   id: string;
   title: string;
   completed: boolean;
 }>;
+
+export type Todos = readonly Todo[];
 
 export type TodoState = Readonly<{
   id: string;
@@ -17,12 +20,14 @@ export type TodoState = Readonly<{
   errors?: readonly string[];
 }>;
 
-export type Todos = readonly Todo[];
 export type TodoStates = readonly TodoState[];
+
 export type TodosView = TodoStates;
+export type TodosViews = Readonly<{ [viewId: string]: TodosView }>;
+
 export type TodosState = Readonly<{
   todos: TodoStates;
-  view: TodosView;
+  views: TodosViews;
 }>;
 
 const SET_TODOS = "SET_TODOS";
@@ -47,7 +52,7 @@ interface SetTodosNoSaveAction {
 }
 interface SetViewAction {
   type: typeof SET_VIEW;
-  payload: TodosView;
+  meta: { viewId: string; view: TodosView };
 }
 
 interface AddTodoAction {
@@ -99,10 +104,10 @@ const setTodosNoSave = (todos: TodoStates): TodoActionType => {
     payload: todos
   };
 };
-const setView = (view: TodosView): TodoActionType => {
+const setView = (viewId: string, view: TodosView): TodoActionType => {
   return {
     type: SET_VIEW,
-    payload: view
+    meta: { viewId, view }
   };
 };
 
@@ -144,7 +149,7 @@ export const moveTodo = (dropResult: DropResult): TodoActionType => {
   };
 };
 
-const initialState: TodosState = { todos: [], view: [] };
+const initialState: TodosState = { todos: [], views: { ROOT: [] } };
 
 export const todos = (
   state = initialState,
@@ -185,8 +190,8 @@ export const todos = (
 
         const newTodos = state.todos.concat();
 
-        const sId = state.view[source.index].id;
-        const dId = state.view[destination.index].id;
+        const sId = state.views["ROOT"][source.index].id;
+        const dId = state.views["ROOT"][destination.index].id;
         const sIndex = newTodos.findIndex((todo) => todo.id === sId);
         const dIndex = newTodos.findIndex((todo) => todo.id === dId);
 
@@ -199,8 +204,10 @@ export const todos = (
       return state;
     }
 
-    case SET_VIEW:
-      return { ...state, view: action.payload };
+    case SET_VIEW: {
+      const { viewId, view } = action.meta;
+      return { ...state, views: { ...state.views, [viewId]: view } };
+    }
 
     default:
       return state;
@@ -404,7 +411,7 @@ function* updateView(): SagaIterator {
       view = [];
   }
 
-  yield put(setView(view));
+  yield put(setView("ROOT", view));
 }
 
 export function* watchVisibilityFilter() {
