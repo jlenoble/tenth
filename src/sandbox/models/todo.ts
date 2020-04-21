@@ -1,12 +1,5 @@
 import { SagaIterator } from "redux-saga";
-import {
-  fork,
-  put,
-  take,
-  select,
-  takeLatest,
-  takeEvery
-} from "redux-saga/effects";
+import { put, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
 
 export enum VisibilityFilter {
@@ -53,13 +46,13 @@ export type TodosState = Readonly<{
   parts: PartStateMap;
 }>;
 
-const RESET_TODOS = "RESET_TODOS";
+export const RESET_TODOS = "RESET_TODOS";
 const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
 
-const ADD_TODO = "ADD_TODO";
+export const ADD_TODO = "ADD_TODO";
 const DO_ADD_TODO = "DO_ADD_TODO";
-const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
+export const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
 const DO_UPDATE_TODO_TITLE = "DO_UPDATE_TODO_TITLE";
 
 const DELETE_TODO = "DELETE_TODO";
@@ -74,7 +67,7 @@ const ADD_VIEW = "ADD_VIEW";
 const UPDATE_VIEWS = "UPDATE_VIEWS";
 const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
 
-interface ResetTodosAction {
+export interface ResetTodosAction {
   type: typeof RESET_TODOS;
   meta: { partId: string; todos: Todos };
 }
@@ -87,7 +80,7 @@ interface SetTodosNoSaveAction {
   meta: { partId: string; todos: TodoStates };
 }
 
-interface AddTodoAction {
+export interface AddTodoAction {
   type: typeof ADD_TODO;
   meta: { viewId: string; title: string };
 }
@@ -96,7 +89,7 @@ interface DoAddTodoAction {
   meta: { viewId: string; todo: TodoState };
 }
 
-interface UpdateTodoTitleAction {
+export interface UpdateTodoTitleAction {
   type: typeof UPDATE_TODO_TITLE;
   meta: { viewId: string; id: string; title: string };
 }
@@ -170,7 +163,7 @@ export const resetTodos = (meta: {
     meta
   };
 };
-const setTodos = (meta: {
+export const setTodos = (meta: {
   partId: string;
   todos: TodoStates;
 }): TodoActionType => {
@@ -198,7 +191,7 @@ export const addTodo = (meta: {
     meta
   };
 };
-const doAddTodo = (meta: {
+export const doAddTodo = (meta: {
   viewId: string;
   todo: TodoState;
 }): TodoActionType => {
@@ -218,7 +211,7 @@ export const updateTodoTitle = (meta: {
     meta
   };
 };
-const doUpdateTodoTitle = (meta: {
+export const doUpdateTodoTitle = (meta: {
   viewId: string;
   todo: Pick<TodoState, "id" | "title" | "validated" | "errors">;
 }): TodoActionType => {
@@ -602,7 +595,7 @@ export function* enableLocalStorage(localStorageId: string) {
 let currentId = Date.now();
 export const tmpId = () => "todo" + currentId++;
 
-const validateTitle = (title: string) => {
+export const validateTitle = (title: string) => {
   const errors: string[] = [];
 
   if (title === "") {
@@ -611,98 +604,6 @@ const validateTitle = (title: string) => {
 
   return errors;
 };
-
-function* watchAddTodo(): SagaIterator {
-  while (1) {
-    const {
-      meta: { viewId, title }
-    }: AddTodoAction = yield take(ADD_TODO);
-    const id = tmpId();
-    const errors = validateTitle(title);
-
-    yield put(
-      doAddTodo({
-        viewId,
-        todo: errors.length
-          ? {
-              id,
-              title,
-              checked: false,
-              validated: false,
-              errors
-            }
-          : { id, title, checked: false, validated: true }
-      })
-    );
-  }
-}
-
-function* watchUpdateTodoTitle(): SagaIterator {
-  while (1) {
-    const {
-      meta: { viewId, id, title }
-    }: UpdateTodoTitleAction = yield take(UPDATE_TODO_TITLE);
-    const errors = validateTitle(title);
-
-    yield put(
-      doUpdateTodoTitle({
-        viewId,
-        todo: errors.length
-          ? {
-              id,
-              title,
-              validated: false,
-              errors
-            }
-          : {
-              id,
-              title,
-              validated: true
-            }
-      })
-    );
-  }
-}
-
-export function* watchInputs(): SagaIterator {
-  yield fork(watchAddTodo);
-  yield fork(watchUpdateTodoTitle);
-
-  yield takeEvery(RESET_TODOS, function* ({
-    meta: { partId, todos }
-  }: ResetTodosAction) {
-    yield put(
-      addView({
-        viewId: partId,
-        partId
-      })
-    );
-
-    yield put(
-      setTodos({
-        partId,
-        todos: todos.map((todo) => {
-          const errors = validateTitle(todo.title);
-
-          return errors.length
-            ? {
-                id: todo.id,
-                title: todo.title,
-                checked: todo.completed,
-                validated: false,
-                errors
-              }
-            : {
-                id: todo.id,
-                title: todo.title,
-                checked: todo.completed,
-                validated: true
-              };
-        }) as TodoStates
-      })
-    );
-  });
-}
 
 export function* watchVisibilityFilter() {
   yield takeLatest(

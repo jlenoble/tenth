@@ -5,19 +5,14 @@ import { Provider, useDispatch } from "react-redux";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
-import {
-  resetTodos,
-  tmpId,
-  watchInputs,
-  watchVisibilityFilter,
-  rootId
-} from "../todo";
+import { resetTodos, tmpId, watchVisibilityFilter, rootId } from "../todo";
+import { watchAll } from "../sagas";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(combinedReducer, applyMiddleware(sagaMiddleware));
   sagaMiddleware.run(watchVisibilityFilter);
-  sagaMiddleware.run(watchInputs);
+  sagaMiddleware.run(watchAll);
 
   const InnerList: FunctionComponent = () => {
     const dispatch = useDispatch();
