@@ -31,7 +31,7 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
         }))
       })
     );
-    return <TodoList viewId={rootId} />;
+    return <TodoList viewId={rootId} title={"TODOS"} />;
   };
 
   return (

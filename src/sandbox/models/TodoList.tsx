@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { combineReducers } from "redux";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,8 +22,6 @@ export const combinedReducer = combineReducers({
   ui
 });
 
-export const defaultTitle = "TODOS";
-
 export const useStyles = makeStyles((theme: Theme) => ({
   card: {
     borderRadius: 0,
@@ -33,12 +31,21 @@ export const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-export function TodoList({ viewId }: { viewId: string }) {
+export function TodoList({
+  viewId,
+  title
+}: {
+  viewId: string;
+  title?: string;
+}) {
   const classes = useStyles();
-  const { views } = useSelector(getTodos);
+  const { views, todos: allTodos } = useSelector(getTodos);
   const dispatch = useDispatch();
-  const [title, setTitle] = useState(defaultTitle);
-  const todos = views[viewId].todos;
+  const { todos, partId } = views[viewId];
+
+  if (!title) {
+    title = allTodos[partId].title;
+  }
 
   return (
     <DragDropContext
@@ -50,9 +57,6 @@ export function TodoList({ viewId }: { viewId: string }) {
         droppableId="drop-area"
         classes={{ root: classes.card }}
         title={title}
-        titleEnter={(title: string) => {
-          setTitle(title);
-        }}
         addItemProps={{
           add: (title: string) => dispatch(addTodo({ viewId, title }))
         }}

@@ -58,6 +58,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const defaultTitle = "TODOS";
+
 const Layout = () => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(true);
@@ -91,7 +93,7 @@ const Layout = () => {
         <Grid container>
           <Grid item xs={12} md={subViewId ? 6 : 12}>
             <CardContent>
-              <TodoList viewId={viewId} />
+              <TodoList viewId={viewId} title={defaultTitle} />
             </CardContent>
           </Grid>
           {subViewId && (
