@@ -10,9 +10,9 @@ import {
   watchVisibilityFilter,
   rootId
 } from "../todo";
-import { getDroppables, getDraggables } from "../../list/__testHelpers__/dnd";
-import { mockGetBoundingClientRect } from "../../list/__testHelpers__/dnd-mock";
-import { render } from "../../list/__testHelpers__/dnd-render";
+import { getDroppables, getDraggables } from "../__testHelpers__/dnd";
+import { mockGetBoundingClientRect } from "../__testHelpers__/dnd-mock";
+import { render } from "../__testHelpers__/dnd-render";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const sagaMiddleware = createSagaMiddleware();
