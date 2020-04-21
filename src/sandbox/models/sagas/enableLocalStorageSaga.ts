@@ -4,14 +4,16 @@ import {
   addView,
   setTodosNoSave,
   validateTitle,
-  TodosState,
+  TodosState
+} from "../todo";
+import { Todo, TodoMap, TodoStates } from "../types";
+import {
   DO_ADD_TODO,
   DO_UPDATE_TODO_TITLE,
   DELETE_TODO,
   TOGGLE_TODO,
   MOVE_TODO
-} from "../todo";
-import { Todo, TodoMap, TodoStates } from "../types";
+} from "../constants";
 
 function* loadFromLocalStorage(localStorageId: string) {
   const { todos, parts } = JSON.parse(

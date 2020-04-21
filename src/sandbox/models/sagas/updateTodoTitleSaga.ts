@@ -2,10 +2,10 @@ import { SagaIterator } from "redux-saga";
 import { put, take } from "redux-saga/effects";
 import {
   UpdateTodoTitleAction,
-  UPDATE_TODO_TITLE,
   validateTitle,
   doUpdateTodoTitle
 } from "../todo";
+import { UPDATE_TODO_TITLE } from "../constants";
 
 export function* updateTodoTitleSaga(): SagaIterator {
   while (1) {

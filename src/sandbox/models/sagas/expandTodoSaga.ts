@@ -1,12 +1,7 @@
 import { SagaIterator } from "redux-saga";
 import { put, take, select } from "redux-saga/effects";
-import {
-  ExpandTodoAction,
-  EXPAND_TODO,
-  TodosState,
-  addPart,
-  addView
-} from "../todo";
+import { ExpandTodoAction, TodosState, addPart, addView } from "../todo";
+import { EXPAND_TODO } from "../constants";
 import { updateSubView } from "../ui";
 
 export function* expandTodoSaga(): SagaIterator {
