@@ -12,6 +12,7 @@ import {
   watchVisibilityFilter,
   rootId
 } from "../todo";
+import { getDeleteButtons } from "../__testHelpers__/buttons";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const sagaMiddleware = createSagaMiddleware();
@@ -98,19 +99,19 @@ describe("TodoList", () => {
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
 
-    let buttons = getAllByRole("button") as HTMLButtonElement[];
+    let buttons = getDeleteButtons(list);
     userEvents.click(buttons[0]);
 
     let listitems = getAllByRole("listitem") as HTMLLIElement[];
     expect(listitems.map((li) => li.textContent)).toEqual(["bar", "baz"]);
 
-    buttons = getAllByRole("button") as HTMLButtonElement[];
+    buttons = getDeleteButtons(list);
     userEvents.click(buttons[1]);
 
     listitems = getAllByRole("listitem") as HTMLLIElement[];
     expect(listitems.map((li) => li.textContent)).toEqual(["bar"]);
 
-    buttons = getAllByRole("button") as HTMLButtonElement[];
+    buttons = getDeleteButtons(list);
     userEvents.click(buttons[0]);
 
     try {
@@ -173,7 +174,7 @@ describe("TodoList", () => {
 
     let checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     let listitems = getAllByRole("listitem") as HTMLLIElement[];
-    let buttons = getAllByRole("button") as HTMLButtonElement[];
+    let buttons = getDeleteButtons(list);
 
     userEvents.click(checkboxes[0]);
     userEvents.click(checkboxes[2]);
