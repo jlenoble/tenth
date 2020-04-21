@@ -1,12 +1,6 @@
 import { put, select, takeLatest } from "redux-saga/effects";
-import {
-  PartMap,
-  addView,
-  setTodosNoSave,
-  validateTitle,
-  TodosState
-} from "../todo";
-import { Todo, TodoMap, TodoStates } from "../types";
+import { addView, setTodosNoSave, validateTitle, TodosState } from "../todo";
+import { Todo, TodoMap, TodoStates, PartMap } from "../types";
 import {
   DO_ADD_TODO,
   DO_UPDATE_TODO_TITLE,

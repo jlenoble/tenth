@@ -22,12 +22,6 @@ import {
   EXPAND_TODO
 } from "./constants";
 
-export type Part = readonly string[];
-export type PartMap = Readonly<{ [id: string]: Part }>;
-
-export type PartState = TodoStates;
-export type PartStateMap = Readonly<{ [partId: string]: PartState }>;
-
 export type View = Readonly<{
   partId: string;
   visibilityFilter: VisibilityFilter;
@@ -38,7 +32,7 @@ export type ViewMap = Readonly<{ [viewId: string]: View }>;
 export type TodosState = Readonly<{
   todos: TodoStateMap;
   views: ViewMap;
-  parts: PartStateMap;
+  parts: Readonly<{ [id: string]: TodoStates }>;
 }>;
 
 const ADD_PART = "ADD_PART";
