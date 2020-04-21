@@ -51,13 +51,13 @@ const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
 
 export const ADD_TODO = "ADD_TODO";
-const DO_ADD_TODO = "DO_ADD_TODO";
+export const DO_ADD_TODO = "DO_ADD_TODO";
 export const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
-const DO_UPDATE_TODO_TITLE = "DO_UPDATE_TODO_TITLE";
+export const DO_UPDATE_TODO_TITLE = "DO_UPDATE_TODO_TITLE";
 
-const DELETE_TODO = "DELETE_TODO";
-const TOGGLE_TODO = "TOGGLE_TODO";
-const MOVE_TODO = "MOVE_TODO";
+export const DELETE_TODO = "DELETE_TODO";
+export const TOGGLE_TODO = "TOGGLE_TODO";
+export const MOVE_TODO = "MOVE_TODO";
 
 export const EXPAND_TODO = "EXPAND_TODO";
 
@@ -172,7 +172,7 @@ export const setTodos = (meta: {
     meta
   };
 };
-const setTodosNoSave = (meta: {
+export const setTodosNoSave = (meta: {
   partId: string;
   todos: TodoStates;
 }): TodoActionType => {
@@ -513,84 +513,6 @@ export const todos = (
       return state;
   }
 };
-
-function* loadFromLocalStorage(localStorageId: string) {
-  const { todos, parts } = JSON.parse(
-    localStorage.getItem(localStorageId) || `{"todos":{},"parts":{}}`
-  ) as { todos: TodoMap; parts: PartMap };
-
-  for (let [id, ids] of Object.entries(parts)) {
-    yield put(
-      addView({
-        viewId: id,
-        partId: id
-      })
-    );
-
-    yield put(
-      setTodosNoSave({
-        partId: id,
-        todos: ids
-          .filter((id) => todos[id])
-          .map((id) => {
-            const todo = todos[id]!;
-            const errors = validateTitle(todo.title);
-
-            return errors.length
-              ? {
-                  id,
-                  title: todo.title,
-                  checked: todo.completed,
-                  validated: false,
-                  errors
-                }
-              : {
-                  id,
-                  title: todo.title,
-                  checked: todo.completed,
-                  validated: true
-                };
-          }) as TodoStates
-      })
-    );
-  }
-}
-
-function* saveToLocalStorage(localStorageId: string) {
-  const { todos, parts }: TodosState = yield select(
-    (state: { todos: TodosState }) => state.todos
-  );
-
-  localStorage.setItem(
-    localStorageId,
-    JSON.stringify({
-      todos: Object.entries(todos).reduce((map, [id, todo]) => {
-        map[id] = {
-          title: todo.title,
-          completed: todo.checked
-        };
-        return map;
-      }, {} as { [id: string]: Omit<Todo, "id"> }) as TodoMap,
-      parts: Object.entries(parts).reduce((map, [partId, todosStates]) => {
-        map[partId] = todosStates.map((todo) => todo.id);
-        return map;
-      }, {} as { [id: string]: readonly string[] }) as PartMap
-    })
-  );
-}
-
-function* enableSaveToLocalStorage(localStorageId: string) {
-  yield takeLatest(
-    [DO_ADD_TODO, DO_UPDATE_TODO_TITLE, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
-    saveToLocalStorage,
-    localStorageId
-  );
-}
-
-export function* enableLocalStorage(localStorageId: string) {
-  yield loadFromLocalStorage(localStorageId);
-  yield enableSaveToLocalStorage(localStorageId);
-}
 
 let currentId = Date.now();
 export const tmpId = () => "todo" + currentId++;

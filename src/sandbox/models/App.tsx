@@ -15,10 +15,10 @@ import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
 import clsx from "clsx";
 import { TodoList, combinedReducer } from "./TodoList";
-import { enableLocalStorage, watchVisibilityFilter } from "./todo";
+import { watchVisibilityFilter } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 import { UI } from "./ui";
-import { mainSaga } from "./sagas";
+import { mainSaga, enableLocalStorageSaga } from "./sagas";
 import "./ListItem.css";
 
 const localStorageId = "todos";
@@ -33,7 +33,7 @@ export const store = createStore(
 
 sagaMiddleware.run(watchVisibilityFilter);
 sagaMiddleware.run(mainSaga);
-sagaMiddleware.run(enableLocalStorage, localStorageId);
+sagaMiddleware.run(enableLocalStorageSaga, localStorageId);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
