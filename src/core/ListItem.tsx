@@ -5,7 +5,7 @@ import {
   IconButton,
   IconButtonProps
 } from "@material-ui/core";
-import { DeleteOutlined } from "@material-ui/icons";
+import { DeleteOutlined, OpenInNewOutlined } from "@material-ui/icons";
 import {
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps
@@ -22,6 +22,7 @@ export interface ListItemProps extends ListItemTextProps {
   checkboxProps?: Omit<CheckboxProps, "checked">;
   listItemTextProps?: BaseListItemTextProps;
   deleteButtonProps?: IconButtonProps;
+  expandButtonProps?: IconButtonProps;
 }
 
 export type BaseListItemProps = MuiListItemProps;
@@ -43,6 +44,7 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
     listItemTextProps,
 
     deleteButtonProps,
+    expandButtonProps,
 
     ...other
   }) => {
@@ -58,6 +60,11 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
           primaryTextFieldProps={primaryTextFieldProps}
           {...listItemTextProps}
         />
+        {expandButtonProps && (
+          <IconButton aria-label="Expand item" {...expandButtonProps}>
+            <OpenInNewOutlined />
+          </IconButton>
+        )}
         {deleteButtonProps && (
           <IconButton aria-label="Delete item" {...deleteButtonProps}>
             <DeleteOutlined />

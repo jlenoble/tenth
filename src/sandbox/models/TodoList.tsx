@@ -7,16 +7,19 @@ import {
   todos,
   addTodo,
   deleteTodo,
+  expandTodo,
   updateTodoTitle,
   toggleTodo,
   moveTodo,
   getTodos
 } from "./todo";
+import { ui } from "./ui";
 import { ListCard as List } from "../../core";
 import Menu from "./Menu";
 
 export const combinedReducer = combineReducers({
-  todos
+  todos,
+  ui
 });
 
 export const defaultTitle = "TODOS";
@@ -69,6 +72,9 @@ export function TodoList({ viewId }: { viewId: string }) {
             },
             deleteButtonProps: {
               onClick: () => dispatch(deleteTodo({ viewId, id: todo.id }))
+            },
+            expandButtonProps: {
+              onClick: () => dispatch(expandTodo({ id: todo.id }))
             }
           };
         })}

@@ -5,22 +5,21 @@ import {
   CardContent,
   CardActions,
   Collapse,
-  IconButton
+  IconButton,
+  Grid
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
 import clsx from "clsx";
 import { TodoList, combinedReducer } from "./TodoList";
-import {
-  enableLocalStorage,
-  watchInputs,
-  watchVisibilityFilter,
-  rootId
-} from "./todo";
+import { enableLocalStorage, watchInputs, watchVisibilityFilter } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
+import { UI } from "./ui";
+import { watchExpandTodo } from "./sagas";
+import "./ListItem.css";
 
 const localStorageId = "todos";
 
@@ -34,6 +33,7 @@ export const store = createStore(
 
 sagaMiddleware.run(watchVisibilityFilter);
 sagaMiddleware.run(watchInputs);
+sagaMiddleware.run(watchExpandTodo);
 sagaMiddleware.run(enableLocalStorage, localStorageId);
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function App() {
+const Layout = () => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(true);
 
@@ -66,32 +66,51 @@ function App() {
     setExpanded(!expanded);
   };
 
-  const viewId = rootId;
+  const { mainViewId: viewId, subViewId }: UI = useSelector(
+    (state: { ui: UI }) => state.ui
+  );
 
   return (
+    <Card classes={{ root: classes.card }}>
+      <CardContent>
+        <CurrentTodo viewId={viewId} />
+      </CardContent>
+      <CardActions disableSpacing>
+        <IconButton
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded
+          })}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Grid container>
+          <Grid item xs={12} md={subViewId ? 6 : 12}>
+            <CardContent>
+              <TodoList viewId={viewId} />
+            </CardContent>
+          </Grid>
+          {subViewId && (
+            <Grid item xs={12} md={6}>
+              <CardContent>
+                <TodoList viewId={subViewId} />
+              </CardContent>
+            </Grid>
+          )}
+        </Grid>
+      </Collapse>
+    </Card>
+  );
+};
+
+function App() {
+  return (
     <Provider store={store}>
-      <Card classes={{ root: classes.card }}>
-        <CardContent>
-          <CurrentTodo viewId={viewId} />
-        </CardContent>
-        <CardActions disableSpacing>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-        </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <TodoList viewId={viewId} />
-          </CardContent>
-        </Collapse>
-      </Card>
+      <Layout />
     </Provider>
   );
 }

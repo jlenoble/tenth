@@ -66,6 +66,10 @@ const DELETE_TODO = "DELETE_TODO";
 const TOGGLE_TODO = "TOGGLE_TODO";
 const MOVE_TODO = "MOVE_TODO";
 
+export const EXPAND_TODO = "EXPAND_TODO";
+
+const ADD_PART = "ADD_PART";
+
 const ADD_VIEW = "ADD_VIEW";
 const UPDATE_VIEWS = "UPDATE_VIEWS";
 const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
@@ -117,6 +121,16 @@ interface MoveTodoAction {
   meta: { viewId: string; dropResult: DropResult };
 }
 
+export interface ExpandTodoAction {
+  type: typeof EXPAND_TODO;
+  meta: { id: string };
+}
+
+interface AddPartAction {
+  type: typeof ADD_PART;
+  meta: { partId: string };
+}
+
 interface AddViewAction {
   type: typeof ADD_VIEW;
   meta: { viewId: string; partId: string };
@@ -141,6 +155,8 @@ type TodoActionType =
   | DeleteTodoAction
   | ToggleTodoAction
   | MoveTodoAction
+  | ExpandTodoAction
+  | AddPartAction
   | AddViewAction
   | UpdateViewsAction
   | SetVisibilityFilterAction;
@@ -240,6 +256,20 @@ export const moveTodo = (meta: {
   };
 };
 
+export const expandTodo = (meta: { id: string }): TodoActionType => {
+  return {
+    type: EXPAND_TODO,
+    meta
+  };
+};
+
+export const addPart = (meta: { partId: string }): TodoActionType => {
+  return {
+    type: ADD_PART,
+    meta
+  };
+};
+
 export const addView = (meta: {
   viewId: string;
   partId: string;
@@ -268,7 +298,13 @@ export const setVisibilityFilter = (meta: {
 export const rootId = "ROOT";
 const initialState: TodosState = {
   todos: {},
-  views: {},
+  views: {
+    [rootId]: {
+      partId: rootId,
+      visibilityFilter: VisibilityFilter.SHOW_ALL,
+      todos: []
+    }
+  },
   parts: { [rootId]: [] }
 };
 
@@ -430,6 +466,11 @@ export const todos = (
       }
 
       return state;
+    }
+
+    case ADD_PART: {
+      const { partId } = action.meta;
+      return { ...state, parts: { ...parts, [partId]: [] } };
     }
 
     case ADD_VIEW: {
