@@ -8,9 +8,9 @@ import {
   ResetTodosAction,
   addView,
   setTodos,
-  validateTitle,
-  TodoStates
+  validateTitle
 } from "../todo";
+import { TodoStates } from "../types";
 
 export function* mainSaga(): SagaIterator {
   yield fork(addTodoSaga);
