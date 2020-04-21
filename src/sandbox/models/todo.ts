@@ -1,15 +1,7 @@
 import { SagaIterator } from "redux-saga";
 import { put, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
-import { VisibilityFilter } from "./types";
-
-export type Todo = Readonly<{
-  id: string;
-  title: string;
-  completed: boolean;
-}>;
-export type Todos = readonly Todo[];
-export type TodoMap = Readonly<{ [id: string]: Omit<Todo, "id"> }>;
+import { VisibilityFilter, Todos } from "./types";
 
 export type Part = readonly string[];
 export type PartMap = Readonly<{ [id: string]: Part }>;

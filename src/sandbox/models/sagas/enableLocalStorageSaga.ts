@@ -1,19 +1,18 @@
 import { put, select, takeLatest } from "redux-saga/effects";
 import {
-  TodoMap,
   PartMap,
   addView,
   setTodosNoSave,
   validateTitle,
   TodoStates,
   TodosState,
-  Todo,
   DO_ADD_TODO,
   DO_UPDATE_TODO_TITLE,
   DELETE_TODO,
   TOGGLE_TODO,
   MOVE_TODO
 } from "../todo";
+import { TodoMap, Todo } from "../types";
 
 function* loadFromLocalStorage(localStorageId: string) {
   const { todos, parts } = JSON.parse(
