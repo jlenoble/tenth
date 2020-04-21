@@ -1,15 +1,31 @@
 import { SagaIterator } from "redux-saga";
-import { fork, put, take, select, takeLatest } from "redux-saga/effects";
+import {
+  fork,
+  put,
+  take,
+  select,
+  takeLatest,
+  takeEvery
+} from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
-import { VisibilityFilter, SET_VISIBILITY_FILTER } from "./visibility";
+
+export enum VisibilityFilter {
+  SHOW_ALL,
+  SHOW_ACTIVE,
+  SHOW_COMPLETED,
+  SHOW_INVALID
+}
 
 export type Todo = Readonly<{
   id: string;
   title: string;
   completed: boolean;
 }>;
-
 export type Todos = readonly Todo[];
+export type TodoMap = Readonly<{ [id: string]: Omit<Todo, "id"> }>;
+
+export type Part = readonly string[];
+export type PartMap = Readonly<{ [id: string]: Part }>;
 
 export type TodoState = Readonly<{
   id: string;
@@ -18,81 +34,128 @@ export type TodoState = Readonly<{
   validated: boolean;
   errors?: readonly string[];
 }>;
-
 export type TodoStates = readonly TodoState[];
+export type TodoStateMap = Readonly<{ [id: string]: TodoState }>;
 
-export type TodosView = TodoStates;
-export type TodosViews = Readonly<{ [viewId: string]: TodosView }>;
+export type PartState = TodoStates;
+export type PartStateMap = Readonly<{ [partId: string]: PartState }>;
+
+export type View = Readonly<{
+  partId: string;
+  visibilityFilter: VisibilityFilter;
+  todos: TodoStates;
+}>;
+export type ViewMap = Readonly<{ [viewId: string]: View }>;
 
 export type TodosState = Readonly<{
-  todos: TodoStates;
-  views: TodosViews;
+  todos: TodoStateMap;
+  views: ViewMap;
+  parts: PartStateMap;
 }>;
 
+const RESET_TODOS = "RESET_TODOS";
 const SET_TODOS = "SET_TODOS";
 const SET_TODOS_NOSAVE = "SET_TODOS_NOSAVE";
-const SET_VIEW = "SET_VIEW";
 
 const ADD_TODO = "ADD_TODO";
+const DO_ADD_TODO = "DO_ADD_TODO";
 const UPDATE_TODO_TITLE = "UPDATE_TODO_TITLE";
-const RESET_TODOS = "RESET_TODOS";
+const DO_UPDATE_TODO_TITLE = "DO_UPDATE_TODO_TITLE";
 
 const DELETE_TODO = "DELETE_TODO";
 const TOGGLE_TODO = "TOGGLE_TODO";
 const MOVE_TODO = "MOVE_TODO";
 
+const ADD_VIEW = "ADD_VIEW";
+const UPDATE_VIEWS = "UPDATE_VIEWS";
+const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
+
+interface ResetTodosAction {
+  type: typeof RESET_TODOS;
+  meta: { partId: string; todos: Todos };
+}
 interface SetTodosAction {
   type: typeof SET_TODOS;
-  meta: { viewId: string; todos: TodoStates };
+  meta: { partId: string; todos: TodoStates };
 }
 interface SetTodosNoSaveAction {
   type: typeof SET_TODOS_NOSAVE;
-  meta: { viewId: string; todos: TodoStates };
-}
-interface SetViewAction {
-  type: typeof SET_VIEW;
-  meta: { viewId: string; view: TodosView };
+  meta: { partId: string; todos: TodoStates };
 }
 
 interface AddTodoAction {
   type: typeof ADD_TODO;
   meta: { viewId: string; title: string };
 }
+interface DoAddTodoAction {
+  type: typeof DO_ADD_TODO;
+  meta: { viewId: string; todo: TodoState };
+}
+
 interface UpdateTodoTitleAction {
   type: typeof UPDATE_TODO_TITLE;
   meta: { viewId: string; id: string; title: string };
 }
-interface ResetTodosAction {
-  type: typeof RESET_TODOS;
-  meta: { viewId: string; todos: Todos };
+interface DoUpdateTodoTitleAction {
+  type: typeof DO_UPDATE_TODO_TITLE;
+  meta: {
+    viewId: string;
+    todo: Pick<TodoState, "id" | "title" | "validated" | "errors">;
+  };
 }
 
-interface TodoDeleteAction {
+interface DeleteTodoAction {
   type: typeof DELETE_TODO;
   meta: { viewId: string; id: string };
 }
-interface TodoToggleAction {
+interface ToggleTodoAction {
   type: typeof TOGGLE_TODO;
   meta: { viewId: string; id: string };
 }
-interface TodoMoveAction {
+interface MoveTodoAction {
   type: typeof MOVE_TODO;
   meta: { viewId: string; dropResult: DropResult };
 }
 
+interface AddViewAction {
+  type: typeof ADD_VIEW;
+  meta: { viewId: string; partId: string };
+}
+interface UpdateViewsAction {
+  type: typeof UPDATE_VIEWS;
+  meta: { partId: string };
+}
+interface SetVisibilityFilterAction {
+  type: typeof SET_VISIBILITY_FILTER;
+  meta: { viewId: string; visibilityFilter: VisibilityFilter };
+}
+
 type TodoActionType =
+  | ResetTodosAction
   | SetTodosAction
   | SetTodosNoSaveAction
-  | SetViewAction
   | AddTodoAction
+  | DoAddTodoAction
   | UpdateTodoTitleAction
-  | ResetTodosAction
-  | TodoDeleteAction
-  | TodoToggleAction
-  | TodoMoveAction;
+  | DoUpdateTodoTitleAction
+  | DeleteTodoAction
+  | ToggleTodoAction
+  | MoveTodoAction
+  | AddViewAction
+  | UpdateViewsAction
+  | SetVisibilityFilterAction;
 
+export const resetTodos = (meta: {
+  partId: string;
+  todos: Todos;
+}): TodoActionType => {
+  return {
+    type: RESET_TODOS,
+    meta
+  };
+};
 const setTodos = (meta: {
-  viewId: string;
+  partId: string;
   todos: TodoStates;
 }): TodoActionType => {
   return {
@@ -101,17 +164,11 @@ const setTodos = (meta: {
   };
 };
 const setTodosNoSave = (meta: {
-  viewId: string;
+  partId: string;
   todos: TodoStates;
 }): TodoActionType => {
   return {
     type: SET_TODOS_NOSAVE,
-    meta
-  };
-};
-const setView = (meta: { viewId: string; view: TodosView }): TodoActionType => {
-  return {
-    type: SET_VIEW,
     meta
   };
 };
@@ -125,6 +182,16 @@ export const addTodo = (meta: {
     meta
   };
 };
+const doAddTodo = (meta: {
+  viewId: string;
+  todo: TodoState;
+}): TodoActionType => {
+  return {
+    type: DO_ADD_TODO,
+    meta
+  };
+};
+
 export const updateTodoTitle = (meta: {
   viewId: string;
   id: string;
@@ -135,12 +202,12 @@ export const updateTodoTitle = (meta: {
     meta
   };
 };
-export const resetTodos = (meta: {
+const doUpdateTodoTitle = (meta: {
   viewId: string;
-  todos: Todos;
+  todo: Pick<TodoState, "id" | "title" | "validated" | "errors">;
 }): TodoActionType => {
   return {
-    type: RESET_TODOS,
+    type: DO_UPDATE_TODO_TITLE,
     meta
   };
 };
@@ -173,37 +240,168 @@ export const moveTodo = (meta: {
   };
 };
 
+export const addView = (meta: {
+  viewId: string;
+  partId: string;
+}): TodoActionType => {
+  return {
+    type: ADD_VIEW,
+    meta
+  };
+};
+export const updateViews = (meta: { partId: string }): TodoActionType => {
+  return {
+    type: UPDATE_VIEWS,
+    meta
+  };
+};
+export const setVisibilityFilter = (meta: {
+  viewId: string;
+  visibilityFilter: VisibilityFilter;
+}): TodoActionType => {
+  return {
+    type: SET_VISIBILITY_FILTER,
+    meta
+  };
+};
+
 export const rootId = "ROOT";
-const initialState: TodosState = { todos: [], views: { [rootId]: [] } };
+const initialState: TodosState = {
+  todos: {},
+  views: {},
+  parts: { [rootId]: [] }
+};
+
+const makeView = (
+  partId: string,
+  visibilityFilter: VisibilityFilter,
+  todos: TodoStates
+) => {
+  let view: View;
+
+  switch (visibilityFilter) {
+    case VisibilityFilter.SHOW_ACTIVE:
+      view = {
+        partId,
+        visibilityFilter,
+        todos: todos.filter((todo) => !todo.checked)
+      };
+      break;
+
+    case VisibilityFilter.SHOW_COMPLETED:
+      view = {
+        partId,
+        visibilityFilter,
+        todos: todos.filter((todo) => todo.checked)
+      };
+      break;
+
+    case VisibilityFilter.SHOW_INVALID:
+      view = {
+        partId,
+        visibilityFilter,
+        todos: todos.filter((todo) => !todo.validated)
+      };
+      break;
+
+    case VisibilityFilter.SHOW_ALL:
+    default:
+      view = { partId, visibilityFilter, todos };
+      break;
+  }
+
+  return view;
+};
 
 export const todos = (
   state = initialState,
   action: TodoActionType
 ): TodosState => {
+  const { todos, views, parts } = state;
+
   switch (action.type) {
     case SET_TODOS:
-    case SET_TODOS_NOSAVE:
-      return { ...state, todos: action.meta.todos };
+    case SET_TODOS_NOSAVE: {
+      const { partId, todos: newTodos } = action.meta;
+      const todoMap = { ...todos };
+      newTodos.forEach((todo) => {
+        todoMap[todo.id] = todo;
+      });
 
-    case DELETE_TODO:
       return {
-        ...state,
-        todos: state.todos.filter((todo) => todo.id !== action.meta.id)
+        todos: todoMap,
+        views,
+        parts: { ...parts, [partId]: newTodos }
       };
+    }
 
-    case TOGGLE_TODO:
+    case DO_ADD_TODO: {
+      const { viewId, todo } = action.meta;
+      const partId = views[viewId].partId;
+
       return {
-        ...state,
-        todos: state.todos.map((todo) =>
-          todo.id !== action.meta.id
-            ? todo
-            : { ...todo, checked: !todo.checked }
-        )
+        todos: { ...todos, [todo.id]: todo },
+        views,
+        parts: { ...parts, [partId]: parts[partId].concat(todo) }
       };
+    }
+
+    case DO_UPDATE_TODO_TITLE: {
+      const { viewId, todo } = action.meta;
+      const partId = views[viewId].partId;
+      const id = todo.id;
+      const newTodo = { ...todos[id], ...todo };
+
+      return {
+        todos: { ...todos, [id]: newTodo },
+        views,
+        parts: {
+          ...parts,
+          [partId]: parts[partId].map((todo) =>
+            todo.id === id ? newTodo : todo
+          )
+        }
+      };
+    }
+
+    case DELETE_TODO: {
+      const { viewId, id } = action.meta;
+      const partId = views[viewId].partId;
+      const newTodos = { ...todos };
+      delete newTodos[id];
+
+      return {
+        todos: newTodos,
+        views,
+        parts: {
+          ...parts,
+          [partId]: parts[partId].filter((todo) => todo.id !== id)
+        }
+      };
+    }
+
+    case TOGGLE_TODO: {
+      const { viewId, id } = action.meta;
+      const partId = views[viewId].partId;
+      const newTodo = { ...todos[id] };
+      newTodo.checked = !newTodo.checked;
+
+      return {
+        todos: { ...todos, [id]: newTodo },
+        views,
+        parts: {
+          ...parts,
+          [partId]: parts[partId].map((todo) =>
+            todo.id !== id ? todo : newTodo
+          )
+        }
+      };
+    }
 
     case MOVE_TODO: {
-      const viewId = action.meta.viewId;
-      const { source, destination } = action.meta.dropResult;
+      const { viewId, dropResult } = action.meta;
+      const { source, destination } = dropResult;
+      const partId = views[viewId].partId;
 
       if (!destination) {
         return state;
@@ -214,25 +412,67 @@ export const todos = (
           return state;
         }
 
-        const newTodos = state.todos.concat();
+        const newTodos = parts[partId].concat();
 
-        const sId = state.views[viewId][source.index].id;
-        const dId = state.views[viewId][destination.index].id;
+        const sId = views[viewId].todos[source.index].id;
+        const dId = views[viewId].todos[destination.index].id;
         const sIndex = newTodos.findIndex((todo) => todo.id === sId);
         const dIndex = newTodos.findIndex((todo) => todo.id === dId);
 
         newTodos.splice(sIndex, 1);
-        newTodos.splice(dIndex, 0, state.todos[sIndex]);
+        newTodos.splice(dIndex, 0, parts[partId][sIndex]);
 
-        return { ...state, todos: newTodos };
+        return {
+          todos,
+          views,
+          parts: { ...parts, [partId]: newTodos }
+        };
       }
 
       return state;
     }
 
-    case SET_VIEW: {
-      const { viewId, view } = action.meta;
-      return { ...state, views: { ...state.views, [viewId]: view } };
+    case ADD_VIEW: {
+      const { viewId, partId } = action.meta;
+      return {
+        ...state,
+        views: {
+          ...views,
+          [viewId]: {
+            partId,
+            visibilityFilter: VisibilityFilter.SHOW_ALL,
+            todos: []
+          }
+        }
+      };
+    }
+
+    case UPDATE_VIEWS: {
+      const { partId } = action.meta;
+      const relevantViews = Object.entries(views).filter(
+        ([_, view]) => view.partId === partId
+      );
+      const todos = parts[partId];
+
+      return {
+        ...state,
+        views: {
+          ...views,
+          ...Object.fromEntries(
+            relevantViews.map(([viewId, { visibilityFilter }]) => {
+              return [viewId, makeView(partId, visibilityFilter, todos)];
+            })
+          )
+        }
+      };
+    }
+
+    case SET_VISIBILITY_FILTER: {
+      const { viewId, visibilityFilter } = action.meta;
+      const partId = views[viewId].partId;
+      const view = makeView(partId, visibilityFilter, parts[partId]);
+
+      return { ...state, views: { ...views, [viewId]: view } };
     }
 
     default:
@@ -241,33 +481,73 @@ export const todos = (
 };
 
 function* loadFromLocalStorage(localStorageId: string) {
-  const todos = JSON.parse(
-    localStorage.getItem(localStorageId) || "[]"
-  ) as Todos;
+  const { todos, parts } = JSON.parse(
+    localStorage.getItem(localStorageId) || `{"todos":{},"parts":{}}`
+  ) as { todos: TodoMap; parts: PartMap };
 
-  yield putResetTodos({ viewId: rootId, todos }, setTodosNoSave);
+  for (let [id, ids] of Object.entries(parts)) {
+    yield put(
+      addView({
+        viewId: id,
+        partId: id
+      })
+    );
+
+    yield put(
+      setTodosNoSave({
+        partId: id,
+        todos: ids
+          .filter((id) => todos[id])
+          .map((id) => {
+            const todo = todos[id]!;
+            const errors = validateTitle(todo.title);
+
+            return errors.length
+              ? {
+                  id,
+                  title: todo.title,
+                  checked: todo.completed,
+                  validated: false,
+                  errors
+                }
+              : {
+                  id,
+                  title: todo.title,
+                  checked: todo.completed,
+                  validated: true
+                };
+          }) as TodoStates
+      })
+    );
+  }
 }
 
 function* saveToLocalStorage(localStorageId: string) {
-  const { todos }: TodosState = yield select(
+  const { todos, parts }: TodosState = yield select(
     (state: { todos: TodosState }) => state.todos
   );
 
   localStorage.setItem(
     localStorageId,
-    JSON.stringify(
-      todos.map((todo) => ({
-        id: todo.id,
-        title: todo.title,
-        completed: todo.checked
-      })) as Todos
-    )
+    JSON.stringify({
+      todos: Object.entries(todos).reduce((map, [id, todo]) => {
+        map[id] = {
+          title: todo.title,
+          completed: todo.checked
+        };
+        return map;
+      }, {} as { [id: string]: Omit<Todo, "id"> }) as TodoMap,
+      parts: Object.entries(parts).reduce((map, [partId, todosStates]) => {
+        map[partId] = todosStates.map((todo) => todo.id);
+        return map;
+      }, {} as { [id: string]: readonly string[] }) as PartMap
+    })
   );
 }
 
 function* enableSaveToLocalStorage(localStorageId: string) {
   yield takeLatest(
-    [SET_TODOS, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
+    [DO_ADD_TODO, DO_UPDATE_TODO_TITLE, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
     saveToLocalStorage,
     localStorageId
   );
@@ -299,160 +579,118 @@ function* watchAddTodo(): SagaIterator {
     const id = tmpId();
     const errors = validateTitle(title);
 
-    const { todos }: TodosState = yield select(
-      (state: { todos: TodosState }) => state.todos
-    );
-
     yield put(
-      setTodos({
+      doAddTodo({
         viewId,
-        todos: todos.concat(
-          errors.length
-            ? {
-                id,
-                title,
-                checked: false,
-                validated: false,
-                errors
-              }
-            : { id, title, checked: false, validated: true }
-        )
+        todo: errors.length
+          ? {
+              id,
+              title,
+              checked: false,
+              validated: false,
+              errors
+            }
+          : { id, title, checked: false, validated: true }
       })
     );
   }
 }
 
-function* watchUpdateTodo(): SagaIterator {
+function* watchUpdateTodoTitle(): SagaIterator {
   while (1) {
     const {
       meta: { viewId, id, title }
     }: UpdateTodoTitleAction = yield take(UPDATE_TODO_TITLE);
-    const { todos }: TodosState = yield select(
-      (state: { todos: TodosState }) => state.todos
-    );
-
-    const todo = todos.find((todo) => todo.id === id);
-
-    if (!todo || title === todo.title) {
-      continue;
-    }
+    const errors = validateTitle(title);
 
     yield put(
-      setTodos({
+      doUpdateTodoTitle({
         viewId,
-        todos: todos.map((todo) => {
-          if (todo.id !== id) {
-            return todo;
-          }
-
-          const errors = validateTitle(title);
-
-          return errors.length
-            ? {
-                id,
-                title,
-                checked: todo.checked,
-                validated: false,
-                errors
-              }
-            : {
-                id,
-                title,
-                checked: todo.checked,
-                validated: true
-              };
-        })
-      })
-    );
-  }
-}
-
-function* putResetTodos(
-  { viewId, todos }: { viewId: string; todos: Todos },
-  resetTodos: (meta: { viewId: string; todos: TodoStates }) => TodoActionType
-): SagaIterator {
-  yield put(
-    resetTodos({
-      viewId,
-      todos: todos.map((todo) => {
-        const errors = validateTitle(todo.title);
-
-        return errors.length
+        todo: errors.length
           ? {
-              id: todo.id,
-              title: todo.title,
-              checked: todo.completed,
+              id,
+              title,
               validated: false,
               errors
             }
           : {
-              id: todo.id,
-              title: todo.title,
-              checked: todo.completed,
+              id,
+              title,
               validated: true
-            };
+            }
       })
-    })
-  );
-}
-
-function* watchResetTodos() {
-  while (1) {
-    const { meta }: ResetTodosAction = yield take(RESET_TODOS);
-
-    yield putResetTodos(meta, setTodos);
+    );
   }
 }
 
 export function* watchInputs(): SagaIterator {
   yield fork(watchAddTodo);
-  yield fork(watchUpdateTodo);
-  yield fork(watchResetTodos);
-}
+  yield fork(watchUpdateTodoTitle);
 
-function* updateView(): SagaIterator {
-  const { todos }: TodosState = yield select(
-    (state: { todos: TodosState }) => state.todos
-  );
-  const filter: VisibilityFilter = yield select(
-    (state: { visibilityFilter: VisibilityFilter }) => state.visibilityFilter
-  );
-  let view: TodosView;
+  yield takeEvery(RESET_TODOS, function* ({
+    meta: { partId, todos }
+  }: ResetTodosAction) {
+    yield put(
+      addView({
+        viewId: partId,
+        partId
+      })
+    );
 
-  switch (filter) {
-    case VisibilityFilter.SHOW_ALL:
-      view = todos;
-      break;
+    yield put(
+      setTodos({
+        partId,
+        todos: todos.map((todo) => {
+          const errors = validateTitle(todo.title);
 
-    case VisibilityFilter.SHOW_ACTIVE:
-      view = todos.filter((todo) => !todo.checked);
-      break;
-
-    case VisibilityFilter.SHOW_COMPLETED:
-      view = todos.filter((todo) => todo.checked);
-      break;
-
-    case VisibilityFilter.SHOW_INVALID:
-      view = todos.filter((todo) => !todo.validated);
-      break;
-
-    default:
-      view = [];
-  }
-
-  yield put(setView({ viewId: rootId, view }));
+          return errors.length
+            ? {
+                id: todo.id,
+                title: todo.title,
+                checked: todo.completed,
+                validated: false,
+                errors
+              }
+            : {
+                id: todo.id,
+                title: todo.title,
+                checked: todo.completed,
+                validated: true
+              };
+        }) as TodoStates
+      })
+    );
+  });
 }
 
 export function* watchVisibilityFilter() {
   yield takeLatest(
-    [
-      SET_TODOS,
-      SET_TODOS_NOSAVE,
-      DELETE_TODO,
-      TOGGLE_TODO,
-      MOVE_TODO,
-      SET_VISIBILITY_FILTER
-    ],
-    updateView
+    [DO_ADD_TODO, DO_UPDATE_TODO_TITLE, DELETE_TODO, TOGGLE_TODO, MOVE_TODO],
+    function* (
+      action:
+        | DoAddTodoAction
+        | DoUpdateTodoTitleAction
+        | DeleteTodoAction
+        | ToggleTodoAction
+        | MoveTodoAction
+    ): SagaIterator {
+      const {
+        views: {
+          [action.meta.viewId]: { partId }
+        }
+      }: TodosState = yield select(
+        (state: { todos: TodosState }) => state.todos
+      );
+      yield put(updateViews({ partId }));
+    }
   );
+
+  yield takeLatest([SET_TODOS, SET_TODOS_NOSAVE], function* (
+    action: SetTodosAction | SetTodosNoSaveAction
+  ): SagaIterator {
+    yield put(updateViews(action.meta));
+  });
 }
+
+export const getTodos = (state: { todos: TodosState }): TodosState =>
+  state.todos;

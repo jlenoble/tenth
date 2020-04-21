@@ -66,11 +66,13 @@ function App() {
     setExpanded(!expanded);
   };
 
+  const viewId = rootId;
+
   return (
     <Provider store={store}>
       <Card classes={{ root: classes.card }}>
         <CardContent>
-          <CurrentTodo viewId={rootId} />
+          <CurrentTodo viewId={viewId} />
         </CardContent>
         <CardActions disableSpacing>
           <IconButton
@@ -86,7 +88,7 @@ function App() {
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
-            <TodoList viewId={rootId} />
+            <TodoList viewId={viewId} />
           </CardContent>
         </Collapse>
       </Card>

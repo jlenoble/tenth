@@ -2,15 +2,14 @@ import React, { FunctionComponent, useState, MouseEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IconButton, Popover, MenuList, MenuItem } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
-import { VisibilityFilter, setVisibilityFilter } from "./visibility";
+import { getTodos, VisibilityFilter, setVisibilityFilter } from "./todo";
 
-export const Menu: FunctionComponent = () => {
+export const Menu: FunctionComponent<{ viewId: string }> = ({ viewId }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const visibilityFilter = useSelector<{ visibilityFilter: VisibilityFilter }>(
-    (state) => state.visibilityFilter
-  );
+  const { views } = useSelector(getTodos);
   const dispatch = useDispatch();
   const open = Boolean(anchorEl);
+  const visibilityFilter = views[viewId].visibilityFilter;
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -20,8 +19,8 @@ export const Menu: FunctionComponent = () => {
     setAnchorEl(null);
   };
 
-  const changeFilter = (filter: VisibilityFilter) => () => {
-    dispatch(setVisibilityFilter(filter));
+  const changeFilter = (visibilityFilter: VisibilityFilter) => () => {
+    dispatch(setVisibilityFilter({ viewId, visibilityFilter }));
     handleClose();
   };
 

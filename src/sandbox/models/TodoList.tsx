@@ -9,21 +9,17 @@ import {
   deleteTodo,
   updateTodoTitle,
   toggleTodo,
-  moveTodo
+  moveTodo,
+  getTodos
 } from "./todo";
-import { visibilityFilter } from "./visibility";
 import { ListCard as List } from "../../core";
 import Menu from "./Menu";
 
 export const combinedReducer = combineReducers({
-  todos,
-  visibilityFilter
+  todos
 });
 
 export const defaultTitle = "TODOS";
-
-export const getTodos = (state: ReturnType<typeof combinedReducer>) =>
-  state.todos;
 
 export const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -36,12 +32,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
 
 export function TodoList({ viewId }: { viewId: string }) {
   const classes = useStyles();
-
-  const {
-    views: { ROOT: todos }
-  } = useSelector(getTodos);
+  const { views } = useSelector(getTodos);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(defaultTitle);
+  const todos = views[viewId].todos;
 
   return (
     <DragDropContext
@@ -79,7 +73,7 @@ export function TodoList({ viewId }: { viewId: string }) {
           };
         })}
         cardHeaderProps={{
-          action: <Menu />
+          action: <Menu viewId={viewId} />
         }}
       />
     </DragDropContext>

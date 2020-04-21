@@ -7,13 +7,16 @@ import {
   Typography,
   Button
 } from "@material-ui/core";
-import { TodoState, toggleTodo } from "./todo";
-import { getTodos, useStyles } from "./TodoList";
+import { getTodos, TodoState, toggleTodo } from "./todo";
+import { useStyles } from "./TodoList";
 
 export function CurrentTodo({ viewId }: { viewId: string }) {
   const classes = useStyles();
-  const { todos } = useSelector(getTodos);
+  const { views, parts } = useSelector(getTodos);
   const dispatch = useDispatch();
+
+  const partId = views[viewId].partId;
+  const todos = parts[partId];
   const todo: TodoState | undefined = todos.find((todo) => !todo.checked);
 
   return (

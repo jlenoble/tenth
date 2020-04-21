@@ -23,7 +23,7 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
     const dispatch = useDispatch();
     dispatch(
       resetTodos({
-        viewId: rootId,
+        partId: rootId,
         todos: items.map((item) => ({
           id: tmpId(),
           title: item,
