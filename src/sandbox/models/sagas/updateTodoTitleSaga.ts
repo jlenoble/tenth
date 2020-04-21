@@ -7,7 +7,7 @@ import {
   doUpdateTodoTitle
 } from "../todo";
 
-export function* watchUpdateTodoTitle(): SagaIterator {
+export function* updateTodoTitleSaga(): SagaIterator {
   while (1) {
     const {
       meta: { viewId, id, title }
@@ -34,4 +34,4 @@ export function* watchUpdateTodoTitle(): SagaIterator {
   }
 }
 
-export default watchUpdateTodoTitle;
+export default updateTodoTitleSaga;

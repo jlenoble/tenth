@@ -8,7 +8,7 @@ import {
   doAddTodo
 } from "../todo";
 
-export function* watchAddTodo(): SagaIterator {
+export function* addTodoSaga(): SagaIterator {
   while (1) {
     const {
       meta: { viewId, title }
@@ -33,4 +33,4 @@ export function* watchAddTodo(): SagaIterator {
   }
 }
 
-export default watchAddTodo;
+export default addTodoSaga;

@@ -9,7 +9,7 @@ import {
 } from "../todo";
 import { updateSubView } from "../ui";
 
-export function* watchExpandTodo(): SagaIterator {
+export function* expandTodoSaga(): SagaIterator {
   while (1) {
     const {
       meta: { id }
@@ -27,4 +27,4 @@ export function* watchExpandTodo(): SagaIterator {
   }
 }
 
-export default watchExpandTodo;
+export default expandTodoSaga;

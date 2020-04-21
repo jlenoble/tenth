@@ -18,7 +18,7 @@ import { TodoList, combinedReducer } from "./TodoList";
 import { enableLocalStorage, watchVisibilityFilter } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 import { UI } from "./ui";
-import { watchAll } from "./sagas";
+import { mainSaga } from "./sagas";
 import "./ListItem.css";
 
 const localStorageId = "todos";
@@ -32,7 +32,7 @@ export const store = createStore(
 );
 
 sagaMiddleware.run(watchVisibilityFilter);
-sagaMiddleware.run(watchAll);
+sagaMiddleware.run(mainSaga);
 sagaMiddleware.run(enableLocalStorage, localStorageId);
 
 const useStyles = makeStyles((theme: Theme) =>

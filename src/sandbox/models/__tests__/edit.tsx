@@ -6,7 +6,7 @@ import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
 import { resetTodos, tmpId, watchVisibilityFilter, rootId } from "../todo";
-import { watchAll } from "../sagas";
+import { mainSaga } from "../sagas";
 
 const defaultTitle = "TODOS";
 
@@ -14,7 +14,7 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(combinedReducer, applyMiddleware(sagaMiddleware));
   sagaMiddleware.run(watchVisibilityFilter);
-  sagaMiddleware.run(watchAll);
+  sagaMiddleware.run(mainSaga);
 
   const InnerList: FunctionComponent = () => {
     const dispatch = useDispatch();

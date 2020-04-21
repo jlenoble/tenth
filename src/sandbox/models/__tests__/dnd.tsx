@@ -4,7 +4,7 @@ import createSagaMiddleware from "redux-saga";
 import { Provider, useDispatch } from "react-redux";
 import { TodoList, combinedReducer } from "../TodoList";
 import { resetTodos, tmpId, watchVisibilityFilter, rootId } from "../todo";
-import { watchAll } from "../sagas";
+import { mainSaga } from "../sagas";
 import { getDroppables, getDraggables } from "../__testHelpers__/dnd";
 import { mockGetBoundingClientRect } from "../__testHelpers__/dnd-mock";
 import { render } from "../__testHelpers__/dnd-render";
@@ -13,7 +13,7 @@ const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(combinedReducer, applyMiddleware(sagaMiddleware));
   sagaMiddleware.run(watchVisibilityFilter);
-  sagaMiddleware.run(watchAll);
+  sagaMiddleware.run(mainSaga);
 
   const InnerList: FunctionComponent = () => {
     const dispatch = useDispatch();

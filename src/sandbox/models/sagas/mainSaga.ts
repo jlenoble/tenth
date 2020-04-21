@@ -1,8 +1,8 @@
 import { SagaIterator } from "redux-saga";
 import { fork, put, takeEvery } from "redux-saga/effects";
-import watchAddTodo from "./watchAddTodo";
-import watchExpandTodo from "./watchExpandTodo";
-import watchUpdateTodoTitle from "./watchUpdateTodoTitle";
+import addTodoSaga from "./addTodoSaga";
+import expandTodoSaga from "./expandTodoSaga";
+import updateTodoTitleSaga from "./updateTodoTitleSaga";
 import {
   RESET_TODOS,
   ResetTodosAction,
@@ -12,10 +12,10 @@ import {
   TodoStates
 } from "../todo";
 
-export function* watchAll(): SagaIterator {
-  yield fork(watchAddTodo);
-  yield fork(watchExpandTodo);
-  yield fork(watchUpdateTodoTitle);
+export function* mainSaga(): SagaIterator {
+  yield fork(addTodoSaga);
+  yield fork(expandTodoSaga);
+  yield fork(updateTodoTitleSaga);
 
   yield takeEvery(RESET_TODOS, function* ({
     meta: { partId, todos }
@@ -51,4 +51,4 @@ export function* watchAll(): SagaIterator {
   });
 }
 
-export default watchAll;
+export default mainSaga;
