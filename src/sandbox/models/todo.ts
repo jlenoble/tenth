@@ -1,13 +1,7 @@
 import { SagaIterator } from "redux-saga";
 import { put, select, takeLatest } from "redux-saga/effects";
 import { DropResult } from "react-beautiful-dnd";
-
-export enum VisibilityFilter {
-  SHOW_ALL,
-  SHOW_ACTIVE,
-  SHOW_COMPLETED,
-  SHOW_INVALID
-}
+import { VisibilityFilter } from "./types";
 
 export type Todo = Readonly<{
   id: string;
