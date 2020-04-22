@@ -14,11 +14,7 @@ import {
   DO_UPDATE_TODO_TITLE,
   DELETE_TODO,
   TOGGLE_TODO,
-  MOVE_TODO,
-  ADD_PART,
-  ADD_VIEW,
-  UPDATE_VIEWS,
-  SET_VISIBILITY_FILTER
+  MOVE_TODO
 } from "./constants";
 import {
   TodoActions,
@@ -34,6 +30,7 @@ import {
   UpdateViewsAction,
   SetVisibilityFilterAction
 } from "./actions";
+import { updateViews } from "./action-creators";
 
 export type TodosState = Readonly<{
   todos: TodoStateMap;
@@ -47,38 +44,6 @@ export type TodoActionType =
   | AddViewAction
   | UpdateViewsAction
   | SetVisibilityFilterAction;
-
-export const addPart = (meta: { partId: string }): TodoActionType => {
-  return {
-    type: ADD_PART,
-    meta
-  };
-};
-
-export const addView = (meta: {
-  viewId: string;
-  partId: string;
-}): TodoActionType => {
-  return {
-    type: ADD_VIEW,
-    meta
-  };
-};
-export const updateViews = (meta: { partId: string }): TodoActionType => {
-  return {
-    type: UPDATE_VIEWS,
-    meta
-  };
-};
-export const setVisibilityFilter = (meta: {
-  viewId: string;
-  visibilityFilter: VisibilityFilter;
-}): TodoActionType => {
-  return {
-    type: SET_VISIBILITY_FILTER,
-    meta
-  };
-};
 
 export const rootId = "ROOT";
 

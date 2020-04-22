@@ -2,8 +2,9 @@ import React, { FunctionComponent, useState, MouseEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IconButton, Popover, MenuList, MenuItem } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
-import { getTodos, setVisibilityFilter } from "./todo";
+import { getTodos } from "./todo";
 import { VisibilityFilter } from "./types";
+import { setVisibilityFilter } from "./action-creators";
 
 export const Menu: FunctionComponent<{ viewId: string }> = ({ viewId }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
