@@ -1,41 +1,14 @@
-import React, { FunctionComponent } from "react";
-import { createStore, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga";
-import { Provider, useDispatch } from "react-redux";
+import React from "react";
 import { render, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { TodoList } from "../TodoList";
-import { tmpId, rootId } from "../todo";
-import { resetTodos } from "../action-creators";
-import { combinedReducer } from "../reducers";
-import { mainSaga } from "../sagas";
+import { tmpId } from "../todo";
+import { ListFactory } from "../__testHelpers__";
 
-const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
-  const sagaMiddleware = createSagaMiddleware();
-  const store = createStore(combinedReducer, applyMiddleware(sagaMiddleware));
-  sagaMiddleware.run(mainSaga);
-
-  const InnerList: FunctionComponent = () => {
-    const dispatch = useDispatch();
-    dispatch(
-      resetTodos({
-        partId: rootId,
-        todos: items.map((item, i) => ({
-          id: tmpId(),
-          title: i ? item : "",
-          completed: !(i % 2)
-        }))
-      })
-    );
-    return <TodoList viewId={rootId} title={"TODOS"} />;
-  };
-
-  return (
-    <Provider store={store}>
-      <InnerList />
-    </Provider>
-  );
-};
+const List = ListFactory((item, i) => ({
+  id: tmpId(),
+  title: i ? item : "",
+  completed: !(i % 2)
+}));
 
 describe("Visibility filters", () => {
   it("SHOW_ACTIVE", async () => {

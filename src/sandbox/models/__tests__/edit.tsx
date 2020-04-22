@@ -1,46 +1,10 @@
-import React, { FunctionComponent } from "react";
-import { createStore, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga";
-import { Provider, useDispatch } from "react-redux";
+import React from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { TodoList } from "../TodoList";
-import { tmpId, rootId } from "../todo";
-import { resetTodos } from "../action-creators";
-import { combinedReducer } from "../reducers";
-import { mainSaga } from "../sagas";
+import { List, defaultTitle } from "../__testHelpers__";
 
-const defaultTitle = "TODOS";
-
-const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
-  const sagaMiddleware = createSagaMiddleware();
-  const store = createStore(combinedReducer, applyMiddleware(sagaMiddleware));
-  sagaMiddleware.run(mainSaga);
-
-  const InnerList: FunctionComponent = () => {
-    const dispatch = useDispatch();
-    dispatch(
-      resetTodos({
-        partId: rootId,
-        todos: items.map((item) => ({
-          id: tmpId(),
-          title: item,
-          completed: false
-        }))
-      })
-    );
-    return <TodoList viewId={rootId} title={defaultTitle} />;
-  };
-
-  return (
-    <Provider store={store}>
-      <InnerList />
-    </Provider>
-  );
-};
-
-const CONTENT_ATTRIBUTE = ".MuiCardHeader-content";
-const TITLE_ATTRIBUTE = ".MuiCardHeader-title";
+// const CONTENT_ATTRIBUTE = ".MuiCardHeader-content";
+// const TITLE_ATTRIBUTE = ".MuiCardHeader-title";
 
 describe("TodoList", () => {
   it("Edit Item primary", async () => {

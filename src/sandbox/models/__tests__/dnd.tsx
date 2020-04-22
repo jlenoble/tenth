@@ -1,42 +1,8 @@
-import React, { FunctionComponent } from "react";
-import { createStore, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga";
-import { Provider, useDispatch } from "react-redux";
-import { TodoList } from "../TodoList";
-import { tmpId, rootId } from "../todo";
-import { mainSaga } from "../sagas";
-import { resetTodos } from "../action-creators";
-import { combinedReducer } from "../reducers";
+import React from "react";
 import { getDroppables, getDraggables } from "../__testHelpers__/dnd";
 import { mockGetBoundingClientRect } from "../__testHelpers__/dnd-mock";
 import { render } from "../__testHelpers__/dnd-render";
-
-const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
-  const sagaMiddleware = createSagaMiddleware();
-  const store = createStore(combinedReducer, applyMiddleware(sagaMiddleware));
-  sagaMiddleware.run(mainSaga);
-
-  const InnerList: FunctionComponent = () => {
-    const dispatch = useDispatch();
-    dispatch(
-      resetTodos({
-        partId: rootId,
-        todos: items.map((item) => ({
-          id: tmpId(),
-          title: item,
-          completed: false
-        }))
-      })
-    );
-    return <TodoList viewId={rootId} title={"TODOS"} />;
-  };
-
-  return (
-    <Provider store={store}>
-      <InnerList />
-    </Provider>
-  );
-};
+import { List } from "../__testHelpers__";
 
 describe("DnD List", () => {
   it("Initialize", () => {
