@@ -2,16 +2,18 @@ import React, { FunctionComponent, useState, MouseEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IconButton, Popover, MenuList, MenuItem } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
-import { getTodos } from "./todo";
-import { VisibilityFilter } from "./types";
+import { VisibilityFilter, TodosState } from "./types";
 import { setVisibilityFilter } from "./action-creators";
 
 export const Menu: FunctionComponent<{ viewId: string }> = ({ viewId }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { views } = useSelector(getTodos);
   const dispatch = useDispatch();
+
+  const visibilityFilter = useSelector(
+    (state: { todos: TodosState }) => state.todos.views[viewId].visibilityFilter
+  );
+
   const open = Boolean(anchorEl);
-  const visibilityFilter = views[viewId].visibilityFilter;
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

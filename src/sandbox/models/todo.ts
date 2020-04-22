@@ -1,4 +1,4 @@
-import { VisibilityFilter, TodoStates, TodosState, View } from "./types";
+import { VisibilityFilter, TodoStates, View } from "./types";
 import {
   TodoActions,
   AddPartAction,
@@ -69,6 +69,3 @@ export const validateTitle = (title: string) => {
 
   return errors;
 };
-
-export const getTodos = (state: { todos: TodosState }): TodosState =>
-  state.todos;

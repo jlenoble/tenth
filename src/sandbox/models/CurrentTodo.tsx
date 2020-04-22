@@ -7,19 +7,25 @@ import {
   Typography,
   Button
 } from "@material-ui/core";
-import { getTodos } from "./todo";
-import { TodoState } from "./types";
+import { TodosState } from "./types";
 import { toggleTodo } from "./action-creators";
 import { useStyles } from "./TodoList";
 
 export function CurrentTodo({ viewId }: { viewId: string }) {
   const classes = useStyles();
-  const { views, parts } = useSelector(getTodos);
   const dispatch = useDispatch();
 
-  const partId = views[viewId].partId;
-  const todos = parts[partId];
-  const todo: TodoState | undefined = todos.find((todo) => !todo.checked);
+  const partId = useSelector(
+    (state: { todos: TodosState }) => state.todos.views[viewId].partId
+  );
+
+  const todo = useSelector((state: { todos: TodosState }) =>
+    state.todos.parts[partId].find((todo) => !todo.checked)
+  );
+
+  const noTodos = useSelector(
+    (state: { todos: TodosState }) => !state.todos.parts[partId].length
+  );
 
   return (
     <Card classes={{ root: classes.card }}>
@@ -38,13 +44,13 @@ export function CurrentTodo({ viewId }: { viewId: string }) {
         }
       />
       <CardContent>
-        {todos.length ? (
-          <Typography variant="h2" align="center">
-            {todo ? todo.title : "🥳 ALL DONE"}
-          </Typography>
-        ) : (
+        {noTodos ? (
           <Typography variant="h4" align="center">
             {"Please enter something"}
+          </Typography>
+        ) : (
+          <Typography variant="h2" align="center">
+            {todo ? todo.title : "🥳 ALL DONE"}
           </Typography>
         )}
       </CardContent>

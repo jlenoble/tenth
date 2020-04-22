@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { getTodos } from "./todo";
+import { TodosState } from "./types";
 import {
   addTodo,
   deleteTodo,
@@ -31,9 +31,15 @@ export function TodoList({
   title?: string;
 }) {
   const classes = useStyles();
-  const { views, todos: allTodos } = useSelector(getTodos);
   const dispatch = useDispatch();
-  const { todos, partId } = views[viewId];
+
+  const allTodos = useSelector(
+    (state: { todos: TodosState }) => state.todos.todos
+  );
+
+  const { todos, partId } = useSelector(
+    (state: { todos: TodosState }) => state.todos.views[viewId]
+  );
 
   if (!title) {
     title = allTodos[partId].title;
