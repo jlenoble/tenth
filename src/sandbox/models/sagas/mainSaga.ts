@@ -1,51 +1,15 @@
 import { SagaIterator } from "redux-saga";
-import { fork, put, takeEvery } from "redux-saga/effects";
+import { fork } from "redux-saga/effects";
 import addTodoSaga from "./addTodoSaga";
 import expandTodoSaga from "./expandTodoSaga";
+import resetTodosSaga from "./resetTodosSaga";
 import updateTodoTitleSaga from "./updateTodoTitleSaga";
-import { validateTitle } from "../todo";
-import { TodoStates } from "../types";
-import { RESET_TODOS } from "../constants";
-import { ResetTodosAction } from "../actions";
-import { setTodos, addView } from "../action-creators";
 
 export function* mainSaga(): SagaIterator {
   yield fork(addTodoSaga);
   yield fork(expandTodoSaga);
+  yield fork(resetTodosSaga);
   yield fork(updateTodoTitleSaga);
-
-  yield takeEvery(RESET_TODOS, function* ({
-    meta: { partId, todos }
-  }: ResetTodosAction) {
-    yield put(
-      addView({
-        viewId: partId,
-        partId
-      })
-    );
-    yield put(
-      setTodos({
-        partId,
-        todos: todos.map((todo) => {
-          const errors = validateTitle(todo.title);
-          return errors.length
-            ? {
-                id: todo.id,
-                title: todo.title,
-                checked: todo.completed,
-                validated: false,
-                errors
-              }
-            : {
-                id: todo.id,
-                title: todo.title,
-                checked: todo.completed,
-                validated: true
-              };
-        }) as TodoStates
-      })
-    );
-  });
 }
 
 export default mainSaga;
