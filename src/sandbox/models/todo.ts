@@ -21,6 +21,16 @@ import {
   MOVE_TODO,
   EXPAND_TODO
 } from "./constants";
+import {
+  TodoActions,
+  DoAddTodoAction,
+  DoUpdateTodoTitleAction,
+  DeleteTodoAction,
+  ToggleTodoAction,
+  MoveTodoAction,
+  SetTodosAction,
+  SetTodosNoSaveAction
+} from "./actions";
 
 export type View = Readonly<{
   partId: string;
@@ -41,58 +51,6 @@ const ADD_VIEW = "ADD_VIEW";
 const UPDATE_VIEWS = "UPDATE_VIEWS";
 const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
 
-export interface ResetTodosAction {
-  type: typeof RESET_TODOS;
-  meta: { partId: string; todos: Todos };
-}
-interface SetTodosAction {
-  type: typeof SET_TODOS;
-  meta: { partId: string; todos: TodoStates };
-}
-interface SetTodosNoSaveAction {
-  type: typeof SET_TODOS_NOSAVE;
-  meta: { partId: string; todos: TodoStates };
-}
-
-export interface AddTodoAction {
-  type: typeof ADD_TODO;
-  meta: { viewId: string; title: string };
-}
-interface DoAddTodoAction {
-  type: typeof DO_ADD_TODO;
-  meta: { viewId: string; todo: TodoState };
-}
-
-export interface UpdateTodoTitleAction {
-  type: typeof UPDATE_TODO_TITLE;
-  meta: { viewId: string; id: string; title: string };
-}
-interface DoUpdateTodoTitleAction {
-  type: typeof DO_UPDATE_TODO_TITLE;
-  meta: {
-    viewId: string;
-    todo: Pick<TodoState, "id" | "title" | "validated" | "errors">;
-  };
-}
-
-interface DeleteTodoAction {
-  type: typeof DELETE_TODO;
-  meta: { viewId: string; id: string };
-}
-interface ToggleTodoAction {
-  type: typeof TOGGLE_TODO;
-  meta: { viewId: string; id: string };
-}
-interface MoveTodoAction {
-  type: typeof MOVE_TODO;
-  meta: { viewId: string; dropResult: DropResult };
-}
-
-export interface ExpandTodoAction {
-  type: typeof EXPAND_TODO;
-  meta: { id: string };
-}
-
 interface AddPartAction {
   type: typeof ADD_PART;
   meta: { partId: string };
@@ -112,17 +70,7 @@ interface SetVisibilityFilterAction {
 }
 
 type TodoActionType =
-  | ResetTodosAction
-  | SetTodosAction
-  | SetTodosNoSaveAction
-  | AddTodoAction
-  | DoAddTodoAction
-  | UpdateTodoTitleAction
-  | DoUpdateTodoTitleAction
-  | DeleteTodoAction
-  | ToggleTodoAction
-  | MoveTodoAction
-  | ExpandTodoAction
+  | TodoActions
   | AddPartAction
   | AddViewAction
   | UpdateViewsAction

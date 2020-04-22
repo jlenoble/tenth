@@ -3,9 +3,10 @@ import { fork, put, takeEvery } from "redux-saga/effects";
 import addTodoSaga from "./addTodoSaga";
 import expandTodoSaga from "./expandTodoSaga";
 import updateTodoTitleSaga from "./updateTodoTitleSaga";
-import { ResetTodosAction, addView, setTodos, validateTitle } from "../todo";
+import { addView, setTodos, validateTitle } from "../todo";
 import { TodoStates } from "../types";
 import { RESET_TODOS } from "../constants";
+import { ResetTodosAction } from "../actions";
 
 export function* mainSaga(): SagaIterator {
   yield fork(addTodoSaga);
