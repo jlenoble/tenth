@@ -68,7 +68,9 @@ function* saveToLocalStorage(localStorageId: string) {
         return map;
       }, {} as { [id: string]: Omit<Todo, "id"> }) as TodoMap,
       parts: Object.entries(parts).reduce((map, [partId, todosStates]) => {
-        map[partId] = todosStates.map((todo) => todo.id);
+        if (todosStates.length) {
+          map[partId] = todosStates.map((todo) => todo.id);
+        }
         return map;
       }, {} as { [id: string]: readonly string[] }) as PartMap
     })
