@@ -5,8 +5,9 @@ import { Provider, useDispatch } from "react-redux";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
-import { resetTodos, tmpId, watchVisibilityFilter, rootId } from "../todo";
+import { tmpId, watchVisibilityFilter, rootId } from "../todo";
 import { mainSaga } from "../sagas";
+import { resetTodos } from "../action-creators";
 import { getDeleteButtons } from "../__testHelpers__/buttons";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {

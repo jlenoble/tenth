@@ -5,7 +5,8 @@ import { Provider, useDispatch } from "react-redux";
 import { render, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { TodoList, combinedReducer } from "../TodoList";
-import { resetTodos, tmpId, watchVisibilityFilter, rootId } from "../todo";
+import { tmpId, watchVisibilityFilter, rootId } from "../todo";
+import { resetTodos } from "../action-creators";
 import { mainSaga } from "../sagas";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {
