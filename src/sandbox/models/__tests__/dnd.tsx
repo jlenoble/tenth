@@ -1,8 +1,11 @@
 import React from "react";
-import { getDroppables, getDraggables } from "../__testHelpers__/dnd";
-import { mockGetBoundingClientRect } from "../__testHelpers__/dnd-mock";
-import { render } from "../__testHelpers__/dnd-render";
-import { List } from "../__testHelpers__";
+import {
+  List,
+  getDroppables,
+  getDraggables,
+  mockGetBoundingClientRect,
+  render
+} from "../__testHelpers__";
 
 describe("DnD List", () => {
   it("Initialize", () => {

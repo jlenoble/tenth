@@ -1,8 +1,7 @@
 import React from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { getDeleteButtons } from "../__testHelpers__/buttons";
-import { List } from "../__testHelpers__";
+import { List, getDeleteButtons } from "../__testHelpers__";
 
 describe("TodoList", () => {
   it("Initialize", () => {
