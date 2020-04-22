@@ -35,13 +35,11 @@ export function TodoList({
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const allTodos = useSelector(
-    (state: { todos: TodosState }) => state.todos.todos
+  const { parts, views, todos: allTodos } = useSelector(
+    (state: { todos: TodosState }) => state.todos
   );
 
-  const { todos, partId } = useSelector(
-    (state: { todos: TodosState }) => state.todos.views[viewId]
-  );
+  const { todos, partId } = views[viewId];
 
   if (!title) {
     title = allTodos[partId].title;
@@ -62,23 +60,28 @@ export function TodoList({
         }}
         listItems={todos.map((todo) => {
           const errors = todo.errors;
+          const id = todo.id;
+          const expandButtonClassName = parts[id]?.length
+            ? "hasElements"
+            : undefined;
 
           return {
-            itemId: todo.id,
+            itemId: id,
             primary: todo.title,
             primaryError: Boolean(errors),
             primaryHelperText: errors && errors.join(", "),
             primaryEnter: (title: string) =>
-              dispatch(updateTodoTitle({ viewId, id: todo.id, title })),
+              dispatch(updateTodoTitle({ viewId, id, title })),
             checked: todo.checked,
             checkboxProps: {
-              onClick: () => dispatch(toggleTodo({ viewId, id: todo.id }))
+              onClick: () => dispatch(toggleTodo({ viewId, id }))
             },
             deleteButtonProps: {
-              onClick: () => dispatch(deleteTodo({ viewId, id: todo.id }))
+              onClick: () => dispatch(deleteTodo({ viewId, id }))
             },
             expandButtonProps: {
-              onClick: () => dispatch(expandTodo({ id: todo.id }))
+              className: expandButtonClassName,
+              onClick: () => dispatch(expandTodo({ id }))
             }
           };
         })}

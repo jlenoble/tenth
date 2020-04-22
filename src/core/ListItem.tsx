@@ -88,6 +88,15 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
       eq = eq && pdp === ndp;
     }
 
+    const pep = prevProps.expandButtonProps;
+    const nep = nextProps.expandButtonProps;
+
+    if (pep && nep) {
+      eq = eq && pep.className === nep.className;
+    } else {
+      eq = eq && pep === nep;
+    }
+
     return eq;
   }
 );

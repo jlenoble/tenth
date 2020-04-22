@@ -20,6 +20,7 @@ import { UI, closeSubView } from "./ui";
 import { combinedReducer } from "./reducers";
 import { mainSaga, enableLocalStorageSaga } from "./sagas";
 import "./ListItem.css";
+import "./IconButton.css";
 
 const localStorageId = "todos";
 
