@@ -4,10 +4,11 @@ import createSagaMiddleware from "redux-saga";
 import { Provider, useDispatch } from "react-redux";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { TodoList, combinedReducer } from "../TodoList";
+import { TodoList } from "../TodoList";
 import { tmpId, watchVisibilityFilter, rootId } from "../todo";
-import { mainSaga } from "../sagas";
 import { resetTodos } from "../action-creators";
+import { combinedReducer } from "../reducers";
+import { mainSaga } from "../sagas";
 import { getDeleteButtons } from "../__testHelpers__/buttons";
 
 const List: FunctionComponent<{ items: string[] }> = ({ items }) => {

@@ -1,9 +1,8 @@
 import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { combineReducers } from "redux";
 import { useSelector, useDispatch } from "react-redux";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { todos, getTodos } from "./todo";
+import { getTodos } from "./todo";
 import {
   addTodo,
   deleteTodo,
@@ -12,14 +11,8 @@ import {
   toggleTodo,
   moveTodo
 } from "./action-creators";
-import { ui } from "./ui";
 import { ListCard as List } from "../../core";
 import Menu from "./Menu";
-
-export const combinedReducer = combineReducers({
-  todos,
-  ui
-});
 
 export const useStyles = makeStyles((theme: Theme) => ({
   card: {

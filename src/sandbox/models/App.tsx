@@ -14,10 +14,11 @@ import { Provider, useSelector } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
 import clsx from "clsx";
-import { TodoList, combinedReducer } from "./TodoList";
+import { TodoList } from "./TodoList";
 import { watchVisibilityFilter } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 import { UI } from "./ui";
+import { combinedReducer } from "./reducers";
 import { mainSaga, enableLocalStorageSaga } from "./sagas";
 import "./ListItem.css";
 
