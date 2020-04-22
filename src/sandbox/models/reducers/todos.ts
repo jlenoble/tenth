@@ -159,7 +159,7 @@ export const todos = (
           ...views,
           [viewId]: {
             partId,
-            visibilityFilter: VisibilityFilter.SHOW_ALL,
+            visibilityFilter: VisibilityFilter.SHOW_ACTIVE,
             todos: []
           }
         }
