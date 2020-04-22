@@ -1,5 +1,6 @@
 import { SagaIterator } from "redux-saga";
 import { put, select, takeLatest } from "redux-saga/effects";
+import { TodosState } from "../types";
 import {
   SET_TODOS,
   SET_TODOS_NOSAVE,
@@ -19,7 +20,6 @@ import {
   SetTodosNoSaveAction
 } from "../actions";
 import { updateViews } from "../action-creators";
-import { TodosState } from "../todo";
 
 export function* updateViewsSaga() {
   yield takeLatest(

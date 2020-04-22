@@ -1,10 +1,4 @@
-import {
-  VisibilityFilter,
-  TodoStates,
-  TodoStateMap,
-  View,
-  ViewMap
-} from "./types";
+import { VisibilityFilter, TodoStates, TodosState, View } from "./types";
 import {
   TodoActions,
   AddPartAction,
@@ -12,12 +6,6 @@ import {
   UpdateViewsAction,
   SetVisibilityFilterAction
 } from "./actions";
-
-export type TodosState = Readonly<{
-  todos: TodoStateMap;
-  views: ViewMap<"todos", TodoStates>;
-  parts: Readonly<{ [id: string]: TodoStates }>;
-}>;
 
 export type TodoActionType =
   | TodoActions

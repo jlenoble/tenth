@@ -12,7 +12,8 @@ import {
   UPDATE_VIEWS,
   SET_VISIBILITY_FILTER
 } from "../constants";
-import { TodoActionType, TodosState, rootId, makeView } from "../todo";
+import { TodosState } from "../types";
+import { TodoActionType, rootId, makeView } from "../todo";
 
 const initialState: TodosState = {
   todos: {},
