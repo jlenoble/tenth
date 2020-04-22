@@ -28,7 +28,11 @@ import {
   ToggleTodoAction,
   MoveTodoAction,
   SetTodosAction,
-  SetTodosNoSaveAction
+  SetTodosNoSaveAction,
+  AddPartAction,
+  AddViewAction,
+  UpdateViewsAction,
+  SetVisibilityFilterAction
 } from "./actions";
 
 export type TodosState = Readonly<{
@@ -36,24 +40,6 @@ export type TodosState = Readonly<{
   views: ViewMap<"todos", TodoStates>;
   parts: Readonly<{ [id: string]: TodoStates }>;
 }>;
-
-interface AddPartAction {
-  type: typeof ADD_PART;
-  meta: { partId: string };
-}
-
-interface AddViewAction {
-  type: typeof ADD_VIEW;
-  meta: { viewId: string; partId: string };
-}
-interface UpdateViewsAction {
-  type: typeof UPDATE_VIEWS;
-  meta: { partId: string };
-}
-interface SetVisibilityFilterAction {
-  type: typeof SET_VISIBILITY_FILTER;
-  meta: { viewId: string; visibilityFilter: VisibilityFilter };
-}
 
 export type TodoActionType =
   | TodoActions
