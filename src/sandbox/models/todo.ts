@@ -19,7 +19,11 @@ import {
   DELETE_TODO,
   TOGGLE_TODO,
   MOVE_TODO,
-  EXPAND_TODO
+  EXPAND_TODO,
+  ADD_PART,
+  ADD_VIEW,
+  UPDATE_VIEWS,
+  SET_VISIBILITY_FILTER
 } from "./constants";
 import {
   TodoActions,
@@ -44,12 +48,6 @@ export type TodosState = Readonly<{
   views: ViewMap;
   parts: Readonly<{ [id: string]: TodoStates }>;
 }>;
-
-const ADD_PART = "ADD_PART";
-
-const ADD_VIEW = "ADD_VIEW";
-const UPDATE_VIEWS = "UPDATE_VIEWS";
-const SET_VISIBILITY_FILTER = "SET_VISIBILITY_FILTER";
 
 interface AddPartAction {
   type: typeof ADD_PART;
