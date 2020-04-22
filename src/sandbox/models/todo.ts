@@ -1,6 +1,12 @@
 import { SagaIterator } from "redux-saga";
 import { put, select, takeLatest } from "redux-saga/effects";
-import { VisibilityFilter, TodoStates, TodoStateMap } from "./types";
+import {
+  VisibilityFilter,
+  TodoStates,
+  TodoStateMap,
+  View,
+  ViewMap
+} from "./types";
 import {
   SET_TODOS,
   SET_TODOS_NOSAVE,
@@ -25,16 +31,9 @@ import {
   SetTodosNoSaveAction
 } from "./actions";
 
-export type View = Readonly<{
-  partId: string;
-  visibilityFilter: VisibilityFilter;
-  todos: TodoStates;
-}>;
-export type ViewMap = Readonly<{ [viewId: string]: View }>;
-
 export type TodosState = Readonly<{
   todos: TodoStateMap;
-  views: ViewMap;
+  views: ViewMap<"todos", TodoStates>;
   parts: Readonly<{ [id: string]: TodoStates }>;
 }>;
 
@@ -113,7 +112,7 @@ const makeView = (
   visibilityFilter: VisibilityFilter,
   todos: TodoStates
 ) => {
-  let view: View;
+  let view: View<"todos", TodoStates>;
 
   switch (visibilityFilter) {
     case VisibilityFilter.SHOW_ACTIVE:
