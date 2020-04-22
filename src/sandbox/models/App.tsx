@@ -8,15 +8,15 @@ import {
   IconButton,
   Grid
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Close, ExpandMore } from "@material-ui/icons";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useSelector, useDispatch } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
 import clsx from "clsx";
 import { TodoList } from "./TodoList";
 import { CurrentTodo } from "./CurrentTodo";
-import { UI } from "./ui";
+import { UI, closeSubView } from "./ui";
 import { combinedReducer } from "./reducers";
 import { mainSaga, enableLocalStorageSaga } from "./sagas";
 import "./ListItem.css";
@@ -60,6 +60,7 @@ const defaultTitle = "TODOS";
 
 const Layout = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [expanded, setExpanded] = React.useState(true);
 
   const handleExpandClick = () => {
@@ -84,7 +85,7 @@ const Layout = () => {
           aria-expanded={expanded}
           aria-label="show more"
         >
-          <ExpandMoreIcon />
+          <ExpandMore />
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -97,7 +98,19 @@ const Layout = () => {
           {subViewId && (
             <Grid item xs={12} md={6}>
               <CardContent>
-                <TodoList viewId={subViewId} />
+                <TodoList
+                  viewId={subViewId}
+                  cardHeaderProps={{
+                    action: (
+                      <IconButton
+                        aria-label="Close item"
+                        onClick={() => dispatch(closeSubView({ subViewId }))}
+                      >
+                        <Close />
+                      </IconButton>
+                    )
+                  }}
+                />
               </CardContent>
             </Grid>
           )}

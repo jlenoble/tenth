@@ -11,7 +11,7 @@ import {
   toggleTodo,
   moveTodo
 } from "./action-creators";
-import { ListCard as List } from "../../core";
+import { ListCard as List, BaseCardHeaderProps } from "../../core";
 import Menu from "./Menu";
 
 export const useStyles = makeStyles((theme: Theme) => ({
@@ -25,10 +25,12 @@ export const useStyles = makeStyles((theme: Theme) => ({
 
 export function TodoList({
   viewId,
-  title
+  title,
+  cardHeaderProps
 }: {
   viewId: string;
   title?: string;
+  cardHeaderProps?: BaseCardHeaderProps;
 }) {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -80,9 +82,11 @@ export function TodoList({
             }
           };
         })}
-        cardHeaderProps={{
-          action: <Menu viewId={viewId} />
-        }}
+        cardHeaderProps={
+          cardHeaderProps || {
+            action: <Menu viewId={viewId} />
+          }
+        }
       />
     </DragDropContext>
   );
