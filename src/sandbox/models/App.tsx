@@ -15,7 +15,6 @@ import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
 import clsx from "clsx";
 import { TodoList } from "./TodoList";
-import { watchVisibilityFilter } from "./todo";
 import { CurrentTodo } from "./CurrentTodo";
 import { UI } from "./ui";
 import { combinedReducer } from "./reducers";
@@ -32,7 +31,6 @@ export const store = createStore(
   applyMiddleware(logger, sagaMiddleware)
 );
 
-sagaMiddleware.run(watchVisibilityFilter);
 sagaMiddleware.run(mainSaga);
 sagaMiddleware.run(enableLocalStorageSaga, localStorageId);
 

@@ -4,3 +4,4 @@ export * from "./expandTodoSaga";
 export * from "./mainSaga";
 export * from "./resetTodosSaga";
 export * from "./updateTodoTitleSaga";
+export * from "./updateViewsSaga";
