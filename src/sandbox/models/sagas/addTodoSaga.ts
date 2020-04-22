@@ -1,8 +1,9 @@
 import { SagaIterator } from "redux-saga";
 import { put, take } from "redux-saga/effects";
-import { tmpId, validateTitle, doAddTodo } from "../todo";
+import { tmpId, validateTitle } from "../todo";
 import { ADD_TODO } from "../constants";
-import { AddTodoAction} from "../actions";
+import { AddTodoAction } from "../actions";
+import { doAddTodo } from "../action-creators";
 
 export function* addTodoSaga(): SagaIterator {
   while (1) {

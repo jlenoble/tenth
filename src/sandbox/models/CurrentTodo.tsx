@@ -7,8 +7,9 @@ import {
   Typography,
   Button
 } from "@material-ui/core";
-import { getTodos, toggleTodo } from "./todo";
+import { getTodos } from "./todo";
 import { TodoState } from "./types";
+import { toggleTodo } from "./action-creators";
 import { useStyles } from "./TodoList";
 
 export function CurrentTodo({ viewId }: { viewId: string }) {
