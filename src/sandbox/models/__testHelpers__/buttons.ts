@@ -1,6 +1,11 @@
+const CLOSE_BUTTON_ATTRIBUTE = `[aria-label="Close item"]`;
 const DELETE_BUTTON_ATTRIBUTE = `[aria-label="Delete item"]`;
 const EXPAND_BUTTON_ATTRIBUTE = `[aria-label="Expand item"]`;
 const MENU_BUTTON_ATTRIBUTE = `[aria-label="setting"]`;
+
+export const getCloseButtons = (list: HTMLElement) => {
+  return Array.from(list.querySelectorAll(CLOSE_BUTTON_ATTRIBUTE));
+};
 
 export const getDeleteButtons = (list: HTMLUListElement) => {
   return Array.from(list.querySelectorAll(DELETE_BUTTON_ATTRIBUTE));
