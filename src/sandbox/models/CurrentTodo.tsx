@@ -10,6 +10,7 @@ import {
 import { TodoState, TodoStates, TodosState } from "./types";
 import { toggleTodo } from "./action-creators";
 import { useStyles } from "./TodoList";
+import { rootId } from "./todo";
 
 export function CurrentTodo({ viewId }: { viewId: string }) {
   const classes = useStyles();
@@ -19,10 +20,11 @@ export function CurrentTodo({ viewId }: { viewId: string }) {
     (state: { todos: TodosState }) => state.todos
   );
 
+  const noTodos = !parts[rootId]?.length;
+
   let partId = views[viewId].partId;
   let todos: TodoStates;
   let todo: TodoState | undefined;
-  let noTodos: boolean = true;
 
   do {
     todos = parts[partId];
@@ -31,26 +33,28 @@ export function CurrentTodo({ viewId }: { viewId: string }) {
       break;
     }
 
-    todo = todos.find((todo) => !todo.checked);
-    noTodos = !todos.length;
+    let newTodo = todos.find((todo) => !todo.checked);
 
-    if (!todo) {
+    if (!newTodo) {
       break;
     }
 
+    todo = newTodo;
     partId = todo.id;
-  } while (!noTodos);
+  } while (1);
+
+  const id = todo?.id;
 
   return (
     <Card classes={{ root: classes.card }}>
       <CardHeader
         action={
-          todo ? (
+          id ? (
             <Button
               variant={"contained"}
               disableRipple
               color="secondary"
-              onClick={() => dispatch(toggleTodo({ viewId, id: todo!.id }))}
+              onClick={() => dispatch(toggleTodo({ viewId, id }))}
             >
               Done
             </Button>
