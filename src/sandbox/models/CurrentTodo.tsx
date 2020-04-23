@@ -7,7 +7,7 @@ import {
   Typography,
   Button
 } from "@material-ui/core";
-import { TodosState } from "./types";
+import { TodoState, TodoStates, TodosState } from "./types";
 import { toggleTodo } from "./action-creators";
 import { useStyles } from "./TodoList";
 
@@ -15,32 +15,46 @@ export function CurrentTodo({ viewId }: { viewId: string }) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const partId = useSelector(
-    (state: { todos: TodosState }) => state.todos.views[viewId].partId
+  const { views, parts } = useSelector(
+    (state: { todos: TodosState }) => state.todos
   );
 
-  const todo = useSelector((state: { todos: TodosState }) =>
-    state.todos.parts[partId].find((todo) => !todo.checked)
-  );
+  let partId = views[viewId].partId;
+  let todos: TodoStates;
+  let todo: TodoState | undefined;
+  let noTodos: boolean = true;
 
-  const noTodos = useSelector(
-    (state: { todos: TodosState }) => !state.todos.parts[partId].length
-  );
+  do {
+    todos = parts[partId];
+
+    if (!todos) {
+      break;
+    }
+
+    todo = todos.find((todo) => !todo.checked);
+    noTodos = !todos.length;
+
+    if (!todo) {
+      break;
+    }
+
+    partId = todo.id;
+  } while (!noTodos);
 
   return (
     <Card classes={{ root: classes.card }}>
       <CardHeader
         action={
-          todo && (
+          todo ? (
             <Button
               variant={"contained"}
               disableRipple
               color="secondary"
-              onClick={() => dispatch(toggleTodo({ viewId, id: todo.id }))}
+              onClick={() => dispatch(toggleTodo({ viewId, id: todo!.id }))}
             >
               Done
             </Button>
-          )
+          ) : undefined
         }
       />
       <CardContent>
