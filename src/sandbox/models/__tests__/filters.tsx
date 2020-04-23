@@ -2,9 +2,9 @@ import React from "react";
 import { render, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { tmpId } from "../todo";
-import { ListFactory } from "../__testHelpers__";
+import { AppFactory, getMenuButton } from "../__testHelpers__";
 
-const List = ListFactory((item, i) => ({
+const App = AppFactory((item, i) => ({
   id: tmpId(),
   title: i ? item : "",
   completed: !(i % 2)
@@ -12,11 +12,11 @@ const List = ListFactory((item, i) => ({
 
 describe("Visibility filters", () => {
   it("SHOW_ACTIVE", async () => {
-    const { getByRole, getAllByRole } = render(
-      <List items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
+    const { container, getByRole } = render(
+      <App items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
     );
 
-    const menu = getAllByRole("button")[0] as HTMLButtonElement;
+    const menu = getMenuButton(container) as HTMLButtonElement;
     userEvents.click(menu);
 
     const menuItem = within(document.body).getByText("Show active");
@@ -33,11 +33,11 @@ describe("Visibility filters", () => {
   });
 
   it("SHOW_COMPLETED", async () => {
-    const { getByRole, getAllByRole } = render(
-      <List items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
+    const { container, getByRole } = render(
+      <App items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
     );
 
-    const menu = getAllByRole("button")[0] as HTMLButtonElement;
+    const menu = getMenuButton(container) as HTMLButtonElement;
     userEvents.click(menu);
 
     const menuItem = within(document.body).getByText("Show completed");
@@ -50,11 +50,11 @@ describe("Visibility filters", () => {
   });
 
   it("SHOW_INVALID", async () => {
-    const { getByRole, getAllByRole } = render(
-      <List items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
+    const { container, getByRole } = render(
+      <App items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
     );
 
-    const menu = getAllByRole("button")[0] as HTMLButtonElement;
+    const menu = getMenuButton(container) as HTMLButtonElement;
     userEvents.click(menu);
 
     const menuItem = within(document.body).getByText("Show invalid");
@@ -67,11 +67,11 @@ describe("Visibility filters", () => {
   });
 
   it("SHOW_ALL", async () => {
-    const { getByRole, getAllByRole } = render(
-      <List items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
+    const { container, getByRole } = render(
+      <App items={["foo", "bar", "baz", "qux", "quux", "foobar"]} />
     );
 
-    const menu = getAllByRole("button")[0] as HTMLButtonElement;
+    const menu = getMenuButton(container) as HTMLButtonElement;
     userEvents.click(menu);
     userEvents.click(within(document.body).getByText("Show active"));
     userEvents.click(menu);

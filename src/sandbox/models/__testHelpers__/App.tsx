@@ -2,15 +2,14 @@ import React, { FunctionComponent } from "react";
 import { createStore, applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { Provider, useDispatch } from "react-redux";
-import { TodoList } from "../TodoList";
+import { Layout } from "../Layout";
 import { tmpId, rootId } from "../todo";
-import { resetTodos } from "../action-creators";
+import { resetTodos, setVisibilityFilter } from "../action-creators";
 import { combinedReducer } from "../reducers";
 import { mainSaga } from "../sagas";
+import { VisibilityFilter } from "../types";
 
-export const defaultTitle = "TODOS";
-
-export const ListFactory: (
+export const AppFactory: (
   fn: (
     item: string,
     i: number
@@ -22,13 +21,23 @@ export const ListFactory: (
 
   const InnerList: FunctionComponent = () => {
     const dispatch = useDispatch();
+
     dispatch(
       resetTodos({
         partId: rootId,
         todos: items.map(fn)
       })
     );
-    return <TodoList viewId={rootId} title={defaultTitle} />;
+
+    // Make sure, whatever the default filter, that tests start with all items displayed
+    dispatch(
+      setVisibilityFilter({
+        viewId: rootId,
+        visibilityFilter: VisibilityFilter.SHOW_ALL
+      })
+    );
+
+    return <Layout />;
   };
 
   return (
@@ -38,7 +47,7 @@ export const ListFactory: (
   );
 };
 
-export const List: FunctionComponent<{ items: string[] }> = ListFactory(
+export const App: FunctionComponent<{ items: string[] }> = AppFactory(
   (item) => ({
     id: tmpId(),
     title: item,

@@ -1,14 +1,15 @@
 import React from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { List, defaultTitle } from "../__testHelpers__";
+import { defaultTitle } from "../Layout";
+import { App } from "../__testHelpers__";
 
 // const CONTENT_ATTRIBUTE = ".MuiCardHeader-content";
 // const TITLE_ATTRIBUTE = ".MuiCardHeader-title";
 
 describe("TodoList", () => {
   it("Edit Item primary", async () => {
-    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
+    const { getByRole } = render(<App items={["foo", "bar", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
@@ -42,7 +43,7 @@ describe("TodoList", () => {
 
   test.todo("Edit card title");
   // it("Edit title", async () => {
-  //   const { container } = render(<List items={["foo", "bar", "baz"]} />);
+  //   const { container } = render(<App items={["foo", "bar", "baz"]} />);
 
   //   const cardHeaderContent = container.querySelector(
   //     CONTENT_ATTRIBUTE

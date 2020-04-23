@@ -1,11 +1,11 @@
 import React from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { List, getDeleteButtons } from "../__testHelpers__";
+import { App, getDeleteButtons } from "../__testHelpers__";
 
 describe("TodoList", () => {
   it("Initialize", () => {
-    const { getAllByRole } = render(<List items={["foo", "bar", "baz"]} />);
+    const { getAllByRole } = render(<App items={["foo", "bar", "baz"]} />);
 
     const listitems = getAllByRole("listitem") as HTMLLIElement[];
 
@@ -18,7 +18,7 @@ describe("TodoList", () => {
 
   it("Add", async () => {
     const { getByRole, getByText, getAllByRole } = render(
-      <List items={["foo"]} />
+      <App items={["foo"]} />
     );
 
     const textbox = getByRole("textbox") as HTMLInputElement;
@@ -55,7 +55,7 @@ describe("TodoList", () => {
   });
 
   it("Remove", () => {
-    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
+    const { getByRole } = render(<App items={["foo", "bar", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
@@ -85,7 +85,7 @@ describe("TodoList", () => {
   });
 
   it("Check", () => {
-    const { getByRole } = render(<List items={["foo", "bar", "baz"]} />);
+    const { getByRole } = render(<App items={["foo", "bar", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
@@ -124,7 +124,7 @@ describe("TodoList", () => {
 
   it("Check/Add/Remove", async () => {
     const { getByRole, getByText } = render(
-      <List items={["foo", "bar", "baz"]} />
+      <App items={["foo", "bar", "baz"]} />
     );
 
     const list = getByRole("list") as HTMLUListElement;

@@ -1,11 +1,11 @@
 import React from "react";
 import { render, fireEvent, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import { List } from "../__testHelpers__";
+import { App } from "../__testHelpers__";
 
 describe("TodoList", () => {
   it("Show error", () => {
-    const { getByRole } = render(<List items={["foo", "", "baz"]} />);
+    const { getByRole } = render(<App items={["foo", "", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
@@ -19,7 +19,7 @@ describe("TodoList", () => {
   });
 
   it("Correct error", async () => {
-    const { getByRole } = render(<List items={["foo", "", "baz"]} />);
+    const { getByRole } = render(<App items={["foo", "", "baz"]} />);
 
     const list = getByRole("list") as HTMLUListElement;
     const { getAllByRole } = within(list);
