@@ -110,7 +110,10 @@ export const moveTodo = (meta: {
   };
 };
 
-export const expandTodo = (meta: { id: string }): TodoActionType => {
+export const expandTodo = (meta: {
+  viewId: string;
+  id: string;
+}): TodoActionType => {
   return {
     type: EXPAND_TODO,
     meta

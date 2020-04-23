@@ -15,12 +15,12 @@ import {
 import { TodosState } from "../types";
 import { TodoActionType, rootId, makeView } from "../todo";
 
-const initialState: TodosState = {
+export const todosInitialState: TodosState = {
   todos: {},
   views: {
     [rootId]: {
       partId: rootId,
-      visibilityFilter: VisibilityFilter.SHOW_ALL,
+      visibilityFilter: VisibilityFilter.SHOW_ACTIVE,
       todos: []
     }
   },
@@ -28,7 +28,7 @@ const initialState: TodosState = {
 };
 
 export const todos = (
-  state = initialState,
+  state = todosInitialState,
   action: TodoActionType
 ): TodosState => {
   const { todos, views, parts } = state;
@@ -152,14 +152,14 @@ export const todos = (
     }
 
     case ADD_VIEW: {
-      const { viewId, partId } = action.meta;
+      const { viewId, partId, visibilityFilter } = action.meta;
       return {
         ...state,
         views: {
           ...views,
           [viewId]: {
             partId,
-            visibilityFilter: VisibilityFilter.SHOW_ACTIVE,
+            visibilityFilter,
             todos: []
           }
         }

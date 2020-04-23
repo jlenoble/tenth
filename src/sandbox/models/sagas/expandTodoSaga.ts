@@ -9,15 +9,16 @@ import { updateSubView } from "../ui";
 export function* expandTodoSaga(): SagaIterator {
   while (1) {
     const {
-      meta: { id }
+      meta: { viewId, id }
     }: ExpandTodoAction = yield take(EXPAND_TODO);
-    const { parts }: TodosState = yield select(
+    const { views, parts }: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos
     );
+    const visibilityFilter = views[viewId].visibilityFilter;
 
     if (!parts[id]) {
       yield put(addPart({ partId: id }));
-      yield put(addView({ viewId: id, partId: id }));
+      yield put(addView({ viewId: id, partId: id, visibilityFilter }));
     }
 
     yield put(updateSubView({ subViewId: id }));

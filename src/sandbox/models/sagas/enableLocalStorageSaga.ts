@@ -1,5 +1,5 @@
 import { put, select, takeLatest } from "redux-saga/effects";
-import { validateTitle } from "../todo";
+import { validateTitle, rootId } from "../todo";
 import { Todo, TodoMap, TodoStates, TodosState, PartMap } from "../types";
 import {
   DO_ADD_TODO,
@@ -9,17 +9,20 @@ import {
   MOVE_TODO
 } from "../constants";
 import { setTodosNoSave, addView } from "../action-creators";
+import { todosInitialState } from "../reducers";
 
 function* loadFromLocalStorage(localStorageId: string) {
   const { todos, parts } = JSON.parse(
     localStorage.getItem(localStorageId) || `{"todos":{},"parts":{}}`
   ) as { todos: TodoMap; parts: PartMap };
+  const visibilityFilter = todosInitialState.views[rootId].visibilityFilter;
 
   for (let [id, ids] of Object.entries(parts)) {
     yield put(
       addView({
         viewId: id,
-        partId: id
+        partId: id,
+        visibilityFilter
       })
     );
 

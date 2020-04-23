@@ -81,7 +81,7 @@ export function TodoList({
             },
             expandButtonProps: {
               className: expandButtonClassName,
-              onClick: () => dispatch(expandTodo({ id }))
+              onClick: () => dispatch(expandTodo({ viewId, id }))
             }
           };
         })}

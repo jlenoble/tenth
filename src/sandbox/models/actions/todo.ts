@@ -82,5 +82,5 @@ export interface MoveTodoAction {
 
 export interface ExpandTodoAction {
   type: typeof EXPAND_TODO;
-  meta: { id: string };
+  meta: { viewId: string; id: string };
 }

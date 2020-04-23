@@ -1,10 +1,11 @@
 import { SagaIterator } from "redux-saga";
 import { put, take } from "redux-saga/effects";
-import { validateTitle } from "../todo";
+import { validateTitle, rootId } from "../todo";
 import { TodoStates } from "../types";
 import { RESET_TODOS } from "../constants";
 import { ResetTodosAction } from "../actions";
 import { setTodos, addView } from "../action-creators";
+import { todosInitialState } from "../reducers";
 
 export function* resetTodosSaga(): SagaIterator {
   while (1) {
@@ -15,7 +16,8 @@ export function* resetTodosSaga(): SagaIterator {
     yield put(
       addView({
         viewId: partId,
-        partId
+        partId,
+        visibilityFilter: todosInitialState.views[rootId].visibilityFilter
       })
     );
 
