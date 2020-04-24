@@ -3,6 +3,7 @@ import { combineReducers } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { AddButton, CloseButton } from "../../core";
+import { newViewManagerId as newId } from "./ids";
 
 const CLOSE_CARD = "CLOSE_CARD";
 const CREATE_CARD = "CREATE_CARD";
@@ -53,9 +54,6 @@ type Card = Readonly<{ cardId: string }>;
 type CardMap = Readonly<{
   [cardId: string]: Omit<Card, "cardId">;
 }>;
-
-let cardId = 0;
-const newId = () => "card" + ++cardId;
 
 const makeCardReducer = (cardManagerId: string) => {
   const cardsInitialState: CardMap = {};
