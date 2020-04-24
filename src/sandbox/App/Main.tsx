@@ -1,9 +1,19 @@
 import React, { FunctionComponent } from "react";
 import { combineReducers } from "redux";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, CardHeader, CardContent } from "@material-ui/core";
+import { Card, CardHeader } from "@material-ui/core";
 import { AddButton, CloseButton } from "../../core";
 import { makeReducer, create, close } from "./view";
+
+type ActionComponent = FunctionComponent<{ action: () => void }>;
+
+const Add: ActionComponent = ({ action }) => {
+  return <AddButton onClick={action} />;
+};
+
+const Close: ActionComponent = ({ action }) => {
+  return <CloseButton onClick={action} />;
+};
 
 export const combinedReducer = combineReducers<{
   [managerId: string]: ReturnType<typeof makeReducer>;
@@ -12,29 +22,70 @@ export const combinedReducer = combineReducers<{
   m2: makeReducer("m2")
 });
 
-const CardManager: FunctionComponent<{
+interface ViewManagerProps {
   managerId: string;
-  createAction: JSX.Element;
-}> = ({ managerId, createAction }) => {
+  create: typeof create;
+  close: typeof close;
+  getState: (state: {
+    [managerId: string]: ReturnType<typeof makeReducer>;
+  }) => ReturnType<typeof makeReducer>;
+  Component: FunctionComponent<ViewManagerImplProps>;
+  CreateComponent: ActionComponent;
+  CloseComponent: ActionComponent;
+}
+
+interface ViewManagerImplProps {
+  views: ReturnType<typeof makeReducer>;
+  create: () => void;
+  close: (viewId: string) => void;
+  CreateComponent: ActionComponent;
+  CloseComponent: ActionComponent;
+}
+
+const ViewManager: FunctionComponent<ViewManagerProps> = ({
+  managerId,
+  create,
+  close,
+  getState,
+  Component,
+  CreateComponent,
+  CloseComponent
+}) => {
   const dispatch = useDispatch();
-  const cards = useSelector(
-    (state: ReturnType<typeof combinedReducer>) => state[managerId]
+  const views = useSelector(getState);
+
+  return (
+    <Component
+      views={views}
+      create={() => {
+        dispatch(create({ managerId }));
+      }}
+      close={(viewId: string) => {
+        dispatch(close({ managerId, viewId }));
+      }}
+      CreateComponent={CreateComponent}
+      CloseComponent={CloseComponent}
+    />
   );
-  const cardIds = Object.keys(cards);
+};
+
+const CardManager: FunctionComponent<ViewManagerImplProps> = ({
+  views,
+  create,
+  close,
+  CreateComponent,
+  CloseComponent
+}) => {
+  const viewIds = Object.keys(views);
 
   return (
     <>
-      {createAction}
-      {cardIds.map((viewId) => (
+      {<CreateComponent action={create} />}
+      {viewIds.map((viewId) => (
         <Card key={viewId}>
           <CardHeader
-            action={
-              <CloseButton
-                onClick={() => dispatch(close({ managerId, viewId }))}
-              />
-            }
-          ></CardHeader>
-          <CardContent></CardContent>
+            action={<CloseComponent action={() => close(viewId)} />}
+          />
         </Card>
       ))}
     </>
@@ -42,18 +93,20 @@ const CardManager: FunctionComponent<{
 };
 
 export const Main: FunctionComponent = () => {
-  const dispatch = useDispatch();
   const managerIds = ["m1", "m2"];
 
   return (
     <>
       {managerIds.map((managerId) => (
-        <CardManager
+        <ViewManager
           key={managerId}
           managerId={managerId}
-          createAction={
-            <AddButton onClick={() => dispatch(create({ managerId }))} />
-          }
+          create={create}
+          close={close}
+          getState={(state) => state[managerId]}
+          Component={CardManager}
+          CreateComponent={Add}
+          CloseComponent={Close}
         />
       ))}
     </>
