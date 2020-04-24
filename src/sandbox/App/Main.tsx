@@ -1,16 +1,12 @@
 import React, { FunctionComponent } from "react";
-import { Card, CardHeader, CardContent, IconButton } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
+import { Card, CardHeader, CardContent } from "@material-ui/core";
+import { CloseButton } from "../../core";
 
 export const Main: FunctionComponent = () => {
   return (
     <Card>
       <CardHeader
-        action={
-          <IconButton aria-label="close" onClick={() => console.log("click")}>
-            <Close />
-          </IconButton>
-        }
+        action={<CloseButton onClick={() => console.log("click")} />}
       ></CardHeader>
       <CardContent>foo</CardContent>
     </Card>
