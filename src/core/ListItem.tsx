@@ -5,7 +5,7 @@ import {
   IconButton,
   IconButtonProps
 } from "@material-ui/core";
-import { DeleteOutlined, OpenInNewOutlined } from "@material-ui/icons";
+import { OpenInNewOutlined } from "@material-ui/icons";
 import {
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps
@@ -15,6 +15,7 @@ import {
   ListItemTextProps,
   BaseListItemTextProps
 } from "./ListItemText";
+import { DeleteButton } from "./buttons";
 
 export interface ListItemProps extends ListItemTextProps {
   itemId: string;
@@ -65,11 +66,7 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
             <OpenInNewOutlined />
           </IconButton>
         )}
-        {deleteButtonProps && (
-          <IconButton aria-label="Delete item" {...deleteButtonProps}>
-            <DeleteOutlined />
-          </IconButton>
-        )}
+        {deleteButtonProps && <DeleteButton {...deleteButtonProps} />}
       </MuiListItem>
     );
   },
