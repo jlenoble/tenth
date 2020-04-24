@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from "react";
-import { combineReducers } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader } from "@material-ui/core";
 import { AddButton, CloseButton } from "../../core";
-import { makeReducer, create, close } from "./view";
+import { makeCombinedManager, ViewMap, Manager } from "./view";
 
 type ActionComponent = FunctionComponent<{ action: () => void }>;
 
@@ -15,27 +14,15 @@ const Close: ActionComponent = ({ action }) => {
   return <CloseButton onClick={action} />;
 };
 
-export const combinedReducer = combineReducers<{
-  [managerId: string]: ReturnType<typeof makeReducer>;
-}>({
-  m1: makeReducer("m1"),
-  m2: makeReducer("m2")
-});
-
 interface ViewManagerProps {
-  managerId: string;
-  create: typeof create;
-  close: typeof close;
-  getState: (state: {
-    [managerId: string]: ReturnType<typeof makeReducer>;
-  }) => ReturnType<typeof makeReducer>;
+  manager: Manager;
   Component: FunctionComponent<ViewManagerImplProps>;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
 }
 
 interface ViewManagerImplProps {
-  views: ReturnType<typeof makeReducer>;
+  views: ViewMap;
   create: () => void;
   close: (viewId: string) => void;
   CreateComponent: ActionComponent;
@@ -43,14 +30,12 @@ interface ViewManagerImplProps {
 }
 
 const ViewManager: FunctionComponent<ViewManagerProps> = ({
-  managerId,
-  create,
-  close,
-  getState,
+  manager,
   Component,
   CreateComponent,
   CloseComponent
 }) => {
+  const { getState, create, close } = manager;
   const dispatch = useDispatch();
   const views = useSelector(getState);
 
@@ -58,10 +43,10 @@ const ViewManager: FunctionComponent<ViewManagerProps> = ({
     <Component
       views={views}
       create={() => {
-        dispatch(create({ managerId }));
+        dispatch(create());
       }}
       close={(viewId: string) => {
-        dispatch(close({ managerId, viewId }));
+        dispatch(close(viewId));
       }}
       CreateComponent={CreateComponent}
       CloseComponent={CloseComponent}
@@ -92,18 +77,16 @@ const CardManager: FunctionComponent<ViewManagerImplProps> = ({
   );
 };
 
-export const Main: FunctionComponent = () => {
-  const managerIds = ["m1", "m2"];
+const managerIds = ["m1", "m2", "m3", "m4"];
+export const combinedManager = makeCombinedManager(managerIds);
 
+export const Main: FunctionComponent = () => {
   return (
     <>
-      {managerIds.map((managerId) => (
+      {combinedManager.getManagerIds().map((managerId) => (
         <ViewManager
           key={managerId}
-          managerId={managerId}
-          create={create}
-          close={close}
-          getState={(state) => state[managerId]}
+          manager={combinedManager.getManager(managerId)}
           Component={CardManager}
           CreateComponent={Add}
           CloseComponent={Close}

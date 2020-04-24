@@ -1,10 +1,37 @@
+import { combineReducers, Action as ReduxAction } from "redux";
 import { newViewId } from "./ids";
 
 type View = Readonly<{ viewId: string }>;
 
-type ViewMap = Readonly<{
+export type ViewMap = Readonly<{
   [viewId: string]: Omit<View, "viewId">;
 }>;
+
+type State = ViewMap;
+
+type Reducer = (state?: State, Action?: Action) => State;
+type MutableReducerMap = { [managerId: string]: Reducer };
+type ReducerMap = Readonly<MutableReducerMap>;
+
+export type Manager = Readonly<{
+  managerId: string;
+  reducer: Reducer;
+  create: () => void;
+  close: (viewId: string) => void;
+  getState: (state: CombinedState) => State;
+}>;
+
+type MutableManagerMap = {
+  [managerId: string]: Omit<Manager, "managerId">;
+};
+type ManagerMap = Readonly<MutableManagerMap>;
+
+type MutableCombinedState = { [managerId: string]: State };
+type CombinedState = Readonly<MutableCombinedState>;
+type CombinedReducer = (
+  state?: CombinedState,
+  action?: ReduxAction
+) => CombinedState;
 
 const CLOSE = "CLOSE";
 const CREATE = "CREATE";
@@ -22,7 +49,7 @@ type CreateAction = {
 
 type Action = CloseAction | CreateAction;
 
-export const close = ({
+const closeView = ({
   managerId,
   viewId
 }: {
@@ -36,18 +63,18 @@ export const close = ({
   };
 };
 
-export const create = ({ managerId }: { managerId: string }): Action => {
+const createView = ({ managerId }: { managerId: string }): Action => {
   return {
     type: CREATE,
     managerId
   };
 };
 
-export const makeReducer = (managerId: string) => {
-  const initialState: ViewMap = {};
+const makeReducer = (managerId: string) => {
+  const initialState: State = {};
 
-  const views = (state = initialState, action: Action) => {
-    if (action.managerId === managerId) {
+  const views: Reducer = (state = initialState, action?: Action) => {
+    if (action && action.managerId === managerId) {
       switch (action.type) {
         case CLOSE: {
           const newState = { ...state };
@@ -65,4 +92,85 @@ export const makeReducer = (managerId: string) => {
   };
 
   return views;
+};
+
+const makeManager = (managerId: string): Manager => {
+  const reducer = makeReducer(managerId);
+  const create = () => createView({ managerId });
+  const close = (viewId: string) => closeView({ managerId, viewId });
+  const getState = (state: CombinedState) => state[managerId];
+
+  return { managerId, reducer, create, close, getState };
+};
+
+export const makeCombinedManager = (managerIds: readonly string[]) => {
+  const managers: MutableManagerMap = {};
+  const reducers: MutableReducerMap = {};
+
+  managerIds.forEach((managerId) => {
+    managers[managerId] = makeManager(managerId);
+    reducers[managerId] = managers[managerId].reducer;
+  });
+
+  // Type cannot be statically inferred by Typescript
+  let combinedReducer = (combineReducers(
+    reducers
+  ) as unknown) as CombinedReducer;
+
+  let managerIdsToRemove: string[] = [];
+
+  return {
+    getManagerIds: (): string[] => Object.keys(managers),
+
+    getManager: (managerId: string): Manager => ({
+      managerId,
+      ...managers[managerId]
+    }),
+
+    reducer: (state?: CombinedState, action?: ReduxAction) => {
+      if (managerIdsToRemove.length > 0) {
+        const newState: MutableCombinedState = { ...state };
+
+        for (let managerId of managerIdsToRemove) {
+          delete newState[managerId];
+        }
+
+        managerIdsToRemove = [];
+
+        return combinedReducer(newState, action);
+      }
+
+      return combinedReducer(state, action);
+    },
+
+    add: (managerId: string) => {
+      if (reducers[managerId]) {
+        return;
+      }
+
+      managers[managerId] = makeManager(managerId);
+      reducers[managerId] = managers[managerId].reducer;
+
+      // Type cannot be statically inferred by Typescript
+      combinedReducer = (combineReducers(
+        reducers
+      ) as unknown) as CombinedReducer;
+    },
+
+    remove: (managerId: string) => {
+      if (!managers[managerId]) {
+        return;
+      }
+
+      delete managers[managerId];
+      delete reducers[managerId];
+
+      managerIdsToRemove.push(managerId);
+
+      // Type cannot be statically inferred by Typescript
+      combinedReducer = (combineReducers(
+        reducers
+      ) as unknown) as CombinedReducer;
+    }
+  };
 };
