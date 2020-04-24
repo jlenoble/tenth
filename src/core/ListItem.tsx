@@ -1,11 +1,5 @@
 import React, { FunctionComponent, memo } from "react";
-import {
-  Checkbox,
-  CheckboxProps,
-  IconButton,
-  IconButtonProps
-} from "@material-ui/core";
-import { OpenInNewOutlined } from "@material-ui/icons";
+import { Checkbox, CheckboxProps, IconButtonProps } from "@material-ui/core";
 import {
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps
@@ -15,7 +9,7 @@ import {
   ListItemTextProps,
   BaseListItemTextProps
 } from "./ListItemText";
-import { DeleteButton } from "./buttons";
+import { DeleteButton, OpenInNewButton } from "./buttons";
 
 export interface ListItemProps extends ListItemTextProps {
   itemId: string;
@@ -61,11 +55,7 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
           primaryTextFieldProps={primaryTextFieldProps}
           {...listItemTextProps}
         />
-        {expandButtonProps && (
-          <IconButton aria-label="Expand item" {...expandButtonProps}>
-            <OpenInNewOutlined />
-          </IconButton>
-        )}
+        {expandButtonProps && <OpenInNewButton {...expandButtonProps} />}
         {deleteButtonProps && <DeleteButton {...deleteButtonProps} />}
       </MuiListItem>
     );
