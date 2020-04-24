@@ -4,33 +4,47 @@ import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { AddButton, CloseButton } from "../../core";
 
-type Titles = readonly string[];
-
 const CLOSE_CARD = "CLOSE_CARD";
 const CREATE_CARD = "CREATE_CARD";
 
 type CloseCardAction = {
   type: typeof CLOSE_CARD;
+  cardManagerId: string;
   cardId: string;
 };
 
 type CreateCardAction = {
   type: typeof CREATE_CARD;
+  cardManagerId: string;
   title?: string;
 };
 
 type CardAction = CloseCardAction | CreateCardAction;
 
-const closeCard = (cardId: string): CardAction => {
+const closeCard = ({
+  cardManagerId,
+  cardId
+}: {
+  cardManagerId: string;
+  cardId: string;
+}): CardAction => {
   return {
     type: CLOSE_CARD,
+    cardManagerId,
     cardId
   };
 };
 
-const createCard = ({ title }: { title?: string } = {}): CardAction => {
+const createCard = ({
+  cardManagerId,
+  title
+}: {
+  cardManagerId: string;
+  title?: string;
+}): CardAction => {
   return {
     type: CREATE_CARD,
+    cardManagerId,
     title
   };
 };
@@ -40,36 +54,51 @@ type CardMap = Readonly<{
   [cardId: string]: Omit<Card, "cardId">;
 }>;
 
-const cardsInitialState: CardMap = {};
 let cardId = 0;
 const newId = () => "card" + ++cardId;
 
-const cards = (state = cardsInitialState, action: CardAction) => {
-  switch (action.type) {
-    case CLOSE_CARD: {
-      const newState = { ...state };
-      delete newState[action.cardId];
-      return newState;
-    }
+const makeCardReducer = (cardManagerId: string) => {
+  const cardsInitialState: CardMap = {};
 
-    case CREATE_CARD: {
-      return { ...state, [newId()]: { title: action.title } };
-    }
-
-    default:
+  const cards = (state = cardsInitialState, action: CardAction) => {
+    if (action.cardManagerId !== cardManagerId) {
       return state;
-  }
+    }
+
+    switch (action.type) {
+      case CLOSE_CARD: {
+        const newState = { ...state };
+        delete newState[action.cardId];
+        return newState;
+      }
+
+      case CREATE_CARD: {
+        return { ...state, [newId()]: { title: action.title } };
+      }
+
+      default:
+        return state;
+    }
+  };
+
+  return cards;
 };
 
 export const combinedReducer = combineReducers({
-  cards
+  m1: makeCardReducer("m1"),
+  m2: makeCardReducer("m2")
 });
 
+type CardManagerIds = "m1" | "m2";
+
 const CardManager: FunctionComponent<{
+  cardManagerId: CardManagerIds;
   createAction: JSX.Element;
-}> = ({ createAction }) => {
+}> = ({ cardManagerId, createAction }) => {
   const dispatch = useDispatch();
-  const cards = useSelector((state: { cards: CardMap }) => state.cards);
+  const cards = useSelector(
+    (state: ReturnType<typeof combinedReducer>) => state[cardManagerId]
+  );
   const cardIds = Object.keys(cards);
 
   return (
@@ -78,7 +107,11 @@ const CardManager: FunctionComponent<{
       {cardIds.map((cardId) => (
         <Card key={cardId}>
           <CardHeader
-            action={<CloseButton onClick={() => dispatch(closeCard(cardId))} />}
+            action={
+              <CloseButton
+                onClick={() => dispatch(closeCard({ cardManagerId, cardId }))}
+              />
+            }
           ></CardHeader>
           <CardContent></CardContent>
         </Card>
@@ -91,9 +124,24 @@ export const Main: FunctionComponent = () => {
   const dispatch = useDispatch();
 
   return (
-    <CardManager
-      createAction={<AddButton onClick={() => dispatch(createCard())} />}
-    />
+    <>
+      <CardManager
+        cardManagerId={"m1"}
+        createAction={
+          <AddButton
+            onClick={() => dispatch(createCard({ cardManagerId: "m1" }))}
+          />
+        }
+      />
+      <CardManager
+        cardManagerId={"m2"}
+        createAction={
+          <AddButton
+            onClick={() => dispatch(createCard({ cardManagerId: "m2" }))}
+          />
+        }
+      />
+    </>
   );
 };
 
