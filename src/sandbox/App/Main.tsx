@@ -5,15 +5,15 @@ import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { AddButton, CloseButton } from "../../core";
 import { makeReducer, create, close } from "./view";
 
-export const combinedReducer = combineReducers({
+export const combinedReducer = combineReducers<{
+  [managerId: string]: ReturnType<typeof makeReducer>;
+}>({
   m1: makeReducer("m1"),
   m2: makeReducer("m2")
 });
 
-type CardManagerIds = "m1" | "m2";
-
 const CardManager: FunctionComponent<{
-  managerId: CardManagerIds;
+  managerId: string;
   createAction: JSX.Element;
 }> = ({ managerId, createAction }) => {
   const dispatch = useDispatch();
@@ -43,21 +43,19 @@ const CardManager: FunctionComponent<{
 
 export const Main: FunctionComponent = () => {
   const dispatch = useDispatch();
+  const managerIds = ["m1", "m2"];
 
   return (
     <>
-      <CardManager
-        managerId={"m1"}
-        createAction={
-          <AddButton onClick={() => dispatch(create({ managerId: "m1" }))} />
-        }
-      />
-      <CardManager
-        managerId={"m2"}
-        createAction={
-          <AddButton onClick={() => dispatch(create({ managerId: "m2" }))} />
-        }
-      />
+      {managerIds.map((managerId) => (
+        <CardManager
+          key={managerId}
+          managerId={managerId}
+          createAction={
+            <AddButton onClick={() => dispatch(create({ managerId }))} />
+          }
+        />
+      ))}
     </>
   );
 };
