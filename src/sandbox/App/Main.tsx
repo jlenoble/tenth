@@ -1,18 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader } from "@material-ui/core";
-import { AddButton, CloseButton } from "../../core";
+import { ActionComponent, Add, Close } from "./action-components";
 import { makeCombinedManager, ViewMap, Manager } from "./view";
-
-type ActionComponent = FunctionComponent<{ action: () => void }>;
-
-const Add: ActionComponent = ({ action }) => {
-  return <AddButton onClick={action} />;
-};
-
-const Close: ActionComponent = ({ action }) => {
-  return <CloseButton onClick={action} />;
-};
 
 interface ViewManagerProps {
   manager: Manager;
