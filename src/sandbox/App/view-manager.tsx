@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ActionComponent } from "./action-components";
-import { State as ViewMap, Manager } from "./manager";
+import { ManagerState as ViewMap, Manager } from "./manager";
 
 export interface ViewManagerProps {
   manager: Manager;
@@ -31,8 +31,8 @@ export const ViewManager: FunctionComponent<ViewManagerProps> = ({
   return (
     <Component
       views={views}
-      create={() => {
-        dispatch(create());
+      create={<T extends {}>(payload?: T) => {
+        dispatch(create(payload));
       }}
       close={(viewId: string) => {
         dispatch(destroy(viewId));

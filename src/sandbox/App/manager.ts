@@ -4,22 +4,26 @@ import { fork, put, take } from "redux-saga/effects";
 
 let counter = 0;
 
-export type State = Set<string>;
-type MutableCombinedState = { [managerId: string]: State };
+type Item = {
+  itemId: string;
+};
+
+export type ManagerState = Map<string, Item>;
+type MutableCombinedState = { [managerId: string]: ManagerState };
 type CombinedState = Readonly<MutableCombinedState>;
 
 type Reducer = (
-  state?: State,
+  state?: ManagerState,
   action?: Action & { managerId: string; itemId: string }
-) => State;
+) => ManagerState;
 type MutableReducerMap = { [managerId: string]: Reducer };
 
 export type Manager = Readonly<{
   managerId: string;
   reducer: Reducer;
-  create: () => void;
+  create: <T>(payload?: T) => void;
   destroy: (id: string) => void;
-  getState: (state: CombinedState) => State;
+  getState: (state: CombinedState) => ManagerState;
   saga: () => SagaIterator;
   stopSaga: () => void;
 }>;
@@ -43,23 +47,25 @@ const makeManager = (managerId: string): Manager => {
   const DO_CREATE = managerId + "_DO_CREATE";
   const DO_DESTROY = managerId + "_DO_DESTROY";
 
-  const initialState: State = new Set();
+  const initialState: ManagerState = new Map();
 
   const reducer = (
     state = initialState,
     action?: Action & { managerId: string; itemId: string }
   ) => {
     if (action) {
-      switch (action.type) {
+      const { type, itemId } = action;
+
+      switch (type) {
         case DO_CREATE: {
-          const newState = new Set(state);
-          newState.add(action.itemId);
+          const newState = new Map(state);
+          newState.set(itemId, { itemId });
           return newState;
         }
 
         case DO_DESTROY: {
-          const newState = new Set(state);
-          newState.delete(action.itemId);
+          const newState = new Map(state);
+          newState.delete(itemId);
           return newState;
         }
       }
@@ -68,8 +74,9 @@ const makeManager = (managerId: string): Manager => {
     return state;
   };
 
-  const create = () => ({
-    type: CREATE
+  const create = <T>(payload?: T) => ({
+    type: CREATE,
+    payload
   });
 
   const destroy = (itemId: string) => ({

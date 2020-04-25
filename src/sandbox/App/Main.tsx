@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Card, CardHeader } from "@material-ui/core";
-import { Add, Close } from "./action-components";
+import { AddItem, Close } from "./action-components";
 import { makeCombinedManager } from "./manager";
 import { ViewManagerImplProps, ViewManager } from "./view-manager";
 
@@ -16,7 +16,7 @@ const CardManager: FunctionComponent<ViewManagerImplProps> = ({
   return (
     <>
       {<CreateComponent action={create} />}
-      {viewIds.map((viewId) => (
+      {viewIds.map(([viewId]) => (
         <Card key={viewId}>
           <CardHeader
             action={<CloseComponent action={() => close(viewId)} />}
@@ -38,7 +38,7 @@ export const Main: FunctionComponent = () => {
           key={managerId}
           manager={combinedManager.getManager(managerId)}
           Component={CardManager}
-          CreateComponent={Add}
+          CreateComponent={AddItem}
           CloseComponent={Close}
         />
       ))}
