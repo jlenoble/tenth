@@ -27,13 +27,13 @@ const CardManager: FunctionComponent<ViewManagerImplProps> = ({
   );
 };
 
-const managerIds = ["m1"];
+const managerIds = ["m1", "m2"];
 export const combinedManager = makeCombinedManager(managerIds);
 
 export const Main: FunctionComponent = () => {
   return (
     <>
-      {combinedManager.getManagerIds().map((managerId) => (
+      {combinedManager.mapToArray((_, managerId) => (
         <ViewManager
           key={managerId}
           manager={combinedManager.getManager(managerId)}

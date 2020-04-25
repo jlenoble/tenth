@@ -141,6 +141,38 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
     });
   };
 
+  const map = <T>(
+    fn: (
+      manager: Omit<Manager, "managerId">,
+      managerId: string,
+      managers: ManagerMap
+    ) => T
+  ) => {
+    const map: { [key: string]: T } = {};
+
+    Object.keys(managers).forEach((managerId) => {
+      map[managerId] = fn(managers[managerId], managerId, managers);
+    });
+
+    return map;
+  };
+
+  const mapToArray = <T>(
+    fn: (
+      manager: Omit<Manager, "managerId">,
+      managerId: string,
+      managers: ManagerMap
+    ) => T
+  ) => {
+    const map: T[] = [];
+
+    Object.keys(managers).forEach((managerId) => {
+      map.push(fn(managers[managerId], managerId, managers));
+    });
+
+    return map;
+  };
+
   return {
     getManager: (managerId: string): Manager => ({
       managerId,
@@ -150,6 +182,8 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
     getManagerIds: (): string[] => Object.keys(managers),
 
     forEach,
+    map,
+    mapToArray,
 
     add: (managerId: string) => {
       if (reducers[managerId]) {
