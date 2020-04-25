@@ -8,8 +8,10 @@ const logger = createLogger({ collapsed: true });
 
 export const store = createStore(
   combinedManager.reducer,
-  applyMiddleware(logger)
+  applyMiddleware(logger, combinedManager.sagaMiddleware)
 );
+
+combinedManager.runSagas();
 
 const App: FunctionComponent = () => {
   return (

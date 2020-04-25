@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Card, CardHeader } from "@material-ui/core";
 import { Add, Close } from "./action-components";
-import { makeCombinedManager } from "./view";
+import { makeCombinedManager } from "./manager";
 import { ViewManagerImplProps, ViewManager } from "./view-manager";
 
 const CardManager: FunctionComponent<ViewManagerImplProps> = ({
@@ -11,7 +11,7 @@ const CardManager: FunctionComponent<ViewManagerImplProps> = ({
   CreateComponent,
   CloseComponent
 }) => {
-  const viewIds = Object.keys(views);
+  const viewIds = Array.from(views);
 
   return (
     <>
@@ -27,7 +27,7 @@ const CardManager: FunctionComponent<ViewManagerImplProps> = ({
   );
 };
 
-const managerIds = ["m1", "m2", "m3", "m4"];
+const managerIds = ["m1"];
 export const combinedManager = makeCombinedManager(managerIds);
 
 export const Main: FunctionComponent = () => {
