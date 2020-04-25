@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Card, CardHeader } from "@material-ui/core";
-import { AddItem, Close } from "./action-components";
+import { AddItem, CloseButton } from "./action-components";
 import { makeCombinedManager } from "./manager";
 import { ViewManagerImplProps, ViewManager } from "./view-manager";
 
@@ -39,7 +39,7 @@ export const Main: FunctionComponent = () => {
           manager={combinedManager.getManager(managerId)}
           Component={CardManager}
           CreateComponent={AddItem}
-          CloseComponent={Close}
+          CloseComponent={CloseButton}
         />
       ))}
     </>

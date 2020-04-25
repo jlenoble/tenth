@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import {
-  AddButton,
-  CloseButton,
+  AddButton as CoreAddButton,
+  CloseButton as CoreCloseButton,
   useAddItem,
   AddItem as CoreAddItem
 } from "../../core";
@@ -10,12 +10,12 @@ export type ActionComponent = FunctionComponent<{
   action: <T extends {}>(payload?: T) => void;
 }>;
 
-export const Add: ActionComponent = ({ action }) => {
-  return <AddButton onClick={action} />;
+export const AddButton: ActionComponent = ({ action }) => {
+  return <CoreAddButton onClick={action} />;
 };
 
-export const Close: ActionComponent = ({ action }) => {
-  return <CloseButton onClick={action} />;
+export const CloseButton: ActionComponent = ({ action }) => {
+  return <CoreCloseButton onClick={action} />;
 };
 
 export const AddItem: ActionComponent = ({ action }) => {
