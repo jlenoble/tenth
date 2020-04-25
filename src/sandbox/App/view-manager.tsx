@@ -3,27 +3,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActionComponent } from "./action-components";
 import { ManagerState as ViewMap, Manager } from "./manager";
 
-export interface ViewManagerProps {
-  manager: Manager;
-  Component: FunctionComponent<ViewManagerImplProps>;
+export interface ViewManagerProps<T> {
+  manager: Manager<T>;
+  Component: FunctionComponent<ViewManagerImplProps<T>>;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
 }
 
-export interface ViewManagerImplProps {
-  views: ViewMap;
+export interface ViewManagerImplProps<T> {
+  views: ViewMap<T>;
   create: () => void;
   close: (viewId: string) => void;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
 }
 
-export const ViewManager: FunctionComponent<ViewManagerProps> = ({
+export const ViewManager = <T extends {}>({
   manager,
   Component,
   CreateComponent,
   CloseComponent
-}) => {
+}: ViewManagerProps<T>) => {
   const { getState, create, destroy } = manager;
   const dispatch = useDispatch();
   const views = useSelector(getState);
@@ -31,7 +31,7 @@ export const ViewManager: FunctionComponent<ViewManagerProps> = ({
   return (
     <Component
       views={views}
-      create={<T extends {}>(payload?: T) => {
+      create={(payload?: T) => {
         dispatch(create(payload));
       }}
       close={(viewId: string) => {

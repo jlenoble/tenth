@@ -4,13 +4,13 @@ import { AddItem, CloseButton } from "./action-components";
 import { makeCombinedManager } from "./manager";
 import { ViewManagerImplProps, ViewManager } from "./view-manager";
 
-const CardManager: FunctionComponent<ViewManagerImplProps> = ({
+const CardManager = <T extends {}>({
   views,
   create,
   close,
   CreateComponent,
   CloseComponent
-}) => {
+}: ViewManagerImplProps<T>) => {
   const viewIds = Array.from(views);
 
   return (
@@ -28,7 +28,7 @@ const CardManager: FunctionComponent<ViewManagerImplProps> = ({
 };
 
 const managerIds = ["m1", "m2"];
-export const combinedManager = makeCombinedManager(managerIds);
+export const combinedManager = makeCombinedManager<string>(managerIds);
 
 export const Main: FunctionComponent = () => {
   return (

@@ -4,54 +4,53 @@ import { fork, put, take } from "redux-saga/effects";
 
 let counter = 0;
 
-type Item = {
-  itemId: string;
-};
+export type ManagerState<T> = Map<
+  string,
+  Readonly<{ itemId: string; payload: T }>
+>;
+type MutableCombinedState<T> = { [managerId: string]: ManagerState<T> };
+type CombinedState<T> = Readonly<MutableCombinedState<T>>;
 
-export type ManagerState = Map<string, Item>;
-type MutableCombinedState = { [managerId: string]: ManagerState };
-type CombinedState = Readonly<MutableCombinedState>;
+type Reducer<T> = (
+  state?: ManagerState<T>,
+  action?: Action & { managerId: string; itemId: string; payload: T }
+) => ManagerState<T>;
+type MutableReducerMap<T> = { [managerId: string]: Reducer<T> };
 
-type Reducer = (
-  state?: ManagerState,
-  action?: Action & { managerId: string; itemId: string }
-) => ManagerState;
-type MutableReducerMap = { [managerId: string]: Reducer };
-
-export type Manager = Readonly<{
+export type Manager<T> = Readonly<{
   managerId: string;
-  reducer: Reducer;
-  create: <T>(payload?: T) => void;
+  reducer: Reducer<T>;
+  create: (payload?: T) => void;
   destroy: (id: string) => void;
-  getState: (state: CombinedState) => ManagerState;
+  getState: (state: CombinedState<T>) => ManagerState<T>;
   saga: () => SagaIterator;
   stopSaga: () => void;
 }>;
 
-type MutableManagerMap = {
-  [managerId: string]: Omit<Manager, "managerId">;
+type MutableManagerMap<T> = {
+  [managerId: string]: Omit<Manager<T>, "managerId">;
 };
-type ManagerMap = Readonly<MutableManagerMap>;
+type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
 
-type CombinedReducer = (
-  state?: CombinedState,
+type CombinedReducer<T> = (
+  state?: CombinedState<T>,
   action?: Action
-) => CombinedState;
+) => CombinedState<T>;
 
 const sagaMiddleware = createSagaMiddleware();
 const runningSagas: Set<string> = new Set();
 
-const makeManager = (managerId: string): Manager => {
+const makeManager = <T>(managerId: string): Manager<T> => {
   const CREATE = managerId + "_CREATE";
   const DESTROY = managerId + "_DESTROY";
   const DO_CREATE = managerId + "_DO_CREATE";
   const DO_DESTROY = managerId + "_DO_DESTROY";
 
-  const initialState: ManagerState = new Map();
+  const initialState: ManagerState<T> = new Map();
 
   const reducer = (
     state = initialState,
-    action?: Action & { managerId: string; itemId: string }
+    action?: Action & { managerId: string; itemId: string; payload: T }
   ) => {
     if (action) {
       const { type, itemId } = action;
@@ -59,7 +58,7 @@ const makeManager = (managerId: string): Manager => {
       switch (type) {
         case DO_CREATE: {
           const newState = new Map(state);
-          newState.set(itemId, { itemId });
+          newState.set(itemId, { itemId, payload: action.payload });
           return newState;
         }
 
@@ -74,7 +73,7 @@ const makeManager = (managerId: string): Manager => {
     return state;
   };
 
-  const create = <T>(payload?: T) => ({
+  const create = (payload?: T) => ({
     type: CREATE,
     payload
   });
@@ -85,12 +84,12 @@ const makeManager = (managerId: string): Manager => {
   });
 
   const makeTmpId = () => managerId + "_" + counter++;
-  const getState = (state: CombinedState) => state[managerId];
+  const getState = (state: CombinedState<T>) => state[managerId];
 
   function* createSaga(): SagaIterator {
     do {
-      yield take(CREATE);
-      yield put({ type: DO_CREATE, itemId: makeTmpId() });
+      const { payload }: { payload: T } = yield take(CREATE);
+      yield put({ type: DO_CREATE, itemId: makeTmpId(), payload });
     } while (runningSagas.has(managerId));
   }
 
@@ -113,27 +112,27 @@ const makeManager = (managerId: string): Manager => {
   return { managerId, reducer, create, destroy, getState, saga, stopSaga };
 };
 
-export const makeCombinedManager = (managerIds: readonly string[]) => {
-  const managers: MutableManagerMap = {};
-  const reducers: MutableReducerMap = {};
+export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
+  const managers: MutableManagerMap<T> = {};
+  const reducers: MutableReducerMap<T> = {};
 
   managerIds.forEach((managerId) => {
-    managers[managerId] = makeManager(managerId);
+    managers[managerId] = makeManager<T>(managerId);
     reducers[managerId] = managers[managerId].reducer;
   });
 
   // Type cannot be statically inferred by Typescript
   let combinedReducer = (combineReducers(
     reducers
-  ) as unknown) as CombinedReducer;
+  ) as unknown) as CombinedReducer<T>;
 
   let managerIdsToRemove: string[] = [];
 
   const forEach = (
     fn: (
-      manager: Omit<Manager, "managerId">,
+      manager: Omit<Manager<T>, "managerId">,
       managerId: string,
-      managers: ManagerMap
+      managers: ManagerMap<T>
     ) => void
   ) => {
     Object.keys(managers).forEach((managerId) => {
@@ -141,14 +140,14 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
     });
   };
 
-  const map = <T>(
+  const map = <U>(
     fn: (
-      manager: Omit<Manager, "managerId">,
+      manager: Omit<Manager<T>, "managerId">,
       managerId: string,
-      managers: ManagerMap
-    ) => T
+      managers: ManagerMap<T>
+    ) => U
   ) => {
-    const map: { [key: string]: T } = {};
+    const map: { [key: string]: U } = {};
 
     Object.keys(managers).forEach((managerId) => {
       map[managerId] = fn(managers[managerId], managerId, managers);
@@ -157,14 +156,14 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
     return map;
   };
 
-  const mapToArray = <T>(
+  const mapToArray = <U>(
     fn: (
-      manager: Omit<Manager, "managerId">,
+      manager: Omit<Manager<T>, "managerId">,
       managerId: string,
-      managers: ManagerMap
-    ) => T
+      managers: ManagerMap<T>
+    ) => U
   ) => {
-    const map: T[] = [];
+    const map: U[] = [];
 
     Object.keys(managers).forEach((managerId) => {
       map.push(fn(managers[managerId], managerId, managers));
@@ -174,7 +173,7 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
   };
 
   return {
-    getManager: (managerId: string): Manager => ({
+    getManager: (managerId: string): Manager<T> => ({
       managerId,
       ...managers[managerId]
     }),
@@ -190,13 +189,13 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
         return;
       }
 
-      managers[managerId] = makeManager(managerId);
+      managers[managerId] = makeManager<T>(managerId);
       reducers[managerId] = managers[managerId].reducer;
 
       // Type cannot be statically inferred by Typescript
       combinedReducer = (combineReducers(
         reducers
-      ) as unknown) as CombinedReducer;
+      ) as unknown) as CombinedReducer<T>;
     },
 
     remove: (managerId: string) => {
@@ -212,12 +211,12 @@ export const makeCombinedManager = (managerIds: readonly string[]) => {
       // Type cannot be statically inferred by Typescript
       combinedReducer = (combineReducers(
         reducers
-      ) as unknown) as CombinedReducer;
+      ) as unknown) as CombinedReducer<T>;
     },
 
-    reducer: (state?: CombinedState, action?: Action) => {
+    reducer: (state?: CombinedState<T>, action?: Action) => {
       if (managerIdsToRemove.length > 0) {
-        const newState: MutableCombinedState = { ...state };
+        const newState: MutableCombinedState<T> = { ...state };
 
         for (let managerId of managerIdsToRemove) {
           delete newState[managerId];
