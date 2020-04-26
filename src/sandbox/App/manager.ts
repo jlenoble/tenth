@@ -5,6 +5,8 @@ import { makeSagaManager, SagaManager } from "./saga-manager";
 
 let counter = 0;
 
+type Item<T> = Readonly<{ managerId: string; itemId: string; payload: T }>;
+
 export type ManagerState<T> = Map<
   string,
   Readonly<{ itemId: string; payload: T }>
@@ -14,7 +16,7 @@ export type CombinedState<T> = Readonly<MutableCombinedState<T>>;
 
 export type Reducer<T> = (
   state?: ManagerState<T>,
-  action?: Action & { managerId: string; itemId: string; payload: T }
+  action?: Action & Item<T>
 ) => ManagerState<T>;
 
 export type Manager<T> = Readonly<{
@@ -27,8 +29,6 @@ export type Manager<T> = Readonly<{
 }>;
 
 export const makeManager = <T>(managerId: string): Manager<T> => {
-  type Item<T> = { managerId: string; itemId: string; payload: T };
-
   const CREATE = managerId + "_CREATE";
   const DESTROY = managerId + "_DESTROY";
   const DO_CREATE = managerId + "_DO_CREATE";
