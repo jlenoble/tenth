@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Card, CardHeader } from "@material-ui/core";
 import { AddItem, CloseButton } from "./action-components";
-import { makeCombinedManager } from "./manager";
+import { makeCombinedManager } from "./combined-manager";
 import { ViewManagerImplProps, ViewManager } from "./view-manager";
 
 const CardManager = <T extends {}>({
