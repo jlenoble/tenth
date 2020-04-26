@@ -27,22 +27,21 @@ const CardManager = <T extends {}>({
   );
 };
 
-const managerIds = ["m1", "m2"];
+const todosMasterViewId = "todosMasterView";
+const managerIds = [todosMasterViewId];
 export const combinedManager = makeCombinedManager<string>(managerIds);
 
 export const Main: FunctionComponent = () => {
+  const todosMasterViewManager = combinedManager.getManager(todosMasterViewId);
+
   return (
-    <>
-      {combinedManager.mapToArray((_, managerId) => (
-        <ViewManager
-          key={managerId}
-          manager={combinedManager.getManager(managerId)}
-          Component={CardManager}
-          CreateComponent={AddItem}
-          CloseComponent={CloseButton}
-        />
-      ))}
-    </>
+    <ViewManager
+      key={todosMasterViewId}
+      manager={todosMasterViewManager}
+      Component={CardManager}
+      CreateComponent={AddItem}
+      CloseComponent={CloseButton}
+    />
   );
 };
 
