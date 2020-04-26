@@ -4,9 +4,9 @@ import {
   Reducer,
   MutableCombinedState,
   CombinedState,
-  makeManager,
-  sagaMiddleware
+  makeManager
 } from "./manager";
+import { sagaMiddleware } from "./saga-manager";
 
 type MutableReducerMap<T> = { [managerId: string]: Reducer<T> };
 
@@ -148,7 +148,7 @@ export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
     sagaMiddleware,
 
     runSagas: () => {
-      forEach(({ startSagas }) => startSagas());
+      forEach(({ sagaManager }) => sagaManager.startAll());
     }
   };
 };
