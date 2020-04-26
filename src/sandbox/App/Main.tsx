@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from "react";
-import { Card, CardHeader } from "@material-ui/core";
 import { AddItem, CloseButton } from "./action-components";
 import { makeCombinedManager } from "./combined-manager";
 import { ViewManagerImplProps, ViewManager } from "./view-manager";
+import { ListItem } from "./item-components";
+import { ListItemText } from "../../core";
 
 const CardManager = <T extends {}>({
   views,
@@ -11,17 +12,15 @@ const CardManager = <T extends {}>({
   CreateComponent,
   CloseComponent
 }: ViewManagerImplProps<T>) => {
-  const viewIds = Array.from(views);
-
   return (
     <>
       {<CreateComponent action={create} />}
-      {viewIds.map(([viewId]) => (
-        <Card key={viewId}>
-          <CardHeader
-            action={<CloseComponent action={() => close(viewId)} />}
-          />
-        </Card>
+      {Array.from(views).map(([viewId, { payload }]) => (
+        <ListItem
+          key={viewId}
+          content={<ListItemText primary={(payload as unknown) as string} />}
+          close={<CloseComponent action={() => close(viewId)} />}
+        />
       ))}
     </>
   );
