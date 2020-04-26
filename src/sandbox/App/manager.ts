@@ -1,6 +1,6 @@
 import { combineReducers, Action } from "redux";
 import createSagaMiddleware, { SagaIterator } from "redux-saga";
-import { fork, put, take } from "redux-saga/effects";
+import { put, take } from "redux-saga/effects";
 
 let counter = 0;
 
@@ -23,8 +23,8 @@ export type Manager<T> = Readonly<{
   create: (payload?: T) => void;
   destroy: (id: string) => void;
   getState: (state: CombinedState<T>) => ManagerState<T>;
-  startSaga: () => void;
-  stopSaga: () => void;
+  startSagas: () => void;
+  stopSagas: () => void;
 }>;
 
 type MutableManagerMap<T> = {
@@ -37,8 +37,7 @@ type CombinedReducer<T> = (
   action?: Action
 ) => CombinedState<T>;
 
-const sagaMiddleware = createSagaMiddleware();
-const runningSagas: Set<string> = new Set();
+export const sagaMiddleware = createSagaMiddleware();
 
 const makeManager = <T>(managerId: string): Manager<T> => {
   const CREATE = managerId + "_CREATE";
@@ -86,33 +85,33 @@ const makeManager = <T>(managerId: string): Manager<T> => {
   const makeTmpId = () => managerId + "_" + counter++;
   const getState = (state: CombinedState<T>) => state[managerId];
 
-  function* createSaga(): SagaIterator {
+  const sagas: Map<string, () => SagaIterator> = new Map();
+  const runningSagas: Set<string> = new Set();
+
+  sagas.set("createSaga", function* (): SagaIterator {
     do {
       const { payload }: { payload: T } = yield take(CREATE);
       yield put({ type: DO_CREATE, itemId: makeTmpId(), payload });
-    } while (runningSagas.has(managerId));
-  }
+    } while (runningSagas.has("createSaga"));
+  });
 
-  function* destroySaga(): SagaIterator {
+  sagas.set("destroySaga", function* (): SagaIterator {
     do {
       const { itemId } = yield take(DESTROY);
       yield put({ type: DO_DESTROY, itemId });
-    } while (runningSagas.has(managerId));
-  }
+    } while (runningSagas.has("destroySaga"));
+  });
 
-  function* saga(): SagaIterator {
-    yield fork(createSaga);
-    yield fork(destroySaga);
-  }
-
-  const startSaga = () => {
-    if (!runningSagas.has(managerId)) {
-      sagaMiddleware.run(saga);
-      runningSagas.add(managerId);
-    }
+  const startSagas = () => {
+    sagas.forEach((saga, sagaName) => {
+      if (!runningSagas.has(sagaName)) {
+        sagaMiddleware.run(saga);
+        runningSagas.add(sagaName);
+      }
+    });
   };
 
-  const stopSaga = () => {
+  const stopSagas = () => {
     runningSagas.delete(managerId);
   };
 
@@ -122,8 +121,8 @@ const makeManager = <T>(managerId: string): Manager<T> => {
     create,
     destroy,
     getState,
-    startSaga,
-    stopSaga
+    startSagas,
+    stopSagas
   };
 };
 
@@ -193,6 +192,12 @@ export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
       ...managers[managerId]
     }),
 
+    getManagers: (): Manager<T>[] =>
+      Object.keys(managers).map((managerId) => ({
+        managerId,
+        ...managers[managerId]
+      })),
+
     getManagerIds: (): string[] => Object.keys(managers),
 
     forEach,
@@ -248,7 +253,7 @@ export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
     sagaMiddleware,
 
     runSagas: () => {
-      forEach(({ startSaga }) => startSaga());
+      forEach(({ startSagas }) => startSagas());
     }
   };
 };
