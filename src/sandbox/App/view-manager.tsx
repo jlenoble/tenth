@@ -3,17 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActionComponent } from "./action-components";
 import { ManagerState as ViewMap, Manager } from "./manager";
 
-export interface ViewManagerProps<T> {
-  manager: Manager<T>;
-  Component: FunctionComponent<ViewManagerImplProps<T>>;
+export interface ContainerComponentProps<T> {
+  views: ViewMap<T>;
+  create: () => void;
+  close: (viewId: string) => void;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
 }
 
-export interface ViewManagerImplProps<T> {
-  views: ViewMap<T>;
-  create: () => void;
-  close: (viewId: string) => void;
+export interface ViewManagerProps<T> {
+  manager: Manager<T>;
+  Component: FunctionComponent<ContainerComponentProps<T>>;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
 }
