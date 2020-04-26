@@ -23,7 +23,7 @@ export type Manager<T> = Readonly<{
   create: (payload?: T) => void;
   destroy: (id: string) => void;
   getState: (state: CombinedState<T>) => ManagerState<T>;
-  saga: () => SagaIterator;
+  startSaga: () => void;
   stopSaga: () => void;
 }>;
 
@@ -105,11 +105,26 @@ const makeManager = <T>(managerId: string): Manager<T> => {
     yield fork(destroySaga);
   }
 
+  const startSaga = () => {
+    if (!runningSagas.has(managerId)) {
+      sagaMiddleware.run(saga);
+      runningSagas.add(managerId);
+    }
+  };
+
   const stopSaga = () => {
     runningSagas.delete(managerId);
   };
 
-  return { managerId, reducer, create, destroy, getState, saga, stopSaga };
+  return {
+    managerId,
+    reducer,
+    create,
+    destroy,
+    getState,
+    startSaga,
+    stopSaga
+  };
 };
 
 export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
@@ -233,13 +248,7 @@ export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
     sagaMiddleware,
 
     runSagas: () => {
-      forEach(({ saga }, managerId) => {
-        if (runningSagas.has(managerId)) {
-          return;
-        }
-        sagaMiddleware.run(saga);
-        runningSagas.add(managerId);
-      });
+      forEach(({ startSaga }) => startSaga());
     }
   };
 };
