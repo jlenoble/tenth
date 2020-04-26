@@ -1,6 +1,7 @@
 import { Action } from "redux";
-import createSagaMiddleware, { SagaIterator } from "redux-saga";
+import createSagaMiddleware from "redux-saga";
 import { put, take } from "redux-saga/effects";
+import { SagaGenerator } from "../../generics";
 
 let counter = 0;
 
@@ -22,6 +23,9 @@ export type Manager<T> = Readonly<{
   create: (payload?: T) => void;
   destroy: (id: string) => void;
   getState: (state: CombinedState<T>) => ManagerState<T>;
+  addSaga: (sagaName: string, saga: () => SagaGenerator) => void;
+  removeSaga: (sagaName: string) => void;
+  runSaga: (sagaName: string, saga: () => SagaGenerator) => void;
   startSagas: () => void;
   stopSagas: () => void;
 }>;
@@ -29,6 +33,8 @@ export type Manager<T> = Readonly<{
 export const sagaMiddleware = createSagaMiddleware();
 
 export const makeManager = <T>(managerId: string): Manager<T> => {
+  type Item<T> = { managerId: string; itemId: string; payload: T };
+
   const CREATE = managerId + "_CREATE";
   const DESTROY = managerId + "_DESTROY";
   const DO_CREATE = managerId + "_DO_CREATE";
@@ -36,10 +42,7 @@ export const makeManager = <T>(managerId: string): Manager<T> => {
 
   const initialState: ManagerState<T> = new Map();
 
-  const reducer = (
-    state = initialState,
-    action?: Action & { managerId: string; itemId: string; payload: T }
-  ) => {
+  const reducer = (state = initialState, action?: Action & Item<T>) => {
     if (action) {
       const { type, itemId } = action;
 
@@ -74,21 +77,45 @@ export const makeManager = <T>(managerId: string): Manager<T> => {
   const makeTmpId = () => managerId + "_" + counter++;
   const getState = (state: CombinedState<T>) => state[managerId];
 
-  const sagas: Map<string, () => SagaIterator> = new Map();
+  const sagas: Map<string, () => SagaGenerator> = new Map();
   const runningSagas: Set<string> = new Set();
 
-  sagas.set("createSaga", function* (): SagaIterator {
-    do {
-      const { payload }: { payload: T } = yield take(CREATE);
-      yield put({ type: DO_CREATE, itemId: makeTmpId(), payload });
-    } while (runningSagas.has("createSaga"));
+  const addSaga = (sagaName: string, saga: () => SagaGenerator) => {
+    if (sagas.has(sagaName)) {
+      return;
+    }
+
+    const newSaga = function* (): SagaGenerator {
+      do {
+        yield* saga();
+      } while (runningSagas.has(sagaName));
+    };
+
+    sagas.set(sagaName, newSaga);
+  };
+
+  const removeSaga = (sagaName: string) => {
+    sagas.delete(sagaName);
+    runningSagas.delete(sagaName);
+  };
+
+  const runSaga = (sagaName: string, saga: () => SagaGenerator) => {
+    if (!runningSagas.has(sagaName)) {
+      addSaga(sagaName, saga);
+      const newSaga = sagas.get(sagaName)!;
+      sagaMiddleware.run(newSaga);
+      runningSagas.add(sagaName);
+    }
+  };
+
+  addSaga("createSaga", function* (): SagaGenerator {
+    const { payload }: { payload: T } = yield take(CREATE);
+    yield put({ type: DO_CREATE, itemId: makeTmpId(), payload });
   });
 
-  sagas.set("destroySaga", function* (): SagaIterator {
-    do {
-      const { itemId } = yield take(DESTROY);
-      yield put({ type: DO_DESTROY, itemId });
-    } while (runningSagas.has("destroySaga"));
+  addSaga("destroySaga", function* (): SagaGenerator {
+    const { itemId } = yield take(DESTROY);
+    yield put({ type: DO_DESTROY, itemId });
   });
 
   const startSagas = () => {
@@ -110,6 +137,9 @@ export const makeManager = <T>(managerId: string): Manager<T> => {
     create,
     destroy,
     getState,
+    addSaga,
+    removeSaga,
+    runSaga,
     startSagas,
     stopSagas
   };
