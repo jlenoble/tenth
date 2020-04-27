@@ -12,9 +12,23 @@ type TodoView = ListItemTextProps;
 const todosId = "todos";
 const todosManager = makeManager<Todo>(todosId);
 
-const adaptToChild = (todo: Todo): TodoView => ({
-  primary: todo.title
+todosManager.addValidator((todo: Todo) => {
+  if (!todo.title) {
+    return ["Empty string"];
+  }
+  return [];
 });
+
+const adaptToChild = (todo: Todo, errors: readonly string[] = []): TodoView => {
+  const primaryError = Boolean(errors.length);
+
+  return {
+    primary: todo.title,
+    primaryError,
+    primaryHelperText: errors.join(", "),
+    primaryEnter: primaryError ? () => {} : undefined
+  };
+};
 const adaptToParent = (todoView: TodoView): Todo => ({
   title: todoView.primary,
   duration: 0

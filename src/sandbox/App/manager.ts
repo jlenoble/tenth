@@ -1,11 +1,12 @@
 import { Action } from "redux";
-import { put, take } from "redux-saga/effects";
+import { all, call, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
 import { makeSagaManager, SagaManager } from "./saga-manager";
 
 let counter = 0;
 
 type Item<T> = Readonly<{ managerId: string; itemId: string; payload: T }>;
+type Validator<T> = (payload: T) => readonly string[];
 
 export type ManagerState<T> = Map<
   string,
@@ -29,14 +30,15 @@ export type Manager<T> = Readonly<{
   addMappedChild: <U>(
     childManagerId: string,
     adaptFromChildToParent: (payload: U) => T,
-    adaptFromParentToChild: (payload: T) => U
+    adaptFromParentToChild: (payload: T, errors?: readonly string[]) => U
   ) => Manager<U>;
   addFilteredChild: <U>(
     childManagerId: string,
     adaptFromChildToParent: (payload: U) => T,
-    adaptFromParentToChild: (payload: T) => U
+    adaptFromParentToChild: (payload: T, errors?: readonly string[]) => U
   ) => Manager<U>;
   getChildren: () => readonly Manager<any>[];
+  addValidator: (validate: Validator<T>) => void;
 }>;
 
 export const makeManager = <T>(
@@ -87,13 +89,16 @@ export const makeManager = <T>(
 
   const sagaManager = makeSagaManager();
 
+  const createSagaName = "createSaga";
+  const destroySagaName = "destroySaga";
+
   if (!parentManagerId) {
-    sagaManager.add("createSaga", function* (): SagaGenerator {
+    sagaManager.add(createSagaName, function* (): SagaGenerator {
       const { payload }: { payload: T } = yield take(CREATE);
       yield put({ type: DO_CREATE, itemId: makeTmpId(), payload });
     });
 
-    sagaManager.add("destroySaga", function* (): SagaGenerator {
+    sagaManager.add(destroySagaName, function* (): SagaGenerator {
       const { itemId } = yield take(DESTROY);
       yield put({ type: DO_DESTROY, itemId });
     });
@@ -104,7 +109,7 @@ export const makeManager = <T>(
   const addMappedChild = <U>(
     childManagerId: string,
     adaptFromChildToParent: (payload: U) => T,
-    adaptFromParentToChild: (payload: T) => U
+    adaptFromParentToChild: (payload: T, errors?: readonly string[]) => U
   ) => {
     // Use when listing a whole set of data: 1to1 correspondence.
     // Anything that happens to the parent in the background must be reflected in the child.
@@ -116,24 +121,28 @@ export const makeManager = <T>(
     const CHILD_DO_CREATE = childManagerId + "_DO_CREATE";
     const CHILD_DO_DESTROY = childManagerId + "_DO_DESTROY";
 
-    manager.sagaManager.add("createSaga", function* (): SagaGenerator {
+    manager.sagaManager.add(createSagaName, function* (): SagaGenerator {
       const { payload }: { payload: U } = yield take(CHILD_CREATE);
       yield put({ type: CREATE, payload: adaptFromChildToParent(payload) });
     });
 
-    manager.sagaManager.add("destroySaga", function* (): SagaGenerator {
+    manager.sagaManager.add(destroySagaName, function* (): SagaGenerator {
       const { itemId } = yield take(CHILD_DESTROY);
       yield put({ type: DESTROY, itemId });
     });
 
     manager.sagaManager.add("doCreateSaga", function* (): SagaGenerator {
-      const { itemId, payload }: { itemId: string; payload: T } = yield take(
+      const {
+        itemId,
+        payload,
+        errors
+      }: { itemId: string; payload: T; errors: string[] } = yield take(
         DO_CREATE
       );
       yield put({
         type: CHILD_DO_CREATE,
         itemId,
-        payload: adaptFromParentToChild(payload)
+        payload: adaptFromParentToChild(payload, errors)
       });
     });
 
@@ -150,7 +159,7 @@ export const makeManager = <T>(
   const addFilteredChild = <U>(
     childManagerId: string,
     adaptFromChildToParent: (payload: U) => T,
-    adaptFromParentToChild: (payload: T) => U
+    adaptFromParentToChild: (payload: T, errors?: readonly string[]) => U
   ) => {
     // Use when listing a subset of data.
     // Destroying in parent must destroy in child.
@@ -161,7 +170,7 @@ export const makeManager = <T>(
     const CHILD_DO_CREATE = childManagerId + "_DO_CREATE";
     const CHILD_DO_DESTROY = childManagerId + "_DO_DESTROY";
 
-    manager.sagaManager.add("createSaga", function* (): SagaGenerator {
+    manager.sagaManager.add(createSagaName, function* (): SagaGenerator {
       const { payload }: { payload: U } = yield take(CHILD_CREATE);
       yield put({ type: CREATE, payload: adaptFromChildToParent(payload) });
 
@@ -176,7 +185,7 @@ export const makeManager = <T>(
       });
     });
 
-    manager.sagaManager.add("destroySaga", function* (): SagaGenerator {
+    manager.sagaManager.add(destroySagaName, function* (): SagaGenerator {
       const { itemId } = yield take([CHILD_DESTROY, DO_DESTROY]);
       yield put({ type: CHILD_DO_DESTROY, itemId });
     });
@@ -188,6 +197,38 @@ export const makeManager = <T>(
 
   const getChildren = () => Array.from(children);
 
+  const validators: Set<Validator<T>> = new Set();
+
+  const addValidator = (validate: Validator<T>) => {
+    if (parentManagerId) {
+      throw new Error(`A child manager cannot have validators: ${managerId}`);
+    }
+
+    if (validators.size === 0) {
+      sagaManager.replace(createSagaName, function* (): SagaGenerator {
+        const { payload }: { payload: T } = yield take(CREATE);
+
+        const validationMessages: string[][] = yield all(
+          Array.from(validators).map((validate) => call(validate, payload))
+        );
+
+        const errors: Set<string> = new Set();
+        validationMessages.forEach((msgs) =>
+          msgs.forEach((msg) => errors.add(msg))
+        );
+
+        yield put({
+          type: DO_CREATE,
+          itemId: makeTmpId(),
+          payload,
+          errors: Array.from(errors)
+        });
+      });
+    }
+
+    validators.add(validate);
+  };
+
   return {
     managerId,
     reducer,
@@ -197,6 +238,7 @@ export const makeManager = <T>(
     sagaManager,
     addMappedChild,
     addFilteredChild,
-    getChildren
+    getChildren,
+    addValidator
   };
 };
