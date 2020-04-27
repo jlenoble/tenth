@@ -5,12 +5,21 @@ import { makeCombinedManager } from "./combined-manager";
 import { ViewManager } from "./view-manager";
 import { List } from "./container-components";
 
-const todosId = "todos";
-const todosManager = makeManager(todosId);
+type Todo = { title: string; duration: number };
+type TodoView = string;
 
-const id = (x: any) => x;
+const todosId = "todos";
+const todosManager = makeManager<Todo>(todosId);
+
+const adaptToChild = (todo: Todo): TodoView => todo.title;
+const adaptToParent = (title: TodoView): Todo => ({ title, duration: 0 });
+
 const todosViewId = "todosView";
-const todosViewManager = todosManager.addMappedChild(todosViewId, id, id);
+const todosViewManager = todosManager.addMappedChild(
+  todosViewId,
+  adaptToParent,
+  adaptToChild
+);
 
 export const combinedManager = makeCombinedManager([todosManager]);
 
