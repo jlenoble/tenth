@@ -11,8 +11,8 @@ export type ManagerState<T> = Map<
   string,
   Readonly<{ itemId: string; payload: T }>
 >;
-export type MutableCombinedState<T> = { [managerId: string]: ManagerState<T> };
-export type CombinedState<T> = Readonly<MutableCombinedState<T>>;
+export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
+export type CombinedState = Readonly<MutableCombinedState>;
 
 export type Reducer<T> = (
   state?: ManagerState<T>,
@@ -24,7 +24,7 @@ export type Manager<T> = Readonly<{
   reducer: Reducer<T>;
   create: (payload?: T) => void;
   destroy: (id: string) => void;
-  getState: (state: CombinedState<T>) => ManagerState<T>;
+  getState: (state: CombinedState) => ManagerState<T>;
   sagaManager: SagaManager;
   addMappedChild: <U>(
     childManagerId: string,
@@ -83,7 +83,7 @@ export const makeManager = <T>(
   });
 
   const makeTmpId = () => managerId + "_" + counter++;
-  const getState = (state: CombinedState<T>) => state[managerId];
+  const getState = (state: CombinedState) => state[managerId];
 
   const sagaManager = makeSagaManager();
 

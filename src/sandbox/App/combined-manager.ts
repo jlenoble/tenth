@@ -3,52 +3,75 @@ import {
   Manager,
   Reducer,
   MutableCombinedState,
-  CombinedState,
-  makeManager
+  CombinedState
 } from "./manager";
 import { sagaMiddleware } from "./saga-manager";
 
-type MutableReducerMap<T> = { [managerId: string]: Reducer<T> };
+type MutableReducerMap = { [managerId: string]: Reducer<any> };
 
-type MutableManagerMap<T> = {
-  [managerId: string]: Omit<Manager<T>, "managerId">;
+type MutableManagerMap = {
+  [managerId: string]: Manager<any>;
 };
 
-type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
+type ManagerMap<T> = Readonly<MutableManagerMap>;
 
-type CombinedReducer<T> = (
-  state?: CombinedState<T>,
+type CombinedReducer = (
+  state?: CombinedState,
   action?: Action
-) => CombinedState<T>;
+) => CombinedState;
 
-export const makeCombinedManager = <T>(
-  initialManagers: readonly Manager<T>[]
+export const makeCombinedManager = (
+  initialManagers: readonly Manager<any>[]
 ) => {
-  const managers: MutableManagerMap<T> = {};
-  const reducers: MutableReducerMap<T> = {};
+  const managers: MutableManagerMap = {};
+  const reducers: MutableReducerMap = {};
 
-  const initMaps = (manager: Manager<any>) => {
+  const addToMaps = (manager: Manager<any>) => {
     const managerId = manager.managerId;
+
+    if (reducers[managerId]) {
+      throw new Error(
+        `A manager was already combined with the name: ${managerId}`
+      );
+    }
+
     managers[managerId] = manager;
     reducers[managerId] = manager.reducer;
 
-    manager.getChildren().forEach(initMaps);
+    manager.getChildren().forEach(addToMaps);
   };
 
-  initialManagers.forEach(initMaps);
+  const removeFromMaps = (managerId: Manager<any> | string) => {
+    const manager =
+      typeof managerId === "string" ? managers[managerId] : managerId;
+    const id = manager.managerId;
+
+    if (!manager) {
+      return;
+    }
+
+    manager.getChildren().forEach(removeFromMaps);
+
+    delete managers[id];
+    delete reducers[id];
+
+    managerIdsToRemove.push(id);
+  };
+
+  initialManagers.forEach(addToMaps);
 
   // Type cannot be statically inferred by Typescript
   let combinedReducer = (combineReducers(
     reducers
-  ) as unknown) as CombinedReducer<T>;
+  ) as unknown) as CombinedReducer;
 
   let managerIdsToRemove: string[] = [];
 
   const forEach = (
     fn: (
-      manager: Omit<Manager<T>, "managerId">,
+      manager: Omit<Manager<any>, "managerId">,
       managerId: string,
-      managers: ManagerMap<T>
+      managers: ManagerMap<any>
     ) => void
   ) => {
     Object.keys(managers).forEach((managerId) => {
@@ -58,9 +81,9 @@ export const makeCombinedManager = <T>(
 
   const map = <U>(
     fn: (
-      manager: Omit<Manager<T>, "managerId">,
+      manager: Omit<Manager<any>, "managerId">,
       managerId: string,
-      managers: ManagerMap<T>
+      managers: ManagerMap<any>
     ) => U
   ) => {
     const map: { [key: string]: U } = {};
@@ -74,9 +97,9 @@ export const makeCombinedManager = <T>(
 
   const mapToArray = <U>(
     fn: (
-      manager: Omit<Manager<T>, "managerId">,
+      manager: Omit<Manager<any>, "managerId">,
       managerId: string,
-      managers: ManagerMap<T>
+      managers: ManagerMap<any>
     ) => U
   ) => {
     const map: U[] = [];
@@ -89,16 +112,9 @@ export const makeCombinedManager = <T>(
   };
 
   return {
-    getManager: (managerId: string): Manager<T> => ({
-      managerId,
-      ...managers[managerId]
-    }),
+    getManager: (managerId: string): Manager<any> => managers[managerId],
 
-    getManagers: (): Manager<T>[] =>
-      Object.keys(managers).map((managerId) => ({
-        managerId,
-        ...managers[managerId]
-      })),
+    getManagers: (): Manager<any>[] => Object.values(managers),
 
     getManagerIds: (): string[] => Object.keys(managers),
 
@@ -106,39 +122,27 @@ export const makeCombinedManager = <T>(
     map,
     mapToArray,
 
-    add: (managerId: string) => {
-      if (reducers[managerId]) {
-        return;
-      }
-
-      managers[managerId] = makeManager<T>(managerId);
-      reducers[managerId] = managers[managerId].reducer;
+    add: (manager: Manager<any>) => {
+      addToMaps(manager);
 
       // Type cannot be statically inferred by Typescript
       combinedReducer = (combineReducers(
         reducers
-      ) as unknown) as CombinedReducer<T>;
+      ) as unknown) as CombinedReducer;
     },
 
-    remove: (managerId: string) => {
-      if (!managers[managerId]) {
-        return;
-      }
-
-      delete managers[managerId];
-      delete reducers[managerId];
-
-      managerIdsToRemove.push(managerId);
+    remove: (manager: Manager<any> | string) => {
+      removeFromMaps(manager);
 
       // Type cannot be statically inferred by Typescript
       combinedReducer = (combineReducers(
         reducers
-      ) as unknown) as CombinedReducer<T>;
+      ) as unknown) as CombinedReducer;
     },
 
-    reducer: (state?: CombinedState<T>, action?: Action) => {
+    reducer: (state?: CombinedState, action?: Action) => {
       if (managerIdsToRemove.length > 0) {
-        const newState: MutableCombinedState<T> = { ...state };
+        const newState: MutableCombinedState = { ...state };
 
         for (let managerId of managerIdsToRemove) {
           delete newState[managerId];
