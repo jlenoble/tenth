@@ -21,14 +21,21 @@ type CombinedReducer<T> = (
   action?: Action
 ) => CombinedState<T>;
 
-export const makeCombinedManager = <T>(managerIds: readonly string[]) => {
+export const makeCombinedManager = <T>(
+  initialManagers: readonly Manager<T>[]
+) => {
   const managers: MutableManagerMap<T> = {};
   const reducers: MutableReducerMap<T> = {};
 
-  managerIds.forEach((managerId) => {
-    managers[managerId] = makeManager<T>(managerId);
-    reducers[managerId] = managers[managerId].reducer;
-  });
+  const initMaps = (manager: Manager<any>) => {
+    const managerId = manager.managerId;
+    managers[managerId] = manager;
+    reducers[managerId] = manager.reducer;
+
+    manager.getChildren().forEach(initMaps);
+  };
+
+  initialManagers.forEach(initMaps);
 
   // Type cannot be statically inferred by Typescript
   let combinedReducer = (combineReducers(
