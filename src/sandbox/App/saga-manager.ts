@@ -1,34 +1,52 @@
 import createSagaMiddleware from "redux-saga";
+import { take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
 
 export type SagaManager = Readonly<{
-  add: (sagaName: string, saga: () => SagaGenerator) => void;
+  add: (sagaName: string, saga: () => SagaGenerator, trigger?: string) => void;
   remove: (sagaName: string) => void;
   start: (sagaName: string) => void;
   stop: (sagaName: string) => void;
   startAll: () => void;
   stopAll: () => void;
-  run: (sagaName?: string, saga?: () => SagaGenerator) => void;
+  run: (
+    sagaName?: string,
+    saga?: () => SagaGenerator,
+    trigger?: string
+  ) => void;
 }>;
 
 export const sagaMiddleware = createSagaMiddleware();
 
 export const makeSagaManager = (): SagaManager => {
+  const triggers: Map<string, string> = new Map();
   const sagas: Map<string, () => SagaGenerator> = new Map();
   const runningSagas: Set<string> = new Set();
 
-  const add = (sagaName: string, saga: () => SagaGenerator) => {
+  const add = (
+    sagaName: string,
+    saga: () => SagaGenerator,
+    trigger?: string
+  ) => {
     if (sagas.has(sagaName)) {
       return;
     }
 
-    const cancellableSaga = function* (): SagaGenerator {
+    if (trigger) {
+      triggers.set(sagaName, trigger);
+    }
+
+    const controllableSaga = function* (): SagaGenerator {
+      if (triggers.has(sagaName)) {
+        yield take(triggers.get(sagaName));
+      }
+
       do {
         yield* saga();
       } while (runningSagas.has(sagaName));
     };
 
-    sagas.set(sagaName, cancellableSaga);
+    sagas.set(sagaName, controllableSaga);
   };
 
   const start = (sagaName: string) => {
@@ -45,6 +63,7 @@ export const makeSagaManager = (): SagaManager => {
   const remove = (sagaName: string) => {
     stop(sagaName);
     sagas.delete(sagaName);
+    triggers.delete(sagaName);
   };
 
   const startAll = () => {
@@ -57,12 +76,16 @@ export const makeSagaManager = (): SagaManager => {
     runningSagas.clear();
   };
 
-  const run = (sagaName?: string, saga?: () => SagaGenerator) => {
+  const run = (
+    sagaName?: string,
+    saga?: () => SagaGenerator,
+    trigger?: string
+  ) => {
     if (!sagaName) {
       startAll();
     } else {
       if (saga) {
-        add(sagaName, saga);
+        add(sagaName, saga, trigger);
       }
       start(sagaName);
     }
