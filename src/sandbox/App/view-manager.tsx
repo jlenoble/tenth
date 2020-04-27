@@ -7,6 +7,7 @@ export interface ContainerComponentProps<T> {
   views: ViewMap<T>;
   create: (payload?: T) => void;
   close: (viewId: string) => void;
+  update: (viewId: string, payload: T) => void;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
 }
@@ -24,7 +25,7 @@ export const ViewManager = <T extends any>({
   CreateComponent,
   CloseComponent
 }: ViewManagerProps<T>) => {
-  const { getState, create, destroy } = manager;
+  const { getState, create, destroy, modify } = manager;
   const dispatch = useDispatch();
   const views = useSelector(getState);
 
@@ -36,6 +37,9 @@ export const ViewManager = <T extends any>({
       }}
       close={(viewId: string) => {
         dispatch(destroy(viewId));
+      }}
+      update={(viewId: string, payload: T) => {
+        dispatch(modify(viewId, payload));
       }}
       CreateComponent={CreateComponent}
       CloseComponent={CloseComponent}

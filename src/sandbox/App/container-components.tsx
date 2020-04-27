@@ -8,6 +8,7 @@ export const List = ({
   views,
   create,
   close,
+  update,
   CreateComponent,
   CloseComponent
 }: ContainerComponentProps<ListItemTextProps>) => {
@@ -20,7 +21,14 @@ export const List = ({
         {Array.from(views.values()).map(({ itemId, payload }) => (
           <ListItem
             key={itemId}
-            content={<ListItemText {...payload} />}
+            content={
+              <ListItemText
+                {...payload}
+                primaryEnter={(value: string) =>
+                  update(itemId, { primary: value })
+                }
+              />
+            }
             close={<CloseComponent action={() => close(itemId)} />}
           />
         ))}

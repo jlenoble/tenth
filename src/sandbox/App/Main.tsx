@@ -20,13 +20,10 @@ todosManager.addValidator((todo: Todo) => {
 });
 
 const adaptToChild = (todo: Todo, errors: readonly string[] = []): TodoView => {
-  const primaryError = Boolean(errors.length);
-
   return {
     primary: todo.title,
-    primaryError,
-    primaryHelperText: errors.join(", "),
-    primaryEnter: primaryError ? () => {} : undefined
+    primaryError: Boolean(errors.length),
+    primaryHelperText: errors.join(", ")
   };
 };
 const adaptToParent = (todoView: TodoView): Todo => ({
