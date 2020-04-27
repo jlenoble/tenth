@@ -7,7 +7,7 @@ import {
 } from "../../core";
 
 export type ActionComponent = FunctionComponent<{
-  action: <T extends {}>(payload?: T) => void;
+  action: <T extends any>(payload?: T) => void;
 }>;
 
 export const AddButton: ActionComponent = ({ action }) => {

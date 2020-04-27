@@ -1,6 +1,6 @@
 import React from "react";
 import { ListItem } from "./item-components";
-import { ListItemText } from "../../core";
+import { ListItemText, ListItemTextProps } from "../../core";
 import { List as MuiList } from "../../mui-base";
 import { ContainerComponentProps } from "./view-manager";
 
@@ -10,15 +10,17 @@ export const List = ({
   close,
   CreateComponent,
   CloseComponent
-}: ContainerComponentProps<string>) => {
+}: ContainerComponentProps<ListItemTextProps>) => {
   return (
     <>
-      <CreateComponent action={create} />
+      <CreateComponent
+        action={(input: string = "") => create({ primary: input })}
+      />
       <MuiList>
         {Array.from(views.values()).map(({ itemId, payload }) => (
           <ListItem
             key={itemId}
-            content={<ListItemText primary={payload} />}
+            content={<ListItemText {...payload} />}
             close={<CloseComponent action={() => close(itemId)} />}
           />
         ))}

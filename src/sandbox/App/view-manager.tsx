@@ -5,7 +5,7 @@ import { ManagerState as ViewMap, Manager } from "./manager";
 
 export interface ContainerComponentProps<T> {
   views: ViewMap<T>;
-  create: () => void;
+  create: (payload?: T) => void;
   close: (viewId: string) => void;
   CreateComponent: ActionComponent;
   CloseComponent: ActionComponent;
@@ -18,7 +18,7 @@ export interface ViewManagerProps<T> {
   CloseComponent: ActionComponent;
 }
 
-export const ViewManager = <T extends {}>({
+export const ViewManager = <T extends any>({
   manager,
   Component,
   CreateComponent,
