@@ -1,10 +1,10 @@
-import { Action } from "redux";
 import { all, call, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
-import { Reducer, CombinedState, ManagerState, Validator, Item } from "./types";
+import { Reducer, CombinedState, ManagerState, Validator } from "./types";
 import { makeSagaManager, SagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
+import { makeManagerReducer } from "./manager-reducer";
 
 let counter = 0;
 
@@ -40,39 +40,7 @@ export const makeManager = <T>(
   const actionCreators = makeManagerActionCreators(CONSTS);
   const { create, destroy, modify } = actionCreators;
 
-  const initialState: ManagerState<T> = new Map();
-
-  const reducer = (state = initialState, action?: Action & Item<T>) => {
-    if (action) {
-      const { type, itemId } = action;
-
-      switch (type) {
-        case DO_CREATE: {
-          const newState = new Map(state);
-          newState.set(itemId, { itemId, payload: action.payload });
-          return newState;
-        }
-
-        case DO_DESTROY: {
-          const newState = new Map(state);
-          newState.delete(itemId);
-          return newState;
-        }
-
-        case DO_MODIFY: {
-          const { payload } = state.get(itemId)!;
-          const newState = new Map(state);
-          newState.set(itemId, {
-            itemId,
-            payload: { ...payload, ...action.payload }
-          });
-          return newState;
-        }
-      }
-    }
-
-    return state;
-  };
+  const reducer = makeManagerReducer<T>(CONSTS);
 
   const makeTmpId = () => managerId + "_" + counter++;
   const getState = (state: CombinedState) => state[managerId];
