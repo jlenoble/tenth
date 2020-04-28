@@ -1,3 +1,12 @@
+export type ManagerConsts = {
+  CREATE: string;
+  DESTROY: string;
+  MODIFY: string;
+  DO_CREATE: string;
+  DO_DESTROY: string;
+  DO_MODIFY: string;
+};
+
 const makeConstants = (managerId: string, prefix: "" | "DO_" = "") => {
   return {
     [prefix + "CREATE"]: managerId + "_" + prefix + "CREATE",
@@ -10,12 +19,5 @@ export const makeManagerConstants = (managerId: string) => {
   return {
     ...makeConstants(managerId),
     ...makeConstants(managerId, "DO_")
-  } as {
-    CREATE: string;
-    DESTROY: string;
-    MODIFY: string;
-    DO_CREATE: string;
-    DO_DESTROY: string;
-    DO_MODIFY: string;
-  };
+  } as ManagerConsts;
 };
