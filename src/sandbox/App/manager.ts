@@ -1,26 +1,12 @@
 import { Action } from "redux";
 import { all, call, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
+import { Reducer, CombinedState, ManagerState, Validator, Item } from "./types";
 import { makeSagaManager, SagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
 
 let counter = 0;
-
-type Item<T> = Readonly<{ managerId: string; itemId: string; payload: T }>;
-type Validator<T> = (payload: T) => readonly string[];
-
-export type ManagerState<T> = Map<
-  string,
-  Readonly<{ itemId: string; payload: T }>
->;
-export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
-export type CombinedState = Readonly<MutableCombinedState>;
-
-export type Reducer<T> = (
-  state?: ManagerState<T>,
-  action?: Action & Item<T>
-) => ManagerState<T>;
 
 export type Manager<T> = Readonly<{
   managerId: string;

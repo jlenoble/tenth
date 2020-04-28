@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ManagerState as ViewMap } from "./types";
 import { ActionComponent } from "./action-components";
-import { ManagerState as ViewMap, Manager } from "./manager";
+import { Manager } from "./manager";
 
 export interface ContainerComponentProps<T> {
   views: ViewMap<T>;

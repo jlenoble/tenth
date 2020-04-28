@@ -1,10 +1,6 @@
 import { combineReducers, Action } from "redux";
-import {
-  Manager,
-  Reducer,
-  MutableCombinedState,
-  CombinedState
-} from "./manager";
+import { Reducer, MutableCombinedState, CombinedState } from "./types";
+import { Manager } from "./manager";
 import { sagaMiddleware } from "./saga-manager";
 
 type MutableReducerMap = { [managerId: string]: Reducer<any> };
