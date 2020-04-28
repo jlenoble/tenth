@@ -1,15 +1,15 @@
 import { combineReducers, Action } from "redux";
-import { Reducer, MutableCombinedState, CombinedState } from "./types";
+import { ManagerReducer, MutableCombinedState, CombinedState } from "./types";
 import { Manager } from "./manager";
 import { sagaMiddleware } from "./saga-manager";
 
-type MutableReducerMap = { [managerId: string]: Reducer<any> };
+type MutableReducerMap<T> = { [managerId: string]: ManagerReducer<T> };
 
-type MutableManagerMap = {
-  [managerId: string]: Manager<any>;
+type MutableManagerMap<T> = {
+  [managerId: string]: Manager<T>;
 };
 
-type ManagerMap<T> = Readonly<MutableManagerMap>;
+type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
 
 type CombinedReducer = (
   state?: CombinedState,
@@ -19,8 +19,8 @@ type CombinedReducer = (
 export const makeCombinedManager = (
   initialManagers: readonly Manager<any>[]
 ) => {
-  const managers: MutableManagerMap = {};
-  const reducers: MutableReducerMap = {};
+  const managers: MutableManagerMap<any> = {};
+  const reducers: MutableReducerMap<any> = {};
 
   const addToMaps = (manager: Manager<any>) => {
     const managerId = manager.managerId;

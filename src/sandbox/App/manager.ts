@@ -1,6 +1,11 @@
 import { all, call, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
-import { Reducer, CombinedState, ManagerState, Validator } from "./types";
+import {
+  ManagerReducer,
+  CombinedState,
+  ManagerState,
+  Validator
+} from "./types";
 import { makeSagaManager, SagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
@@ -10,7 +15,7 @@ let counter = 0;
 
 export type Manager<T> = Readonly<{
   managerId: string;
-  reducer: Reducer<T>;
+  reducer: ManagerReducer<T>;
   create: (payload?: T) => void;
   destroy: (itemId: string) => void;
   modify: (itemId: string, payload: Partial<T>) => void;

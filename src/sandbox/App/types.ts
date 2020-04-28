@@ -1,4 +1,4 @@
-import { Action } from "redux";
+import { ManagerDoAction } from "./manager-action-creators";
 
 export type Item<T> = Readonly<{
   managerId: string;
@@ -14,7 +14,7 @@ export type ManagerState<T> = Map<
 export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
 export type CombinedState = Readonly<MutableCombinedState>;
 
-export type Reducer<T> = (
+export type ManagerReducer<T> = (
   state?: ManagerState<T>,
-  action?: Action & Item<T>
+  action?: ManagerDoAction<T>
 ) => ManagerState<T>;
