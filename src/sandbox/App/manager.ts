@@ -2,7 +2,8 @@ import { Action } from "redux";
 import { all, call, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
 import { makeSagaManager, SagaManager } from "./saga-manager";
-import { makeManagerConstants } from "./constants";
+import { makeManagerConstants } from "./manager-constants";
+import { makeManagerActionCreators } from "./manager-action-creators";
 
 let counter = 0;
 
@@ -47,14 +48,11 @@ export const makeManager = <T>(
   managerId: string,
   parentManagerId?: string
 ): Manager<T> => {
-  const {
-    CREATE,
-    DESTROY,
-    MODIFY,
-    DO_CREATE,
-    DO_DESTROY,
-    DO_MODIFY
-  } = makeManagerConstants(managerId);
+  const CONSTS = makeManagerConstants(managerId);
+  const { CREATE, DESTROY, MODIFY, DO_CREATE, DO_DESTROY, DO_MODIFY } = CONSTS;
+
+  const actionCreators = makeManagerActionCreators(managerId, CONSTS);
+  const { create, destroy, modify } = actionCreators;
 
   const initialState: ManagerState<T> = new Map();
 
@@ -89,22 +87,6 @@ export const makeManager = <T>(
 
     return state;
   };
-
-  const create = (payload?: T) => ({
-    type: CREATE,
-    payload
-  });
-
-  const destroy = (itemId: string) => ({
-    type: DESTROY,
-    itemId
-  });
-
-  const modify = (itemId: string, payload: Partial<T>) => ({
-    type: MODIFY,
-    itemId,
-    payload
-  });
 
   const makeTmpId = () => managerId + "_" + counter++;
   const getState = (state: CombinedState) => state[managerId];
