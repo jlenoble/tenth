@@ -51,7 +51,7 @@ export const makeManager = <T>(
   const CONSTS = makeManagerConstants(managerId);
   const { CREATE, DESTROY, MODIFY, DO_CREATE, DO_DESTROY, DO_MODIFY } = CONSTS;
 
-  const actionCreators = makeManagerActionCreators(managerId, CONSTS);
+  const actionCreators = makeManagerActionCreators(CONSTS);
   const { create, destroy, modify } = actionCreators;
 
   const initialState: ManagerState<T> = new Map();

@@ -7,7 +7,6 @@ interface ManagerAction<T> {
 }
 
 export const makeManagerActionCreators = <T>(
-  managerId: string,
   CONSTS: ManagerConsts
 ): { [key: string]: (...args: any[]) => ManagerAction<T> } => {
   const { CREATE, DESTROY, MODIFY, DO_CREATE, DO_DESTROY, DO_MODIFY } = CONSTS;
