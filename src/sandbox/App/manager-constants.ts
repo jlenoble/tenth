@@ -1,10 +1,10 @@
 export type ManagerConsts = {
-  CREATE: string;
-  DESTROY: string;
-  MODIFY: string;
-  DO_CREATE: string;
-  DO_DESTROY: string;
-  DO_MODIFY: string;
+  CREATE: "CREATE";
+  DESTROY: "DESTROY";
+  MODIFY: "MODIFY";
+  DO_CREATE: "DO_CREATE";
+  DO_DESTROY: "DO_DESTROY";
+  DO_MODIFY: "DO_MODIFY";
 };
 
 const makeConstants = (managerId: string, prefix: "" | "DO_" = "") => {
@@ -19,5 +19,5 @@ export const makeManagerConstants = (managerId: string) => {
   return {
     ...makeConstants(managerId),
     ...makeConstants(managerId, "DO_")
-  } as ManagerConsts;
+  } as ManagerConsts; // Trick Typescript to discriminate between constructed strings
 };

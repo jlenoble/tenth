@@ -1,16 +1,16 @@
-import { Action } from "redux";
-import { ManagerState, Item } from "./types";
+import { ManagerState } from "./types";
 import { ManagerConsts } from "./manager-constants";
+import { ManagerDoAction } from "./manager-action-creators";
 
 export const makeManagerReducer = <T>(CONSTS: ManagerConsts) => {
   const initialState: ManagerState<T> = new Map();
   const { DO_CREATE, DO_DESTROY, DO_MODIFY } = CONSTS;
 
-  const reducer = (state = initialState, action?: Action & Item<T>) => {
+  const reducer = (state = initialState, action?: ManagerDoAction<T>) => {
     if (action) {
-      const { type, itemId } = action;
+      const { itemId } = action;
 
-      switch (type) {
+      switch (action.type) {
         case DO_CREATE: {
           const newState = new Map(state);
           newState.set(itemId, { itemId, payload: action.payload });
