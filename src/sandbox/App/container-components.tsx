@@ -56,6 +56,9 @@ export const ListCard = ({
             primaryEnter: (value: string) => update(itemId, { primary: value }),
             deleteButtonProps: {
               onClick: () => close(itemId)
+            },
+            expandButtonProps: {
+              onClick: () => console.log("expand", itemId)
             }
           };
         })}
