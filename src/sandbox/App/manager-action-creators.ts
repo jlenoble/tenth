@@ -1,5 +1,11 @@
 import { DropResult } from "react-beautiful-dnd";
-import { PayloadMap, PersistedItemMap, Payload, PersistedItem } from "./types";
+import {
+  Payload,
+  PersistedItem,
+  PayloadMap,
+  PersistedItemMap,
+  SelectionMap
+} from "./types";
 import { ManagerConsts } from "./manager-constants";
 
 export type CreateAction<T> = {
@@ -20,7 +26,7 @@ export type ModifyAction<T> = {
 
 export type SetAction<T> = {
   type: ManagerConsts["SET"];
-  payload: PersistedItemMap<T>;
+  payload: { items: PersistedItemMap<T>; selections: SelectionMap };
 };
 
 export type ClearAction<T> = {
@@ -52,7 +58,7 @@ export type DoModifyAction<T> = {
 
 export type DoSetAction<T> = {
   type: ManagerConsts["DO_SET"];
-  payload: PayloadMap<T>;
+  payload: { items: PayloadMap<T>; selections: SelectionMap };
 };
 
 export type DoClearAction<T> = {
@@ -96,14 +102,20 @@ export type ActionCreatorMap<T> = {
   create: (payload: PersistedItem<T>) => ManagerAction<T>;
   destroy: (itemId: string) => ManagerAction<T>;
   modify: (itemId: string, payload: PersistedItem<T>) => ManagerAction<T>;
-  set: (payload: PersistedItemMap<T>) => ManagerAction<T>;
+  set: (payload: {
+    items: PersistedItemMap<T>;
+    selections: SelectionMap;
+  }) => ManagerAction<T>;
   clear: () => ManagerAction<T>;
   move: (itemId: string, payload: DropResult) => ManagerAction<T>;
 
   doCreate: (itemId: string, payload: Payload<T>) => ManagerAction<T>;
   doDestroy: (itemId: string) => ManagerAction<T>;
   doModify: (itemId: string, payload: Payload<T>) => ManagerAction<T>;
-  doSet: (payload: PayloadMap<T>) => ManagerAction<T>;
+  doSet: (payload: {
+    items: PayloadMap<T>;
+    selections: SelectionMap;
+  }) => ManagerAction<T>;
   doClear: () => ManagerAction<T>;
   doMove: (itemId: string, payload: DropResult) => ManagerAction<T>;
 
@@ -150,7 +162,10 @@ export const makeManagerActionCreators = <T>(
     payload
   });
 
-  const set = (payload: PersistedItemMap<T>): ManagerAction<T> => ({
+  const set = (payload: {
+    items: PersistedItemMap<T>;
+    selections: SelectionMap;
+  }): ManagerAction<T> => ({
     type: SET,
     payload
   });
@@ -184,7 +199,10 @@ export const makeManagerActionCreators = <T>(
     payload
   });
 
-  const doSet = (payload: PayloadMap<T>): ManagerAction<T> => ({
+  const doSet = (payload: {
+    items: PayloadMap<T>;
+    selections: SelectionMap;
+  }): ManagerAction<T> => ({
     type: DO_SET,
     payload
   });

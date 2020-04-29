@@ -126,7 +126,9 @@ export const makeManager = <T>(
     });
 
     sagaManager.add(SET, function* (): SagaGenerator {
-      const { payload: persistedItemMap }: SetAction<T> = yield take(SET);
+      const {
+        payload: { items: persistedItemMap, selections }
+      }: SetAction<T> = yield take(SET);
       const payloadMap: MutablePayloadMap<T> = {};
 
       for (let [itemId, persistedItem] of Object.entries(persistedItemMap)) {
@@ -134,7 +136,7 @@ export const makeManager = <T>(
         payloadMap[itemId] = { ...persistedItem, errors };
       }
 
-      yield put(doSet(payloadMap));
+      yield put(doSet({ items: payloadMap, selections }));
     });
   }
 
@@ -198,14 +200,16 @@ export const makeManager = <T>(
     });
 
     manager.sagaManager.add(CHILD_DO_SET, function* (): SagaGenerator {
-      const { payload: payloadMap }: DoSetAction<T> = yield take(DO_SET);
+      const {
+        payload: { items: payloadMap }
+      }: DoSetAction<T> = yield take(DO_SET);
       const childPayloadMap: MutablePayloadMap<U> = {};
 
       for (let [itemId, payload] of Object.entries(payloadMap)) {
         childPayloadMap[itemId] = adaptFromParentToChild(payload);
       }
 
-      yield put(childDoSet(childPayloadMap));
+      yield put(childDoSet({ items: childPayloadMap, selections: {} }));
     });
 
     children.add(manager);

@@ -10,7 +10,10 @@ export type ManagerReducer<T> = (
 export const makeManagerReducer = <T>(
   CONSTS: ManagerConsts
 ): ManagerReducer<T> => {
-  const initialState: ManagerState<T> = { items: new Map() };
+  const initialState: ManagerState<T> = {
+    items: new Map(),
+    selections: new Map()
+  };
 
   const {
     DO_CREATE,
@@ -31,13 +34,13 @@ export const makeManagerReducer = <T>(
           const { itemId } = action;
           const newItems = new Map(state.items);
           newItems.set(itemId, action.payload);
-          return { items: newItems };
+          return { ...state, items: newItems };
         }
 
         case DO_DESTROY: {
           const newItems = new Map(state.items);
           newItems.delete(action.itemId);
-          return { items: newItems };
+          return { ...state, items: newItems };
         }
 
         case DO_MODIFY: {
@@ -45,15 +48,19 @@ export const makeManagerReducer = <T>(
           const payload = state.items.get(itemId)!;
           const newItems = new Map(state.items);
           newItems.set(itemId, { ...payload, ...action.payload });
-          return { items: newItems };
+          return { ...state, items: newItems };
         }
 
         case DO_SET: {
-          return { items: new Map(Object.entries(action.payload)) };
+          const { items, selections } = action.payload;
+          return {
+            items: new Map(Object.entries(items)),
+            selections: new Map(Object.entries(selections))
+          };
         }
 
         case DO_CLEAR: {
-          return { items: new Map() };
+          return initialState;
         }
       }
     }

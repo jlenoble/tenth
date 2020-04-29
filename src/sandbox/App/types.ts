@@ -22,13 +22,14 @@ export type PersistedItemMap<T> = Readonly<{
 }>;
 
 export type SelectionMap = Readonly<{
-  [selectionId: string]: Ids<SelectionId>;
+  [selectionId: string]: Ids<ItemId>;
 }>;
 
 export type Validator<T> = (payload: PersistedItem<T>) => Errors;
 
 export type ManagerState<T> = {
   items: Map<ItemId, Payload<T>>;
+  selections: Map<SelectionId, Ids<ItemId>>;
 };
 
 export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
