@@ -4,7 +4,7 @@ import { Payload } from "./types";
 import { makeManager } from "./manager";
 import { makeCombinedManager } from "./combined-manager";
 import { ViewManager } from "./view-manager";
-import { List as MainView } from "./container-components";
+import { ListCard as MainView } from "./container-components";
 import { enableLocalStorage } from "./enable-localstorage";
 
 type Todo = { title: string; completed: boolean };
