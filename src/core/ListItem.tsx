@@ -84,7 +84,6 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
       eq = eq && pep === nep;
     }
 
-    console.log(nextProps.itemId, eq);
     return eq;
   }
 );
