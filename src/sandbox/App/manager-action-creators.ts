@@ -1,55 +1,117 @@
+import { PayloadMap, PersistedItemMap, Payload, PersistedItem } from "./types";
 import { ManagerConsts } from "./manager-constants";
 
-type CreateAction<T> = {
+export type CreateAction<T> = {
   type: ManagerConsts["CREATE"];
-  payload?: T;
+  payload: PersistedItem<T>;
 };
 
-type DestroyAction<T> = {
+export type DestroyAction<T> = {
   type: ManagerConsts["DESTROY"];
   itemId: string;
 };
 
-type ModifyAction<T> = {
+export type ModifyAction<T> = {
   type: ManagerConsts["MODIFY"];
   itemId: string;
-  payload: T;
+  payload: PersistedItem<T>;
 };
 
-type DoCreateAction<T> = {
+export type SetAction<T> = {
+  type: ManagerConsts["SET"];
+  payload: PersistedItemMap<T>;
+};
+
+export type ClearAction<T> = {
+  type: ManagerConsts["CLEAR"];
+};
+
+export type DoCreateAction<T> = {
   type: ManagerConsts["DO_CREATE"];
   itemId: string;
-  payload: T;
+  payload: Payload<T>;
 };
 
-type DoDestroyAction<T> = {
+export type DoDestroyAction<T> = {
   type: ManagerConsts["DO_DESTROY"];
   itemId: string;
 };
 
-type DoModifyAction<T> = {
+export type DoModifyAction<T> = {
   type: ManagerConsts["DO_MODIFY"];
   itemId: string;
-  payload: T;
+  payload: Payload<T>;
 };
 
-type ManagerAction<T> =
+export type DoSetAction<T> = {
+  type: ManagerConsts["DO_SET"];
+  payload: PayloadMap<T>;
+};
+
+export type DoClearAction<T> = {
+  type: ManagerConsts["DO_CLEAR"];
+};
+
+export type ReadyAction<T> = {
+  type: ManagerConsts["READY"];
+};
+
+export type ManagerAction<T> =
   | CreateAction<T>
   | DestroyAction<T>
   | ModifyAction<T>
+  | SetAction<T>
+  | ClearAction<T>
   | DoCreateAction<T>
   | DoDestroyAction<T>
-  | DoModifyAction<T>;
+  | DoModifyAction<T>
+  | DoSetAction<T>
+  | DoClearAction<T>
+  | ReadyAction<T>;
 
 export type ManagerDoAction<T> =
   | DoCreateAction<T>
   | DoDestroyAction<T>
-  | DoModifyAction<T>;
+  | DoModifyAction<T>
+  | DoSetAction<T>
+  | DoClearAction<T>;
 
-export const makeManagerActionCreators = <T>(CONSTS: ManagerConsts) => {
-  const { CREATE, DESTROY, MODIFY, DO_CREATE, DO_DESTROY, DO_MODIFY } = CONSTS;
+export type ActionCreatorMap<T> = {
+  create: (payload: PersistedItem<T>) => ManagerAction<T>;
+  destroy: (itemId: string) => ManagerAction<T>;
+  modify: (itemId: string, payload: PersistedItem<T>) => ManagerAction<T>;
+  set: (payload: PersistedItemMap<T>) => ManagerAction<T>;
+  clear: () => ManagerAction<T>;
 
-  const create = (payload?: T): ManagerAction<T> => ({
+  doCreate: (itemId: string, payload: Payload<T>) => ManagerAction<T>;
+  doDestroy: (itemId: string) => ManagerAction<T>;
+  doModify: (itemId: string, payload: Payload<T>) => ManagerAction<T>;
+  doSet: (payload: PayloadMap<T>) => ManagerAction<T>;
+  doClear: () => ManagerAction<T>;
+
+  ready: () => ManagerAction<T>;
+};
+
+export const makeManagerActionCreators = <T>(
+  CONSTS: ManagerConsts
+): ActionCreatorMap<T> => {
+  const {
+    CREATE,
+    DESTROY,
+    MODIFY,
+    SET,
+    CLEAR,
+
+    DO_CREATE,
+    DO_DESTROY,
+    DO_MODIFY,
+    DO_SET,
+    DO_CLEAR,
+
+    READY
+  } = CONSTS;
+
+  const create = (payload: PersistedItem<T>): ManagerAction<T> => ({
     type: CREATE,
     payload
   });
@@ -59,13 +121,25 @@ export const makeManagerActionCreators = <T>(CONSTS: ManagerConsts) => {
     itemId
   });
 
-  const modify = (itemId: string, payload: T): ManagerAction<T> => ({
+  const modify = (
+    itemId: string,
+    payload: PersistedItem<T>
+  ): ManagerAction<T> => ({
     type: MODIFY,
     itemId,
     payload
   });
 
-  const doCreate = (itemId: string, payload: T): ManagerAction<T> => ({
+  const set = (payload: PersistedItemMap<T>): ManagerAction<T> => ({
+    type: SET,
+    payload
+  });
+
+  const clear = (): ManagerAction<T> => ({
+    type: CLEAR
+  });
+
+  const doCreate = (itemId: string, payload: Payload<T>): ManagerAction<T> => ({
     type: DO_CREATE,
     itemId,
     payload
@@ -76,11 +150,38 @@ export const makeManagerActionCreators = <T>(CONSTS: ManagerConsts) => {
     itemId
   });
 
-  const doModify = (itemId: string, payload: T): ManagerAction<T> => ({
+  const doModify = (itemId: string, payload: Payload<T>): ManagerAction<T> => ({
     type: DO_MODIFY,
     itemId,
     payload
   });
 
-  return { create, destroy, modify, doCreate, doDestroy, doModify };
+  const doSet = (payload: PayloadMap<T>): ManagerAction<T> => ({
+    type: DO_SET,
+    payload
+  });
+
+  const doClear = (): ManagerAction<T> => ({
+    type: DO_CLEAR
+  });
+
+  const ready = (): ManagerAction<T> => ({
+    type: READY
+  });
+
+  return {
+    create,
+    destroy,
+    modify,
+    set,
+    clear,
+
+    doCreate,
+    doDestroy,
+    doModify,
+    doSet,
+    doClear,
+
+    ready
+  };
 };

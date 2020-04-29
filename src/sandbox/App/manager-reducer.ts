@@ -1,38 +1,48 @@
-import { ManagerState, ManagerReducer } from "./types";
+import { ManagerState } from "./types";
 import { ManagerConsts } from "./manager-constants";
 import { ManagerDoAction } from "./manager-action-creators";
+
+export type ManagerReducer<T> = (
+  state?: ManagerState<T>,
+  action?: ManagerDoAction<T>
+) => ManagerState<T>;
 
 export const makeManagerReducer = <T>(
   CONSTS: ManagerConsts
 ): ManagerReducer<T> => {
   const initialState: ManagerState<T> = new Map();
-  const { DO_CREATE, DO_DESTROY, DO_MODIFY } = CONSTS;
+  const { DO_CREATE, DO_DESTROY, DO_MODIFY, DO_SET, DO_CLEAR } = CONSTS;
 
   const reducer = (state = initialState, action?: ManagerDoAction<T>) => {
     if (action) {
-      const { itemId } = action;
-
       switch (action.type) {
         case DO_CREATE: {
+          const { itemId } = action;
           const newState = new Map(state);
-          newState.set(itemId, { itemId, payload: action.payload });
+          newState.set(itemId, action.payload);
           return newState;
         }
 
         case DO_DESTROY: {
           const newState = new Map(state);
-          newState.delete(itemId);
+          newState.delete(action.itemId);
           return newState;
         }
 
         case DO_MODIFY: {
-          const { payload } = state.get(itemId)!;
+          const { itemId } = action;
+          const payload = state.get(itemId)!;
           const newState = new Map(state);
-          newState.set(itemId, {
-            itemId,
-            payload: { ...payload, ...action.payload }
-          });
+          newState.set(itemId, { ...payload, ...action.payload });
           return newState;
+        }
+
+        case DO_SET: {
+          return new Map(Object.entries(action.payload));
+        }
+
+        case DO_CLEAR: {
+          return new Map();
         }
       }
     }

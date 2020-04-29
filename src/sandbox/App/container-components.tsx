@@ -18,7 +18,7 @@ export const List = ({
         action={(input: string = "") => create({ primary: input })}
       />
       <MuiList>
-        {Array.from(views.values()).map(({ itemId, payload }) => (
+        {Array.from(views.entries()).map(([itemId, payload]) => (
           <ListItem
             key={itemId}
             content={

@@ -6,7 +6,7 @@ import { Manager } from "./manager";
 
 export interface ContainerComponentProps<T> {
   views: ViewMap<T>;
-  create: (payload?: T) => void;
+  create: (payload: T) => void;
   close: (viewId: string) => void;
   update: (viewId: string, payload: T) => void;
   CreateComponent: ActionComponent;
@@ -26,14 +26,17 @@ export const ViewManager = <T extends any>({
   CreateComponent,
   CloseComponent
 }: ViewManagerProps<T>) => {
-  const { getState, create, destroy, modify } = manager;
+  const {
+    getState,
+    actionCreators: { create, destroy, modify }
+  } = manager;
   const dispatch = useDispatch();
   const views = useSelector(getState);
 
   return (
     <Component
       views={views}
-      create={(payload?: T) => {
+      create={(payload: T) => {
         dispatch(create(payload));
       }}
       close={(viewId: string) => {

@@ -1,12 +1,14 @@
 import React, { FunctionComponent } from "react";
 import { ListItemTextProps } from "../../core";
+import { Payload } from "./types";
 import { AddItem, CloseButton } from "./action-components";
 import { makeManager } from "./manager";
 import { makeCombinedManager } from "./combined-manager";
 import { ViewManager } from "./view-manager";
 import { List } from "./container-components";
+import { enableLocalStorage } from "./enable-localstorage";
 
-type Todo = { title: string; duration: number };
+type Todo = { title: string; completed: boolean };
 type TodoView = ListItemTextProps;
 
 const todosId = "todos";
@@ -19,24 +21,28 @@ todosManager.addValidator((todo: Todo) => {
   return [];
 });
 
-const adaptToChild = (todo: Todo, errors: readonly string[] = []): TodoView => {
-  return {
-    primary: todo.title,
-    primaryError: Boolean(errors.length),
-    primaryHelperText: errors.join(", ")
-  };
+const adaptToChild = (todo: Payload<Todo>): Payload<TodoView> => {
+  return todo.errors
+    ? {
+        primary: todo.title,
+        primaryError: Boolean(todo.errors.length),
+        primaryHelperText: todo.errors.join(", ")
+      }
+    : { primary: todo.title };
 };
-const adaptToParent = (todoView: TodoView): Todo => ({
+const adaptToParent = (todoView: Payload<TodoView>): Payload<Todo> => ({
   title: todoView.primary,
-  duration: 0
+  completed: false
 });
 
 const todosViewId = "todosView";
-const todosViewManager = todosManager.addMappedChild(
+const todosViewManager = todosManager.addMappedChild<TodoView>(
   todosViewId,
   adaptToParent,
   adaptToChild
 );
+
+enableLocalStorage(todosManager);
 
 export const combinedManager = makeCombinedManager([todosManager]);
 
