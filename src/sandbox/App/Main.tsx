@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { ListItemTextProps } from "../../core";
 import { Payload } from "./types";
-import { AddItem, CloseButton } from "./action-components";
+import { AddItem } from "./action-components";
 import { makeManager } from "./manager";
 import { makeCombinedManager } from "./combined-manager";
 import { ViewManager } from "./view-manager";
@@ -53,7 +53,6 @@ export const Main: FunctionComponent = () => {
       manager={todosViewManager}
       Component={List}
       CreateComponent={AddItem}
-      CloseComponent={CloseButton}
     />
   );
 };

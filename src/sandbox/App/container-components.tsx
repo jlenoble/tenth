@@ -1,6 +1,5 @@
 import React from "react";
-import { ListItem } from "./item-components";
-import { ListItemText, ListItemTextProps } from "../../core";
+import { ListItem, ListItemTextProps } from "../../core";
 import { List as MuiList } from "../../mui-base";
 import { ContainerComponentProps } from "./view-manager";
 
@@ -9,8 +8,7 @@ export const List = ({
   create,
   close,
   update,
-  CreateComponent,
-  CloseComponent
+  CreateComponent
 }: ContainerComponentProps<ListItemTextProps>) => {
   return (
     <>
@@ -21,15 +19,12 @@ export const List = ({
         {Array.from(views.entries()).map(([itemId, payload]) => (
           <ListItem
             key={itemId}
-            content={
-              <ListItemText
-                {...payload}
-                primaryEnter={(value: string) =>
-                  update(itemId, { primary: value })
-                }
-              />
-            }
-            close={<CloseComponent action={() => close(itemId)} />}
+            itemId={itemId}
+            {...payload}
+            primaryEnter={(value: string) => update(itemId, { primary: value })}
+            deleteButtonProps={{
+              onClick: () => close(itemId)
+            }}
           />
         ))}
       </MuiList>

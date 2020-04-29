@@ -10,21 +10,18 @@ export interface ContainerComponentProps<T> {
   close: (viewId: string) => void;
   update: (viewId: string, payload: T) => void;
   CreateComponent: ActionComponent;
-  CloseComponent: ActionComponent;
 }
 
 export interface ViewManagerProps<T> {
   manager: Manager<T>;
   Component: FunctionComponent<ContainerComponentProps<T>>;
   CreateComponent: ActionComponent;
-  CloseComponent: ActionComponent;
 }
 
 export const ViewManager = <T extends any>({
   manager,
   Component,
-  CreateComponent,
-  CloseComponent
+  CreateComponent
 }: ViewManagerProps<T>) => {
   const {
     getState,
@@ -46,7 +43,6 @@ export const ViewManager = <T extends any>({
         dispatch(modify(viewId, payload));
       }}
       CreateComponent={CreateComponent}
-      CloseComponent={CloseComponent}
     />
   );
 };
