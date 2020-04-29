@@ -33,6 +33,7 @@ export type Manager<T> = Readonly<{
   actionCreators: ActionCreatorMap<T>;
   reducer: ManagerReducer<T>;
   getState: (state: CombinedState) => ManagerState<T>;
+  getItemMap: (state: CombinedState) => Map<string, Payload<T>>;
   sagaManager: SagaManager;
   addMappedChild: <U>(
     childManagerId: string,
@@ -79,6 +80,7 @@ export const makeManager = <T>(
 
   const makeTmpId = () => managerId + "_" + counter++;
   const getState = (state: CombinedState) => state[managerId];
+  const getItemMap = (state: CombinedState) => state[managerId].items;
 
   const sagaManager = makeSagaManager();
 
@@ -279,6 +281,7 @@ export const makeManager = <T>(
     actionCreators,
     reducer,
     getState,
+    getItemMap,
     sagaManager,
     addMappedChild,
     // addFilteredChild,

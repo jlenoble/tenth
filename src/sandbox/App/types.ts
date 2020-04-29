@@ -27,7 +27,9 @@ export type SelectionMap = Readonly<{
 
 export type Validator<T> = (payload: PersistedItem<T>) => Errors;
 
-export type ManagerState<T> = Map<ItemId, Payload<T>>;
+export type ManagerState<T> = {
+  items: Map<ItemId, Payload<T>>;
+};
 
 export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
 export type CombinedState = Readonly<MutableCombinedState>;

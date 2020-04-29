@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ManagerState as ViewMap } from "./types";
+import { Payload } from "./types";
 import { Manager } from "./manager";
 
 export interface ContainerComponentProps<T> {
-  views: ViewMap<T>;
+  views: Map<string, Payload<T>>;
   create: (payload: T) => void;
   close: (viewId: string) => void;
   update: (viewId: string, payload: T) => void;
@@ -20,11 +20,11 @@ export const ViewManager = <T extends any>({
   Component
 }: ViewManagerProps<T>) => {
   const {
-    getState,
+    getItemMap,
     actionCreators: { create, destroy, modify }
   } = manager;
   const dispatch = useDispatch();
-  const views = useSelector(getState);
+  const views = useSelector(getItemMap);
 
   return (
     <Component
