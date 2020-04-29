@@ -1,11 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { ListItemTextProps } from "../../core";
 import { Payload } from "./types";
-import { AddItem } from "./action-components";
 import { makeManager } from "./manager";
 import { makeCombinedManager } from "./combined-manager";
 import { ViewManager } from "./view-manager";
-import { List } from "./container-components";
+import { List as MainView } from "./container-components";
 import { enableLocalStorage } from "./enable-localstorage";
 
 type Todo = { title: string; completed: boolean };
@@ -51,8 +50,7 @@ export const Main: FunctionComponent = () => {
     <ViewManager
       key={todosViewId}
       manager={todosViewManager}
-      Component={List}
-      CreateComponent={AddItem}
+      Component={MainView}
     />
   );
 };

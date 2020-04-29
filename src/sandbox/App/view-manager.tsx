@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ManagerState as ViewMap } from "./types";
-import { ActionComponent } from "./action-components";
 import { Manager } from "./manager";
 
 export interface ContainerComponentProps<T> {
@@ -9,19 +8,16 @@ export interface ContainerComponentProps<T> {
   create: (payload: T) => void;
   close: (viewId: string) => void;
   update: (viewId: string, payload: T) => void;
-  CreateComponent: ActionComponent;
 }
 
 export interface ViewManagerProps<T> {
   manager: Manager<T>;
   Component: FunctionComponent<ContainerComponentProps<T>>;
-  CreateComponent: ActionComponent;
 }
 
 export const ViewManager = <T extends any>({
   manager,
-  Component,
-  CreateComponent
+  Component
 }: ViewManagerProps<T>) => {
   const {
     getState,
@@ -42,7 +38,6 @@ export const ViewManager = <T extends any>({
       update={(viewId: string, payload: T) => {
         dispatch(modify(viewId, payload));
       }}
-      CreateComponent={CreateComponent}
     />
   );
 };
