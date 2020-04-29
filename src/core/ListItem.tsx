@@ -70,7 +70,7 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
     const ndp = nextProps.draggableProps;
 
     if (pdp && ndp) {
-      eq = eq && pdp.index === ndp.index;
+      eq = eq && pdp.draggableId === ndp.draggableId;
     } else {
       eq = eq && pdp === ndp;
     }
@@ -84,6 +84,7 @@ export const ListItem: FunctionComponent<FullListItemProps> = memo(
       eq = eq && pep === nep;
     }
 
+    console.log(nextProps.itemId, eq);
     return eq;
   }
 );

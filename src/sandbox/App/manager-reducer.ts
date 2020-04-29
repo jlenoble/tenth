@@ -11,7 +11,14 @@ export const makeManagerReducer = <T>(
   CONSTS: ManagerConsts
 ): ManagerReducer<T> => {
   const initialState: ManagerState<T> = new Map();
-  const { DO_CREATE, DO_DESTROY, DO_MODIFY, DO_SET, DO_CLEAR } = CONSTS;
+  const {
+    DO_CREATE,
+    DO_DESTROY,
+    DO_MODIFY,
+    DO_SET,
+    DO_CLEAR,
+    DO_MOVE
+  } = CONSTS;
 
   const reducer = (state = initialState, action?: ManagerDoAction<T>) => {
     if (action) {

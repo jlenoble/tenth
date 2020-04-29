@@ -4,12 +4,14 @@ export type ManagerConsts = {
   MODIFY: "MODIFY";
   SET: "SET";
   CLEAR: "CLEAR";
+  MOVE: "MOVE";
 
   DO_CREATE: "DO_CREATE";
   DO_DESTROY: "DO_DESTROY";
   DO_MODIFY: "DO_MODIFY";
   DO_SET: "DO_SET";
   DO_CLEAR: "DO_CLEAR";
+  DO_MOVE: "DO_MOVE";
 
   READY: "READY";
 };
@@ -20,7 +22,8 @@ const makeConstants = (managerId: string, prefix: "" | "DO_" = "") => {
     [prefix + "DESTROY"]: managerId + "_" + prefix + "DESTROY",
     [prefix + "MODIFY"]: managerId + "_" + prefix + "MODIFY",
     [prefix + "SET"]: managerId + "_" + prefix + "SET",
-    [prefix + "CLEAR"]: managerId + "_" + prefix + "CLEAR"
+    [prefix + "CLEAR"]: managerId + "_" + prefix + "CLEAR",
+    [prefix + "MOVE"]: managerId + "_" + prefix + "MOVE"
   };
 };
 

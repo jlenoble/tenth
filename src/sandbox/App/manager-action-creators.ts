@@ -1,3 +1,4 @@
+import { DropResult } from "react-beautiful-dnd";
 import { PayloadMap, PersistedItemMap, Payload, PersistedItem } from "./types";
 import { ManagerConsts } from "./manager-constants";
 
@@ -26,6 +27,12 @@ export type ClearAction<T> = {
   type: ManagerConsts["CLEAR"];
 };
 
+export type MoveAction<T> = {
+  type: ManagerConsts["MOVE"];
+  itemId: string;
+  payload: DropResult;
+};
+
 export type DoCreateAction<T> = {
   type: ManagerConsts["DO_CREATE"];
   itemId: string;
@@ -52,6 +59,12 @@ export type DoClearAction<T> = {
   type: ManagerConsts["DO_CLEAR"];
 };
 
+export type DoMoveAction<T> = {
+  type: ManagerConsts["DO_MOVE"];
+  itemId: string;
+  payload: DropResult;
+};
+
 export type ReadyAction<T> = {
   type: ManagerConsts["READY"];
 };
@@ -62,19 +75,22 @@ export type ManagerAction<T> =
   | ModifyAction<T>
   | SetAction<T>
   | ClearAction<T>
+  | MoveAction<T>
   | DoCreateAction<T>
   | DoDestroyAction<T>
   | DoModifyAction<T>
   | DoSetAction<T>
   | DoClearAction<T>
-  | ReadyAction<T>;
+  | ReadyAction<T>
+  | DoMoveAction<T>;
 
 export type ManagerDoAction<T> =
   | DoCreateAction<T>
   | DoDestroyAction<T>
   | DoModifyAction<T>
   | DoSetAction<T>
-  | DoClearAction<T>;
+  | DoClearAction<T>
+  | DoMoveAction<T>;
 
 export type ActionCreatorMap<T> = {
   create: (payload: PersistedItem<T>) => ManagerAction<T>;
@@ -82,12 +98,14 @@ export type ActionCreatorMap<T> = {
   modify: (itemId: string, payload: PersistedItem<T>) => ManagerAction<T>;
   set: (payload: PersistedItemMap<T>) => ManagerAction<T>;
   clear: () => ManagerAction<T>;
+  move: (itemId: string, payload: DropResult) => ManagerAction<T>;
 
   doCreate: (itemId: string, payload: Payload<T>) => ManagerAction<T>;
   doDestroy: (itemId: string) => ManagerAction<T>;
   doModify: (itemId: string, payload: Payload<T>) => ManagerAction<T>;
   doSet: (payload: PayloadMap<T>) => ManagerAction<T>;
   doClear: () => ManagerAction<T>;
+  doMove: (itemId: string, payload: DropResult) => ManagerAction<T>;
 
   ready: () => ManagerAction<T>;
 };
@@ -101,12 +119,14 @@ export const makeManagerActionCreators = <T>(
     MODIFY,
     SET,
     CLEAR,
+    MOVE,
 
     DO_CREATE,
     DO_DESTROY,
     DO_MODIFY,
     DO_SET,
     DO_CLEAR,
+    DO_MOVE,
 
     READY
   } = CONSTS;
@@ -139,6 +159,14 @@ export const makeManagerActionCreators = <T>(
     type: CLEAR
   });
 
+  const move = (itemId: string, payload: DropResult): ManagerAction<T> => {
+    return {
+      type: MOVE,
+      itemId,
+      payload
+    };
+  };
+
   const doCreate = (itemId: string, payload: Payload<T>): ManagerAction<T> => ({
     type: DO_CREATE,
     itemId,
@@ -165,6 +193,14 @@ export const makeManagerActionCreators = <T>(
     type: DO_CLEAR
   });
 
+  const doMove = (itemId: string, payload: DropResult): ManagerAction<T> => {
+    return {
+      type: DO_MOVE,
+      itemId,
+      payload
+    };
+  };
+
   const ready = (): ManagerAction<T> => ({
     type: READY
   });
@@ -175,12 +211,14 @@ export const makeManagerActionCreators = <T>(
     modify,
     set,
     clear,
+    move,
 
     doCreate,
     doDestroy,
     doModify,
     doSet,
     doClear,
+    doMove,
 
     ready
   };
