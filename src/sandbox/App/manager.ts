@@ -14,14 +14,18 @@ import {
   SetAction,
   DoCreateAction,
   DoModifyAction,
-  DoSetAction,
   ManagerRelationship
 } from "./types";
 import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
 import { makeManagerReducer } from "./manager-reducer";
-import { addCreateSagas, addDestroySagas, addModifySagas } from "./sagas";
+import {
+  addCreateSagas,
+  addDestroySagas,
+  addModifySagas,
+  addSetSagas
+} from "./sagas";
 
 let counter = 0;
 
@@ -37,8 +41,7 @@ export const makeManager = <T>(
     SET,
     DO_CREATE,
     DO_DESTROY,
-    DO_MODIFY,
-    DO_SET
+    DO_MODIFY
   } = CONSTS;
 
   const actionCreators = makeManagerActionCreators<T>(CONSTS);
@@ -121,49 +124,48 @@ export const makeManager = <T>(
 
   const children: Set<Manager<any>> = new Set();
 
-  const addMappedChild = <U>(
+  const addChild = <U>(
     childManagerId: string,
-    adaptToParent: (payload: Payload<U>) => Payload<T>,
-    adaptToChild: (payload: Payload<T>) => Payload<U>
+    {
+      adaptToParent,
+      adaptToChild,
+      relationship
+    }: {
+      adaptToParent?: (payload: Payload<U>) => Payload<T>;
+      adaptToChild?: (payload: Payload<T>) => Payload<U>;
+      relationship: ManagerRelationship;
+    }
   ) => {
-    // Use when listing a whole set of data: 1to1 correspondence.
-    // Anything that happens to the parent in the background must be reflected in the child.
-    // Anything that happens to the child through user interaction must be reflected in the parent.
-    // So just delegate to the parent and propagate.
     const childManager = makeManager<U>(childManagerId, managerId);
-    const CHILD_CONSTS = makeManagerConstants(childManagerId);
-    const { DO_SET: CHILD_DO_SET } = CHILD_CONSTS;
-    const { doSet: childDoSet } = childManager.actionCreators;
 
     const sagaArgs = {
       manager,
       childManager,
       adaptToChild,
       adaptToParent,
-      relationship: ManagerRelationship.MAP
+      relationship
     };
 
     addCreateSagas(sagaArgs);
     addDestroySagas(sagaArgs);
     addModifySagas(sagaArgs);
-
-    childManager.sagaManager.add(CHILD_DO_SET, function* (): SagaGenerator {
-      const {
-        payload: { items: payloadMap }
-      }: DoSetAction<T> = yield take(DO_SET);
-      const childPayloadMap: MutablePayloadMap<U> = {};
-
-      for (let [itemId, payload] of Object.entries(payloadMap)) {
-        childPayloadMap[itemId] = adaptToChild(payload);
-      }
-
-      yield put(childDoSet({ items: childPayloadMap, selections: {} }));
-    });
+    addSetSagas(sagaArgs);
 
     children.add(childManager);
 
     return childManager;
   };
+
+  const addMappedChild = <U>(
+    childManagerId: string,
+    adaptToParent: (payload: Payload<U>) => Payload<T>,
+    adaptToChild: (payload: Payload<T>) => Payload<U>
+  ) =>
+    addChild<U>(childManagerId, {
+      adaptToParent,
+      adaptToChild,
+      relationship: ManagerRelationship.MAP
+    });
 
   const addFilteredChild = (childManagerId: string) => {
     // Use when listing a subset of data.
