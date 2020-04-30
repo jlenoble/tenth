@@ -1,9 +1,14 @@
 export * from "./actions";
+
+export type { ActionCreatorMap } from "./action-creator-map";
+
 export type {
   MutableCombinedState,
   CombinedState
 } from "./combined-manager-reducer";
+
 export type { Errors } from "./errors";
+
 export type {
   PersistedItem,
   Payload,
@@ -12,6 +17,7 @@ export type {
   PersistedItemMap,
   PayloadMap
 } from "./item";
+
 export type { Manager } from "./manager";
 export type { ManagerConsts } from "./manager-consts";
 export type { ManagerState, ManagerReducer } from "./manager-reducer";

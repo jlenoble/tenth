@@ -1,6 +1,6 @@
 import { SagaManager } from "./saga-manager";
 import { ManagerConsts } from "./manager-consts";
-import { ActionCreatorMap } from "../manager-action-creators";
+import { ActionCreatorMap } from "./action-creator-map";
 import { ManagerReducer, ManagerState } from "./manager-reducer";
 import { Payload } from "./item";
 import { CombinedState } from "./combined-manager-reducer";
