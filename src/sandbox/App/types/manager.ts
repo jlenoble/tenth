@@ -30,3 +30,9 @@ export type MutableManagerMap<T> = {
 };
 
 export type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
+
+export enum ManagerRelationship {
+  MAP,
+  FILTER,
+  SELECT
+}

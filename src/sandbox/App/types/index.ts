@@ -21,6 +21,7 @@ export type {
 } from "./item";
 
 export type { Manager, MutableManagerMap, ManagerMap } from "./manager";
+export { ManagerRelationship } from "./manager";
 
 export type { ManagerConsts } from "./manager-consts";
 
