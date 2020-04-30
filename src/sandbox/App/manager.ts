@@ -21,7 +21,7 @@ import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
 import { makeManagerReducer } from "./manager-reducer";
-import { addCreateSagas, addDestroySagas } from "./sagas";
+import { addCreateSagas, addDestroySagas, addModifySagas } from "./sagas";
 
 let counter = 0;
 
@@ -132,15 +132,8 @@ export const makeManager = <T>(
     // So just delegate to the parent and propagate.
     const childManager = makeManager<U>(childManagerId, managerId);
     const CHILD_CONSTS = makeManagerConstants(childManagerId);
-    const {
-      MODIFY: CHILD_MODIFY,
-      DO_MODIFY: CHILD_DO_MODIFY,
-      DO_SET: CHILD_DO_SET
-    } = CHILD_CONSTS;
-    const {
-      doModify: childDoModify,
-      doSet: childDoSet
-    } = childManager.actionCreators;
+    const { DO_SET: CHILD_DO_SET } = CHILD_CONSTS;
+    const { doSet: childDoSet } = childManager.actionCreators;
 
     const sagaArgs = {
       manager,
@@ -152,16 +145,7 @@ export const makeManager = <T>(
 
     addCreateSagas(sagaArgs);
     addDestroySagas(sagaArgs);
-
-    childManager.sagaManager.add(CHILD_MODIFY, function* (): SagaGenerator {
-      const { itemId, payload }: ModifyAction<U> = yield take(CHILD_MODIFY);
-      yield put(modify(itemId, adaptToParent(payload)));
-    });
-
-    childManager.sagaManager.add(CHILD_DO_MODIFY, function* (): SagaGenerator {
-      const { itemId, payload }: DoModifyAction<T> = yield take(DO_MODIFY);
-      yield put(childDoModify(itemId, adaptToChild(payload)));
-    });
+    addModifySagas(sagaArgs);
 
     childManager.sagaManager.add(CHILD_DO_SET, function* (): SagaGenerator {
       const {
