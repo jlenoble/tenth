@@ -156,17 +156,6 @@ export const makeManager = <T>(
     return childManager;
   };
 
-  const addMappedChild = <U>(
-    childManagerId: string,
-    adaptToParent: (payload: Payload<U>) => Payload<T>,
-    adaptToChild: (payload: Payload<T>) => Payload<U>
-  ) =>
-    addChild<U>(childManagerId, {
-      adaptToParent,
-      adaptToChild,
-      relationship: ManagerRelationship.MAP
-    });
-
   const addFilteredChild = (childManagerId: string) => {
     // Use when listing a subset of data.
     // Destroying in parent must destroy in child.
@@ -228,8 +217,7 @@ export const makeManager = <T>(
     getItemMap,
     getSelectionMap,
     sagaManager,
-    addMappedChild,
-    addFilteredChild,
+    addChild,
     getChildren,
     addValidator
   };

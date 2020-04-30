@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { ListItemTextProps } from "../../../core";
-import { Payload } from "../types";
+import { Payload, ManagerRelationship } from "../types";
 import { makeManager } from "../manager";
 import { makeCombinedManager } from "../combined-manager";
 import { ViewManager } from "./view-manager";
@@ -35,11 +35,11 @@ const adaptToParent = (todoView: Payload<TodoView>): Payload<Todo> => ({
 });
 
 const todosViewId = "todosView";
-const todosViewManager = todosManager.addMappedChild<TodoView>(
-  todosViewId,
+const todosViewManager = todosManager.addChild<TodoView>(todosViewId, {
   adaptToParent,
-  adaptToChild
-);
+  adaptToChild,
+  relationship: ManagerRelationship.MAP
+});
 
 enableLocalStorage(todosManager);
 

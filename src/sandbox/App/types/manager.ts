@@ -15,12 +15,14 @@ export type Manager<T> = Readonly<{
   getItemMap: (state: CombinedState) => Map<string, Payload<T>>;
   getSelectionMap: (state: CombinedState) => Map<string, readonly string[]>;
   sagaManager: SagaManager;
-  addMappedChild: <U>(
+  addChild: <U>(
     childManagerId: string,
-    adaptFromChildToParent: (payload: Payload<U>) => Payload<T>,
-    adaptFromParentToChild: (payload: Payload<T>) => Payload<U>
+    options: {
+      adaptToParent?: (payload: Payload<U>) => Payload<T>;
+      adaptToChild?: (payload: Payload<T>) => Payload<U>;
+      relationship: ManagerRelationship;
+    }
   ) => Manager<U>;
-  addFilteredChild: (childManagerId: string) => Manager<T>;
   getChildren: () => readonly Manager<any>[];
   addValidator: (validate: Validator<T>) => void;
 }>;
