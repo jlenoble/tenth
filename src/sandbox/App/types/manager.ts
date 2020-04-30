@@ -21,6 +21,7 @@ export type Manager<T> = Readonly<{
       adaptToParent?: (payload: Payload<U>) => Payload<T>;
       adaptToChild?: (payload: Payload<T>) => Payload<U>;
       relationship: ManagerRelationship;
+      selectionId?: string;
     }
   ) => Manager<U>;
   getChildren: () => readonly Manager<any>[];

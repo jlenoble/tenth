@@ -8,7 +8,7 @@ import {
   DoCreateAction
 } from "../types";
 
-export const addCreateSagas = <T, U>({
+export const addCreateSagas = <T, U = T>({
   manager,
   childManager,
   relationship,
@@ -25,6 +25,7 @@ export const addCreateSagas = <T, U>({
     CONSTS: { DO_CREATE },
     actionCreators: { create }
   } = manager;
+
   const {
     CONSTS: { CREATE: CHILD_CREATE, DO_CREATE: CHILD_DO_CREATE },
     actionCreators: { doCreate: childDoCreate },
@@ -44,10 +45,21 @@ export const addCreateSagas = <T, U>({
           yield put(childDoCreate(itemId, adaptToChild(payload)));
         });
       }
+
       break;
     }
 
     case ManagerRelationship.FILTER: {
+      sagaManager.add(CHILD_CREATE, function* (): SagaGenerator {
+        const { payload: childPayload }: CreateAction<T> = yield take(
+          CHILD_CREATE
+        );
+        yield put(create(childPayload));
+
+        const { itemId, payload }: DoCreateAction<U> = yield take(DO_CREATE);
+        yield put(childDoCreate(itemId, payload));
+      });
+
       break;
     }
 

@@ -13,13 +13,15 @@ export const addSetSagas = <T, U>({
   childManager,
   relationship,
   adaptToChild,
-  adaptToParent
+  adaptToParent,
+  selectionId
 }: {
   manager: Manager<T>;
   childManager: Manager<U>;
   relationship: ManagerRelationship;
   adaptToChild?: (payload: Payload<T>) => Payload<U>;
   adaptToParent?: (payload: Payload<U>) => Payload<T>;
+  selectionId?: string;
 }) => {
   const {
     CONSTS: { DO_SET }
@@ -35,7 +37,7 @@ export const addSetSagas = <T, U>({
       if (adaptToParent && adaptToChild) {
         sagaManager.add(CHILD_DO_SET, function* (): SagaGenerator {
           const {
-            payload: { items: payloadMap }
+            payload: { items: payloadMap, selections }
           }: DoSetAction<T> = yield take(DO_SET);
           const childPayloadMap: MutablePayloadMap<U> = {};
 
@@ -43,13 +45,37 @@ export const addSetSagas = <T, U>({
             childPayloadMap[itemId] = adaptToChild(payload);
           }
 
-          yield put(childDoSet({ items: childPayloadMap, selections: {} }));
+          yield put(childDoSet({ items: childPayloadMap, selections }));
         });
       }
+
       break;
     }
 
     case ManagerRelationship.FILTER: {
+      if (selectionId) {
+        sagaManager.add(CHILD_DO_SET, function* (): SagaGenerator {
+          const {
+            payload: { items: payloadMap, selections }
+          }: DoSetAction<U> = yield take(DO_SET);
+          const childPayloadMap: MutablePayloadMap<U> = {};
+          const selection = new Set(selections[selectionId] || []);
+
+          for (let [itemId, payload] of Object.entries(payloadMap)) {
+            if (!selection.size) {
+              break;
+            }
+
+            if (selection.has(itemId)) {
+              childPayloadMap[itemId] = payload;
+              selection.delete(itemId);
+            }
+          }
+
+          yield put(childDoSet({ items: childPayloadMap, selections }));
+        });
+      }
+
       break;
     }
 

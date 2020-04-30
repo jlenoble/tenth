@@ -41,6 +41,15 @@ const todosViewManager = todosManager.addChild<TodoView>(todosViewId, {
   relationship: ManagerRelationship.MAP
 });
 
+const todosROOTViewId = "todosROOTView";
+const todosROOTViewManager = todosViewManager.addChild<TodoView>(
+  todosROOTViewId,
+  {
+    relationship: ManagerRelationship.FILTER,
+    selectionId: "ROOT"
+  }
+);
+
 enableLocalStorage(todosManager);
 
 export const combinedManager = makeCombinedManager([todosManager]);
@@ -48,8 +57,8 @@ export const combinedManager = makeCombinedManager([todosManager]);
 export const Main: FunctionComponent = () => {
   return (
     <ViewManager
-      key={todosViewId}
-      manager={todosViewManager}
+      key={todosROOTViewId}
+      manager={todosROOTViewManager}
       Component={MainView}
     />
   );

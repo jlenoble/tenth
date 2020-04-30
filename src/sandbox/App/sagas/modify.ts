@@ -32,7 +32,8 @@ export const addModifySagas = <T, U>({
   } = childManager;
 
   switch (relationship) {
-    case ManagerRelationship.MAP: {
+    case ManagerRelationship.MAP:
+    case ManagerRelationship.FILTER: {
       if (adaptToParent && adaptToChild) {
         sagaManager.add(CHILD_MODIFY, function* (): SagaGenerator {
           const { itemId, payload }: ModifyAction<U> = yield take(CHILD_MODIFY);
@@ -44,10 +45,7 @@ export const addModifySagas = <T, U>({
           yield put(childDoModify(itemId, adaptToChild(payload)));
         });
       }
-      break;
-    }
 
-    case ManagerRelationship.FILTER: {
       break;
     }
 
