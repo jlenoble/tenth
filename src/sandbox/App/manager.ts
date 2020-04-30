@@ -205,14 +205,12 @@ export const makeManager = <T>(
     const {
       CREATE: CHILD_CREATE,
       DESTROY: CHILD_DESTROY,
-      MODIFY: CHILD_MODIFY,
-      DO_SET: CHILD_DO_SET
+      MODIFY: CHILD_MODIFY
     } = CHILD_CONSTS;
     const {
       doCreate: childDoCreate,
       doDestroy: childDoDestroy,
-      doModify: childDoModify,
-      doSet: childDoSet
+      doModify: childDoModify
     } = manager.actionCreators;
 
     manager.sagaManager.add(CHILD_CREATE, function* (): SagaGenerator {

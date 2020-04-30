@@ -1,5 +1,4 @@
-import { ManagerState } from "./types/types";
-import { ManagerConsts } from "./types";
+import { ManagerState, ManagerConsts } from "./types";
 import { ManagerDoAction } from "./manager-action-creators";
 
 export type ManagerReducer<T> = (
@@ -15,14 +14,7 @@ export const makeManagerReducer = <T>(
     selections: new Map()
   };
 
-  const {
-    DO_CREATE,
-    DO_DESTROY,
-    DO_MODIFY,
-    DO_SET,
-    DO_CLEAR,
-    DO_MOVE
-  } = CONSTS;
+  const { DO_CREATE, DO_DESTROY, DO_MODIFY, DO_SET, DO_CLEAR } = CONSTS;
 
   const reducer = (
     state = initialState,
