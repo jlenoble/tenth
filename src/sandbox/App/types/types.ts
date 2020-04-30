@@ -3,6 +3,7 @@ import { ManagerConsts } from "./manager-consts";
 import { ActionCreatorMap } from "../manager-action-creators";
 import { ManagerReducer } from "../manager-reducer";
 import { Errors } from "./errors";
+import { Payload, PersistedItem } from "./item";
 
 export type Id = string;
 export type ItemId = Id;
@@ -10,12 +11,6 @@ export type ManagerId = Id;
 export type SelectionId = Id;
 
 export type Ids<Id> = readonly Id[];
-
-export type PersistedItem<T> = Readonly<Omit<T, "itemId" | "errors">>;
-export type Payload<T> = Readonly<PersistedItem<T> & { errors?: Errors }>;
-export type Item<T> = Readonly<
-  PersistedItem<T> & { itemId: ItemId; errors?: Errors }
->;
 
 export type MutablePayloadMap<T> = {
   [itemId: string]: Payload<T>;
