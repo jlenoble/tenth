@@ -1,12 +1,14 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Payload, Manager } from "../types";
+import { Payload, Manager, VisibilityFilter } from "../types";
 
 export interface ContainerComponentProps<T> {
   views: Map<string, Payload<T>>;
   create: (payload: T) => void;
   close: (viewId: string) => void;
   update: (viewId: string, payload: T) => void;
+  visibilityFilter: VisibilityFilter;
+  setVisibilityFilter: (visibilityFilter: VisibilityFilter) => void;
 }
 
 export interface ViewManagerProps<T> {
@@ -19,11 +21,12 @@ export const ViewManager = <T extends any>({
   Component
 }: ViewManagerProps<T>) => {
   const {
-    stateSelectors: { getItemMap },
-    actionCreators: { create, destroy, modify }
+    stateSelectors: { getItemMap, getVisibilityFilter },
+    actionCreators: { create, destroy, modify, setVisibilityFilter }
   } = manager;
   const dispatch = useDispatch();
   const views = useSelector(getItemMap);
+  const visibilityFilter = useSelector(getVisibilityFilter);
 
   return (
     <Component
@@ -37,6 +40,10 @@ export const ViewManager = <T extends any>({
       update={(viewId: string, payload: T) => {
         dispatch(modify(viewId, payload));
       }}
+      visibilityFilter={visibilityFilter}
+      setVisibilityFilter={(visibilityFilter: VisibilityFilter) =>
+        dispatch(setVisibilityFilter(visibilityFilter))
+      }
     />
   );
 };

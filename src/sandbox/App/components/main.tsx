@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { ListItemTextProps } from "../../../core";
+import { ListItemProps } from "../../../core";
 import { Payload, ManagerRelationship } from "../types";
 import { makeManager } from "../manager";
 import { makeCombinedManager } from "../combined-manager";
@@ -8,7 +8,7 @@ import { ListCard as MainView } from "./container-components";
 import { enableLocalStorage } from "../enable-localstorage";
 
 type Todo = { title: string; completed: boolean };
-type TodoView = ListItemTextProps;
+type TodoView = Omit<ListItemProps, "itemId">;
 
 const todosId = "todos";
 const todosManager = makeManager<Todo>(todosId);
@@ -23,15 +23,16 @@ todosManager.addValidator((todo: Todo) => {
 const adaptToChild = (todo: Payload<Todo>): Payload<TodoView> => {
   return todo.errors
     ? {
+        checked: todo.completed,
         primary: todo.title,
         primaryError: Boolean(todo.errors.length),
         primaryHelperText: todo.errors.join(", ")
       }
-    : { primary: todo.title };
+    : { checked: todo.completed, primary: todo.title };
 };
 const adaptToParent = (todoView: Payload<TodoView>): Payload<Todo> => ({
   title: todoView.primary,
-  completed: false
+  completed: Boolean(todoView.checked)
 });
 
 const todosViewId = "todosView";

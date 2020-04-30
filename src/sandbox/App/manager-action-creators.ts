@@ -7,7 +7,8 @@ import {
   SelectionMap,
   ManagerConsts,
   ManagerAction,
-  ActionCreatorMap
+  ActionCreatorMap,
+  VisibilityFilter
 } from "./types";
 
 export const makeManagerActionCreators = <T>(
@@ -27,6 +28,9 @@ export const makeManagerActionCreators = <T>(
     DO_SET,
     DO_CLEAR,
     DO_MOVE,
+
+    SET_VISIBILITY_FILTER,
+    DO_SET_VISIBILITY_FILTER,
 
     READY
   } = CONSTS;
@@ -107,6 +111,20 @@ export const makeManagerActionCreators = <T>(
     };
   };
 
+  const setVisibilityFilter = (
+    visibilityFilter: VisibilityFilter
+  ): ManagerAction<T> => ({
+    type: SET_VISIBILITY_FILTER,
+    visibilityFilter
+  });
+
+  const doSetVisibilityFilter = (
+    visibilityFilter: VisibilityFilter
+  ): ManagerAction<T> => ({
+    type: DO_SET_VISIBILITY_FILTER,
+    visibilityFilter
+  });
+
   const ready = (): ManagerAction<T> => ({
     type: READY
   });
@@ -125,6 +143,9 @@ export const makeManagerActionCreators = <T>(
     doSet,
     doClear,
     doMove,
+
+    setVisibilityFilter,
+    doSetVisibilityFilter,
 
     ready
   };

@@ -2,7 +2,8 @@ import {
   ManagerState,
   ManagerConsts,
   ManagerReducer,
-  ManagerAnswerAction
+  ManagerAnswerAction,
+  VisibilityFilter
 } from "./types";
 
 export const makeManagerReducer = <T>(
@@ -10,10 +11,18 @@ export const makeManagerReducer = <T>(
 ): ManagerReducer<T> => {
   const initialState: ManagerState<T> = {
     items: new Map(),
-    selections: new Map()
+    selections: new Map(),
+    visibilityFilter: VisibilityFilter.SHOW_ACTIVE
   };
 
-  const { DO_CREATE, DO_DESTROY, DO_MODIFY, DO_SET, DO_CLEAR } = CONSTS;
+  const {
+    DO_CREATE,
+    DO_DESTROY,
+    DO_MODIFY,
+    DO_SET,
+    DO_CLEAR,
+    DO_SET_VISIBILITY_FILTER
+  } = CONSTS;
 
   const reducer = (
     state = initialState,
@@ -55,6 +64,7 @@ export const makeManagerReducer = <T>(
         case DO_SET: {
           const { items, selections } = action.payload;
           return {
+            ...initialState,
             items: new Map(Object.entries(items)),
             selections: new Map(Object.entries(selections))
           };
@@ -62,6 +72,10 @@ export const makeManagerReducer = <T>(
 
         case DO_CLEAR: {
           return initialState;
+        }
+
+        case DO_SET_VISIBILITY_FILTER: {
+          return { ...state, visibilityFilter: action.visibilityFilter };
         }
       }
     }

@@ -7,10 +7,10 @@ export const enableLocalStorage = <T>(manager: Manager<T>) => {
     managerId: localStorageId,
     CONSTS: { READY },
     actionCreators: { set },
-    getChildren
+    getDescendants
   } = manager;
   const ALL_READY = [READY].concat(
-    getChildren().map(({ CONSTS: { READY } }) => READY)
+    getDescendants().map(({ CONSTS: { READY } }) => READY)
   );
 
   manager.sagaManager.add("loadFromLocalStorage", function* (): SagaGenerator {

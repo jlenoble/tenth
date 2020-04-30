@@ -2,6 +2,7 @@ import { DropResult } from "react-beautiful-dnd";
 import { PayloadMap, Payload } from "../item";
 import { SelectionMap } from "../selections";
 import { ManagerConsts } from "../manager-consts";
+import { VisibilityFilter } from "../visibility-filter";
 
 export type DoCreateAction<T> = {
   type: ManagerConsts["DO_CREATE"];
@@ -35,10 +36,16 @@ export type DoMoveAction<T> = {
   payload: DropResult;
 };
 
+export type DoSetVisibilityFilterAction<T> = {
+  type: ManagerConsts["DO_SET_VISIBILITY_FILTER"];
+  visibilityFilter: VisibilityFilter;
+};
+
 export type ManagerAnswerAction<T> =
   | DoCreateAction<T>
   | DoDestroyAction<T>
   | DoModifyAction<T>
   | DoSetAction<T>
   | DoClearAction<T>
-  | DoMoveAction<T>;
+  | DoMoveAction<T>
+  | DoSetVisibilityFilterAction<T>;

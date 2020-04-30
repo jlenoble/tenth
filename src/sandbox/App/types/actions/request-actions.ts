@@ -2,6 +2,7 @@ import { DropResult } from "react-beautiful-dnd";
 import { PersistedItem, PersistedItemMap } from "../item";
 import { SelectionMap } from "../selections";
 import { ManagerConsts } from "../manager-consts";
+import { VisibilityFilter } from "../visibility-filter";
 
 export type CreateAction<T> = {
   type: ManagerConsts["CREATE"];
@@ -34,10 +35,16 @@ export type MoveAction<T> = {
   payload: DropResult;
 };
 
+export type SetVisibilityFilterAction<T> = {
+  type: ManagerConsts["SET_VISIBILITY_FILTER"];
+  visibilityFilter: VisibilityFilter;
+};
+
 export type ManagerRequestAction<T> =
   | CreateAction<T>
   | DestroyAction<T>
   | ModifyAction<T>
   | SetAction<T>
   | ClearAction<T>
-  | MoveAction<T>;
+  | MoveAction<T>
+  | SetVisibilityFilterAction<T>;

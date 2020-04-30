@@ -2,6 +2,7 @@ import { DropResult } from "react-beautiful-dnd";
 import { Payload, PersistedItem, PayloadMap, PersistedItemMap } from "./item";
 import { SelectionMap } from "./selections";
 import { ManagerAction } from "./actions";
+import { VisibilityFilter } from "./visibility-filter";
 
 export type ActionCreatorMap<T> = {
   create: (payload: PersistedItem<T>) => ManagerAction<T>;
@@ -23,6 +24,11 @@ export type ActionCreatorMap<T> = {
   }) => ManagerAction<T>;
   doClear: () => ManagerAction<T>;
   doMove: (itemId: string, payload: DropResult) => ManagerAction<T>;
+
+  setVisibilityFilter: (visibilityFilter: VisibilityFilter) => ManagerAction<T>;
+  doSetVisibilityFilter: (
+    visibilityFilter: VisibilityFilter
+  ) => ManagerAction<T>;
 
   ready: () => ManagerAction<T>;
 };

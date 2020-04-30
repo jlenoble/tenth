@@ -23,6 +23,7 @@ export type Manager<T> = Readonly<{
     }
   ) => Manager<U>;
   getChildren: () => readonly Manager<any>[];
+  getDescendants: () => readonly Manager<any>[];
   addValidator: (validate: Validator<T>) => void;
 }>;
 

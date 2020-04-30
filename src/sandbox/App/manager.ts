@@ -12,6 +12,7 @@ import {
   DestroyAction,
   ModifyAction,
   SetAction,
+  SetVisibilityFilterAction,
   ManagerRelationship,
   StateSelectorMap
 } from "./types";
@@ -23,7 +24,8 @@ import {
   addCreateSagas,
   addDestroySagas,
   addModifySagas,
-  addSetSagas
+  addSetSagas,
+  addSetVisibilityFilterSagas
 } from "./sagas";
 
 let counter = 0;
@@ -33,10 +35,16 @@ export const makeManager = <T>(
   parentManagerId?: string
 ): Manager<T> => {
   const CONSTS = makeManagerConstants(managerId);
-  const { CREATE, DESTROY, MODIFY, SET } = CONSTS;
+  const { CREATE, DESTROY, MODIFY, SET, SET_VISIBILITY_FILTER } = CONSTS;
 
   const actionCreators = makeManagerActionCreators<T>(CONSTS);
-  const { doCreate, doDestroy, doModify, doSet } = actionCreators;
+  const {
+    doCreate,
+    doDestroy,
+    doModify,
+    doSet,
+    doSetVisibilityFilter
+  } = actionCreators;
 
   const reducer = makeManagerReducer<T>(CONSTS);
 
@@ -45,7 +53,9 @@ export const makeManager = <T>(
   const stateSelectors: StateSelectorMap<T> = {
     getState: (state: CombinedState) => state[managerId],
     getItemMap: (state: CombinedState) => state[managerId].items,
-    getSelectionMap: (state: CombinedState) => state[managerId].selections
+    getSelectionMap: (state: CombinedState) => state[managerId].selections,
+    getVisibilityFilter: (state: CombinedState) =>
+      state[managerId].visibilityFilter
   };
 
   const sagaManager = makeSagaManager();
@@ -106,6 +116,13 @@ export const makeManager = <T>(
 
       yield put(doSet({ items: payloadMap, selections }));
     });
+
+    sagaManager.add(SET_VISIBILITY_FILTER, function* (): SagaGenerator {
+      const { visibilityFilter }: SetVisibilityFilterAction<T> = yield take(
+        SET_VISIBILITY_FILTER
+      );
+      yield put(doSetVisibilityFilter(visibilityFilter));
+    });
   }
 
   const children: Set<Manager<any>> = new Set();
@@ -139,6 +156,7 @@ export const makeManager = <T>(
     addDestroySagas(sagaArgs);
     addModifySagas(sagaArgs);
     addSetSagas(sagaArgs);
+    addSetVisibilityFilterSagas(sagaArgs);
 
     children.add(childManager);
 
@@ -146,6 +164,19 @@ export const makeManager = <T>(
   };
 
   const getChildren = () => Array.from(children);
+  const getDescendants = () => {
+    let descendants: Manager<any>[] = [];
+
+    for (let manager of children.values()) {
+      descendants.push(manager);
+
+      if (manager.getChildren().length) {
+        descendants = descendants.concat(manager.getDescendants());
+      }
+    }
+
+    return descendants;
+  };
 
   const manager = {
     managerId,
@@ -156,6 +187,7 @@ export const makeManager = <T>(
     sagaManager,
     addChild,
     getChildren,
+    getDescendants,
     addValidator
   };
 
