@@ -1,5 +1,5 @@
-import { ManagerState } from "./types";
-import { ManagerConsts } from "./manager-constants";
+import { ManagerState } from "./types/types";
+import { ManagerConsts } from "./types";
 import { ManagerDoAction } from "./manager-action-creators";
 
 export type ManagerReducer<T> = (

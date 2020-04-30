@@ -1,8 +1,7 @@
 import { combineReducers, Action } from "redux";
 import { put } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
-import { MutableCombinedState, CombinedState } from "./types";
-import { Manager } from "./manager";
+import { MutableCombinedState, CombinedState, Manager } from "./types/types";
 import { ManagerReducer } from "./manager-reducer";
 import { sagaMiddleware } from "./saga-manager";
 

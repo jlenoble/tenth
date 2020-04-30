@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { ListItemTextProps } from "../../core";
-import { Payload } from "./types";
+import { Payload } from "./types/types";
 import { makeManager } from "./manager";
 import { makeCombinedManager } from "./combined-manager";
 import { ViewManager } from "./view-manager";

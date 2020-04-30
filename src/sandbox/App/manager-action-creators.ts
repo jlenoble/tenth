@@ -5,8 +5,8 @@ import {
   PayloadMap,
   PersistedItemMap,
   SelectionMap
-} from "./types";
-import { ManagerConsts } from "./manager-constants";
+} from "./types/types";
+import { ManagerConsts } from "./types";
 
 export type CreateAction<T> = {
   type: ManagerConsts["CREATE"];

@@ -2,18 +2,17 @@ import { all, call, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
 import {
   CombinedState,
-  ManagerState,
   Validator,
   Payload,
   PersistedItem,
   MutablePayloadMap,
-  Errors
-} from "./types";
-import { makeSagaManager, SagaManager } from "./saga-manager";
-import { makeManagerConstants, ManagerConsts } from "./manager-constants";
+  Errors,
+  Manager
+} from "./types/types";
+import { makeSagaManager } from "./saga-manager";
+import { makeManagerConstants } from "./manager-constants";
 import {
   makeManagerActionCreators,
-  ActionCreatorMap,
   CreateAction,
   DestroyAction,
   ModifyAction,
@@ -23,28 +22,9 @@ import {
   DoModifyAction,
   DoSetAction
 } from "./manager-action-creators";
-import { ManagerReducer, makeManagerReducer } from "./manager-reducer";
+import { makeManagerReducer } from "./manager-reducer";
 
 let counter = 0;
-
-export type Manager<T> = Readonly<{
-  managerId: string;
-  CONSTS: ManagerConsts;
-  actionCreators: ActionCreatorMap<T>;
-  reducer: ManagerReducer<T>;
-  getState: (state: CombinedState) => ManagerState<T>;
-  getItemMap: (state: CombinedState) => Map<string, Payload<T>>;
-  getSelectionMap: (state: CombinedState) => Map<string, readonly string[]>;
-  sagaManager: SagaManager;
-  addMappedChild: <U>(
-    childManagerId: string,
-    adaptFromChildToParent: (payload: Payload<U>) => Payload<T>,
-    adaptFromParentToChild: (payload: Payload<T>) => Payload<U>
-  ) => Manager<U>;
-  addFilteredChild: (childManagerId: string) => Manager<T>;
-  getChildren: () => readonly Manager<any>[];
-  addValidator: (validate: Validator<T>) => void;
-}>;
 
 export const makeManager = <T>(
   managerId: string,

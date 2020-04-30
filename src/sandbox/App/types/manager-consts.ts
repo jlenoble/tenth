@@ -1,0 +1,17 @@
+export type ManagerConsts = {
+  CREATE: "CREATE";
+  DESTROY: "DESTROY";
+  MODIFY: "MODIFY";
+  SET: "SET";
+  CLEAR: "CLEAR";
+  MOVE: "MOVE";
+
+  DO_CREATE: "DO_CREATE";
+  DO_DESTROY: "DO_DESTROY";
+  DO_MODIFY: "DO_MODIFY";
+  DO_SET: "DO_SET";
+  DO_CLEAR: "DO_CLEAR";
+  DO_MOVE: "DO_MOVE";
+
+  READY: "READY";
+};

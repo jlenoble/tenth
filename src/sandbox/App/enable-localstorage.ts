@@ -1,7 +1,6 @@
 import { all, put, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
-import { PersistedItemMap, SelectionMap } from "./types";
-import { Manager } from "./manager";
+import { PersistedItemMap, SelectionMap, Manager } from "./types/types";
 
 export const enableLocalStorage = <T>(manager: Manager<T>) => {
   const {
