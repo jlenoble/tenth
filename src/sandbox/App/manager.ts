@@ -13,7 +13,6 @@ import {
   ModifyAction,
   SetAction,
   DoCreateAction,
-  DoDestroyAction,
   DoModifyAction,
   DoSetAction,
   ManagerRelationship
@@ -22,7 +21,7 @@ import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
 import { makeManagerReducer } from "./manager-reducer";
-import { addCreateSagas } from "./sagas";
+import { addCreateSagas, addDestroySagas } from "./sagas";
 
 let counter = 0;
 
@@ -45,7 +44,6 @@ export const makeManager = <T>(
   const actionCreators = makeManagerActionCreators<T>(CONSTS);
   const {
     create,
-    destroy,
     modify,
     doCreate,
     doDestroy,
@@ -135,14 +133,11 @@ export const makeManager = <T>(
     const childManager = makeManager<U>(childManagerId, managerId);
     const CHILD_CONSTS = makeManagerConstants(childManagerId);
     const {
-      DESTROY: CHILD_DESTROY,
       MODIFY: CHILD_MODIFY,
-      DO_DESTROY: CHILD_DO_DESTROY,
       DO_MODIFY: CHILD_DO_MODIFY,
       DO_SET: CHILD_DO_SET
     } = CHILD_CONSTS;
     const {
-      doDestroy: childDoDestroy,
       doModify: childDoModify,
       doSet: childDoSet
     } = childManager.actionCreators;
@@ -156,20 +151,11 @@ export const makeManager = <T>(
     };
 
     addCreateSagas(sagaArgs);
-
-    childManager.sagaManager.add(CHILD_DESTROY, function* (): SagaGenerator {
-      const { itemId }: DestroyAction<U> = yield take(CHILD_DESTROY);
-      yield put(destroy(itemId));
-    });
+    addDestroySagas(sagaArgs);
 
     childManager.sagaManager.add(CHILD_MODIFY, function* (): SagaGenerator {
       const { itemId, payload }: ModifyAction<U> = yield take(CHILD_MODIFY);
       yield put(modify(itemId, adaptToParent(payload)));
-    });
-
-    childManager.sagaManager.add(CHILD_DO_DESTROY, function* (): SagaGenerator {
-      const { itemId }: DoDestroyAction<T> = yield take(DO_DESTROY);
-      yield put(childDoDestroy(itemId));
     });
 
     childManager.sagaManager.add(CHILD_DO_MODIFY, function* (): SagaGenerator {
