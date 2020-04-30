@@ -19,7 +19,7 @@ export const ViewManager = <T extends any>({
   Component
 }: ViewManagerProps<T>) => {
   const {
-    getItemMap,
+    stateSelectors: { getItemMap },
     actionCreators: { create, destroy, modify }
   } = manager;
   const dispatch = useDispatch();

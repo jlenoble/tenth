@@ -1,19 +1,17 @@
 import { SagaManager } from "./saga-manager";
 import { ManagerConsts } from "./manager-consts";
 import { ActionCreatorMap } from "./action-creator-map";
-import { ManagerReducer, ManagerState } from "./manager-reducer";
+import { ManagerReducer } from "./manager-reducer";
 import { Payload } from "./item";
-import { CombinedState } from "./combined-manager-reducer";
 import { Validator } from "./validator";
+import { StateSelectorMap } from "./state-selector";
 
 export type Manager<T> = Readonly<{
   managerId: string;
   CONSTS: ManagerConsts;
   actionCreators: ActionCreatorMap<T>;
+  stateSelectors: StateSelectorMap<T>;
   reducer: ManagerReducer<T>;
-  getState: (state: CombinedState) => ManagerState<T>;
-  getItemMap: (state: CombinedState) => Map<string, Payload<T>>;
-  getSelectionMap: (state: CombinedState) => Map<string, readonly string[]>;
   sagaManager: SagaManager;
   addChild: <U>(
     childManagerId: string,

@@ -31,4 +31,6 @@ export type { SagaManager } from "./saga-manager";
 
 export type { Selections, SelectionMap } from "./selections";
 
+export type { StateSelectorMap } from "./state-selector";
+
 export type { Validator } from "./validator";

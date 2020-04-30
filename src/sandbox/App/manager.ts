@@ -12,7 +12,8 @@ import {
   DestroyAction,
   ModifyAction,
   SetAction,
-  ManagerRelationship
+  ManagerRelationship,
+  StateSelectorMap
 } from "./types";
 import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
@@ -41,9 +42,11 @@ export const makeManager = <T>(
 
   const makeTmpId = () => managerId + "_" + counter++;
 
-  const getState = (state: CombinedState) => state[managerId];
-  const getItemMap = (state: CombinedState) => state[managerId].items;
-  const getSelectionMap = (state: CombinedState) => state[managerId].selections;
+  const stateSelectors: StateSelectorMap<T> = {
+    getState: (state: CombinedState) => state[managerId],
+    getItemMap: (state: CombinedState) => state[managerId].items,
+    getSelectionMap: (state: CombinedState) => state[managerId].selections
+  };
 
   const sagaManager = makeSagaManager();
 
@@ -148,10 +151,8 @@ export const makeManager = <T>(
     managerId,
     CONSTS,
     actionCreators,
+    stateSelectors,
     reducer,
-    getState,
-    getItemMap,
-    getSelectionMap,
     sagaManager,
     addChild,
     getChildren,
