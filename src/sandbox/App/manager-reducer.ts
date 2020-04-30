@@ -23,9 +23,14 @@ export const makeManagerReducer = <T>(
       switch (action.type) {
         case DO_CREATE: {
           const { itemId } = action;
-          const newItems = new Map(state.items);
-          newItems.set(itemId, action.payload);
-          return { ...state, items: newItems };
+
+          if (!state.items.has(itemId)) {
+            const newItems = new Map(state.items);
+            newItems.set(itemId, action.payload);
+            return { ...state, items: newItems };
+          }
+
+          return state;
         }
 
         case DO_DESTROY: {
@@ -36,10 +41,15 @@ export const makeManagerReducer = <T>(
 
         case DO_MODIFY: {
           const { itemId } = action;
-          const payload = state.items.get(itemId)!;
-          const newItems = new Map(state.items);
-          newItems.set(itemId, { ...payload, ...action.payload });
-          return { ...state, items: newItems };
+
+          if (state.items.has(itemId)) {
+            const payload = state.items.get(itemId)!;
+            const newItems = new Map(state.items);
+            newItems.set(itemId, { ...payload, ...action.payload });
+            return { ...state, items: newItems };
+          }
+
+          return state;
         }
 
         case DO_SET: {
