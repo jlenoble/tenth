@@ -2,6 +2,7 @@ import { SagaManager } from "./saga-manager";
 import { ManagerConsts } from "./manager-consts";
 import { ActionCreatorMap } from "../manager-action-creators";
 import { ManagerReducer } from "../manager-reducer";
+import { Errors } from "./errors";
 
 export type Id = string;
 export type ItemId = Id;
@@ -9,8 +10,6 @@ export type ManagerId = Id;
 export type SelectionId = Id;
 
 export type Ids<Id> = readonly Id[];
-
-export type Errors = readonly string[];
 
 export type PersistedItem<T> = Readonly<Omit<T, "itemId" | "errors">>;
 export type Payload<T> = Readonly<PersistedItem<T> & { errors?: Errors }>;

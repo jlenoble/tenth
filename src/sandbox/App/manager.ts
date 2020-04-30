@@ -8,7 +8,7 @@ import {
   MutablePayloadMap,
   Errors,
   Manager
-} from "./types/types";
+} from "./types";
 import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import {
