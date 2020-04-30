@@ -10,3 +10,11 @@ export type Payload<T> = Readonly<PersistedItem<T> & { errors?: Errors }>;
 export type ItemState<T> = Readonly<
   PersistedItem<T> & { itemId: string; errors?: Errors }
 >;
+
+export type MutablePayloadMap<T> = {
+  [itemId: string]: Payload<T>;
+};
+export type PayloadMap<T> = Readonly<MutablePayloadMap<T>>;
+export type PersistedItemMap<T> = Readonly<{
+  [itemId: string]: PersistedItem<T>;
+}>;

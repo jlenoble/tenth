@@ -2,32 +2,9 @@ import { SagaManager } from "./saga-manager";
 import { ManagerConsts } from "./manager-consts";
 import { ActionCreatorMap } from "../manager-action-creators";
 import { ManagerReducer, ManagerState } from "./manager-reducer";
-import { Errors } from "./errors";
-import { Payload, PersistedItem } from "./item";
-
-export type Id = string;
-export type ItemId = Id;
-export type ManagerId = Id;
-export type SelectionId = Id;
-
-export type Ids<Id> = readonly Id[];
-
-export type MutablePayloadMap<T> = {
-  [itemId: string]: Payload<T>;
-};
-export type PayloadMap<T> = Readonly<MutablePayloadMap<T>>;
-export type PersistedItemMap<T> = Readonly<{
-  [itemId: string]: PersistedItem<T>;
-}>;
-
-export type SelectionMap = Readonly<{
-  [selectionId: string]: Ids<ItemId>;
-}>;
-
-export type Validator<T> = (payload: PersistedItem<T>) => Errors;
-
-export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
-export type CombinedState = Readonly<MutableCombinedState>;
+import { Payload } from "./item";
+import { CombinedState } from "./combined-manager-reducer";
+import { Validator } from "./validator";
 
 export type Manager<T> = Readonly<{
   managerId: string;
