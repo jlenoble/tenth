@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { createLogger } from "redux-logger";
-import { Main, combinedManager } from "./Main";
+import { Main, combinedManager } from "./components/main";
 
 const logger = createLogger({ collapsed: true });
 

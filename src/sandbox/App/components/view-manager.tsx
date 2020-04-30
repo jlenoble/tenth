@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Payload, Manager } from "./types";
+import { Payload, Manager } from "../types";
 
 export interface ContainerComponentProps<T> {
   views: Map<string, Payload<T>>;

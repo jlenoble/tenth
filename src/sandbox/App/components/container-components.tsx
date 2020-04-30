@@ -4,7 +4,7 @@ import {
   List as CoreList,
   ListCard as CoreListCard,
   ListItemTextProps
-} from "../../core";
+} from "../../../core";
 import { ContainerComponentProps } from "./view-manager";
 
 export const List = ({
