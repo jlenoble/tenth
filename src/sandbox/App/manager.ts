@@ -41,11 +41,7 @@ export type Manager<T> = Readonly<{
     adaptFromChildToParent: (payload: Payload<U>) => Payload<T>,
     adaptFromParentToChild: (payload: Payload<T>) => Payload<U>
   ) => Manager<U>;
-  // addFilteredChild: <U>(
-  //   childManagerId: string,
-  //   adaptFromChildToParent: (payload: U) => T,
-  //   adaptFromParentToChild: (payload: T) => U
-  // ) => Manager<U>;
+  addFilteredChild: (childManagerId: string) => Manager<T>;
   getChildren: () => readonly Manager<any>[];
   addValidator: (validate: Validator<T>) => void;
 }>;
@@ -220,65 +216,57 @@ export const makeManager = <T>(
     return manager;
   };
 
-  // const addFilteredChild = <U>(
-  //   childManagerId: string,
-  //   adaptFromChildToParent: (payload: U) => T,
-  //   adaptFromParentToChild: (payload: T, errors?: readonly string[]) => U
-  // ) => {
-  //   // Use when listing a subset of data.
-  //   // Destroying in parent must destroy in child.
-  //   // Creating in child must create in parent.
-  //   const manager = makeManager<U>(childManagerId, managerId);
-  //   const CHILD_CONSTS = makeManagerConstants(childManagerId);
+  const addFilteredChild = (childManagerId: string) => {
+    // Use when listing a subset of data.
+    // Destroying in parent must destroy in child.
+    // Creating in child must create in parent.
+    const manager = makeManager<T>(childManagerId, managerId);
+    const CHILD_CONSTS = makeManagerConstants(childManagerId);
+    const {
+      CREATE: CHILD_CREATE,
+      DESTROY: CHILD_DESTROY,
+      MODIFY: CHILD_MODIFY,
+      DO_SET: CHILD_DO_SET
+    } = CHILD_CONSTS;
+    const {
+      doCreate: childDoCreate,
+      doDestroy: childDoDestroy,
+      doModify: childDoModify,
+      doSet: childDoSet
+    } = manager.actionCreators;
 
-  //   manager.sagaManager.add(createSagaName, function* (): SagaGenerator {
-  //     const { payload }: { payload: U } = yield take(CHILD_CREATE);
-  //     yield put({ type: CREATE, payload: adaptFromChildToParent(payload) });
+    manager.sagaManager.add(CHILD_CREATE, function* (): SagaGenerator {
+      const { payload: childPayload }: CreateAction<T> = yield take(
+        CHILD_CREATE
+      );
+      yield put(create(childPayload));
 
-  //     const {
-  //       itemId,
-  //       payload: parentPayload,
-  //       errors
-  //     }: { itemId: string; payload: T; errors: string[] } = yield take(
-  //       DO_CREATE
-  //     );
-  //     yield put({
-  //       type: CHILD_DO_CREATE,
-  //       itemId,
-  //       payload: adaptFromParentToChild(parentPayload, errors)
-  //     });
-  //   });
+      const { itemId, payload }: DoCreateAction<T> = yield take(DO_CREATE);
+      yield put(childDoCreate(itemId, payload));
+    });
 
-  //   manager.sagaManager.add(destroySagaName, function* (): SagaGenerator {
-  //     const { itemId } = yield take([CHILD_DESTROY, DO_DESTROY]);
-  //     yield put({ type: CHILD_DO_DESTROY, itemId });
-  //   });
+    manager.sagaManager.add(CHILD_DESTROY, function* (): SagaGenerator {
+      const { itemId }: DestroyAction<T> = yield take([
+        CHILD_DESTROY,
+        DO_DESTROY
+      ]);
+      yield put(childDoDestroy(itemId));
+    });
 
-  //   manager.sagaManager.add(modifySagaName, function* (): SagaGenerator {
-  //     const { itemId, payload }: { itemId: string; payload: U } = yield take(
-  //       CHILD_MODIFY
-  //     );
-  //     yield put({
-  //       type: MODIFY,
-  //       itemId,
-  //       payload: adaptFromChildToParent(payload)
-  //     });
+    manager.sagaManager.add(CHILD_MODIFY, function* (): SagaGenerator {
+      const { itemId, payload: childPayload }: ModifyAction<T> = yield take(
+        CHILD_MODIFY
+      );
+      yield put(modify(itemId, childPayload));
 
-  //     const {
-  //       payload: parentPayload,
-  //       errors
-  //     }: { payload: T; errors: string[] } = yield take(DO_MODIFY);
-  //     yield put({
-  //       type: CHILD_DO_MODIFY,
-  //       itemId,
-  //       payload: adaptFromParentToChild(parentPayload, errors)
-  //     });
-  //   });
+      const { payload }: DoModifyAction<T> = yield take(DO_MODIFY);
+      yield put(childDoModify(itemId, payload));
+    });
 
-  //   children.add(manager);
+    children.add(manager);
 
-  //   return manager;
-  // };
+    return manager;
+  };
 
   const getChildren = () => Array.from(children);
 
@@ -292,7 +280,7 @@ export const makeManager = <T>(
     getSelectionMap,
     sagaManager,
     addMappedChild,
-    // addFilteredChild,
+    addFilteredChild,
     getChildren,
     addValidator
   };
