@@ -1,5 +1,9 @@
-import { ManagerState, ManagerConsts, ManagerReducer } from "./types";
-import { ManagerDoAction } from "./manager-action-creators";
+import {
+  ManagerState,
+  ManagerConsts,
+  ManagerReducer,
+  ManagerAnswerAction
+} from "./types";
 
 export const makeManagerReducer = <T>(
   CONSTS: ManagerConsts
@@ -13,7 +17,7 @@ export const makeManagerReducer = <T>(
 
   const reducer = (
     state = initialState,
-    action?: ManagerDoAction<T>
+    action?: ManagerAnswerAction<T>
   ): ManagerState<T> => {
     if (action) {
       switch (action.type) {

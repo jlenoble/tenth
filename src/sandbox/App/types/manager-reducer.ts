@@ -1,6 +1,6 @@
 import { Payload } from "./item";
 import { Selections } from "./selections";
-import { ManagerDoAction } from "../manager-action-creators";
+import { ManagerAnswerAction } from "./actions";
 
 export type ManagerState<T> = {
   items: Map<string, Payload<T>>;
@@ -9,5 +9,5 @@ export type ManagerState<T> = {
 
 export type ManagerReducer<T> = (
   state?: ManagerState<T>,
-  action?: ManagerDoAction<T>
+  action?: ManagerAnswerAction<T>
 ) => ManagerState<T>;

@@ -7,12 +7,7 @@ import {
   PersistedItem,
   MutablePayloadMap,
   Errors,
-  Manager
-} from "./types";
-import { makeSagaManager } from "./saga-manager";
-import { makeManagerConstants } from "./manager-constants";
-import {
-  makeManagerActionCreators,
+  Manager,
   CreateAction,
   DestroyAction,
   ModifyAction,
@@ -21,7 +16,10 @@ import {
   DoDestroyAction,
   DoModifyAction,
   DoSetAction
-} from "./manager-action-creators";
+} from "./types";
+import { makeSagaManager } from "./saga-manager";
+import { makeManagerConstants } from "./manager-constants";
+import { makeManagerActionCreators } from "./manager-action-creators";
 import { makeManagerReducer } from "./manager-reducer";
 
 let counter = 0;
