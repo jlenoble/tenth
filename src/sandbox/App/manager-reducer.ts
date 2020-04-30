@@ -1,10 +1,5 @@
-import { ManagerState, ManagerConsts } from "./types";
+import { ManagerState, ManagerConsts, ManagerReducer } from "./types";
 import { ManagerDoAction } from "./manager-action-creators";
-
-export type ManagerReducer<T> = (
-  state?: ManagerState<T>,
-  action?: ManagerDoAction<T>
-) => ManagerState<T>;
 
 export const makeManagerReducer = <T>(
   CONSTS: ManagerConsts

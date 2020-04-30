@@ -1,7 +1,7 @@
 import { SagaManager } from "./saga-manager";
 import { ManagerConsts } from "./manager-consts";
 import { ActionCreatorMap } from "../manager-action-creators";
-import { ManagerReducer } from "../manager-reducer";
+import { ManagerReducer, ManagerState } from "./manager-reducer";
 import { Errors } from "./errors";
 import { Payload, PersistedItem } from "./item";
 
@@ -25,11 +25,6 @@ export type SelectionMap = Readonly<{
 }>;
 
 export type Validator<T> = (payload: PersistedItem<T>) => Errors;
-
-export type ManagerState<T> = {
-  items: Map<ItemId, Payload<T>>;
-  selections: Map<SelectionId, Ids<ItemId>>;
-};
 
 export type MutableCombinedState = { [managerId: string]: ManagerState<any> };
 export type CombinedState = Readonly<MutableCombinedState>;
