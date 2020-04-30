@@ -77,9 +77,11 @@ export const ListCard = ({
             itemId,
             ...payload,
             checkboxProps: {
-              //onClick: () => dispatch(toggleTodo({ viewId, id }))
+              onClick: () =>
+                update(itemId, { ...payload, checked: !payload.checked })
             },
-            primaryEnter: (value: string) => update(itemId, { primary: value }),
+            primaryEnter: (value: string) =>
+              update(itemId, { ...payload, primary: value }),
             deleteButtonProps: {
               onClick: () => close(itemId)
             },
