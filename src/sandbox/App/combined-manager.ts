@@ -2,25 +2,15 @@ import { combineReducers, Action } from "redux";
 import { put } from "redux-saga/effects";
 import { SagaGenerator } from "../../generics";
 import {
-  ManagerReducer,
   MutableCombinedState,
   CombinedState,
-  Manager
+  MutableReducerMap,
+  CombinedReducer,
+  Manager,
+  MutableManagerMap,
+  ManagerMap
 } from "./types";
 import { sagaMiddleware } from "./saga-manager";
-
-type MutableReducerMap<T> = { [managerId: string]: ManagerReducer<T> };
-
-type MutableManagerMap<T> = {
-  [managerId: string]: Manager<T>;
-};
-
-type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
-
-type CombinedReducer = (
-  state?: CombinedState,
-  action?: Action
-) => CombinedState;
 
 export const makeCombinedManager = (
   initialManagers: readonly Manager<any>[]

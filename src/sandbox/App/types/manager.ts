@@ -24,3 +24,9 @@ export type Manager<T> = Readonly<{
   getChildren: () => readonly Manager<any>[];
   addValidator: (validate: Validator<T>) => void;
 }>;
+
+export type MutableManagerMap<T> = {
+  [managerId: string]: Manager<T>;
+};
+
+export type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
