@@ -9,7 +9,7 @@ export type CreateAction<T> = {
   payload: PersistedItem<T>;
 };
 
-export type DestroyAction<T> = {
+export type DestroyAction = {
   type: ManagerConsts["DESTROY"];
   itemId: string;
 };
@@ -25,26 +25,26 @@ export type SetAction<T> = {
   payload: { items: PersistedItemMap<T>; selections: SelectionMap };
 };
 
-export type ClearAction<T> = {
+export type ClearAction = {
   type: ManagerConsts["CLEAR"];
 };
 
-export type MoveAction<T> = {
+export type MoveAction = {
   type: ManagerConsts["MOVE"];
   itemId: string;
   payload: DropResult;
 };
 
-export type SetVisibilityFilterAction<T> = {
+export type SetVisibilityFilterAction = {
   type: ManagerConsts["SET_VISIBILITY_FILTER"];
   visibilityFilter: VisibilityFilter;
 };
 
 export type ManagerRequestAction<T> =
   | CreateAction<T>
-  | DestroyAction<T>
+  | DestroyAction
   | ModifyAction<T>
   | SetAction<T>
-  | ClearAction<T>
-  | MoveAction<T>
-  | SetVisibilityFilterAction<T>;
+  | ClearAction
+  | MoveAction
+  | SetVisibilityFilterAction;

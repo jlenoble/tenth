@@ -86,7 +86,7 @@ export const makeManager = <T>(
     });
 
     sagaManager.add(DESTROY, function* (): SagaGenerator {
-      const { itemId }: DestroyAction<T> = yield take(DESTROY);
+      const { itemId }: DestroyAction = yield take(DESTROY);
       yield put(doDestroy(itemId));
     });
 
@@ -111,7 +111,7 @@ export const makeManager = <T>(
     });
 
     sagaManager.add(SET_VISIBILITY_FILTER, function* (): SagaGenerator {
-      const { visibilityFilter }: SetVisibilityFilterAction<T> = yield take(
+      const { visibilityFilter }: SetVisibilityFilterAction = yield take(
         SET_VISIBILITY_FILTER
       );
       yield put(doSetVisibilityFilter(visibilityFilter));

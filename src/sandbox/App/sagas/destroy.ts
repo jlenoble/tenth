@@ -30,12 +30,12 @@ export const addDestroySagas = <T, U>({
     case ManagerRelationship.MAP:
     case ManagerRelationship.FILTER: {
       sagaManager.add(CHILD_DESTROY, function* (): SagaGenerator {
-        const { itemId }: DestroyAction<U> = yield take(CHILD_DESTROY);
+        const { itemId }: DestroyAction = yield take(CHILD_DESTROY);
         yield put(destroy(itemId));
       });
 
       sagaManager.add(CHILD_DO_DESTROY, function* (): SagaGenerator {
-        const { itemId }: DoDestroyAction<T> = yield take(DO_DESTROY);
+        const { itemId }: DoDestroyAction = yield take(DO_DESTROY);
         yield put(childDoDestroy(itemId));
       });
 

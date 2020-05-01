@@ -9,4 +9,4 @@ export * from "./request-actions";
 export type ManagerAction<T> =
   | ManagerRequestAction<T>
   | ManagerAnswerAction<T>
-  | ManagerMiscAction<T>;
+  | ManagerMiscAction;

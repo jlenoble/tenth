@@ -10,7 +10,7 @@ export type DoCreateAction<T> = {
   payload: Payload<T>;
 };
 
-export type DoDestroyAction<T> = {
+export type DoDestroyAction = {
   type: ManagerConsts["DO_DESTROY"];
   itemId: string;
 };
@@ -26,26 +26,26 @@ export type DoSetAction<T> = {
   payload: { items: PayloadMap<T>; selections: SelectionMap };
 };
 
-export type DoClearAction<T> = {
+export type DoClearAction = {
   type: ManagerConsts["DO_CLEAR"];
 };
 
-export type DoMoveAction<T> = {
+export type DoMoveAction = {
   type: ManagerConsts["DO_MOVE"];
   itemId: string;
   payload: DropResult;
 };
 
-export type DoSetVisibilityFilterAction<T> = {
+export type DoSetVisibilityFilterAction = {
   type: ManagerConsts["DO_SET_VISIBILITY_FILTER"];
   visibilityFilter: VisibilityFilter;
 };
 
 export type ManagerAnswerAction<T> =
   | DoCreateAction<T>
-  | DoDestroyAction<T>
+  | DoDestroyAction
   | DoModifyAction<T>
   | DoSetAction<T>
-  | DoClearAction<T>
-  | DoMoveAction<T>
-  | DoSetVisibilityFilterAction<T>;
+  | DoClearAction
+  | DoMoveAction
+  | DoSetVisibilityFilterAction;

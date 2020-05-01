@@ -19,7 +19,7 @@ export const addSetVisibilityFilterSagas = <T, U>({
   } = childManager;
 
   sagaManager.add(CHILD_SET_VISIBILITY_FILTER, function* (): SagaGenerator {
-    const { visibilityFilter }: SetVisibilityFilterAction<T> = yield take([
+    const { visibilityFilter }: SetVisibilityFilterAction = yield take([
       CHILD_SET_VISIBILITY_FILTER,
       DO_SET_VISIBILITY_FILTER
     ]);

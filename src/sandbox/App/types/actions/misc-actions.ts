@@ -1,7 +1,7 @@
 import { ManagerConsts } from "../manager-consts";
 
-export type ReadyAction<T> = {
+export type ReadyAction = {
   type: ManagerConsts["READY"];
 };
 
-export type ManagerMiscAction<T> = ReadyAction<T>;
+export type ManagerMiscAction = ReadyAction;
