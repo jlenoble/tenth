@@ -32,7 +32,11 @@ export const makeManagerProgenyHandler = <T>(
       relationship: ManagerRelationship;
       selectionId?: string;
     }
-  ) => {
+  ): Manager<U> => {
+    if (children.has(childManagerId)) {
+      return children.get(childManagerId)!;
+    }
+
     const childManager = makeManager<U>(childManagerId, managerId);
 
     const sagaArgs = {
