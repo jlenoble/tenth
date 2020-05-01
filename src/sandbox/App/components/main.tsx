@@ -1,15 +1,12 @@
 import React, { FunctionComponent } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { ListItemProps } from "../../../core";
 import { Payload, ManagerRelationship } from "../types";
 import { makeManager } from "../manager";
 import { makeCombinedManager } from "../combined-manager";
 import { ViewManager } from "./view-manager";
 import { ListCard as MainView } from "./container-components";
 import { enableLocalStorage } from "../enable-localstorage";
-
-type Todo = { title: string; completed: boolean };
-type TodoView = Omit<ListItemProps, "itemId">;
+import { Todo, TodoView } from "./custom-types";
 
 const todosId = "todos";
 const todosManager = makeManager<Todo>(todosId);
@@ -22,14 +19,18 @@ todosManager.addValidator((todo: Todo) => {
 });
 
 const adaptToChild = (todo: Payload<Todo>): Payload<TodoView> => {
+  const childPayload: Payload<TodoView> = {
+    checked: todo.completed,
+    primary: todo.title
+  };
+
   return todo.errors
     ? {
-        checked: todo.completed,
-        primary: todo.title,
+        ...childPayload,
         primaryError: Boolean(todo.errors.length),
         primaryHelperText: todo.errors.join(", ")
       }
-    : { checked: todo.completed, primary: todo.title };
+    : childPayload;
 };
 const adaptToParent = (todoView: Payload<TodoView>): Payload<Todo> => ({
   title: todoView.primary,

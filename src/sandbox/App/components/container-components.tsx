@@ -1,20 +1,17 @@
 import React from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import {
-  List as CoreList,
-  ListCard as CoreListCard,
-  ListItemProps
-} from "../../../core";
+import { List as CoreList, ListCard as CoreListCard } from "../../../core";
 import { VisibilityFilter } from "../types";
 import { ContainerComponentProps } from "./view-manager";
 import { Menu } from "./menu";
+import { TodoView } from "./custom-types";
 
 export const List = ({
   views,
   create,
   close,
   update
-}: ContainerComponentProps<Omit<ListItemProps, "itemId">>) => {
+}: ContainerComponentProps<TodoView>) => {
   return (
     <DragDropContext onDragEnd={(dropResult: DropResult) => {}}>
       <CoreList
@@ -44,7 +41,7 @@ export const ListCard = ({
   update,
   visibilityFilter,
   setVisibilityFilter
-}: ContainerComponentProps<Omit<ListItemProps, "itemId">>) => {
+}: ContainerComponentProps<TodoView>) => {
   switch (visibilityFilter) {
     case VisibilityFilter.SHOW_ACTIVE: {
       views = new Map(Array.from(views).filter(([_, { checked }]) => !checked));
