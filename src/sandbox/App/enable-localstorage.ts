@@ -7,7 +7,7 @@ export const enableLocalStorage = <T>(manager: Manager<T>) => {
     managerId: localStorageId,
     CONSTS: { READY },
     actionCreators: { set },
-    getDescendants
+    progenyHandler: { getDescendants }
   } = manager;
   const ALL_READY = [READY].concat(
     getDescendants().map(({ CONSTS: { READY } }) => READY)

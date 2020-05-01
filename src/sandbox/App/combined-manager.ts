@@ -30,7 +30,7 @@ export const makeCombinedManager = (
     managers[managerId] = manager;
     reducers[managerId] = manager.reducer;
 
-    manager.getChildren().forEach(addToMaps);
+    manager.progenyHandler.getChildren().forEach(addToMaps);
   };
 
   const removeFromMaps = (managerId: Manager<any> | string) => {
@@ -42,7 +42,7 @@ export const makeCombinedManager = (
       return;
     }
 
-    manager.getChildren().forEach(removeFromMaps);
+    manager.progenyHandler.getChildren().forEach(removeFromMaps);
 
     delete managers[id];
     delete reducers[id];

@@ -3,30 +3,23 @@ import { SagaGenerator } from "../../generics";
 import {
   CombinedState,
   Validator,
-  Payload,
   PersistedItem,
   MutablePayloadMap,
   Errors,
   Manager,
+  ManagerProgenyHandler,
   CreateAction,
   DestroyAction,
   ModifyAction,
   SetAction,
   SetVisibilityFilterAction,
-  ManagerRelationship,
   StateSelectorMap
 } from "./types";
 import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
 import { makeManagerActionCreators } from "./manager-action-creators";
 import { makeManagerReducer } from "./manager-reducer";
-import {
-  addCreateSagas,
-  addDestroySagas,
-  addModifySagas,
-  addSetSagas,
-  addSetVisibilityFilterSagas
-} from "./sagas";
+import { makeManagerProgenyHandler } from "./manager-progeny-handler";
 
 let counter = 0;
 
@@ -125,59 +118,6 @@ export const makeManager = <T>(
     });
   }
 
-  const children: Set<Manager<any>> = new Set();
-
-  const addChild = <U>(
-    childManagerId: string,
-    {
-      adaptToParent,
-      adaptToChild,
-      relationship,
-      selectionId
-    }: {
-      adaptToParent?: (payload: Payload<U>) => Payload<T>;
-      adaptToChild?: (payload: Payload<T>) => Payload<U>;
-      relationship: ManagerRelationship;
-      selectionId?: string;
-    }
-  ) => {
-    const childManager = makeManager<U>(childManagerId, managerId);
-
-    const sagaArgs = {
-      manager,
-      childManager,
-      adaptToChild,
-      adaptToParent,
-      relationship,
-      selectionId
-    };
-
-    addCreateSagas(sagaArgs);
-    addDestroySagas(sagaArgs);
-    addModifySagas(sagaArgs);
-    addSetSagas(sagaArgs);
-    addSetVisibilityFilterSagas(sagaArgs);
-
-    children.add(childManager);
-
-    return childManager;
-  };
-
-  const getChildren = () => Array.from(children);
-  const getDescendants = () => {
-    let descendants: Manager<any>[] = [];
-
-    for (let manager of children.values()) {
-      descendants.push(manager);
-
-      if (manager.getChildren().length) {
-        descendants = descendants.concat(manager.getDescendants());
-      }
-    }
-
-    return descendants;
-  };
-
   const manager = {
     managerId,
     CONSTS,
@@ -185,11 +125,18 @@ export const makeManager = <T>(
     stateSelectors,
     reducer,
     sagaManager,
-    addChild,
-    getChildren,
-    getDescendants,
-    addValidator
+    addValidator,
+    get progenyHandler(): ManagerProgenyHandler<T> {
+      throw new Error("Manager.progenyHandler accessed before being set");
+    }
   };
+
+  Object.defineProperty(manager, "progenyHandler", {
+    value: makeManagerProgenyHandler<T>(manager, makeManager),
+    writable: false,
+    enumerable: true,
+    configurable: false
+  });
 
   return manager;
 };

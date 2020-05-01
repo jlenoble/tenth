@@ -37,14 +37,17 @@ const adaptToParent = (todoView: Payload<TodoView>): Payload<Todo> => ({
 });
 
 const todosViewId = "todosView";
-const todosViewManager = todosManager.addChild<TodoView>(todosViewId, {
-  adaptToParent,
-  adaptToChild,
-  relationship: ManagerRelationship.MAP
-});
+const todosViewManager = todosManager.progenyHandler.addChild<TodoView>(
+  todosViewId,
+  {
+    adaptToParent,
+    adaptToChild,
+    relationship: ManagerRelationship.MAP
+  }
+);
 
 const todosROOTViewId = "todosROOTView";
-const todosROOTViewManager = todosViewManager.addChild<TodoView>(
+const todosROOTViewManager = todosViewManager.progenyHandler.addChild<TodoView>(
   todosROOTViewId,
   {
     relationship: ManagerRelationship.FILTER,

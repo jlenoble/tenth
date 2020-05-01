@@ -13,17 +13,7 @@ export type Manager<T> = Readonly<{
   stateSelectors: StateSelectorMap<T>;
   reducer: ManagerReducer<T>;
   sagaManager: SagaManager;
-  addChild: <U>(
-    childManagerId: string,
-    options: {
-      adaptToParent?: (payload: Payload<U>) => Payload<T>;
-      adaptToChild?: (payload: Payload<T>) => Payload<U>;
-      relationship: ManagerRelationship;
-      selectionId?: string;
-    }
-  ) => Manager<U>;
-  getChildren: () => readonly Manager<any>[];
-  getDescendants: () => readonly Manager<any>[];
+  progenyHandler: ManagerProgenyHandler<T>;
   addValidator: (validate: Validator<T>) => void;
 }>;
 
@@ -38,3 +28,24 @@ export enum ManagerRelationship {
   FILTER,
   SELECT
 }
+export type ManagerProgenyHandler<T> = Readonly<{
+  addChild: <U>(
+    childManagerId: string,
+    options: {
+      adaptToParent?: (payload: Payload<U>) => Payload<T>;
+      adaptToChild?: (payload: Payload<T>) => Payload<U>;
+      relationship: ManagerRelationship;
+      selectionId?: string;
+    }
+  ) => Manager<U>;
+
+  hasChild: (managerId: string) => boolean;
+  hasDescendant: (managerId: string) => boolean;
+  hasChildren: () => boolean;
+  hasDescendants: () => boolean;
+
+  getChild: (managerId: string) => Manager<any> | undefined;
+  getDescendant: (managerId: string) => Manager<any> | undefined;
+  getChildren: () => readonly Manager<any>[];
+  getDescendants: () => readonly Manager<any>[];
+}>;
