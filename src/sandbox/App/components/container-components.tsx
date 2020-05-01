@@ -65,40 +65,38 @@ export const ListCard = ({
   }
 
   return (
-    <DragDropContext onDragEnd={(dropResult: DropResult) => {}}>
-      <CoreListCard
-        droppableId="drop-area"
-        title={"ITEMS"}
-        addItemProps={{
-          add: (input: string = "") => create({ primary: input })
-        }}
-        listItems={Array.from(views.entries()).map(([itemId, payload]) => {
-          return {
-            itemId,
-            ...payload,
-            checkboxProps: {
-              onClick: () =>
-                update(itemId, { ...payload, checked: !payload.checked })
-            },
-            primaryEnter: (value: string) =>
-              update(itemId, { ...payload, primary: value }),
-            deleteButtonProps: {
-              onClick: () => close(itemId)
-            },
-            expandButtonProps: {
-              onClick: () => console.log("expand", itemId)
-            }
-          };
-        })}
-        cardHeaderProps={{
-          action: (
-            <Menu
-              visibilityFilter={visibilityFilter}
-              setVisibilityFilter={setVisibilityFilter}
-            />
-          )
-        }}
-      />
-    </DragDropContext>
+    <CoreListCard
+      droppableId="drop-area"
+      title={"ITEMS"}
+      addItemProps={{
+        add: (input: string = "") => create({ primary: input })
+      }}
+      listItems={Array.from(views.entries()).map(([itemId, payload]) => {
+        return {
+          itemId,
+          ...payload,
+          checkboxProps: {
+            onClick: () =>
+              update(itemId, { ...payload, checked: !payload.checked })
+          },
+          primaryEnter: (value: string) =>
+            update(itemId, { ...payload, primary: value }),
+          deleteButtonProps: {
+            onClick: () => close(itemId)
+          },
+          expandButtonProps: {
+            onClick: () => console.log("expand", itemId)
+          }
+        };
+      })}
+      cardHeaderProps={{
+        action: (
+          <Menu
+            visibilityFilter={visibilityFilter}
+            setVisibilityFilter={setVisibilityFilter}
+          />
+        )
+      }}
+    />
   );
 };

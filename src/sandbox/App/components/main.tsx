@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { ListItemProps } from "../../../core";
 import { Payload, ManagerRelationship } from "../types";
 import { makeManager } from "../manager";
@@ -57,11 +58,13 @@ export const combinedManager = makeCombinedManager([todosManager]);
 
 export const Main: FunctionComponent = () => {
   return (
-    <ViewManager
-      key={todosROOTViewId}
-      manager={todosROOTViewManager}
-      Component={MainView}
-    />
+    <DragDropContext onDragEnd={(dropResult: DropResult) => {}}>
+      <ViewManager
+        key={todosROOTViewId}
+        manager={todosROOTViewManager}
+        Component={MainView}
+      />
+    </DragDropContext>
   );
 };
 
