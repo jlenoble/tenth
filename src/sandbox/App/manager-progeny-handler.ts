@@ -9,7 +9,8 @@ import {
   addDestroySagas,
   addModifySagas,
   addSetSagas,
-  addSetVisibilityFilterSagas
+  addSetVisibilityFilterSagas,
+  addExpandSagas
 } from "./sagas";
 
 export const makeManagerProgenyHandler = <T>(
@@ -53,6 +54,7 @@ export const makeManagerProgenyHandler = <T>(
     addModifySagas(sagaArgs);
     addSetSagas(sagaArgs);
     addSetVisibilityFilterSagas(sagaArgs);
+    addExpandSagas(sagaArgs);
 
     children.set(childManagerId, childManager);
 

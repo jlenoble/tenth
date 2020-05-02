@@ -39,6 +39,7 @@ export const ListCard = ({
   create,
   close,
   update,
+  expand,
   visibilityFilter,
   setVisibilityFilter
 }: ContainerComponentProps<TodoView>) => {
@@ -82,7 +83,7 @@ export const ListCard = ({
             onClick: () => close(itemId)
           },
           expandButtonProps: {
-            onClick: () => console.log("expand", itemId)
+            onClick: () => expand(itemId, true)
           }
         };
       })}

@@ -30,5 +30,8 @@ export type ActionCreatorMap<T> = {
     visibilityFilter: VisibilityFilter
   ) => ManagerAction<T>;
 
+  expand: (itemId: string, expanded: boolean) => ManagerAction<T>;
+  doExpand: (itemId: string, expanded: boolean) => ManagerAction<T>;
+
   ready: () => ManagerAction<T>;
 };

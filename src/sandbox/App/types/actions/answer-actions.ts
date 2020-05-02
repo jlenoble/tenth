@@ -41,6 +41,12 @@ export type DoSetVisibilityFilterAction = {
   visibilityFilter: VisibilityFilter;
 };
 
+export type DoExpandAction = {
+  type: ManagerConsts["DO_EXPAND"];
+  itemId: string;
+  expanded: boolean;
+};
+
 export type ManagerAnswerAction<T> =
   | DoCreateAction<T>
   | DoDestroyAction
@@ -48,4 +54,5 @@ export type ManagerAnswerAction<T> =
   | DoSetAction<T>
   | DoClearAction
   | DoMoveAction
-  | DoSetVisibilityFilterAction;
+  | DoSetVisibilityFilterAction
+  | DoExpandAction;

@@ -13,6 +13,7 @@ import {
   ModifyAction,
   SetAction,
   SetVisibilityFilterAction,
+  ExpandAction,
   StateSelectorMap
 } from "./types";
 import { makeSagaManager } from "./saga-manager";
@@ -28,7 +29,14 @@ export const makeManager = <T>(
   parentManagerId?: string
 ): Manager<T> => {
   const CONSTS = makeManagerConstants(managerId);
-  const { CREATE, DESTROY, MODIFY, SET, SET_VISIBILITY_FILTER } = CONSTS;
+  const {
+    CREATE,
+    DESTROY,
+    MODIFY,
+    SET,
+    SET_VISIBILITY_FILTER,
+    EXPAND
+  } = CONSTS;
 
   const actionCreators = makeManagerActionCreators<T>(CONSTS);
   const {
@@ -36,7 +44,8 @@ export const makeManager = <T>(
     doDestroy,
     doModify,
     doSet,
-    doSetVisibilityFilter
+    doSetVisibilityFilter,
+    doExpand
   } = actionCreators;
 
   const reducer = makeManagerReducer<T>(CONSTS);
@@ -115,6 +124,11 @@ export const makeManager = <T>(
         SET_VISIBILITY_FILTER
       );
       yield put(doSetVisibilityFilter(visibilityFilter));
+    });
+
+    sagaManager.add(EXPAND, function* (): SagaGenerator {
+      const { itemId }: ExpandAction = yield take(EXPAND);
+      yield put(doExpand(itemId, true));
     });
   }
 

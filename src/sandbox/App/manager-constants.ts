@@ -9,7 +9,8 @@ const makeConstants = (managerId: string, prefix: "" | "DO_" = "") => {
     [prefix + "CLEAR"]: managerId + "_" + prefix + "CLEAR",
     [prefix + "MOVE"]: managerId + "_" + prefix + "MOVE",
     [prefix + "SET_VISIBILITY_FILTER"]:
-      managerId + "_" + prefix + "SET_VISIBILITY_FILTER"
+      managerId + "_" + prefix + "SET_VISIBILITY_FILTER",
+    [prefix + "EXPAND"]: managerId + "_" + prefix + "EXPAND"
   };
 };
 

@@ -32,6 +32,9 @@ export const makeManagerActionCreators = <T>(
     SET_VISIBILITY_FILTER,
     DO_SET_VISIBILITY_FILTER,
 
+    EXPAND,
+    DO_EXPAND,
+
     READY
   } = CONSTS;
 
@@ -125,6 +128,18 @@ export const makeManagerActionCreators = <T>(
     visibilityFilter
   });
 
+  const expand = (itemId: string, expanded: boolean): ManagerAction<T> => ({
+    type: EXPAND,
+    itemId,
+    expanded
+  });
+
+  const doExpand = (itemId: string, expanded: boolean): ManagerAction<T> => ({
+    type: DO_EXPAND,
+    itemId,
+    expanded
+  });
+
   const ready = (): ManagerAction<T> => ({
     type: READY
   });
@@ -146,6 +161,9 @@ export const makeManagerActionCreators = <T>(
 
     setVisibilityFilter,
     doSetVisibilityFilter,
+
+    expand,
+    doExpand,
 
     ready
   };

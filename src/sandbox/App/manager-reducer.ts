@@ -21,7 +21,8 @@ export const makeManagerReducer = <T>(
     DO_MODIFY,
     DO_SET,
     DO_CLEAR,
-    DO_SET_VISIBILITY_FILTER
+    DO_SET_VISIBILITY_FILTER,
+    DO_EXPAND
   } = CONSTS;
 
   const reducer = (
@@ -76,6 +77,22 @@ export const makeManagerReducer = <T>(
 
         case DO_SET_VISIBILITY_FILTER: {
           return { ...state, visibilityFilter: action.visibilityFilter };
+        }
+
+        case DO_EXPAND: {
+          const { itemId, expanded } = action;
+
+          if (!state.selections.has(itemId) && expanded) {
+            const newSelections = new Map(state.selections);
+            newSelections.set(itemId, []);
+            return { ...state, selections: newSelections };
+          } else if (state.selections.has(itemId) && !expanded) {
+            const newSelections = new Map(state.selections);
+            newSelections.delete(itemId);
+            return { ...state, selections: newSelections };
+          }
+
+          return state;
         }
       }
     }

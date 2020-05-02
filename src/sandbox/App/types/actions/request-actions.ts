@@ -40,6 +40,12 @@ export type SetVisibilityFilterAction = {
   visibilityFilter: VisibilityFilter;
 };
 
+export type ExpandAction = {
+  type: ManagerConsts["EXPAND"];
+  itemId: string;
+  expanded: boolean;
+};
+
 export type ManagerRequestAction<T> =
   | CreateAction<T>
   | DestroyAction
@@ -47,4 +53,5 @@ export type ManagerRequestAction<T> =
   | SetAction<T>
   | ClearAction
   | MoveAction
-  | SetVisibilityFilterAction;
+  | SetVisibilityFilterAction
+  | ExpandAction;
