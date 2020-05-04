@@ -9,6 +9,7 @@
 /coverage
 /cypress/videos
 /dev-build
+__types__
 
 # production
 /build

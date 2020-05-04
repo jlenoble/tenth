@@ -1,5 +1,7 @@
 import { ApolloServer } from "apollo-server";
-import { typeDefs } from "./schemas/schema";
+import { importSchema } from "graphql-import";
+
+const typeDefs = importSchema("./schemas/schema");
 
 const server = new ApolloServer({ typeDefs });
 
