@@ -2839,6 +2839,17 @@ apollo-cache-control@^0.9.1:
     apollo-server-env "^2.4.3"
     graphql-extensions "^0.11.1"
 
+apollo-datasource-rest@^0.8.1:
+  version "0.8.1"
+  resolved "http://localhost:4873/apollo-datasource-rest/-/apollo-datasource-rest-0.8.1.tgz#362ccb24d1307f873ccd5fcd8e6d1778cfa5d657"
+  integrity sha512-vbpkw6DJ+UByxyx8Fq/hqm3Wqe+gSRBf1qvan7uoWfh5/ScTDmLLfRSyyBW8rjLc9/MEs5utl0vWy6Do+5I3GA==
+  dependencies:
+    apollo-datasource "^0.7.0"
+    apollo-server-caching "^0.5.1"
+    apollo-server-env "^2.4.3"
+    apollo-server-errors "^2.4.1"
+    http-cache-semantics "^4.0.0"
+
 apollo-datasource@^0.7.0:
   version "0.7.0"
   resolved "http://localhost:4873/apollo-datasource/-/apollo-datasource-0.7.0.tgz#2a6d82edb2eba21b4ddf21877009ba39ff821945"
@@ -7187,6 +7198,11 @@ htmlparser2@^3.3.0:
     entities "^1.1.1"
     inherits "^2.0.1"
     readable-stream "^3.1.1"
+
+http-cache-semantics@^4.0.0:
+  version "4.1.0"
+  resolved "http://localhost:4873/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
+  integrity sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==
 
 http-deceiver@^1.2.7:
   version "1.2.7"
