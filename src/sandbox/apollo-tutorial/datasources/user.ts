@@ -37,7 +37,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     return users && users[0] ? users[0] : null;
   }
 
-  async bookTrips({ launchIds }: { launchIds: readonly number[] }) {
+  async bookTrips({ launchIds }: { launchIds: readonly string[] }) {
     const userId = this.context?.user?.id;
     if (!userId) return;
 
@@ -53,7 +53,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     return results;
   }
 
-  async bookTrip({ launchId }: { launchId: number }) {
+  async bookTrip({ launchId }: { launchId: string }) {
     const userId = this.context?.user?.id;
     if (!userId) return;
 
@@ -63,7 +63,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     return res && res.length ? res[0].get() : false;
   }
 
-  async cancelTrip({ launchId }: { launchId: number }) {
+  async cancelTrip({ launchId }: { launchId: string }) {
     const userId = this.context?.user?.id;
     if (!userId) return;
 
@@ -83,7 +83,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
       : [];
   }
 
-  async isBookedOnLaunch({ launchId }: { launchId: number }) {
+  async isBookedOnLaunch({ launchId }: { launchId: string }) {
     if (!this.context || !this.context.user) return false;
 
     const userId = this.context.user.id;

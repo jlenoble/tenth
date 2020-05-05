@@ -1,4 +1,4 @@
-import { GQLUser } from "./__types__/schema";
+import { GQLLaunch, GQLUser } from "./__types__/schema";
 import { LaunchAPI } from "./datasources/launch";
 import { UserAPI } from "./datasources/user";
 import { paginateResults } from "./utils";
@@ -33,9 +33,46 @@ export const resolvers = {
           : false
       };
     },
-    launch: (_: any, { id }: { id: number }, { dataSources }: Context) =>
+    launch: (_: any, { id }: { id: string }, { dataSources }: Context) =>
       dataSources.launchAPI.getLaunchById({ launchId: id }),
     me: (_: any, __: any, { dataSources }: Context) =>
       dataSources.userAPI.findOrCreateUser()
+  },
+
+  Mission: {
+    // make sure the default size is 'large' in case user doesn't specify
+    missionPatch: (
+      mission: {
+        name: string;
+        missionPatchSmall: string;
+        missionPatchLarge: string;
+      },
+      { size } = { size: "LARGE" }
+    ) => {
+      return size === "SMALL"
+        ? mission.missionPatchSmall
+        : mission.missionPatchLarge;
+    }
+  },
+
+  Launch: {
+    isBooked: async (launch: GQLLaunch, _: any, { dataSources }: Context) =>
+      dataSources.userAPI.isBookedOnLaunch({ launchId: launch.id })
+  },
+
+  User: {
+    trips: async (_: any, __: any, { dataSources }: Context) => {
+      // get ids of launches by user
+      const launchIds = await dataSources.userAPI.getLaunchIdsByUser();
+
+      if (!launchIds || !launchIds.length) return [];
+
+      // look up those launches by their ids
+      return (
+        dataSources.launchAPI.getLaunchesByIds({
+          launchIds
+        }) || []
+      );
+    }
   }
 };

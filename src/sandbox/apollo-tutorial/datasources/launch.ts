@@ -29,14 +29,14 @@ export class LaunchAPI extends RESTDataSource {
     };
   }
 
-  async getLaunchById({ launchId }: { launchId: number }) {
+  async getLaunchById({ launchId }: { launchId: string }) {
     const response = await this.get("launches", {
-      flight_number: launchId
+      flight_number: parseInt(launchId, 10)
     } as Partial<GQLLaunch>);
     return this.launchReducer(response[0]);
   }
 
-  getLaunchesByIds({ launchIds }: { launchIds: readonly number[] }) {
+  getLaunchesByIds({ launchIds }: { launchIds: readonly string[] }) {
     return Promise.all(
       launchIds.map((launchId) => this.getLaunchById({ launchId }))
     );

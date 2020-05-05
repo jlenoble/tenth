@@ -23,7 +23,7 @@ export type TripDataType = {
   };
   createdAt: Date;
   updatedAt: Date;
-  launchId: number;
+  launchId: string;
   userId: number;
 };
 
