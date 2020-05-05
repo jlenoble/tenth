@@ -3,11 +3,13 @@ import { importSchema } from "graphql-import";
 import path from "path";
 import { createStore, User } from "./utils";
 import { resolvers } from "./resolvers";
-import { LaunchAPI } from "./datasources/launch";
-import { UserAPI } from "./datasources/user";
+import { LaunchAPI } from "../datasources/launch";
+import { UserAPI } from "../datasources/user";
 import isEmail from "isemail";
 
-const typeDefs = importSchema(path.join(__dirname, "schemas/schema.graphql"));
+const typeDefs = importSchema(
+  path.join(__dirname, "../schemas/schema.graphql")
+);
 
 const store = createStore();
 

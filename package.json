@@ -19,7 +19,7 @@
     "e2e": "cypress open",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
-    "start-apollo": "node ./dev-build/src/sandbox/apollo-tutorial/index.js"
+    "start-apollo": "node ./dev-build/src/sandbox/apollo-tutorial/server/index.js"
   },
   "eslintConfig": {
     "extends": "react-app"

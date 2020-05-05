@@ -1,6 +1,6 @@
-import { GQLLaunch, GQLUser } from "./__types__/schema";
-import { LaunchAPI } from "./datasources/launch";
-import { UserAPI } from "./datasources/user";
+import { GQLLaunch, GQLUser } from "../__types__/schema";
+import { LaunchAPI } from "../datasources/launch";
+import { UserAPI } from "../datasources/user";
 import { paginateResults } from "./utils";
 
 type Context = {
