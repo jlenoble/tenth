@@ -9,16 +9,16 @@ const copyGlob = [
   path.join(path.join(srcDir, "sandbox/**/*.graphql"))
 ];
 
-function copyJson() {
+function copyFiles() {
   return gulp
     .src(copyGlob, { base: "." })
     .pipe(newer(buildDir))
     .pipe(gulp.dest(buildDir));
 }
 
-function watchJson(done) {
-  gulp.watch(copyGlob, copyJson);
+function watchFiles(done) {
+  gulp.watch(copyGlob, copyFiles);
   done();
 }
 
-gulp.task("copy", gulp.series(copyJson, watchJson));
+gulp.task("copy", gulp.series(copyFiles, watchFiles));
