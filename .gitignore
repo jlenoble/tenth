@@ -10,6 +10,7 @@
 /cypress/videos
 /dev-build
 __types__
+store.sqlite
 
 # production
 /build
