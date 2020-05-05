@@ -1,12 +1,4 @@
-import {
-  Sequelize,
-  ModelCtor,
-  Model,
-  INTEGER,
-  DATE,
-  STRING,
-  Op
-} from "sequelize";
+import { Sequelize, ModelCtor, Model, INTEGER, DATE, STRING } from "sequelize";
 
 export type UserDataType = {
   id: {
@@ -72,14 +64,9 @@ export type Store = {
 // };
 
 export const createStore = (): Store => {
-  const operatorsAliases = {
-    $in: Op.in
-  };
-
   const db = new Sequelize("database", "username", "password", {
     dialect: "sqlite",
     storage: "./store.sqlite",
-    operatorsAliases,
     logging: false
   });
 
