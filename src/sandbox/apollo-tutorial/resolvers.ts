@@ -39,6 +39,59 @@ export const resolvers = {
       dataSources.userAPI.findOrCreateUser()
   },
 
+  Mutation: {
+    bookTrips: async (
+      _: any,
+      { launchIds }: { launchIds: readonly string[] },
+      { dataSources }: Context
+    ) => {
+      const results = await dataSources.userAPI.bookTrips({ launchIds });
+      const launches = await dataSources.launchAPI.getLaunchesByIds({
+        launchIds
+      });
+
+      return {
+        success: results && results.length === launchIds.length,
+        message:
+          results && results.length === launchIds.length
+            ? "trips booked successfully"
+            : `the following launches couldn't be booked: ${launchIds.filter(
+                (id) =>
+                  results && !results.find((res) => res.id === parseInt(id, 10))
+              )}`,
+        launches
+      };
+    },
+    cancelTrip: async (
+      _: any,
+      { launchId }: { launchId: string },
+      { dataSources }: Context
+    ) => {
+      const result = await dataSources.userAPI.cancelTrip({ launchId });
+
+      if (!result)
+        return {
+          success: false,
+          message: "failed to cancel trip"
+        };
+
+      const launch = await dataSources.launchAPI.getLaunchById({ launchId });
+      return {
+        success: true,
+        message: "trip cancelled",
+        launches: [launch]
+      };
+    },
+    login: async (
+      _: any,
+      { email }: { email: string },
+      { dataSources }: Context
+    ) => {
+      const user = await dataSources.userAPI.findOrCreateUser({ email });
+      if (user) return Buffer.from(email).toString("base64");
+    }
+  },
+
   Mission: {
     // make sure the default size is 'large' in case user doesn't specify
     missionPatch: (
