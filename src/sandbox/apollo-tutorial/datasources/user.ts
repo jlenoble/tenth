@@ -1,7 +1,7 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import isEmail from "isemail";
 import { GQLUser } from "../__types__/schema";
-import { Store, Trip } from "../utils";
+import { Store, Trip, User, TripDataType } from "../utils";
 
 export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
   Context
@@ -33,7 +33,9 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     const email = this.context?.user?.email || emailArg;
     if (!email || !isEmail.validate(email)) return null;
 
-    const users = await this.store.users.findOrCreate({ where: { email } });
+    const users = await this.store.users.findOrCreate<User>({
+      where: { email }
+    });
     return users && users[0] ? users[0] : null;
   }
 
@@ -57,10 +59,10 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     const userId = this.context?.user?.id;
     if (!userId) return;
 
-    const res = await this.store.trips.findOrCreate({
+    const res = await this.store.trips.findOrCreate<Trip>({
       where: { userId, launchId }
     });
-    return res && res.length ? res[0].get() : false;
+    return res && res.length ? (res[0].get() as { id: number }) : false;
   }
 
   async cancelTrip({ launchId }: { launchId: string }) {
@@ -74,9 +76,9 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     const userId = this.context?.user?.id;
     if (!userId) return;
 
-    const found = (await this.store.trips.findAll({
+    const found = await this.store.trips.findAll<Trip>({
       where: { userId }
-    })) as Trip[];
+    });
 
     return found && found.length
       ? found.map((l) => l.dataValues.launchId).filter((l) => !!l)
@@ -87,7 +89,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     if (!this.context || !this.context.user) return false;
 
     const userId = this.context.user.id;
-    const found = await this.store.trips.findAll({
+    const found = await this.store.trips.findAll<Trip>({
       where: { userId, launchId }
     });
 
