@@ -2,9 +2,9 @@ import React from "react";
 import { render, within } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
 import { tmpId } from "../todo";
-import { AppFactory, getMenuButton } from "../__testHelpers__";
+import { appFactory, getMenuButton } from "../__testHelpers__";
 
-const App = AppFactory((item, i) => ({
+const App = appFactory((item, i) => ({
   id: tmpId(),
   title: i ? item : "",
   completed: !(i % 2),

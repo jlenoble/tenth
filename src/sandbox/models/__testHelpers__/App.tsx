@@ -9,7 +9,7 @@ import { combinedReducer } from "../reducers";
 import { mainSaga } from "../sagas";
 import { VisibilityFilter } from "../types";
 
-export const AppFactory: (
+export const appFactory: (
   fn: (
     item: string,
     i: number
@@ -47,7 +47,7 @@ export const AppFactory: (
   );
 };
 
-export const App: FunctionComponent<{ items: string[] }> = AppFactory(
+export const App: FunctionComponent<{ items: string[] }> = appFactory(
   (item) => ({
     id: tmpId(),
     title: item,
