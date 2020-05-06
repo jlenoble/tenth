@@ -25,15 +25,15 @@ export default class LoginForm extends Component<
 > {
   state = { email: "" };
 
-  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const email = (event.target as HTMLInputElement).value;
     this.setState((s) => ({ email }));
-  };
+  }
 
-  onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     this.props.login({ variables: { email: this.state.email } });
-  };
+  }
 
   render() {
     return (
