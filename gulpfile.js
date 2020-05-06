@@ -19,6 +19,40 @@ const autoTask = "tdd";
 
 usePlumbedGulpSrc();
 
+// define regeneration functions
+function transpileGulp() {
+  return gulp
+    .src(gulpSrc, {
+      base: ".",
+    })
+    .pipe(newer(buildDir))
+    .pipe(debug({ title: "Build gulp include:" }))
+    .pipe(babel())
+    .on("error", (err) => {
+      log(chalk.red(err.stack));
+    })
+    .pipe(gulp.dest(buildDir));
+}
+
+function watchGulp(done) {
+  gulp.watch(gulpSrc, transpileGulp);
+  done();
+}
+
+const srcGulpDir = "gulp";
+const copyGlob = [
+  path.join(srcGulpDir, "**/*.json"),
+  path.join(srcGulpDir, "**/.*.json"),
+];
+
+function copy() {
+  return gulp
+    .src(copyGlob, { base: "." })
+    .pipe(newer(buildDir))
+    .pipe(debug({ title: "Build gulp include:" }))
+    .pipe(gulp.dest(buildDir));
+}
+
 try {
   // Attempt to load all include files from gulpDir
   fs.readdirSync(gulpDir)
@@ -50,40 +84,6 @@ try {
 
   // First make sure to abort on first subsequent error
   useOriginalGulpSrc();
-
-  // define regeneration functions
-  function transpileGulp() {
-    return gulp
-      .src(gulpSrc, {
-        base: ".",
-      })
-      .pipe(newer(buildDir))
-      .pipe(debug({ title: "Build gulp include:" }))
-      .pipe(babel())
-      .on("error", (err) => {
-        log(chalk.red(err.stack));
-      })
-      .pipe(gulp.dest(buildDir));
-  }
-
-  function watchGulp(done) {
-    gulp.watch(gulpSrc, transpileGulp);
-    done();
-  }
-
-  const gulpDir = "gulp";
-  const copyGlob = [
-    path.join(gulpDir, "**/*.json"),
-    path.join(gulpDir, "**/.*.json"),
-  ];
-
-  function copy() {
-    return gulp
-      .src(copyGlob, { base: "." })
-      .pipe(newer(buildDir))
-      .pipe(debug({ title: "Build gulp include:" }))
-      .pipe(gulp.dest(buildDir));
-  }
 
   // Distinguish between missing gulpDir ...
   if (
