@@ -41,7 +41,7 @@ export function CurrentTodo({ viewId }: { viewId: string }) {
 
     todo = newTodo;
     partId = todo.id;
-  } while (1);
+  } while (todo);
 
   const id = todo?.id;
 
