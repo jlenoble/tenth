@@ -6,7 +6,7 @@ import { buildDir, srcDir, gulpDir } from "./helpers/dirs";
 const copyGlob = [
   path.join(path.join(gulpDir, "**/*.json")),
   path.join(path.join(gulpDir, "**/.*.json")),
-  path.join(path.join(srcDir, "sandbox/**/*.graphql"))
+  path.join(path.join(srcDir, "**/*.graphql")),
 ];
 
 function copyFiles() {

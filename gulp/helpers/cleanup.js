@@ -14,7 +14,7 @@ export default function cleanUp(handler) {
 
   handlers.add(handler);
 
-  originalCleanUp(function (exitCode, signal) {
+  originalCleanUp((exitCode, signal) => {
     const exit = false; // Exit explicitly and only if last child, see below
 
     if (!signal) {
@@ -116,7 +116,9 @@ function keepAlive(cb) {
           break; // Child process has returned
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      // Do nothing
+    }
   }
 
   cb();

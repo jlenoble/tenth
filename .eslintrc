@@ -1,0 +1,44 @@
+{
+  "root": true,
+  "env": { "browser": true, "es2020": true, "node": true },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {}
+  },
+  "plugins": [],
+  "extends": [
+    "eslint:recommended",
+    "google",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "require-jsdoc": ["off"],
+    "prefer-arrow-callback": ["error"]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "env": { "browser": true, "es2020": true, "node": true },
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "ecmaFeatures": {}
+      },
+      "plugins": [],
+      "extends": [
+        "eslint:recommended",
+        "google",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint"
+      ],
+      "rules": {
+        "require-jsdoc": ["off"],
+        "prefer-arrow-callback": ["error"]
+      }
+    }
+  ]
+}

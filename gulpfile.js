@@ -4,7 +4,7 @@ const gulp = require("gulp");
 const babel = require("gulp-babel");
 const newer = require("gulp-newer");
 const debug = require("gulp-debug");
-const gutil = require("gulp-util");
+const log = require("fancy-log");
 const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
@@ -22,10 +22,10 @@ usePlumbedGulpSrc();
 try {
   // Attempt to load all include files from gulpDir
   fs.readdirSync(gulpDir)
-    .filter(function (filename) {
+    .filter((filename) => {
       return filename.match(/\.js$/);
     })
-    .forEach(function (filename) {
+    .forEach((filename) => {
       require(path.join(process.cwd(), gulpDir, filename));
     });
 
@@ -51,20 +51,17 @@ try {
   // First make sure to abort on first subsequent error
   useOriginalGulpSrc();
 
-  // Load special babel config
-  const babelRc = require("./gulp/helpers/.babelrc.json");
-
   // define regeneration functions
   function transpileGulp() {
     return gulp
       .src(gulpSrc, {
-        base: "."
+        base: ".",
       })
       .pipe(newer(buildDir))
       .pipe(debug({ title: "Build gulp include:" }))
-      .pipe(babel(babelRc))
-      .on("error", function (err) {
-        gutil.log(chalk.red(err.stack));
+      .pipe(babel())
+      .on("error", (err) => {
+        log(chalk.red(err.stack));
       })
       .pipe(gulp.dest(buildDir));
   }
@@ -77,7 +74,7 @@ try {
   const gulpDir = "gulp";
   const copyGlob = [
     path.join(gulpDir, "**/*.json"),
-    path.join(gulpDir, "**/.*.json")
+    path.join(gulpDir, "**/.*.json"),
   ];
 
   function copy() {
@@ -94,12 +91,12 @@ try {
     err.message.match(/Task never defined/) ||
     err.message.match(/Cannot find module '\.\.?\//)
   ) {
-    gutil.log(chalk.red(err.message));
-    gutil.log(chalk.yellow(`'${gulpDir}/**/*.js' incomplete; Regenerating`));
+    log(chalk.red(err.message));
+    log(chalk.yellow(`'${gulpDir}/**/*.js' incomplete; Regenerating`));
 
     // ... And errors due to corrupted files
   } else {
-    gutil.log(chalk.red(err.stack));
+    log(chalk.red(err.stack));
   }
 
   gulp.task(autoTask, watchGulp);
