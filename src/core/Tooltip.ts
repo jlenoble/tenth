@@ -9,6 +9,6 @@ export const ErrorTooltip = withStyles((theme: Theme) => ({
     color: "white",
     maxWidth,
     fontSize: theme.typography.pxToRem(12),
-    border: "1px solid " + theme.palette.error.light
-  }
+    border: "1px solid " + theme.palette.error.light,
+  },
 }))(Tooltip);

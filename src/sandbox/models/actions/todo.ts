@@ -10,7 +10,7 @@ import {
   DELETE_TODO,
   TOGGLE_TODO,
   MOVE_TODO,
-  EXPAND_TODO
+  EXPAND_TODO,
 } from "../constants";
 import { Todos, TodoState, TodoStates } from "../types";
 

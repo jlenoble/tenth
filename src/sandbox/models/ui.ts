@@ -21,13 +21,13 @@ export type UIAction = UpdateSubViewAction | CloseSubViewAction;
 export const updateSubView = (meta: { subViewId: string }): UIAction => {
   return {
     type: UPDATE_SUBVIEW,
-    meta
+    meta,
   };
 };
 
 export const closeSubView = (meta: { subViewId: string }): UIAction => {
   return {
     type: CLOSE_SUBVIEW,
-    meta
+    meta,
   };
 };

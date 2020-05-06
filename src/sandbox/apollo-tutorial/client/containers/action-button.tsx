@@ -28,13 +28,12 @@ export const CANCEL_TRIP = gql`
   }
 `;
 
-interface ActionButtonProps
-  extends Partial<LaunchDetailTypes.LaunchDetails_launch> {}
+type ActionButtonProps = Partial<LaunchDetailTypes.LaunchDetails_launch>;
 
 const ActionButton: React.FC<ActionButtonProps> = ({
   isBooked,
   id,
-  isInCart
+  isInCart,
 }) => {
   const [mutate, { loading, error }] = useMutation(
     isBooked ? CANCEL_TRIP : TOGGLE_CART,
@@ -43,9 +42,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       refetchQueries: [
         {
           query: GET_LAUNCH_DETAILS,
-          variables: { launchId: id }
-        }
-      ]
+          variables: { launchId: id },
+        },
+      ],
     }
   );
 

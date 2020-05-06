@@ -9,7 +9,7 @@ import { updateSubView } from "../ui";
 export function* expandTodoSaga(): SagaIterator {
   while (1) {
     const {
-      meta: { viewId, id }
+      meta: { viewId, id },
     }: ExpandTodoAction = yield take(EXPAND_TODO);
     const { views, parts }: TodosState = yield select(
       (state: { todos: TodosState }) => state.todos

@@ -2,7 +2,7 @@ import React, {
   FunctionComponent,
   useState,
   ChangeEvent,
-  KeyboardEvent
+  KeyboardEvent,
 } from "react";
 
 // Dummy fix to help Babel:
@@ -16,7 +16,7 @@ import React, {
 //  of that plugin, please use "scope.registerDeclaration(declarationPath)".
 import {
   TextField as MuiTextField,
-  StandardTextFieldProps
+  StandardTextFieldProps,
 } from "@material-ui/core";
 const TextField = MuiTextField;
 
@@ -47,7 +47,7 @@ export const useTextField = (
   return {
     value,
     changeInput,
-    keyInput
+    keyInput,
   };
 };
 

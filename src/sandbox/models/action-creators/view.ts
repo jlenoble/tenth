@@ -9,13 +9,13 @@ export const addView = (meta: {
 }): TodoActionType => {
   return {
     type: ADD_VIEW,
-    meta
+    meta,
   };
 };
 
 export const updateViews = (meta: { partId: string }): TodoActionType => {
   return {
     type: UPDATE_VIEWS,
-    meta
+    meta,
   };
 };

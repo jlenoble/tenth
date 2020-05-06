@@ -20,7 +20,7 @@ export const BOOK_TRIPS = gql`
   }
 `;
 
-interface BookTripsProps extends GetCartItemsTypes.GetCartItems {}
+type BookTripsProps = GetCartItemsTypes.GetCartItems;
 
 const BookTrips: React.FC<BookTripsProps> = ({ cartItems }) => {
   const [bookTrips, { data }] = useMutation<
@@ -30,11 +30,11 @@ const BookTrips: React.FC<BookTripsProps> = ({ cartItems }) => {
     variables: { launchIds: cartItems },
     refetchQueries: cartItems.map((launchId) => ({
       query: GET_LAUNCH,
-      variables: { launchId }
+      variables: { launchId },
     })),
     update(cache) {
       cache.writeData({ data: { cartItems: [] } });
-    }
+    },
   });
 
   return data && data.bookTrips && !data.bookTrips.success ? (

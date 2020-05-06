@@ -10,7 +10,7 @@ import {
   ADD_PART,
   ADD_VIEW,
   UPDATE_VIEWS,
-  SET_VISIBILITY_FILTER
+  SET_VISIBILITY_FILTER,
 } from "../constants";
 import { TodosState } from "../types";
 import { TodoActionType, rootId, makeView } from "../todo";
@@ -21,10 +21,10 @@ export const todosInitialState: TodosState = {
     [rootId]: {
       partId: rootId,
       visibilityFilter: VisibilityFilter.SHOW_ACTIVE,
-      todos: []
-    }
+      todos: [],
+    },
   },
-  parts: { [rootId]: [] }
+  parts: { [rootId]: [] },
 };
 
 export const todos = (
@@ -45,7 +45,7 @@ export const todos = (
       return {
         todos: todoMap,
         views,
-        parts: { ...parts, [partId]: newTodos }
+        parts: { ...parts, [partId]: newTodos },
       };
     }
 
@@ -56,7 +56,7 @@ export const todos = (
       return {
         todos: { ...todos, [todo.id]: todo },
         views,
-        parts: { ...parts, [partId]: parts[partId].concat(todo) }
+        parts: { ...parts, [partId]: parts[partId].concat(todo) },
       };
     }
 
@@ -73,8 +73,8 @@ export const todos = (
           ...parts,
           [partId]: parts[partId].map((todo) =>
             todo.id === id ? newTodo : todo
-          )
-        }
+          ),
+        },
       };
     }
 
@@ -89,8 +89,8 @@ export const todos = (
         views,
         parts: {
           ...parts,
-          [partId]: parts[partId].filter((todo) => todo.id !== id)
-        }
+          [partId]: parts[partId].filter((todo) => todo.id !== id),
+        },
       };
     }
 
@@ -107,8 +107,8 @@ export const todos = (
           ...parts,
           [partId]: parts[partId].map((todo) =>
             todo.id !== id ? todo : newTodo
-          )
-        }
+          ),
+        },
       };
     }
 
@@ -139,7 +139,7 @@ export const todos = (
         return {
           todos,
           views,
-          parts: { ...parts, [partId]: newTodos }
+          parts: { ...parts, [partId]: newTodos },
         };
       }
 
@@ -160,9 +160,9 @@ export const todos = (
           [viewId]: {
             partId,
             visibilityFilter,
-            todos: []
-          }
-        }
+            todos: [],
+          },
+        },
       };
     }
 
@@ -181,8 +181,8 @@ export const todos = (
             relevantViews.map(([viewId, { visibilityFilter }]) => {
               return [viewId, makeView(partId, visibilityFilter, todos)];
             })
-          )
-        }
+          ),
+        },
       };
     }
 

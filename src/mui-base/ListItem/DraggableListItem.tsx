@@ -3,7 +3,7 @@ import {
   Draggable,
   DraggableProps,
   DraggableProvided,
-  DraggableStateSnapshot
+  DraggableStateSnapshot,
 } from "react-beautiful-dnd";
 import clsx from "clsx";
 import { BaseListItem, BaseListItemPropsWithoutRef } from "./BaseListItem";

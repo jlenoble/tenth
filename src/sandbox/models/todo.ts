@@ -4,7 +4,7 @@ import {
   AddPartAction,
   AddViewAction,
   UpdateViewsAction,
-  SetVisibilityFilterAction
+  SetVisibilityFilterAction,
 } from "./actions";
 
 export type TodoActionType =
@@ -28,7 +28,7 @@ export const makeView = (
       view = {
         partId,
         visibilityFilter,
-        todos: todos.filter((todo) => !todo.checked)
+        todos: todos.filter((todo) => !todo.checked),
       };
       break;
 
@@ -36,7 +36,7 @@ export const makeView = (
       view = {
         partId,
         visibilityFilter,
-        todos: todos.filter((todo) => todo.checked)
+        todos: todos.filter((todo) => todo.checked),
       };
       break;
 
@@ -44,7 +44,7 @@ export const makeView = (
       view = {
         partId,
         visibilityFilter,
-        todos: todos.filter((todo) => !todo.validated)
+        todos: todos.filter((todo) => !todo.validated),
       };
       break;
 

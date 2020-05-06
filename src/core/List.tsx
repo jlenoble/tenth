@@ -5,7 +5,7 @@ import { BaseListItemTextProps } from "./ListItemText";
 import { ListItem, ListItemProps } from "./ListItem";
 import {
   StatefulAddItem as AddItem,
-  StatefulAddItemProps as AddItemProps
+  StatefulAddItemProps as AddItemProps,
 } from "./AddItem";
 
 export interface ListProps {

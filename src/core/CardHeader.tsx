@@ -3,7 +3,7 @@ import {
   CardHeader as MuiCardHeader,
   CardHeaderProps as MuiCardHeaderProps,
   TextFieldProps,
-  TypographyVariant
+  TypographyVariant,
 } from "@material-ui/core";
 import { StatefulInlineText as InlineText } from "./InlineText";
 

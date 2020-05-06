@@ -13,7 +13,7 @@ export const GET_CART_ITEMS = gql`
   }
 `;
 
-interface CartProps extends RouteComponentProps {}
+type CartProps = RouteComponentProps;
 
 const Cart: React.FC<CartProps> = () => {
   const { data, loading, error } = useQuery<GetCartItems>(GET_CART_ITEMS);
@@ -32,7 +32,7 @@ const Cart: React.FC<CartProps> = () => {
             data.cartItems.map((launchId: any) => (
               <CartItem key={launchId} launchId={launchId} />
             ))}
-          <BookTrips cartItems={!!data ? data.cartItems : []} />
+          <BookTrips cartItems={data ? data.cartItems : []} />
         </Fragment>
       )}
     </Fragment>

@@ -3,7 +3,7 @@ import {
   ListItemText as MuiListItemText,
   ListItemTextProps as MuiListItemTextProps,
   TextFieldProps,
-  TypographyVariant
+  TypographyVariant,
 } from "@material-ui/core";
 import { StatefulInlineText as InlineText } from "./InlineText";
 

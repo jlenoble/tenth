@@ -21,20 +21,20 @@ todosManager.addValidator((todo: Todo) => {
 const adaptToChild = (todo: Payload<Todo>): Payload<TodoView> => {
   const childPayload: Payload<TodoView> = {
     checked: todo.completed,
-    primary: todo.title
+    primary: todo.title,
   };
 
   return todo.errors
     ? {
         ...childPayload,
         primaryError: Boolean(todo.errors.length),
-        primaryHelperText: todo.errors.join(", ")
+        primaryHelperText: todo.errors.join(", "),
       }
     : childPayload;
 };
 const adaptToParent = (todoView: Payload<TodoView>): Payload<Todo> => ({
   title: todoView.primary,
-  completed: Boolean(todoView.checked)
+  completed: Boolean(todoView.checked),
 });
 
 const todosViewId = "todosView";
@@ -43,7 +43,7 @@ const todosViewManager = todosManager.progenyHandler.addChild<TodoView>(
   {
     adaptToParent,
     adaptToChild,
-    relationship: ManagerRelationship.MAP
+    relationship: ManagerRelationship.MAP,
   }
 );
 
@@ -52,7 +52,7 @@ const todosROOTViewManager = todosViewManager.progenyHandler.addChild<TodoView>(
   todosROOTViewId,
   {
     relationship: ManagerRelationship.FILTER,
-    selectionId: "ROOT"
+    selectionId: "ROOT",
   }
 );
 

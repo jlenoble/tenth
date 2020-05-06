@@ -14,6 +14,6 @@ export const render = (ui: ReactElement) => {
     dnd: (start: number, end: number) =>
       dragAndDrop(start, end, { getItems, getByText }),
 
-    ...renderResult
+    ...renderResult,
   };
 };

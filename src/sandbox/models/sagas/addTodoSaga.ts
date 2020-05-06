@@ -8,7 +8,7 @@ import { doAddTodo } from "../action-creators";
 export function* addTodoSaga(): SagaIterator {
   while (1) {
     const {
-      meta: { viewId, title }
+      meta: { viewId, title },
     }: AddTodoAction = yield take(ADD_TODO);
     const id = tmpId();
     const errors = validateTitle(title);
@@ -22,9 +22,9 @@ export function* addTodoSaga(): SagaIterator {
               title,
               checked: false,
               validated: false,
-              errors
+              errors,
             }
-          : { id, title, checked: false, validated: true }
+          : { id, title, checked: false, validated: true },
       })
     );
   }

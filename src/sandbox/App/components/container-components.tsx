@@ -10,14 +10,14 @@ export const List = ({
   views,
   create,
   close,
-  update
+  update,
 }: ContainerComponentProps<TodoView>) => {
   return (
     <DragDropContext onDragEnd={(dropResult: DropResult) => {}}>
       <CoreList
         droppableId="drop-area"
         addItemProps={{
-          add: (input: string = "") => create({ primary: input })
+          add: (input = "") => create({ primary: input }),
         }}
         listItems={Array.from(views.entries()).map(([itemId, payload]) => {
           return {
@@ -25,8 +25,8 @@ export const List = ({
             ...payload,
             primaryEnter: (value: string) => update(itemId, { primary: value }),
             deleteButtonProps: {
-              onClick: () => close(itemId)
-            }
+              onClick: () => close(itemId),
+            },
           };
         })}
       />
@@ -41,7 +41,7 @@ export const ListCard = ({
   update,
   expand,
   visibilityFilter,
-  setVisibilityFilter
+  setVisibilityFilter,
 }: ContainerComponentProps<TodoView>) => {
   switch (visibilityFilter) {
     case VisibilityFilter.SHOW_ACTIVE: {
@@ -67,7 +67,7 @@ export const ListCard = ({
       droppableId="drop-area"
       title={"ITEMS"}
       addItemProps={{
-        add: (input: string = "") => create({ primary: input })
+        add: (input = "") => create({ primary: input }),
       }}
       listItems={Array.from(views.entries()).map(([itemId, payload]) => {
         return {
@@ -75,16 +75,16 @@ export const ListCard = ({
           ...payload,
           checkboxProps: {
             onClick: () =>
-              update(itemId, { ...payload, checked: !payload.checked })
+              update(itemId, { ...payload, checked: !payload.checked }),
           },
           primaryEnter: (value: string) =>
             update(itemId, { ...payload, primary: value }),
           deleteButtonProps: {
-            onClick: () => close(itemId)
+            onClick: () => close(itemId),
           },
           expandButtonProps: {
-            onClick: () => expand(itemId, true)
-          }
+            onClick: () => expand(itemId, true),
+          },
         };
       })}
       cardHeaderProps={{
@@ -93,7 +93,7 @@ export const ListCard = ({
             visibilityFilter={visibilityFilter}
             setVisibilityFilter={setVisibilityFilter}
           />
-        )
+        ),
       }}
     />
   );

@@ -11,7 +11,7 @@ describe("TodoList", () => {
     const { getAllByRole } = within(list);
 
     const listitems = getAllByRole("listitem") as HTMLLIElement[];
-    let listitem = listitems[1];
+    const listitem = listitems[1];
     const { getByRole: subGetByRole } = within(listitem);
 
     const alert = subGetByRole("alert") as HTMLDivElement;
@@ -25,7 +25,7 @@ describe("TodoList", () => {
     const { getAllByRole } = within(list);
 
     const listitems = getAllByRole("listitem") as HTMLLIElement[];
-    let listitem = listitems[1];
+    const listitem = listitems[1];
     const { getByRole: subGetByRole } = within(listitem);
 
     const alert = subGetByRole("alert") as HTMLDivElement;
@@ -40,14 +40,14 @@ describe("TodoList", () => {
       key: "Enter",
       code: 13,
       charCode: 13,
-      keyCode: 13
+      keyCode: 13,
     });
 
     expect(textbox).not.toBeInTheDocument();
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "bar",
-      "baz"
+      "baz",
     ]);
   });
 });

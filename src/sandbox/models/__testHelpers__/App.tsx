@@ -25,7 +25,7 @@ export const AppFactory: (
     dispatch(
       resetTodos({
         partId: rootId,
-        todos: items.map(fn)
+        todos: items.map(fn),
       })
     );
 
@@ -33,7 +33,7 @@ export const AppFactory: (
     dispatch(
       setVisibilityFilter({
         viewId: rootId,
-        visibilityFilter: VisibilityFilter.SHOW_ALL
+        visibilityFilter: VisibilityFilter.SHOW_ALL,
       })
     );
 
@@ -51,6 +51,6 @@ export const App: FunctionComponent<{ items: string[] }> = AppFactory(
   (item) => ({
     id: tmpId(),
     title: item,
-    completed: false
+    completed: false,
   })
 );

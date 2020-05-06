@@ -26,7 +26,7 @@ export type ManagerMap<T> = Readonly<MutableManagerMap<T>>;
 export enum ManagerRelationship {
   MAP,
   FILTER,
-  SELECT
+  SELECT,
 }
 export type ManagerProgenyHandler<T> = Readonly<{
   addChild: <U>(

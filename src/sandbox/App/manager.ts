@@ -14,7 +14,7 @@ import {
   SetAction,
   SetVisibilityFilterAction,
   ExpandAction,
-  StateSelectorMap
+  StateSelectorMap,
 } from "./types";
 import { makeSagaManager } from "./saga-manager";
 import { makeManagerConstants } from "./manager-constants";
@@ -35,7 +35,7 @@ export const makeManager = <T>(
     MODIFY,
     SET,
     SET_VISIBILITY_FILTER,
-    EXPAND
+    EXPAND,
   } = CONSTS;
 
   const actionCreators = makeManagerActionCreators<T>(CONSTS);
@@ -45,7 +45,7 @@ export const makeManager = <T>(
     doModify,
     doSet,
     doSetVisibilityFilter,
-    doExpand
+    doExpand,
   } = actionCreators;
 
   const reducer = makeManagerReducer<T>(CONSTS);
@@ -57,7 +57,7 @@ export const makeManager = <T>(
     getItemMap: (state: CombinedState) => state[managerId].items,
     getSelectionMap: (state: CombinedState) => state[managerId].selections,
     getVisibilityFilter: (state: CombinedState) =>
-      state[managerId].visibilityFilter
+      state[managerId].visibilityFilter,
   };
 
   const sagaManager = makeSagaManager();
@@ -107,11 +107,11 @@ export const makeManager = <T>(
 
     sagaManager.add(SET, function* (): SagaGenerator {
       const {
-        payload: { items: persistedItemMap, selections }
+        payload: { items: persistedItemMap, selections },
       }: SetAction<T> = yield take(SET);
       const payloadMap: MutablePayloadMap<T> = {};
 
-      for (let [itemId, persistedItem] of Object.entries(persistedItemMap)) {
+      for (const [itemId, persistedItem] of Object.entries(persistedItemMap)) {
         const errors: Errors = yield* validateSaga(persistedItem);
         payloadMap[itemId] = { ...persistedItem, errors };
       }
@@ -142,14 +142,14 @@ export const makeManager = <T>(
     addValidator,
     get progenyHandler(): ManagerProgenyHandler<T> {
       throw new Error("Manager.progenyHandler accessed before being set");
-    }
+    },
   };
 
   Object.defineProperty(manager, "progenyHandler", {
     value: makeManagerProgenyHandler<T>(manager, makeManager),
     writable: false,
     enumerable: true,
-    configurable: false
+    configurable: false,
   });
 
   return manager;

@@ -6,7 +6,7 @@ import {
   DO_UPDATE_TODO_TITLE,
   DELETE_TODO,
   TOGGLE_TODO,
-  MOVE_TODO
+  MOVE_TODO,
 } from "../constants";
 import { setTodosNoSave, addView } from "../action-creators";
 import { todosInitialState } from "../reducers";
@@ -17,12 +17,12 @@ function* loadFromLocalStorage(localStorageId: string) {
   ) as { todos: TodoMap; parts: PartMap };
   const visibilityFilter = todosInitialState.views[rootId].visibilityFilter;
 
-  for (let [id, ids] of Object.entries(parts)) {
+  for (const [id, ids] of Object.entries(parts)) {
     yield put(
       addView({
         viewId: id,
         partId: id,
-        visibilityFilter
+        visibilityFilter,
       })
     );
 
@@ -41,15 +41,15 @@ function* loadFromLocalStorage(localStorageId: string) {
                   title: todo.title,
                   checked: todo.completed,
                   validated: false,
-                  errors
+                  errors,
                 }
               : {
                   id,
                   title: todo.title,
                   checked: todo.completed,
-                  validated: true
+                  validated: true,
                 };
-          }) as TodoStates
+          }) as TodoStates,
       })
     );
   }
@@ -66,7 +66,7 @@ function* saveToLocalStorage(localStorageId: string) {
       todos: Object.entries(todos).reduce((map, [id, todo]) => {
         map[id] = {
           title: todo.title,
-          completed: todo.checked
+          completed: todo.checked,
         };
         return map;
       }, {} as { [id: string]: Omit<Todo, "id"> }) as TodoMap,
@@ -75,7 +75,7 @@ function* saveToLocalStorage(localStorageId: string) {
           map[partId] = todosStates.map((todo) => todo.id);
         }
         return map;
-      }, {} as { [id: string]: readonly string[] }) as PartMap
+      }, {} as { [id: string]: readonly string[] }) as PartMap,
     })
   );
 }

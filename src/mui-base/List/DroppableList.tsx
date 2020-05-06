@@ -3,7 +3,7 @@ import {
   Droppable,
   DroppableProps,
   DroppableProvided,
-  DroppableStateSnapshot
+  DroppableStateSnapshot,
 } from "react-beautiful-dnd";
 import clsx from "clsx";
 import { BaseList, BaseListPropsWithoutRef } from "./BaseList";

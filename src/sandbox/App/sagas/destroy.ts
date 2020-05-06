@@ -4,13 +4,13 @@ import {
   Manager,
   ManagerRelationship,
   DestroyAction,
-  DoDestroyAction
+  DoDestroyAction,
 } from "../types";
 
 export const addDestroySagas = <T, U>({
   manager,
   childManager,
-  relationship
+  relationship,
 }: {
   manager: Manager<T>;
   childManager: Manager<U>;
@@ -18,12 +18,12 @@ export const addDestroySagas = <T, U>({
 }) => {
   const {
     CONSTS: { DO_DESTROY },
-    actionCreators: { destroy }
+    actionCreators: { destroy },
   } = manager;
   const {
     CONSTS: { DESTROY: CHILD_DESTROY, DO_DESTROY: CHILD_DO_DESTROY },
     actionCreators: { doDestroy: childDoDestroy },
-    sagaManager
+    sagaManager,
   } = childManager;
 
   switch (relationship) {

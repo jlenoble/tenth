@@ -8,7 +8,7 @@ import {
   CombinedReducer,
   Manager,
   MutableManagerMap,
-  ManagerMap
+  ManagerMap,
 } from "./types";
 import { sagaMiddleware } from "./saga-manager";
 
@@ -136,7 +136,7 @@ export const makeCombinedManager = (
       if (managerIdsToRemove.length > 0) {
         const newState: MutableCombinedState = { ...state };
 
-        for (let managerId of managerIdsToRemove) {
+        for (const managerId of managerIdsToRemove) {
           delete newState[managerId];
         }
 
@@ -157,6 +157,6 @@ export const makeCombinedManager = (
           yield put(ready());
         })
       );
-    }
+    },
   };
 };

@@ -5,7 +5,7 @@ import {
   CardActions,
   Collapse,
   IconButton,
-  Grid
+  Grid,
 } from "@material-ui/core";
 import { Close, ExpandMore } from "@material-ui/icons";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -23,19 +23,19 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 0,
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.primary.contrastText,
-      boxShadow: "none"
+      boxShadow: "none",
     },
     expand: {
       transform: "rotate(0deg)",
       marginLeft: "auto",
       color: theme.palette.primary.contrastText,
       transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest
-      })
+        duration: theme.transitions.duration.shortest,
+      }),
     },
     expandOpen: {
-      transform: "rotate(180deg)"
-    }
+      transform: "rotate(180deg)",
+    },
   })
 );
 
@@ -62,7 +62,7 @@ export const Layout = () => {
       <CardActions disableSpacing>
         <IconButton
           className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded
+            [classes.expandOpen]: expanded,
           })}
           onClick={handleExpandClick}
           aria-expanded={expanded}
@@ -91,7 +91,7 @@ export const Layout = () => {
                       >
                         <Close />
                       </IconButton>
-                    )
+                    ),
                   }}
                 />
               </CardContent>

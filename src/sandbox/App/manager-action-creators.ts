@@ -8,7 +8,7 @@ import {
   ManagerConsts,
   ManagerAction,
   ActionCreatorMap,
-  VisibilityFilter
+  VisibilityFilter,
 } from "./types";
 
 export const makeManagerActionCreators = <T>(
@@ -35,17 +35,17 @@ export const makeManagerActionCreators = <T>(
     EXPAND,
     DO_EXPAND,
 
-    READY
+    READY,
   } = CONSTS;
 
   const create = (payload: PersistedItem<T>): ManagerAction<T> => ({
     type: CREATE,
-    payload
+    payload,
   });
 
   const destroy = (itemId: string): ManagerAction<T> => ({
     type: DESTROY,
-    itemId
+    itemId,
   });
 
   const modify = (
@@ -54,7 +54,7 @@ export const makeManagerActionCreators = <T>(
   ): ManagerAction<T> => ({
     type: MODIFY,
     itemId,
-    payload
+    payload,
   });
 
   const set = (payload: {
@@ -62,36 +62,36 @@ export const makeManagerActionCreators = <T>(
     selections: SelectionMap;
   }): ManagerAction<T> => ({
     type: SET,
-    payload
+    payload,
   });
 
   const clear = (): ManagerAction<T> => ({
-    type: CLEAR
+    type: CLEAR,
   });
 
   const move = (itemId: string, payload: DropResult): ManagerAction<T> => {
     return {
       type: MOVE,
       itemId,
-      payload
+      payload,
     };
   };
 
   const doCreate = (itemId: string, payload: Payload<T>): ManagerAction<T> => ({
     type: DO_CREATE,
     itemId,
-    payload
+    payload,
   });
 
   const doDestroy = (itemId: string): ManagerAction<T> => ({
     type: DO_DESTROY,
-    itemId
+    itemId,
   });
 
   const doModify = (itemId: string, payload: Payload<T>): ManagerAction<T> => ({
     type: DO_MODIFY,
     itemId,
-    payload
+    payload,
   });
 
   const doSet = (payload: {
@@ -99,18 +99,18 @@ export const makeManagerActionCreators = <T>(
     selections: SelectionMap;
   }): ManagerAction<T> => ({
     type: DO_SET,
-    payload
+    payload,
   });
 
   const doClear = (): ManagerAction<T> => ({
-    type: DO_CLEAR
+    type: DO_CLEAR,
   });
 
   const doMove = (itemId: string, payload: DropResult): ManagerAction<T> => {
     return {
       type: DO_MOVE,
       itemId,
-      payload
+      payload,
     };
   };
 
@@ -118,30 +118,30 @@ export const makeManagerActionCreators = <T>(
     visibilityFilter: VisibilityFilter
   ): ManagerAction<T> => ({
     type: SET_VISIBILITY_FILTER,
-    visibilityFilter
+    visibilityFilter,
   });
 
   const doSetVisibilityFilter = (
     visibilityFilter: VisibilityFilter
   ): ManagerAction<T> => ({
     type: DO_SET_VISIBILITY_FILTER,
-    visibilityFilter
+    visibilityFilter,
   });
 
   const expand = (itemId: string, expanded: boolean): ManagerAction<T> => ({
     type: EXPAND,
     itemId,
-    expanded
+    expanded,
   });
 
   const doExpand = (itemId: string, expanded: boolean): ManagerAction<T> => ({
     type: DO_EXPAND,
     itemId,
-    expanded
+    expanded,
   });
 
   const ready = (): ManagerAction<T> => ({
-    type: READY
+    type: READY,
   });
 
   return {
@@ -165,6 +165,6 @@ export const makeManagerActionCreators = <T>(
     expand,
     doExpand,
 
-    ready
+    ready,
   };
 };

@@ -20,7 +20,7 @@ export const resolvers = {
       const launches = paginateResults({
         after,
         pageSize,
-        results: allLaunches
+        results: allLaunches,
       });
       return {
         launches,
@@ -30,13 +30,13 @@ export const resolvers = {
         hasMore: launches.length
           ? launches[launches.length - 1].cursor !==
             allLaunches[allLaunches.length - 1].cursor
-          : false
+          : false,
       };
     },
     launch: (_: any, { id }: { id: string }, { dataSources }: Context) =>
       dataSources.launchAPI.getLaunchById({ launchId: id }),
     me: (_: any, __: any, { dataSources }: Context) =>
-      dataSources.userAPI.findOrCreateUser()
+      dataSources.userAPI.findOrCreateUser(),
   },
 
   Mutation: {
@@ -47,7 +47,7 @@ export const resolvers = {
     ) => {
       const results = await dataSources.userAPI.bookTrips({ launchIds });
       const launches = await dataSources.launchAPI.getLaunchesByIds({
-        launchIds
+        launchIds,
       });
 
       return {
@@ -59,7 +59,7 @@ export const resolvers = {
                 (id) =>
                   results && !results.find((res) => res.id === parseInt(id, 10))
               )}`,
-        launches
+        launches,
       };
     },
     cancelTrip: async (
@@ -72,14 +72,14 @@ export const resolvers = {
       if (!result)
         return {
           success: false,
-          message: "failed to cancel trip"
+          message: "failed to cancel trip",
         };
 
       const launch = await dataSources.launchAPI.getLaunchById({ launchId });
       return {
         success: true,
         message: "trip cancelled",
-        launches: [launch]
+        launches: [launch],
       };
     },
     login: async (
@@ -89,7 +89,7 @@ export const resolvers = {
     ) => {
       const user = await dataSources.userAPI.findOrCreateUser({ email });
       if (user) return Buffer.from(email).toString("base64");
-    }
+    },
   },
 
   Mission: {
@@ -105,12 +105,12 @@ export const resolvers = {
       return size === "SMALL"
         ? mission.missionPatchSmall
         : mission.missionPatchLarge;
-    }
+    },
   },
 
   Launch: {
     isBooked: async (launch: GQLLaunch, _: any, { dataSources }: Context) =>
-      dataSources.userAPI.isBookedOnLaunch({ launchId: launch.id })
+      dataSources.userAPI.isBookedOnLaunch({ launchId: launch.id }),
   },
 
   User: {
@@ -123,9 +123,9 @@ export const resolvers = {
       // look up those launches by their ids
       return (
         dataSources.launchAPI.getLaunchesByIds({
-          launchIds
+          launchIds,
         }) || []
       );
-    }
-  }
+    },
+  },
 };

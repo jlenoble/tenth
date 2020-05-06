@@ -45,11 +45,11 @@ export const Menu: FunctionComponent<{ viewId: string }> = ({ viewId }) => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "center"
+          horizontal: "center",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "center"
+          horizontal: "center",
         }}
       >
         <MenuList dense>

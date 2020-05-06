@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardContent,
   Typography,
-  Button
+  Button,
 } from "@material-ui/core";
 import { TodoState, TodoStates, TodosState } from "./types";
 import { toggleTodo } from "./action-creators";
@@ -33,7 +33,7 @@ export function CurrentTodo({ viewId }: { viewId: string }) {
       break;
     }
 
-    let newTodo = todos.find((todo) => !todo.checked);
+    const newTodo = todos.find((todo) => !todo.checked);
 
     if (!newTodo) {
       break;

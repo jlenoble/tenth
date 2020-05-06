@@ -2,7 +2,7 @@ import React, {
   FunctionComponent,
   useState,
   ChangeEvent,
-  KeyboardEvent
+  KeyboardEvent,
 } from "react";
 import {
   Paper,
@@ -10,7 +10,7 @@ import {
   TextField,
   TextFieldProps,
   Button,
-  ButtonProps
+  ButtonProps,
 } from "@material-ui/core";
 
 export type AddItemProps = TextFieldProps & {
@@ -74,7 +74,7 @@ export const useAddItem = (add: (value: string) => void) => {
     value,
     changeInput,
     clearInputAndAdd,
-    keyInput
+    keyInput,
   };
 };
 
@@ -85,7 +85,7 @@ export interface StatefulAddItemProps {
 
 export const StatefulAddItem: FunctionComponent<StatefulAddItemProps> = ({
   add,
-  button = true
+  button = true,
 }) => {
   const { value, changeInput, clearInputAndAdd, keyInput } = useAddItem(add);
 

@@ -8,7 +8,7 @@ import {
   DO_UPDATE_TODO_TITLE,
   DELETE_TODO,
   TOGGLE_TODO,
-  MOVE_TODO
+  MOVE_TODO,
 } from "../constants";
 import {
   DoAddTodoAction,
@@ -17,7 +17,7 @@ import {
   ToggleTodoAction,
   MoveTodoAction,
   SetTodosAction,
-  SetTodosNoSaveAction
+  SetTodosNoSaveAction,
 } from "../actions";
 import { updateViews } from "../action-creators";
 
@@ -34,8 +34,8 @@ export function* updateViewsSaga() {
     ): SagaIterator {
       const {
         views: {
-          [action.meta.viewId]: { partId }
-        }
+          [action.meta.viewId]: { partId },
+        },
       }: TodosState = yield select(
         (state: { todos: TodosState }) => state.todos
       );

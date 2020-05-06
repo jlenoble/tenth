@@ -15,29 +15,29 @@ describe("TodoList", () => {
     const { getAllByRole } = within(list);
 
     const listitems = getAllByRole("listitem") as HTMLLIElement[];
-    let listitem = listitems[1];
+    const listitem = listitems[1];
     const { getByRole: subGetByRole, getByText } = within(listitem);
 
-    let text = getByText("bar") as HTMLSpanElement;
+    const text = getByText("bar") as HTMLSpanElement;
 
     userEvents.click(text);
     expect(text).not.toBeInTheDocument();
 
-    let textbox = subGetByRole("textbox") as HTMLInputElement;
+    const textbox = subGetByRole("textbox") as HTMLInputElement;
 
     await userEvents.type(textbox, "bozo");
     fireEvent.keyDown(textbox, {
       key: "Enter",
       code: 13,
       charCode: 13,
-      keyCode: 13
+      keyCode: 13,
     });
     expect(textbox).not.toBeInTheDocument();
 
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "barbozo",
-      "baz"
+      "baz",
     ]);
   });
 

@@ -3,7 +3,7 @@ import {
   ManagerConsts,
   ManagerReducer,
   ManagerAnswerAction,
-  VisibilityFilter
+  VisibilityFilter,
 } from "./types";
 
 export const makeManagerReducer = <T>(
@@ -12,7 +12,7 @@ export const makeManagerReducer = <T>(
   const initialState: ManagerState<T> = {
     items: new Map(),
     selections: new Map(),
-    visibilityFilter: VisibilityFilter.SHOW_ACTIVE
+    visibilityFilter: VisibilityFilter.SHOW_ACTIVE,
   };
 
   const {
@@ -22,7 +22,7 @@ export const makeManagerReducer = <T>(
     DO_SET,
     DO_CLEAR,
     DO_SET_VISIBILITY_FILTER,
-    DO_EXPAND
+    DO_EXPAND,
   } = CONSTS;
 
   const reducer = (
@@ -67,7 +67,7 @@ export const makeManagerReducer = <T>(
           return {
             ...initialState,
             items: new Map(Object.entries(items)),
-            selections: new Map(Object.entries(selections))
+            selections: new Map(Object.entries(selections)),
           };
         }
 

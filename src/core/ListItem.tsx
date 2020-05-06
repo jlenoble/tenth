@@ -2,12 +2,12 @@ import React, { FunctionComponent, memo } from "react";
 import { Checkbox, CheckboxProps, IconButtonProps } from "@material-ui/core";
 import {
   ListItem as MuiListItem,
-  ListItemProps as MuiListItemProps
+  ListItemProps as MuiListItemProps,
 } from "../mui-base";
 import {
   ListItemText,
   ListItemTextProps,
-  BaseListItemTextProps
+  BaseListItemTextProps,
 } from "./ListItemText";
 import { DeleteButton, OpenInNewButton } from "./buttons";
 

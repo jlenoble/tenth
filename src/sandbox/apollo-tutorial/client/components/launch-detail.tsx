@@ -9,7 +9,7 @@ type LaunchDetailProps = Partial<LaunchDetails_launch>;
 const LaunchDetail: React.FC<LaunchDetailProps> = ({ id, site, rocket }) => (
   <Card
     style={{
-      backgroundImage: getBackgroundImage(id as string)
+      backgroundImage: getBackgroundImage(id as string),
     }}
   >
     <h3>
@@ -25,7 +25,7 @@ const LaunchDetail: React.FC<LaunchDetailProps> = ({ id, site, rocket }) => (
 
 const Card = styled("div")(cardClassName, {
   height: 365,
-  marginBottom: unit * 4
+  marginBottom: unit * 4,
 });
 
 export default LaunchDetail;

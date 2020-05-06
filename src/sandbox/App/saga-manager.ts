@@ -67,7 +67,7 @@ export const makeSagaManager = (): SagaManager => {
   };
 
   const startAll = () => {
-    for (let sagaName of sagas.keys()) {
+    for (const sagaName of sagas.keys()) {
       start(sagaName);
     }
   };
@@ -99,6 +99,6 @@ export const makeSagaManager = (): SagaManager => {
     stop,
     startAll,
     stopAll,
-    run
+    run,
   };
 };

@@ -12,7 +12,7 @@ describe("TodoList", () => {
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "bar",
-      "baz"
+      "baz",
     ]);
   });
 
@@ -43,14 +43,14 @@ describe("TodoList", () => {
       key: "Enter",
       code: 13,
       charCode: 13,
-      keyCode: 13
+      keyCode: 13,
     });
 
     listitems = getAllByRole("listitem") as HTMLLIElement[];
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "bar",
-      "baz"
+      "baz",
     ]);
   });
 
@@ -94,7 +94,7 @@ describe("TodoList", () => {
     expect(checkboxes.map((input) => input.checked)).toEqual([
       false,
       false,
-      false
+      false,
     ]);
 
     userEvents.click(checkboxes[0]);
@@ -102,7 +102,7 @@ describe("TodoList", () => {
     expect(checkboxes.map((input) => input.checked)).toEqual([
       true,
       false,
-      false
+      false,
     ]);
 
     userEvents.click(checkboxes[1]);
@@ -110,7 +110,7 @@ describe("TodoList", () => {
     expect(checkboxes.map((input) => input.checked)).toEqual([
       true,
       true,
-      false
+      false,
     ]);
 
     userEvents.click(checkboxes[0]);
@@ -118,7 +118,7 @@ describe("TodoList", () => {
     expect(checkboxes.map((input) => input.checked)).toEqual([
       false,
       true,
-      false
+      false,
     ]);
   });
 
@@ -135,19 +135,19 @@ describe("TodoList", () => {
 
     let checkboxes = getAllByRole("checkbox") as HTMLInputElement[];
     let listitems = getAllByRole("listitem") as HTMLLIElement[];
-    let buttons = getDeleteButtons(list);
+    const buttons = getDeleteButtons(list);
 
     userEvents.click(checkboxes[0]);
     userEvents.click(checkboxes[2]);
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "bar",
-      "baz"
+      "baz",
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
       true,
       false,
-      true
+      true,
     ]);
 
     userEvents.click(buttons[1]);
@@ -164,12 +164,12 @@ describe("TodoList", () => {
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "baz",
-      "quux"
+      "quux",
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
       true,
       true,
-      false
+      false,
     ]);
 
     await userEvents.type(textbox, "foobar");
@@ -181,13 +181,13 @@ describe("TodoList", () => {
       "foo",
       "baz",
       "quux",
-      "foobar"
+      "foobar",
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
       true,
       true,
       false,
-      false
+      false,
     ]);
 
     userEvents.click(checkboxes[2]);
@@ -198,13 +198,13 @@ describe("TodoList", () => {
       "foo",
       "baz",
       "quux",
-      "foobar"
+      "foobar",
     ]);
     expect(checkboxes.map((input) => input.checked)).toEqual([
       true,
       true,
       true,
-      false
+      false,
     ]);
   });
 });

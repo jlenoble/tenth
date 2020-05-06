@@ -35,7 +35,7 @@ export const GET_LAUNCHES = gql`
   ${LAUNCH_TILE_DATA}
 `;
 
-interface LaunchesProps extends RouteComponentProps {}
+type LaunchesProps = RouteComponentProps;
 
 const Launches: React.FC<LaunchesProps> = () => {
   const { data, loading, error, fetchMore } = useQuery<
@@ -59,7 +59,7 @@ const Launches: React.FC<LaunchesProps> = () => {
           onClick={() =>
             fetchMore({
               variables: {
-                after: data.launches.cursor
+                after: data.launches.cursor,
               },
               updateQuery: (prev, { fetchMoreResult, ...rest }) => {
                 if (!fetchMoreResult) return prev;
@@ -69,11 +69,11 @@ const Launches: React.FC<LaunchesProps> = () => {
                     ...fetchMoreResult.launches,
                     launches: [
                       ...prev.launches.launches,
-                      ...fetchMoreResult.launches.launches
-                    ]
-                  }
+                      ...fetchMoreResult.launches.launches,
+                    ],
+                  },
                 };
-              }
+              },
             })
           }
         >

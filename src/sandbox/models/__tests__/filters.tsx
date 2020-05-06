@@ -7,7 +7,7 @@ import { AppFactory, getMenuButton } from "../__testHelpers__";
 const App = AppFactory((item, i) => ({
   id: tmpId(),
   title: i ? item : "",
-  completed: !(i % 2)
+  completed: !(i % 2),
 }));
 
 describe("Visibility filters", () => {
@@ -28,7 +28,7 @@ describe("Visibility filters", () => {
     expect(listitems.map((li) => li.textContent)).toEqual([
       "bar",
       "qux",
-      "foobar"
+      "foobar",
     ]);
   });
 
@@ -86,7 +86,7 @@ describe("Visibility filters", () => {
       "baz",
       "qux",
       "quux",
-      "foobar"
+      "foobar",
     ]);
   });
 });

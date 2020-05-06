@@ -14,22 +14,22 @@ const cache = new InMemoryCache();
 const link = new HttpLink({
   uri: "http://localhost:4000/",
   headers: {
-    authorization: localStorage.getItem("token")
-  }
+    authorization: localStorage.getItem("token"),
+  },
 });
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache,
   link,
   typeDefs,
-  resolvers
+  resolvers,
 });
 
 cache.writeData({
   data: {
     isLoggedIn: !!localStorage.getItem("token"),
-    cartItems: []
-  }
+    cartItems: [],
+  },
 });
 
 const IS_LOGGED_IN = gql`

@@ -5,7 +5,7 @@ import {
   Payload,
   ManagerRelationship,
   CreateAction,
-  DoCreateAction
+  DoCreateAction,
 } from "../types";
 
 export const addCreateSagas = <T, U = T>({
@@ -13,7 +13,7 @@ export const addCreateSagas = <T, U = T>({
   childManager,
   relationship,
   adaptToChild,
-  adaptToParent
+  adaptToParent,
 }: {
   manager: Manager<T>;
   childManager: Manager<U>;
@@ -23,13 +23,13 @@ export const addCreateSagas = <T, U = T>({
 }) => {
   const {
     CONSTS: { DO_CREATE },
-    actionCreators: { create }
+    actionCreators: { create },
   } = manager;
 
   const {
     CONSTS: { CREATE: CHILD_CREATE, DO_CREATE: CHILD_DO_CREATE },
     actionCreators: { doCreate: childDoCreate },
-    sagaManager
+    sagaManager,
   } = childManager;
 
   switch (relationship) {

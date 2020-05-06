@@ -34,7 +34,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     if (!email || !isEmail.validate(email)) return null;
 
     const users = await this.store.users.findOrCreate<User>({
-      where: { email }
+      where: { email },
     });
     return users && users[0] ? users[0] : null;
   }
@@ -43,7 +43,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     const userId = this.context?.user?.id;
     if (!userId) return;
 
-    let results = [];
+    const results = [];
 
     // for each launch id, try to book the trip and add it to the results array
     // if successful
@@ -60,7 +60,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     if (!userId) return;
 
     const res = await this.store.trips.findOrCreate<Trip>({
-      where: { userId, launchId }
+      where: { userId, launchId },
     });
     return res && res.length ? (res[0].get() as { id: number }) : false;
   }
@@ -77,7 +77,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
     if (!userId) return;
 
     const found = await this.store.trips.findAll<Trip>({
-      where: { userId }
+      where: { userId },
     });
 
     return found && found.length
@@ -90,7 +90,7 @@ export class UserAPI<Context extends { user?: GQLUser }> extends DataSource<
 
     const userId = this.context.user.id;
     const found = await this.store.trips.findAll<Trip>({
-      where: { userId, launchId }
+      where: { userId, launchId },
     });
 
     return found && found.length > 0;

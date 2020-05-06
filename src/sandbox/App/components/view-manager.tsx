@@ -20,11 +20,11 @@ export interface ViewManagerProps<T> {
 
 export const ViewManager = <T extends any>({
   manager,
-  Component
+  Component,
 }: ViewManagerProps<T>) => {
   const {
     stateSelectors: { getItemMap, getVisibilityFilter },
-    actionCreators: { create, destroy, modify, setVisibilityFilter, expand }
+    actionCreators: { create, destroy, modify, setVisibilityFilter, expand },
   } = manager;
   const dispatch = useDispatch();
   const views = useSelector(getItemMap);
@@ -55,11 +55,11 @@ export const ViewManager = <T extends any>({
 
 export const DualViewManager = <T extends any>({
   manager,
-  Component
+  Component,
 }: ViewManagerProps<T>) => {
   const {
     stateSelectors: { getItemMap, getSelectionMap },
-    progenyHandler
+    progenyHandler,
   } = manager;
   const views = useSelector(getItemMap);
   const selections = useSelector(getSelectionMap);

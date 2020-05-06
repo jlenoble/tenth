@@ -4,7 +4,7 @@ import {
   getDroppables,
   getDraggables,
   mockGetBoundingClientRect,
-  render
+  render,
 } from "../__testHelpers__";
 
 describe("DnD App", () => {
@@ -16,7 +16,7 @@ describe("DnD App", () => {
     expect(listitems.map((li) => li.textContent)).toEqual([
       "foo",
       "bar",
-      "baz"
+      "baz",
     ]);
   });
 
@@ -38,7 +38,7 @@ describe("DnD App", () => {
       "foo",
       "bar",
       "baz",
-      "quux"
+      "quux",
     ]);
 
     await dnd(0, 2);
@@ -47,7 +47,7 @@ describe("DnD App", () => {
       "bar",
       "baz",
       "foo",
-      "quux"
+      "quux",
     ]);
 
     await dnd(0, 2);
@@ -56,7 +56,7 @@ describe("DnD App", () => {
       "baz",
       "foo",
       "bar",
-      "quux"
+      "quux",
     ]);
 
     await dnd(1, 0);
@@ -65,7 +65,7 @@ describe("DnD App", () => {
       "foo",
       "baz",
       "bar",
-      "quux"
+      "quux",
     ]);
   });
 

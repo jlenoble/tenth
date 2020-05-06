@@ -20,7 +20,7 @@ export const GET_MY_TRIPS = gql`
   ${LAUNCH_TILE_DATA}
 `;
 
-interface ProfileProps extends RouteComponentProps {}
+type ProfileProps = RouteComponentProps;
 
 const Profile: React.FC<ProfileProps> = () => {
   const { data, loading, error } = useQuery<GetMyTripsTypes.GetMyTrips>(

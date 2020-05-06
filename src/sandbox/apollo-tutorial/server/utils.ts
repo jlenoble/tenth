@@ -40,7 +40,7 @@ export const paginateResults = ({
   pageSize = 20,
   results,
   // can pass in a function to calculate an item's cursor
-  getCursor = () => null
+  getCursor = () => null,
 }: {
   after?: string;
   pageSize?: number;
@@ -52,7 +52,7 @@ export const paginateResults = ({
   if (!cursor) return results.slice(0, pageSize);
   const cursorIndex = results.findIndex((item) => {
     // if an item has a `cursor` on it, use that, otherwise try to generate one
-    let itemCursor = item.cursor ? item.cursor : getCursor(item);
+    const itemCursor = item.cursor ? item.cursor : getCursor(item);
 
     // if there's still not a cursor, return false by default
     return itemCursor ? cursor === itemCursor : false;
@@ -72,31 +72,31 @@ export const createStore = (): Store => {
   const db = new Sequelize("database", "username", "password", {
     dialect: "sqlite",
     storage: "./store.sqlite",
-    logging: false
+    logging: false,
   });
 
   const users = db.define("user", {
     id: {
       type: INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     createdAt: DATE,
     updatedAt: DATE,
     email: STRING,
-    token: STRING
+    token: STRING,
   }) as Users;
 
   const trips = db.define("trip", {
     id: {
       type: INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     createdAt: DATE,
     updatedAt: DATE,
     launchId: INTEGER,
-    userId: INTEGER
+    userId: INTEGER,
   }) as Trips;
 
   return { users, trips };

@@ -10,14 +10,14 @@ import { todosInitialState } from "../reducers";
 export function* resetTodosSaga(): SagaIterator {
   while (1) {
     const {
-      meta: { partId, todos }
+      meta: { partId, todos },
     }: ResetTodosAction = yield take(RESET_TODOS);
 
     yield put(
       addView({
         viewId: partId,
         partId,
-        visibilityFilter: todosInitialState.views[rootId].visibilityFilter
+        visibilityFilter: todosInitialState.views[rootId].visibilityFilter,
       })
     );
 
@@ -32,15 +32,15 @@ export function* resetTodosSaga(): SagaIterator {
                 title: todo.title,
                 checked: todo.completed,
                 validated: false,
-                errors
+                errors,
               }
             : {
                 id: todo.id,
                 title: todo.title,
                 checked: todo.completed,
-                validated: true
+                validated: true,
               };
-        }) as TodoStates
+        }) as TodoStates,
       })
     );
   }

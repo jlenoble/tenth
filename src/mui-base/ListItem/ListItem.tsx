@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import {
   DraggableListItem,
-  DraggablePropsWithoutChildren
+  DraggablePropsWithoutChildren,
 } from "./DraggableListItem";
 import { BaseListItem, BaseListItemPropsWithoutRef } from "./BaseListItem";
 

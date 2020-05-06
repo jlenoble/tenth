@@ -11,7 +11,7 @@ import {
   DELETE_TODO,
   TOGGLE_TODO,
   MOVE_TODO,
-  EXPAND_TODO
+  EXPAND_TODO,
 } from "../constants";
 import { TodoActionType } from "../todo";
 
@@ -21,7 +21,7 @@ export const resetTodos = (meta: {
 }): TodoActionType => {
   return {
     type: RESET_TODOS,
-    meta
+    meta,
   };
 };
 export const setTodos = (meta: {
@@ -30,7 +30,7 @@ export const setTodos = (meta: {
 }): TodoActionType => {
   return {
     type: SET_TODOS,
-    meta
+    meta,
   };
 };
 export const setTodosNoSave = (meta: {
@@ -39,7 +39,7 @@ export const setTodosNoSave = (meta: {
 }): TodoActionType => {
   return {
     type: SET_TODOS_NOSAVE,
-    meta
+    meta,
   };
 };
 
@@ -49,7 +49,7 @@ export const addTodo = (meta: {
 }): TodoActionType => {
   return {
     type: ADD_TODO,
-    meta
+    meta,
   };
 };
 export const doAddTodo = (meta: {
@@ -58,7 +58,7 @@ export const doAddTodo = (meta: {
 }): TodoActionType => {
   return {
     type: DO_ADD_TODO,
-    meta
+    meta,
   };
 };
 
@@ -69,7 +69,7 @@ export const updateTodoTitle = (meta: {
 }): TodoActionType => {
   return {
     type: UPDATE_TODO_TITLE,
-    meta
+    meta,
   };
 };
 export const doUpdateTodoTitle = (meta: {
@@ -78,7 +78,7 @@ export const doUpdateTodoTitle = (meta: {
 }): TodoActionType => {
   return {
     type: DO_UPDATE_TODO_TITLE,
-    meta
+    meta,
   };
 };
 
@@ -88,7 +88,7 @@ export const deleteTodo = (meta: {
 }): TodoActionType => {
   return {
     type: DELETE_TODO,
-    meta
+    meta,
   };
 };
 export const toggleTodo = (meta: {
@@ -97,7 +97,7 @@ export const toggleTodo = (meta: {
 }): TodoActionType => {
   return {
     type: TOGGLE_TODO,
-    meta
+    meta,
   };
 };
 export const moveTodo = (meta: {
@@ -106,7 +106,7 @@ export const moveTodo = (meta: {
 }): TodoActionType => {
   return {
     type: MOVE_TODO,
-    meta
+    meta,
   };
 };
 
@@ -116,6 +116,6 @@ export const expandTodo = (meta: {
 }): TodoActionType => {
   return {
     type: EXPAND_TODO,
-    meta
+    meta,
   };
 };

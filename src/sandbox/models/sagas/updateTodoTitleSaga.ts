@@ -8,7 +8,7 @@ import { doUpdateTodoTitle } from "../action-creators";
 export function* updateTodoTitleSaga(): SagaIterator {
   while (1) {
     const {
-      meta: { viewId, id, title }
+      meta: { viewId, id, title },
     }: UpdateTodoTitleAction = yield take(UPDATE_TODO_TITLE);
     const errors = validateTitle(title);
 
@@ -20,13 +20,13 @@ export function* updateTodoTitleSaga(): SagaIterator {
               id,
               title,
               validated: false,
-              errors
+              errors,
             }
           : {
               id,
               title,
-              validated: true
-            }
+              validated: true,
+            },
       })
     );
   }

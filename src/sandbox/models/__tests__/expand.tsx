@@ -14,7 +14,7 @@ describe("TodoList", () => {
     // "foo" is the current todo, so shows up also in the main header
     expect(Array.from(getAllByText("foo"))).toHaveLength(2);
 
-    let buttons = getExpandButtons(getByRole("list") as HTMLUListElement);
+    const buttons = getExpandButtons(getByRole("list") as HTMLUListElement);
     userEvents.click(buttons[0]);
 
     expect(Array.from(getAllByRole("list"))).toHaveLength(2);

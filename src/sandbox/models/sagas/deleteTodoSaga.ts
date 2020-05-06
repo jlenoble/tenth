@@ -8,7 +8,7 @@ import { deleteTodo } from "../action-creators";
 export function* deleteTodoSaga(): SagaIterator {
   while (1) {
     const {
-      meta: { viewId, id }
+      meta: { viewId, id },
     }: DeleteTodoAction = yield take(DELETE_TODO);
 
     yield put(deleteTodo({ viewId, id }));

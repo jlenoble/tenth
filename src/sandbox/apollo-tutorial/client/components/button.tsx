@@ -22,9 +22,9 @@ export default styled("button")({
   cursor: "pointer",
   outline: "none",
   ":hover": {
-    backgroundColor: lighten(0.1, colors.accent)
+    backgroundColor: lighten(0.1, colors.accent),
   },
   ":active": {
-    backgroundColor: lighten(0.2, colors.accent)
-  }
+    backgroundColor: lighten(0.2, colors.accent),
+  },
 });

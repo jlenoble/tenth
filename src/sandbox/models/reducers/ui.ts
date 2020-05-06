@@ -2,7 +2,7 @@ import { rootId } from "../todo";
 import { UIAction, UPDATE_SUBVIEW, UI, CLOSE_SUBVIEW } from "../ui";
 
 const initialState: UI = {
-  mainViewId: rootId
+  mainViewId: rootId,
 };
 
 export const ui = (state = initialState, action: UIAction) => {

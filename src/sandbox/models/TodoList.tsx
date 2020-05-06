@@ -9,7 +9,7 @@ import {
   expandTodo,
   updateTodoTitle,
   toggleTodo,
-  moveTodo
+  moveTodo,
 } from "./action-creators";
 import { ListCard as List, BaseCardHeaderProps } from "../../core";
 import Menu from "./Menu";
@@ -19,14 +19,14 @@ export const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: 0,
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
-    boxShadow: "none"
-  }
+    boxShadow: "none",
+  },
 }));
 
 export function TodoList({
   viewId,
   title,
-  cardHeaderProps
+  cardHeaderProps,
 }: {
   viewId: string;
   title?: string;
@@ -56,7 +56,7 @@ export function TodoList({
         classes={{ root: classes.card }}
         title={title}
         addItemProps={{
-          add: (title: string) => dispatch(addTodo({ viewId, title }))
+          add: (title: string) => dispatch(addTodo({ viewId, title })),
         }}
         listItems={todos.map((todo) => {
           const errors = todo.errors;
@@ -74,20 +74,20 @@ export function TodoList({
               dispatch(updateTodoTitle({ viewId, id, title })),
             checked: todo.checked,
             checkboxProps: {
-              onClick: () => dispatch(toggleTodo({ viewId, id }))
+              onClick: () => dispatch(toggleTodo({ viewId, id })),
             },
             deleteButtonProps: {
-              onClick: () => dispatch(deleteTodo({ viewId, id }))
+              onClick: () => dispatch(deleteTodo({ viewId, id })),
             },
             expandButtonProps: {
               className: expandButtonClassName,
-              onClick: () => dispatch(expandTodo({ viewId, id }))
-            }
+              onClick: () => dispatch(expandTodo({ viewId, id })),
+            },
           };
         })}
         cardHeaderProps={
           cardHeaderProps || {
-            action: <Menu viewId={viewId} />
+            action: <Menu viewId={viewId} />,
           }
         }
       />

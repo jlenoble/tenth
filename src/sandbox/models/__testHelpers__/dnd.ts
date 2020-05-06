@@ -46,7 +46,7 @@ export const dragAndDrop = async (
   end: number,
   {
     getByText,
-    getItems
+    getItems,
   }: {
     getByText: (regex: RegExp) => HTMLElement;
     getItems: () => HTMLElement[];

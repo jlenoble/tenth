@@ -29,8 +29,8 @@ const server = new ApolloServer({
   resolvers,
   dataSources: () => ({
     launchAPI: new LaunchAPI(),
-    userAPI: new UserAPI({ store })
-  })
+    userAPI: new UserAPI({ store }),
+  }),
 });
 
 server.listen().then(({ url }) => {

@@ -8,6 +8,6 @@ export const setVisibilityFilter = (meta: {
 }): TodoActionType => {
   return {
     type: SET_VISIBILITY_FILTER,
-    meta
+    meta,
   };
 };

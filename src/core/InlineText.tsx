@@ -27,7 +27,7 @@ export const InlineText: FunctionComponent<InlineTextProps> = ({
   error,
   edit,
   enter,
-  textFieldProps
+  textFieldProps,
 }) => {
   if (edited) {
     return (
@@ -80,7 +80,7 @@ export const StatefulInlineText: FunctionComponent<Omit<
   helperText,
   error,
   enter,
-  textFieldProps
+  textFieldProps,
 }) => {
   const [edited, setEdited] = useState(false);
 

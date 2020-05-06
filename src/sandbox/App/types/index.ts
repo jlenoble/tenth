@@ -6,7 +6,7 @@ export type {
   MutableCombinedState,
   CombinedState,
   MutableReducerMap,
-  CombinedReducer
+  CombinedReducer,
 } from "./combined-manager-reducer";
 
 export type { Errors } from "./errors";
@@ -17,14 +17,14 @@ export type {
   ItemState,
   MutablePayloadMap,
   PersistedItemMap,
-  PayloadMap
+  PayloadMap,
 } from "./item";
 
 export type {
   Manager,
   MutableManagerMap,
   ManagerMap,
-  ManagerProgenyHandler
+  ManagerProgenyHandler,
 } from "./manager";
 export { ManagerRelationship } from "./manager";
 

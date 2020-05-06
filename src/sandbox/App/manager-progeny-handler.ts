@@ -2,7 +2,7 @@ import {
   Payload,
   Manager,
   ManagerProgenyHandler,
-  ManagerRelationship
+  ManagerRelationship,
 } from "./types";
 import {
   addCreateSagas,
@@ -10,7 +10,7 @@ import {
   addModifySagas,
   addSetSagas,
   addSetVisibilityFilterSagas,
-  addExpandSagas
+  addExpandSagas,
 } from "./sagas";
 
 export const makeManagerProgenyHandler = <T>(
@@ -26,7 +26,7 @@ export const makeManagerProgenyHandler = <T>(
       adaptToParent,
       adaptToChild,
       relationship,
-      selectionId
+      selectionId,
     }: {
       adaptToParent?: (payload: Payload<U>) => Payload<T>;
       adaptToChild?: (payload: Payload<T>) => Payload<U>;
@@ -46,7 +46,7 @@ export const makeManagerProgenyHandler = <T>(
       adaptToChild,
       adaptToParent,
       relationship,
-      selectionId
+      selectionId,
     };
 
     addCreateSagas(sagaArgs);
@@ -67,7 +67,7 @@ export const makeManagerProgenyHandler = <T>(
       return true;
     }
 
-    for (let manager of children.values()) {
+    for (const manager of children.values()) {
       if (manager.progenyHandler.hasDescendant(managerId)) {
         return true;
       }
@@ -78,11 +78,11 @@ export const makeManagerProgenyHandler = <T>(
 
   const hasChildren = () => Boolean(children.size);
   const hasDescendants = () => {
-    if (Boolean(children.size)) {
+    if (children.size) {
       return true;
     }
 
-    for (let manager of children.values()) {
+    for (const manager of children.values()) {
       if (manager.progenyHandler.hasDescendants()) {
         return true;
       }
@@ -97,8 +97,8 @@ export const makeManagerProgenyHandler = <T>(
       return children.get(managerId);
     }
 
-    for (let manager of children.values()) {
-      let descendant = manager.progenyHandler.getDescendant(managerId);
+    for (const manager of children.values()) {
+      const descendant = manager.progenyHandler.getDescendant(managerId);
       if (descendant) {
         return descendant;
       }
@@ -109,7 +109,7 @@ export const makeManagerProgenyHandler = <T>(
   const getDescendants = () => {
     let descendants: Manager<any>[] = [];
 
-    for (let manager of children.values()) {
+    for (const manager of children.values()) {
       descendants.push(manager);
 
       if (manager.progenyHandler.hasChildren()) {
@@ -131,6 +131,6 @@ export const makeManagerProgenyHandler = <T>(
     getChild,
     getDescendant,
     getChildren,
-    getDescendants
+    getDescendants,
   };
 };

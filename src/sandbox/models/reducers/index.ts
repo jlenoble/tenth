@@ -4,7 +4,7 @@ import ui from "./ui";
 
 export const combinedReducer = combineReducers({
   todos,
-  ui
+  ui,
 });
 
 export * from "./todos";

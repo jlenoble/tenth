@@ -13,7 +13,7 @@ export const mockGetComputedStyle = () => {
     borderRightWidth: "0px",
     borderBottomWidth: "0px",
     borderLeftWidth: "0px",
-    display: "block"
+    display: "block",
   }));
 };
 
@@ -32,6 +32,6 @@ export const mockGetBoundingClientRect = (el: HTMLElement) => {
     height: 0,
     x: 0,
     y: 0,
-    toJSON
+    toJSON,
   }));
 };
