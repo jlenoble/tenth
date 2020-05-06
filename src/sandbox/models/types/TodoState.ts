@@ -11,5 +11,3 @@ export type TodoState = Readonly<{
 export type TodoStates = readonly TodoState[];
 export type TodoStateMap = Readonly<{ [id: string]: TodoState }>;
 export type TodosState = ItemsState<"todos", TodoState>;
-
-export default TodoState;

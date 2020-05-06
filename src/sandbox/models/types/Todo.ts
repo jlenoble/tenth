@@ -6,5 +6,3 @@ export type Todo = Readonly<{
 
 export type Todos = readonly Todo[];
 export type TodoMap = Readonly<{ [id: string]: Omit<Todo, "id"> }>;
-
-export default Todo;
