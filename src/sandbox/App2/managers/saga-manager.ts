@@ -62,7 +62,7 @@ export class SagaManager implements SagaManagerInterface {
   }
 
   startAll() {
-    for (let sagaName of this.sagas.keys()) {
+    for (const sagaName of this.sagas.keys()) {
       this.start(sagaName);
     }
   }
