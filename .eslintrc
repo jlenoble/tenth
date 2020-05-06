@@ -1,43 +1,59 @@
 {
   "root": true,
-  "env": { "browser": true, "es2020": true, "node": true },
+  "env": { "browser": true, "es2020": true, "node": true, "jest": true },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
     "ecmaFeatures": {}
   },
-  "plugins": [],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": ["jest"],
   "extends": [
     "eslint:recommended",
     "google",
+    "plugin:react/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {
     "require-jsdoc": ["off"],
-    "prefer-arrow-callback": ["error"]
+    "prefer-arrow-callback": ["error"],
+    "spaced-comment": ["error", "always", { "markers": ["/"] }],
+    "react/prop-types": ["off"]
   },
   "overrides": [
     {
       "files": ["**/*.ts", "**/*.tsx"],
-      "env": { "browser": true, "es2020": true, "node": true },
+      "env": { "browser": true, "es2020": true, "node": true, "jest": true },
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module",
         "ecmaFeatures": {}
       },
-      "plugins": [],
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
+      "plugins": ["jest"],
       "extends": [
         "eslint:recommended",
         "google",
+        "plugin:react/recommended",
         "plugin:prettier/recommended",
         "plugin:@typescript-eslint/recommended",
         "prettier/@typescript-eslint"
       ],
       "rules": {
         "require-jsdoc": ["off"],
-        "prefer-arrow-callback": ["error"]
+        "prefer-arrow-callback": ["error"],
+        "spaced-comment": ["error", "always", { "markers": ["/"] }],
+        "react/prop-types": ["off"]
       }
     }
   ]
