@@ -33,6 +33,8 @@ export const makeCombinedManager = (
     manager.progenyHandler.getChildren().forEach(addToMaps);
   };
 
+  let managerIdsToRemove: string[] = [];
+
   const removeFromMaps = (managerId: Manager<any> | string) => {
     const manager =
       typeof managerId === "string" ? managers[managerId] : managerId;
@@ -56,8 +58,6 @@ export const makeCombinedManager = (
   let combinedReducer = (combineReducers(
     reducers
   ) as unknown) as CombinedReducer;
-
-  let managerIdsToRemove: string[] = [];
 
   const forEach = (
     fn: (
