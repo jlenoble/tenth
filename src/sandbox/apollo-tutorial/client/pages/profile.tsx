@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+
 import { Loading, Header, LaunchTile } from "../components";
 import { LAUNCH_TILE_DATA } from "./launches";
 import { RouteComponentProps } from "@reach/router";
@@ -22,7 +23,7 @@ export const GET_MY_TRIPS = gql`
 interface ProfileProps extends RouteComponentProps {}
 
 const Profile: React.FC<ProfileProps> = () => {
-  const { data, loading, error } = useQuery<GetMyTripsTypes.GetMyTrips, any>(
+  const { data, loading, error } = useQuery<GetMyTripsTypes.GetMyTrips>(
     GET_MY_TRIPS,
     { fetchPolicy: "network-only" }
   );

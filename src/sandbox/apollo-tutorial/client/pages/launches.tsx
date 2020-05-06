@@ -1,14 +1,14 @@
-import React, { FunctionComponent, Fragment } from "react";
+import React, { Fragment } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
-import { LaunchTile, Header, Button, Loading } from "../components";
-import * as GetLaunchListTypes from "./__generated__/GetLaunchList";
 import gql from "graphql-tag";
 
-interface LaunchesProps extends RouteComponentProps {}
+import { LaunchTile, Header, Button, Loading } from "../components";
+import { RouteComponentProps } from "@reach/router";
+import * as GetLaunchListTypes from "./__generated__/GetLaunchList";
 
 export const LAUNCH_TILE_DATA = gql`
   fragment LaunchTile on Launch {
+    __typename
     id
     isBooked
     rocket {
@@ -23,7 +23,7 @@ export const LAUNCH_TILE_DATA = gql`
 `;
 
 export const GET_LAUNCHES = gql`
-  query launchList($after: String) {
+  query GetLaunchList($after: String) {
     launches(after: $after) {
       cursor
       hasMore
@@ -35,15 +35,16 @@ export const GET_LAUNCHES = gql`
   ${LAUNCH_TILE_DATA}
 `;
 
-export const Launches: FunctionComponent<LaunchesProps> = () => {
+interface LaunchesProps extends RouteComponentProps {}
+
+const Launches: React.FC<LaunchesProps> = () => {
   const { data, loading, error, fetchMore } = useQuery<
     GetLaunchListTypes.GetLaunchList,
     GetLaunchListTypes.GetLaunchListVariables
   >(GET_LAUNCHES);
 
   if (loading) return <Loading />;
-  if (error) return <p>ERROR</p>;
-  if (!data) return <p>Not found</p>;
+  if (error || !data) return <p>ERROR</p>;
 
   return (
     <Fragment>
