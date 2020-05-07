@@ -24,7 +24,7 @@ export const DroppableList: FunctionComponent<DroppableListProps> = ({
     {(
       { innerRef, droppableProps, placeholder }: DroppableProvided,
       { isDraggingOver }: DroppableStateSnapshot
-    ) => (
+    ): JSX.Element => (
       <BaseList
         className={clsx(className, { isDraggingOver })}
         ref={innerRef}

@@ -23,13 +23,17 @@ const TextField = MuiTextField;
 export const useTextField = (
   initialValue: string,
   enter: (value: string) => void
-) => {
+): {
+  value: string;
+  changeInput: (event: ChangeEvent<HTMLInputElement>) => void;
+  keyInput: (event: KeyboardEvent<HTMLInputElement>) => boolean;
+} => {
   const [value, setValue] = useState(initialValue);
 
-  const changeInput = (event: ChangeEvent<HTMLInputElement>) =>
+  const changeInput = (event: ChangeEvent<HTMLInputElement>): void =>
     setValue(event.target.value);
 
-  const keyInput = (event: KeyboardEvent<HTMLInputElement>) => {
+  const keyInput = (event: KeyboardEvent<HTMLInputElement>): boolean => {
     switch (event.key) {
       case "Enter":
         enter(value);
@@ -75,7 +79,7 @@ export const StatefulTextField: FunctionComponent<StatefulTextFieldProps> = ({
       fullWidth
       value={value}
       onChange={changeInput}
-      onBlur={() => enter(defaultValue)}
+      onBlur={(): void => enter(defaultValue)}
       onKeyDown={keyInput}
       {...other}
     />

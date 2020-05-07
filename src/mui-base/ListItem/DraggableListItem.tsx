@@ -24,7 +24,7 @@ export const DraggableListItem: FunctionComponent<DraggableListItemProps> = ({
     {(
       { innerRef, draggableProps, dragHandleProps }: DraggableProvided,
       { isDragging }: DraggableStateSnapshot
-    ) => (
+    ): JSX.Element => (
       <BaseListItem
         className={clsx(className, { isDragging })}
         ref={innerRef}

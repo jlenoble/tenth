@@ -10,7 +10,7 @@ export class SagaManager implements SagaManagerInterface {
   private sagas: Map<string, () => SagaGenerator> = new Map();
   private runningSagas: Set<string> = new Set();
 
-  add(sagaName: string, saga: () => SagaGenerator, trigger?: string) {
+  add(sagaName: string, saga: () => SagaGenerator, trigger?: string): void {
     if (this.sagas.has(sagaName)) {
       return;
     }
@@ -35,13 +35,13 @@ export class SagaManager implements SagaManagerInterface {
     this.sagas.set(sagaName, controllableSaga);
   }
 
-  remove(sagaName: string) {
+  remove(sagaName: string): void {
     this.stop(sagaName);
     this.sagas.delete(sagaName);
     this.triggers.delete(sagaName);
   }
 
-  replace(sagaName: string, saga: () => SagaGenerator, trigger?: string) {
+  replace(sagaName: string, saga: () => SagaGenerator, trigger?: string): void {
     const running = this.runningSagas.has(sagaName);
     this.remove(sagaName);
     this.add(sagaName, saga, trigger);
@@ -50,28 +50,28 @@ export class SagaManager implements SagaManagerInterface {
     }
   }
 
-  start(sagaName: string) {
+  start(sagaName: string): void {
     if (this.sagas.has(sagaName) && !this.runningSagas.has(sagaName)) {
       sagaMiddleware.run(this.sagas.get(sagaName)!);
       this.runningSagas.add(sagaName);
     }
   }
 
-  stop(sagaName: string) {
+  stop(sagaName: string): void {
     this.runningSagas.delete(sagaName);
   }
 
-  startAll() {
+  startAll(): void {
     for (const sagaName of this.sagas.keys()) {
       this.start(sagaName);
     }
   }
 
-  stopAll() {
+  stopAll(): void {
     this.runningSagas.clear();
   }
 
-  run(sagaName?: string, saga?: () => SagaGenerator, trigger?: string) {
+  run(sagaName?: string, saga?: () => SagaGenerator, trigger?: string): void {
     if (!sagaName) {
       this.startAll();
     } else {

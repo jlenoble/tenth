@@ -93,8 +93,8 @@ export const StatefulInlineText: FunctionComponent<Omit<
       label={label}
       helperText={helperText}
       error={error}
-      edit={() => setEdited(true)}
-      enter={(value: string) => {
+      edit={(): void => setEdited(true)}
+      enter={(value: string): void => {
         setEdited(false);
         enter(value);
       }}
