@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import mkdirp from "mkdirp";
 import eslint from "gulp-eslint";
+import filter from "gulp-filter";
 
 const reportDir = "eslint-report";
 const srcGlob = [
@@ -20,8 +21,11 @@ const createReportDir = (path) => {
 };
 
 export const handleLint = () => {
+  const f = filter(["**", "!*src/sandbox/**/*", "*src/sandbox/App2/**/*"]);
+
   return gulp
     .src(srcGlob)
+    .pipe(f)
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(
