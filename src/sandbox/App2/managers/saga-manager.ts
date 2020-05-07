@@ -51,8 +51,9 @@ export class SagaManager implements SagaManagerInterface {
   }
 
   start(sagaName: string): void {
-    if (this.sagas.has(sagaName) && !this.runningSagas.has(sagaName)) {
-      sagaMiddleware.run(this.sagas.get(sagaName)!);
+    const saga = this.sagas.get(sagaName);
+    if (saga && !this.runningSagas.has(sagaName)) {
+      sagaMiddleware.run(saga);
       this.runningSagas.add(sagaName);
     }
   }
