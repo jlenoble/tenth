@@ -36,6 +36,7 @@ export const ListCard: FunctionComponent<FullListCardProps> = ({
     <Card {...other}>
       <CardHeader
         title={title}
+        titleVariant={titleVariant}
         titleLabel={titleLabel}
         titleHelperText={titleHelperText}
         titleError={titleError}

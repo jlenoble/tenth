@@ -12,7 +12,6 @@ import {
 import { DeleteButton, OpenInNewButton } from "./buttons";
 
 export interface ListItemProps extends ListItemTextProps {
-  itemId: string;
   checked?: boolean;
   checkboxProps?: Omit<CheckboxProps, "checked">;
   listItemTextProps?: BaseListItemTextProps;
@@ -24,8 +23,6 @@ export type BaseListItemProps = MuiListItemProps;
 export type FullListItemProps = ListItemProps & BaseListItemProps;
 
 const ListItem: FunctionComponent<FullListItemProps> = ({
-  itemId,
-
   checked,
   checkboxProps,
 
@@ -62,7 +59,7 @@ const ListItem: FunctionComponent<FullListItemProps> = ({
 
 const MemoizedListItem = memo(ListItem, (prevProps, nextProps) => {
   let eq =
-    prevProps.itemId === nextProps.itemId &&
+    prevProps.key === nextProps.key &&
     prevProps.primary === nextProps.primary &&
     prevProps.checked === nextProps.checked;
 
