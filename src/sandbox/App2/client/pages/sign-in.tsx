@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
+import { EmailTextField } from "../components";
 
 function Copyright() {
   return (
@@ -60,17 +61,7 @@ export default function SignIn() {
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
+          <EmailTextField autoFocus margin="normal" />
           <TextField
             variant="outlined"
             margin="normal"
