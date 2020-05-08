@@ -6,5 +6,8 @@ export const gulpGlob = new GulpGlob(`${gulpDir}/**/*.js`);
 
 // All src files
 export const srcGlob = new GulpGlob(
-  `${srcDir}/sandbox/apollo-tutorial/**/*.ts`
+  `${srcDir}/**/*.ts`,
+  `${srcDir}/**/*.tsx`,
+  `${srcDir}/**/*.js`,
+  `${srcDir}/**/*.jsx`
 );

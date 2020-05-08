@@ -7,6 +7,8 @@ const copyGlob = [
   path.join(path.join(gulpDir, "**/*.json")),
   path.join(path.join(gulpDir, "**/.*.json")),
   path.join(path.join(srcDir, "**/*.graphql")),
+  path.join(path.join(srcDir, "**/*.css")),
+  path.join(path.join(srcDir, "**/*.svg")),
 ];
 
 function copyFiles() {
