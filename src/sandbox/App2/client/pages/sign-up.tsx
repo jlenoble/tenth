@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
-import { EmailTextField } from "../components";
+import { EmailTextField, PasswordTextField } from "../components";
 
 function Copyright() {
   return (
@@ -89,16 +89,7 @@ export default function SignUp() {
               <EmailTextField />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+              <PasswordTextField />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel

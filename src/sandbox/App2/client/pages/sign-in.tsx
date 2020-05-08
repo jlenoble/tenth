@@ -2,7 +2,6 @@ import React from "react";
 import {
   Avatar,
   Button,
-  TextField,
   FormControlLabel,
   Checkbox,
   Link,
@@ -13,7 +12,7 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
-import { EmailTextField } from "../components";
+import { EmailTextField, PasswordTextField } from "../components";
 
 function Copyright() {
   return (
@@ -62,17 +61,7 @@ export default function SignIn() {
         </Typography>
         <form className={classes.form} noValidate>
           <EmailTextField autoFocus margin="normal" />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
+          <PasswordTextField margin="normal" />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
