@@ -4,44 +4,34 @@ module.exports = {
       "@babel/preset-env",
       {
         targets: {
-          node: "current"
-        }
-      }
+          node: "current",
+        },
+      },
     ],
-    [
-      "@babel/preset-typescript",
-      {
-        allExtensions: true
-      }
-    ]
+    "@babel/preset-typescript",
+    "@babel/preset-react",
   ],
   plugins: [
+    "@babel/proposal-class-properties",
     [
       "babel-plugin-import",
       {
         libraryName: "@material-ui/core",
         libraryDirectory: "",
-        camel2DashComponentName: false
+        camel2DashComponentName: false,
       },
-      "core"
+      "core",
     ],
     [
       "babel-plugin-import",
       {
         libraryName: "@material-ui/icons",
         libraryDirectory: "",
-        camel2DashComponentName: false
+        camel2DashComponentName: false,
       },
-      "icons"
+      "icons",
     ],
-    "@babel/plugin-proposal-class-properties",
-    [
-      "@babel/plugin-proposal-decorators",
-      {
-        decoratorsBeforeExport: true
-      }
-    ],
-    "@babel/plugin-proposal-object-rest-spread",
-    "babel-plugin-add-module-exports"
-  ]
+    "@babel/proposal-object-rest-spread",
+    "babel-plugin-add-module-exports",
+  ],
 };
