@@ -1,4 +1,6 @@
 import React, { FunctionComponent } from "react";
+import { RouteComponentProps } from "@reach/router";
+
 import {
   Avatar,
   Button,
@@ -10,12 +12,13 @@ import {
   Container,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+
 import { EmailTextField, PasswordTextField } from "../components";
 import { makeStyles } from "./sign-in.style";
 
 const useStyles = makeStyles({ formMarginTopSpacing: 1 });
 
-export const SignIn: FunctionComponent = () => {
+export const SignIn: FunctionComponent<RouteComponentProps> = () => {
   const classes = useStyles();
 
   return (
@@ -50,7 +53,7 @@ export const SignIn: FunctionComponent = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="sign-up" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
