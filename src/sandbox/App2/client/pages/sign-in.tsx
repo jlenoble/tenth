@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import {
   Avatar,
   Button,
@@ -15,7 +15,7 @@ import { makeStyles } from "./sign-in.style";
 
 const useStyles = makeStyles({ formMarginTopSpacing: 1 });
 
-export default function SignIn() {
+export const SignIn: FunctionComponent = () => {
   const classes = useStyles();
 
   return (
@@ -59,4 +59,6 @@ export default function SignIn() {
       </div>
     </Container>
   );
-}
+};
+
+export default SignIn;
