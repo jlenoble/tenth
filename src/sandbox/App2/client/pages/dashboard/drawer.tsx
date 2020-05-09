@@ -5,13 +5,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   Drawer as MuiDrawer,
   List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Divider,
   IconButton,
 } from "@material-ui/core";
-import { ChevronLeft } from "@material-ui/icons";
+import { ChevronLeft, Dashboard } from "@material-ui/icons";
 
 import { drawerStyles } from "./dashboard.style";
-import { mainListItems, secondaryListItems } from "./list-items";
 
 const useStyles = makeStyles(drawerStyles);
 
@@ -35,9 +37,14 @@ export const Drawer: FunctionComponent<{
         </IconButton>
       </div>
       <Divider />
-      <List>{mainListItems}</List>
-      <Divider />
-      <List>{secondaryListItems}</List>
+      <List>
+        <ListItem button>
+          <ListItemIcon>
+            <Dashboard />
+          </ListItemIcon>
+          <ListItemText primary="Items" />
+        </ListItem>
+      </List>
     </MuiDrawer>
   );
 };
