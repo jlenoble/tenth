@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
 
 export const Dashboard: FunctionComponent = () => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = (): void => {
     setOpen(true);
   };
