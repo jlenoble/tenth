@@ -1,3 +1,3 @@
-export { PageContainer } from "./page-container";
+export { PageContainer, appBarStyles } from "./page-container";
 
 export * from "./textfields";

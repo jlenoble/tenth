@@ -1,13 +1,17 @@
 import React, { Fragment, FunctionComponent } from "react";
 import { AppBar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+export const appBarStyles = (
+  theme: Theme
+): { appBar: { height: number; boxShadow: string } } => ({
   appBar: {
     height: theme.spacing(1.5),
     boxShadow: "none",
   },
-}));
+});
+
+const useStyles = makeStyles(appBarStyles);
 
 export const PageContainer: FunctionComponent = ({ children }) => {
   const classes = useStyles();
