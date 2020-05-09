@@ -6,7 +6,6 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Typography,
   Container,
@@ -19,6 +18,7 @@ import {
   LastNameTextField,
   EmailTextField,
   PasswordTextField,
+  Link,
 } from "../components";
 import { signUpStyles } from "./sign-in.style";
 
@@ -68,7 +68,7 @@ export const SignUp: FunctionComponent<RouteComponentProps> = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="sign-in" variant="body2">
+              <Link to="/sign-in" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

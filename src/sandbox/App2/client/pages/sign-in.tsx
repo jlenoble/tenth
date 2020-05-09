@@ -6,7 +6,6 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Typography,
   Container,
@@ -14,7 +13,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { EmailTextField, PasswordTextField } from "../components";
+import { EmailTextField, PasswordTextField, Link } from "../components";
 import { signInStyles } from "./sign-in.style";
 
 const useStyles = makeStyles(signInStyles);
@@ -49,12 +48,12 @@ export const SignIn: FunctionComponent<RouteComponentProps> = () => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link to="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="sign-up" variant="body2">
+              <Link to="/sign-up" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
