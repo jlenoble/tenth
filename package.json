@@ -172,6 +172,7 @@
     "prettier": "^2.0.5",
     "react-app-rewired": "^2.1.6",
     "react-scripts": "^3.4.1",
+    "recharts": "^1.8.5",
     "redux-logger": "^3.0.6",
     "sequelize": "^5.21.7",
     "source-map-support": "^0.5.19",
