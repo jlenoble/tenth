@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent } from "react";
-import { Router } from "@reach/router";
+import { Router, Redirect } from "@reach/router";
 
 import { PageContainer } from "../components";
 import { SignIn } from "./sign-in";
@@ -11,6 +11,7 @@ export const Main: FunctionComponent = () => {
     <PageContainer>
       <Router primary={false} component={Fragment}>
         <Dashboard path="/" />
+        <Redirect from="/tenth" to="/" noThrow />
         <SignIn path="/sign-in" />
         <SignUp path="/sign-up" />
       </Router>
