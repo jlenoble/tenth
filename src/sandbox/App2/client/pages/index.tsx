@@ -1,8 +1,7 @@
 import React, { Fragment, FunctionComponent } from "react";
 import { Router, Redirect } from "@reach/router";
 
-import { SignIn } from "./sign-in";
-import { SignUp } from "./sign-up";
+import { SignIn, SignUp } from "./login";
 import Dashboard from "./dashboard";
 
 export const Main: FunctionComponent = () => {

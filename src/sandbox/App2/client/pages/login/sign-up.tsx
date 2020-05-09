@@ -14,13 +14,13 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
-  PageContainer,
   FirstNameTextField,
   LastNameTextField,
   EmailTextField,
   PasswordTextField,
   Link,
-} from "../components";
+} from "../../components";
+import { PageContainer } from "./page-container";
 import { signUpStyles } from "./sign-in.style";
 
 const useStyles = makeStyles(signUpStyles);

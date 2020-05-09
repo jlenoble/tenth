@@ -13,12 +13,8 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 
-import {
-  PageContainer,
-  EmailTextField,
-  PasswordTextField,
-  Link,
-} from "../components";
+import { EmailTextField, PasswordTextField, Link } from "../../components";
+import { PageContainer } from "./page-container";
 import { signInStyles } from "./sign-in.style";
 
 const useStyles = makeStyles(signInStyles);

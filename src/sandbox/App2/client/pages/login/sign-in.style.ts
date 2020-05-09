@@ -2,7 +2,7 @@ import { merge } from "lodash";
 import { Theme } from "@material-ui/core/styles";
 import { CSSProperties } from "@material-ui/styles";
 
-import { appBarStyles } from "../components";
+import { appBarStyles } from "./page-container";
 
 export const signInStyles = (
   theme: Theme
