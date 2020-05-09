@@ -12,11 +12,12 @@ import {
   Container,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { EmailTextField, PasswordTextField } from "../components";
-import { makeStyles } from "./sign-in.style";
+import { signInStyles } from "./sign-in.style";
 
-const useStyles = makeStyles({ formMarginTopSpacing: 1 });
+const useStyles = makeStyles(signInStyles);
 
 export const SignIn: FunctionComponent<RouteComponentProps> = () => {
   const classes = useStyles();
