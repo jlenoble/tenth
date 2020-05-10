@@ -1,26 +1,12 @@
-import gulp from "gulp";
-import newer from "gulp-newer";
-import path from "path";
-import { buildDir, srcDir, gulpDir } from "./helpers/dirs";
+import GulpTask from "gulptask";
+import { buildDir } from "./helpers/dirs";
+import { copyGlob } from "./helpers/source-globs";
 
-const copyGlob = [
-  path.join(path.join(gulpDir, "**/*.json")),
-  path.join(path.join(gulpDir, "**/.*.json")),
-  path.join(path.join(srcDir, "**/*.graphql")),
-  path.join(path.join(srcDir, "**/*.css")),
-  path.join(path.join(srcDir, "**/*.svg")),
-];
+import { copyPipe } from "./helpers/pipes";
 
-function copyFiles() {
-  return gulp
-    .src(copyGlob, { base: "." })
-    .pipe(newer(buildDir))
-    .pipe(gulp.dest(buildDir));
-}
-
-function watchFiles(done) {
-  gulp.watch(copyGlob, copyFiles);
-  done();
-}
-
-gulp.task("copy", gulp.series(copyFiles, watchFiles));
+new GulpTask({
+  name: "copy",
+  glob: copyGlob,
+  dest: buildDir,
+  pipe: copyPipe,
+});
