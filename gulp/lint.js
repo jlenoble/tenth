@@ -5,15 +5,9 @@ import mkdirp from "mkdirp";
 import eslint from "gulp-eslint";
 import filter from "gulp-filter";
 
+import { srcGlob } from "./helpers/source-globs";
+
 const reportDir = "eslint-report";
-const srcGlob = [
-  "src/**/*.tsx",
-  "src/**/*.js",
-  "src/**/*.jsx",
-  "src/**/*.ts",
-  "gulp/**/*.js",
-  "gulpfile.js",
-];
 
 const createReportDir = (path) => {
   const mkReportDirp = () => mkdirp(path);
@@ -23,8 +17,8 @@ const createReportDir = (path) => {
 export const handleLint = () => {
   const f = filter(["**", "!*src/sandbox/**/*", "*src/sandbox/App2/**/*"]);
 
-  return gulp
-    .src(srcGlob)
+  return srcGlob
+    .src()
     .pipe(f)
     .pipe(eslint())
     .pipe(eslint.format())
