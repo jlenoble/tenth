@@ -2711,7 +2711,7 @@
     "@types/node" "*"
     "@types/undertaker-registry" "*"
 
-"@types/validator@*":
+"@types/validator@*", "@types/validator@^13.0.0":
   version "13.0.0"
   resolved "http://localhost:4873/@types%2fvalidator/-/validator-13.0.0.tgz#365f1bf936aeaddd0856fc41aa1d6f82d88ee5b3"
   integrity sha512-WAy5txG7aFX8Vw3sloEKp5p/t/Xt8jD3GRD9DacnFv6Vo8ubudAsRTXgxpQwU0mpzY/H8U4db3roDuCMjShBmw==
