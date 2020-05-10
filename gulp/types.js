@@ -3,25 +3,27 @@ import path from "path";
 import { generateTypeScriptTypes } from "graphql-schema-typescript";
 import { importSchema } from "graphql-import";
 import { makeExecutableSchema } from "graphql-tools";
+import { GraphQLDateTime } from "graphql-iso-date";
 import { srcDir } from "./helpers/dirs";
 
-const schemaDir = path.join(srcDir, "sandbox/apollo-tutorial/schemas");
-const outputDir = path.join(srcDir, "sandbox/apollo-tutorial/__types__");
+const schemaDir = path.join(srcDir, "sandbox/App2/graphql-schemas");
+const outputDir = path.join(srcDir, "sandbox/App2");
 const options = {};
 
 gulp.task("types", async () => {
   return Promise.all(
-    ["spacex-schema", "schema"].map((name) => {
+    ["**/*"].map(async (name) => {
       try {
         const typeDefGlob = path.join(schemaDir, name + ".graphql");
         const typeDefs = importSchema(typeDefGlob);
-        const resolvers = {};
-        const schema = makeExecutableSchema({ typeDefs, resolvers });
-        const outputPath = path.join(outputDir, name + ".ts");
+        const resolvers = { DateTime: GraphQLDateTime };
 
-        return generateTypeScriptTypes(schema, outputPath, options);
+        const schema = makeExecutableSchema({ typeDefs, resolvers });
+        const outputPath = path.join(outputDir, "__types__.ts");
+
+        await generateTypeScriptTypes(schema, outputPath, options);
       } catch (err) {
-        return Promise.reject(err);
+        console.error(err);
       }
     })
   );
