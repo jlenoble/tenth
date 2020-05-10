@@ -10,12 +10,13 @@ const schemaDir = path.join(srcDir, "sandbox/App2/graphql-schemas");
 const outputDir = path.join(srcDir, "sandbox/App2");
 const options = {};
 
-const typeDefGlob = path.join(schemaDir, "query.graphql");
+const startTypeDefGlob = path.join(schemaDir, "query.graphql");
+const allTypeDefGlob = path.join(schemaDir, "**/*.graphql");
 const outputPath = path.join(outputDir, "__types__.ts");
 
 const execTypes = async () => {
   try {
-    const typeDefs = importSchema(typeDefGlob);
+    const typeDefs = importSchema(startTypeDefGlob);
     const resolvers = { DateTime: GraphQLDateTime };
     const schema = makeExecutableSchema({ typeDefs, resolvers });
     await generateTypeScriptTypes(schema, outputPath, options);
@@ -25,7 +26,7 @@ const execTypes = async () => {
 };
 
 const watchTypes = (done) => {
-  gulp.watch(typeDefGlob, execTypes);
+  gulp.watch(allTypeDefGlob, execTypes);
   done();
 };
 
