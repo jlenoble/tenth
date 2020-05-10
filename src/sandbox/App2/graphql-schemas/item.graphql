@@ -3,5 +3,4 @@
 type Item {
   id: ID!
   title: String!
-  created: DateTime!
 }

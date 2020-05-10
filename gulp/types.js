@@ -10,7 +10,7 @@ const schemaDir = path.join(srcDir, "sandbox/App2/graphql-schemas");
 const outputDir = path.join(srcDir, "sandbox/App2");
 const options = {};
 
-const startTypeDefGlob = path.join(schemaDir, "query.graphql");
+const startTypeDefGlob = path.join(schemaDir, "index.graphql");
 const allTypeDefGlob = path.join(schemaDir, "**/*.graphql");
 const outputPath = path.join(outputDir, "__types__.ts");
 
