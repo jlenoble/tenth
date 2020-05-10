@@ -16,7 +16,6 @@ export const srcGlob = new GulpGlob(
 
 // All needed (config, includes) files (no JS)
 export const copyGlob = new GulpGlob(
-  `${srcDir}/**/*.graphql`,
   `${srcDir}/**/*.css`,
   `${srcDir}/**/*.svg`,
   `${gulpDir}/**/*.json`,

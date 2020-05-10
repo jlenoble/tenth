@@ -1,0 +1,8 @@
+# import Item from "item.graphql"
+# import User from "user.graphql"
+
+type Query {
+  items: [Item]!
+  item(id: ID!): Item
+  me: User
+}

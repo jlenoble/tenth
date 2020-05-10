@@ -10,7 +10,7 @@
 /cypress/videos
 /dev-build
 /eslint-report
-__types__
+__types__*
 store.sqlite
 
 # production
