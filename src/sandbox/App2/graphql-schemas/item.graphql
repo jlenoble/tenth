@@ -2,5 +2,6 @@
 
 type Item {
   id: ID!
+  userId: ID!
   title: String!
 }
