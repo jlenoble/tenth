@@ -3,8 +3,8 @@ import { Item, itemDataType } from "./item";
 import { User, userDataType } from "./user";
 
 export type Store = {
-  items: ModelCtor<Item>;
-  users: ModelCtor<User>;
+  Item: ModelCtor<Item>;
+  User: ModelCtor<User>;
 };
 
 export const createStore = (): Store => {
@@ -25,5 +25,5 @@ export const createStore = (): Store => {
     freezeTableName: true,
   });
 
-  return { items: Item, users: User };
+  return { Item, User };
 };

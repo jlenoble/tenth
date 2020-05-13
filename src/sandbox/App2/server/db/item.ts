@@ -2,7 +2,7 @@ import { Model, DataTypes } from "sequelize";
 
 export const itemDataType = {
   id: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },

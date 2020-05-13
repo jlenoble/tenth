@@ -26,7 +26,7 @@ export class ItemAPI<
       return null;
     }
 
-    const item = await this.store.items.create<Item>({ title, userId });
+    const item = await this.store.Item.create<Item>({ title, userId });
     return item;
   }
 
@@ -37,7 +37,7 @@ export class ItemAPI<
       return null;
     }
 
-    return this.store.items.findOne<Item>({
+    return this.store.Item.findOne<Item>({
       where: { id, userId },
     });
   }

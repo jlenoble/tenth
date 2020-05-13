@@ -25,7 +25,7 @@ export class UserAPI<
     const email = this.context?.user?.email || emailArg;
     if (!email || !isEmail.validate(email)) return null;
 
-    const users = await this.store.users.findOrCreate<User>({
+    const users = await this.store.User.findOrCreate<User>({
       where: { email },
     });
 
