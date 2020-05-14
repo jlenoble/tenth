@@ -30,7 +30,17 @@ export class ItemAPI<
     return item;
   }
 
-  async getItemById({ id }: { id: string }): Promise<Item | null> {
+  async getAllItems(): Promise<Item[]> {
+    const userId = this.context?.user?.id;
+
+    if (!userId) {
+      return [];
+    }
+
+    return this.store.Item.findAll<Item>({ where: { userId } });
+  }
+
+  async getItemById({ id }: { id: number }): Promise<Item | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {

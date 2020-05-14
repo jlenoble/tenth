@@ -1,22 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { APIMap } from "../server/datasources";
-import { User } from "../server/db";
+import { Item, User } from "../server/db";
+
+type DataSources = { dataSources: APIMap };
 
 export const queryResolverMap = {
-  // items: (
-  //   _: any,
-  //   __: any,
-  //   { dataSources: { itemAPI } }: { dataSources: APIMap }
-  // ) => itemAPI.getAllItems(),
-  // item: (
-  //   _: any,
-  //   { id }: {id: number},
-  //   { dataSources: { itemAPI } }: { dataSources: APIMap }
-  // ) => itemAPI.getItemById({ item: id }),
+  items: (
+    _: any,
+    __: any,
+    { dataSources: { itemAPI } }: DataSources
+  ): Promise<Item[]> => itemAPI.getAllItems(),
+
+  item: (
+    _: any,
+    item: { id: number },
+    { dataSources: { itemAPI } }: DataSources
+  ): Promise<Item | null> => itemAPI.getItemById(item),
+
   me: (
     _: any,
     __: any,
-    { dataSources: { userAPI } }: { dataSources: APIMap }
+    { dataSources: { userAPI } }: DataSources
   ): Promise<User | null> => userAPI.findOrCreateUser(),
 };

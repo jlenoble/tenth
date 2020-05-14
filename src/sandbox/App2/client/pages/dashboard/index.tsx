@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import { RouteComponentProps } from "@reach/router";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar } from "./app-bar";
 import { Drawer } from "./drawer";
@@ -10,7 +11,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const Dashboard: FunctionComponent = () => {
+export const Dashboard: FunctionComponent<RouteComponentProps> = () => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = (): void => {
