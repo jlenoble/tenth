@@ -1,0 +1,7 @@
+# import Item from "item.graphql"
+
+type Mutation {
+  createItem(title: String!): Item!
+  updateItem(id: ID!, title: String): Item!
+  destroyItem(id: ID!): Item!
+}
