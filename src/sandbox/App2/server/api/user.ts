@@ -1,8 +1,7 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import isEmail from "isemail";
-import { GQLUser } from "../../__types__";
+import { APIContext, GQLUser } from "../../types";
 import { Store, User } from "../db";
-import { APIContext } from "./context";
 
 export class UserAPI<
   Context extends APIContext = APIContext

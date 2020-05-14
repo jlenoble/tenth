@@ -1,3 +1,3 @@
-import { GQLUser } from "../../__types__";
+import { GQLUser } from "../graphql-schemas";
 
 export type APIContext = { user?: GQLUser };

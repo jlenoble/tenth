@@ -2,9 +2,10 @@ import { ApolloServer } from "apollo-server";
 import { importSchema } from "graphql-import";
 import path from "path";
 import { createStore, User } from "./db";
-import { APIMap, ItemAPI, UserAPI } from "./datasources";
+import { ItemAPI, UserAPI } from "./api";
 import isEmail from "isemail";
 import { resolvers } from "../graphql-resolvers";
+import { APIMap } from "../types";
 
 const typeDefs = importSchema(
   path.join(__dirname, "../graphql-schemas/index.graphql")
