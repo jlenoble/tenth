@@ -23,7 +23,7 @@
     "e2e": "cypress open",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
-    "start-apollo": "node ./dev-build/src/sandbox/apollo-tutorial/server/index.js"
+    "start-apollo": "nodemon ./dev-build/src/sandbox/App2/server/index.js"
   },
   "license": "MIT",
   "author": {
@@ -170,6 +170,7 @@
     "mocha": "^7.1.2",
     "mochawesome": "^6.1.1",
     "node-cleanup": "^2.1.2",
+    "nodemon": "^2.0.3",
     "organon": "^0.1.0-6",
     "plumb-gulp": "^0.2.2",
     "polished": "^3.6.2",
