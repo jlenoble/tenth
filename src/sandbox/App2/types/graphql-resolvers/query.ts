@@ -1,7 +1,6 @@
 import { GraphQLResolveInfo } from "graphql";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
-import { ItemId } from "../graphql-schemas";
-import { Item, User } from "../../server/db";
+import { GQLItem, GQLUser, ItemId } from "../graphql-schemas";
 
 export interface GQLQueryTypeResolver<TParent, TContext>
   extends IResolverObject<TParent, TContext> {
@@ -17,7 +16,7 @@ export interface QueryToItemsResolver<TParent, TContext, TArgs = {}>
     args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
-  ): Promise<Item[]>;
+  ): Promise<GQLItem[]>;
 }
 
 export interface QueryToItemArgs {
@@ -33,7 +32,7 @@ export interface QueryToItemResolver<
     args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
-  ): Promise<Item | null>;
+  ): Promise<GQLItem | null>;
 }
 
 export interface QueryToMeResolver<TParent, TContext, TArgs = {}>
@@ -43,5 +42,5 @@ export interface QueryToMeResolver<TParent, TContext, TArgs = {}>
     args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
-  ): Promise<User | null>;
+  ): Promise<GQLUser | null>;
 }

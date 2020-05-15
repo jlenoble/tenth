@@ -1,7 +1,6 @@
 import { GraphQLResolveInfo } from "graphql";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
-import { ItemId } from "../graphql-schemas";
-import { Item } from "../../server/db";
+import { GQLItem, ItemId } from "../graphql-schemas";
 
 export interface GQLMutationTypeResolver<TParent, TContext>
   extends IResolverObject<TParent, TContext> {
@@ -23,7 +22,7 @@ export interface MutationToCreateItemResolver<
     args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
-  ): Promise<Item | null>;
+  ): Promise<GQLItem | null>;
 }
 
 export interface MutationToUpdateItemArgs {
@@ -40,7 +39,7 @@ export interface MutationToUpdateItemResolver<
     args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
-  ): Promise<Item | null>;
+  ): Promise<GQLItem | null>;
 }
 
 export interface MutationToDestroyItemArgs {
@@ -56,5 +55,5 @@ export interface MutationToDestroyItemResolver<
     args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
-  ): Promise<void | null>;
+  ): Promise<GQLItem | null>;
 }

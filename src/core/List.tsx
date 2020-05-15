@@ -40,16 +40,17 @@ export const List: FunctionComponent<FullListProps> = ({
       <MuiList droppableProps={droppableProps} {...other}>
         {listItems &&
           listItems.map((listItem, index) => {
-            const id = listItem.itemId;
+            const { itemId, ...other } = listItem;
 
             return (
               <ListItem
-                draggableProps={dnd && { draggableId: id, index }}
-                key={id}
+                draggableProps={dnd && { draggableId: itemId, index }}
+                key={itemId}
+                itemId={itemId}
                 checkboxProps={checkboxProps}
                 listItemTextProps={listItemTextProps}
                 deleteButtonProps={deleteButtonProps}
-                {...listItem}
+                {...other}
               />
             );
           })}

@@ -4,6 +4,7 @@ import {
   MutationToUpdateItemArgs,
   MutationToDestroyItemArgs,
   APIContext,
+  GQLItem,
 } from "../../types";
 import { Store, Item } from "../db";
 
@@ -22,20 +23,42 @@ export class ItemAPI<
     this.context = config.context;
   }
 
-  async createItem({ title }: MutationToCreateItemArgs): Promise<Item | null> {
+  async createItem({
+    title,
+  }: MutationToCreateItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
       return null;
     }
 
-    return this.store.Item.create<Item>({ title, userId });
+    const item = await this.store.Item.create<Item>({ title, userId });
+    return item.values;
   }
 
   async updateItem({
     id,
     ...args
-  }: MutationToUpdateItemArgs): Promise<Item | null> {
+  }: MutationToUpdateItemArgs): Promise<GQLItem | null> {
+    const userId = this.context?.user?.id;
+
+    if (!userId) {
+      return null;
+    }
+
+    let item = await this.store.Item.findOne<Item>({ where: { id, userId } });
+
+    if (item) {
+      item = await item.update(args);
+      return item.values;
+    } else {
+      return null;
+    }
+  }
+
+  async destroyItem({
+    id,
+  }: MutationToDestroyItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
@@ -45,47 +68,32 @@ export class ItemAPI<
     const item = await this.store.Item.findOne<Item>({ where: { id, userId } });
 
     if (item) {
-      return item.update(args);
+      await item.destroy();
+      return item.values;
     } else {
       return null;
     }
   }
 
-  async destroyItem({ id }: MutationToDestroyItemArgs): Promise<void | null> {
-    const userId = this.context?.user?.id;
-
-    if (!userId) {
-      return null;
-    }
-
-    const item = await this.store.Item.findOne<Item>({ where: { id, userId } });
-
-    if (item) {
-      return item.destroy();
-    } else {
-      return null;
-    }
-  }
-
-  async getAllItems(): Promise<Item[]> {
+  async getAllItems(): Promise<GQLItem[]> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
       return [];
     }
 
-    return this.store.Item.findAll<Item>({ where: { userId } });
+    const items = await this.store.Item.findAll<Item>({ where: { userId } });
+    return items.map((item) => item.values);
   }
 
-  async getItemById({ id }: { id: number }): Promise<Item | null> {
+  async getItemById({ id }: { id: number }): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
       return null;
     }
 
-    return this.store.Item.findOne<Item>({
-      where: { id, userId },
-    });
+    const item = await this.store.Item.findOne<Item>({ where: { id, userId } });
+    return item ? item.values : null;
   }
 }

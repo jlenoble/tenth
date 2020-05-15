@@ -3,6 +3,6 @@
 
 type Query {
   items: [Item]!
-  item(id: ID!): Item
+  item(id: Int!): Item
   me: User
 }

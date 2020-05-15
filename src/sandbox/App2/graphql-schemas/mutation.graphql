@@ -2,6 +2,6 @@
 
 type Mutation {
   createItem(title: String!): Item!
-  updateItem(id: ID!, title: String): Item!
-  destroyItem(id: ID!): Item!
+  updateItem(id: Int!, title: String): Item!
+  destroyItem(id: Int!): Item!
 }

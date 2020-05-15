@@ -1,7 +1,7 @@
 # import DateTime from "scalars.graphql"
 
 type Item {
-  id: ID!
-  userId: ID!
+  id: Int!
+  userId: Int!
   title: String!
 }
