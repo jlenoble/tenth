@@ -1,12 +1,28 @@
-import { GQLMutationTypeResolver } from "../types";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  GQLMutationTypeResolver,
+  DataSources,
+  MutationToCreateItemArgs,
+  MutationToUpdateItemArgs,
+  MutationToDestroyItemArgs,
+} from "../types";
 
-export const mutationResolvers: GQLMutationTypeResolver = {
-  createItem: (_, item, { dataSources: { itemAPI } }) =>
-    itemAPI.createItem(item),
+export const mutationResolvers: GQLMutationTypeResolver<any, DataSources> = {
+  createItem: (
+    _: any,
+    item: MutationToCreateItemArgs,
+    { dataSources: { itemAPI } }: DataSources
+  ) => itemAPI.createItem(item),
 
-  updateItem: (_, item, { dataSources: { itemAPI } }) =>
-    itemAPI.updateItem(item),
+  updateItem: (
+    _: any,
+    item: MutationToUpdateItemArgs,
+    { dataSources: { itemAPI } }: DataSources
+  ) => itemAPI.updateItem(item),
 
-  destroyItem: (_, item, { dataSources: { itemAPI } }) =>
-    itemAPI.destroyItem(item),
+  destroyItem: (
+    _: any,
+    item: MutationToDestroyItemArgs,
+    { dataSources: { itemAPI } }: DataSources
+  ) => itemAPI.destroyItem(item),
 };

@@ -10,11 +10,11 @@ export interface GQLQueryTypeResolver<TParent, TContext>
   me: QueryToMeResolver<TParent, TContext>;
 }
 
-export interface QueryToItemsResolver<TParent, TContext>
-  extends IFieldResolver<TParent, TContext> {
+export interface QueryToItemsResolver<TParent, TContext, TArgs = {}>
+  extends IFieldResolver<TParent, TContext, TArgs> {
   (
     parent: TParent,
-    args: {},
+    args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<Item[]>;
@@ -23,21 +23,24 @@ export interface QueryToItemsResolver<TParent, TContext>
 export interface QueryToItemArgs {
   id: ItemId;
 }
-export interface QueryToItemResolver<TParent, TContext>
-  extends IFieldResolver<TParent, TContext> {
+export interface QueryToItemResolver<
+  TParent,
+  TContext,
+  TArgs = QueryToItemArgs
+> extends IFieldResolver<TParent, TContext, TArgs> {
   (
     parent: TParent,
-    args: QueryToItemArgs,
+    args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<Item | null>;
 }
 
-export interface QueryToMeResolver<TParent, TContext>
-  extends IFieldResolver<TParent, TContext> {
+export interface QueryToMeResolver<TParent, TContext, TArgs = {}>
+  extends IFieldResolver<TParent, TContext, TArgs> {
   (
     parent: TParent,
-    args: {},
+    args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<User | null>;

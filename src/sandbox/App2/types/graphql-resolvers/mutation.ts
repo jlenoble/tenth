@@ -13,11 +13,14 @@ export interface GQLMutationTypeResolver<TParent, TContext>
 export interface MutationToCreateItemArgs {
   title: string;
 }
-export interface MutationToCreateItemResolver<TParent, TContext>
-  extends IFieldResolver<TParent, TContext> {
+export interface MutationToCreateItemResolver<
+  TParent,
+  TContext,
+  TArgs = MutationToCreateItemArgs
+> extends IFieldResolver<TParent, TContext, TArgs> {
   (
     parent: TParent,
-    args: MutationToCreateItemArgs,
+    args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<Item | null>;
@@ -27,11 +30,14 @@ export interface MutationToUpdateItemArgs {
   id: ItemId;
   title?: string;
 }
-export interface MutationToUpdateItemResolver<TParent, TContext>
-  extends IFieldResolver<TParent, TContext> {
+export interface MutationToUpdateItemResolver<
+  TParent,
+  TContext,
+  TArgs = MutationToUpdateItemArgs
+> extends IFieldResolver<TParent, TContext, TArgs> {
   (
     parent: TParent,
-    args: MutationToUpdateItemArgs,
+    args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<Item | null>;
@@ -40,11 +46,14 @@ export interface MutationToUpdateItemResolver<TParent, TContext>
 export interface MutationToDestroyItemArgs {
   id: ItemId;
 }
-export interface MutationToDestroyItemResolver<TParent, TContext>
-  extends IFieldResolver<TParent, TContext> {
+export interface MutationToDestroyItemResolver<
+  TParent,
+  TContext,
+  TArgs = MutationToDestroyItemArgs
+> extends IFieldResolver<TParent, TContext, TArgs> {
   (
     parent: TParent,
-    args: MutationToDestroyItemArgs,
+    args: TArgs,
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<void | null>;
