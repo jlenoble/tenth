@@ -102,7 +102,16 @@ export const Items: FunctionComponent = () => {
             primary: title,
             deleteButtonProps: {
               onClick: (): void => {
-                destroyItem({ variables: { id } });
+                destroyItem({
+                  variables: { id },
+                  optimisticResponse: {
+                    __typename: "Mutation",
+                    destroyItem: {
+                      __typename: "Item",
+                      id,
+                    },
+                  },
+                });
               },
             },
           };
