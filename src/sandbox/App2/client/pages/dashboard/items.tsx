@@ -3,10 +3,10 @@ import { ApolloError } from "apollo-client";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
-import Link from "@material-ui/core/Link";
+import { Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { List, ListCard } from "../../../../../core";
+import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
 import { GQLItem, ItemId } from "../../../types";
 import { tmpId } from "../../tmp-id";
@@ -153,7 +153,9 @@ export const Items: FunctionComponent = () => {
   );
 };
 
-export const ItemsCard: FunctionComponent = () => {
+export const ItemsCard: FunctionComponent<{ close: () => void }> = ({
+  close,
+}) => {
   const { data, loading, error, add, makeDestroy } = useItems();
 
   if (loading) return <p>Loading...</p>;
@@ -172,6 +174,9 @@ export const ItemsCard: FunctionComponent = () => {
           },
         };
       })}
+      cardHeaderProps={{
+        action: <CloseButton onClick={close} />,
+      }}
     />
   );
 };
