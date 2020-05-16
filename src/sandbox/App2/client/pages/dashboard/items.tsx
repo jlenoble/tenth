@@ -1,4 +1,5 @@
 import React, { Fragment, FunctionComponent, SyntheticEvent } from "react";
+import { ApolloError } from "apollo-client";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
@@ -7,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { List } from "../../../../../core";
 import { Title } from "../../components";
-import { GQLItem } from "../../../types";
+import { GQLItem, ItemId } from "../../../types";
 import { tmpId } from "../../tmp-id";
 
 function preventDefault(event: SyntheticEvent): void {
@@ -46,10 +47,15 @@ const DESTROY_ITEM = gql`
   }
 `;
 
-export const Items: FunctionComponent = () => {
-  const classes = useStyles();
-
+export const useItems = (): {
+  data: { items: GQLItem[] };
+  loading: boolean;
+  error?: ApolloError;
+  add: () => void;
+  makeDestroy: (id: ItemId) => () => void;
+} => {
   const { data, loading, error } = useQuery(GET_ITEMS);
+
   const [addItem] = useMutation(CREATE_ITEM, {
     update: (cache, { data: { createItem } }) => {
       const data = cache.readQuery<{ items: GQLItem[] }>({ query: GET_ITEMS });
@@ -62,6 +68,7 @@ export const Items: FunctionComponent = () => {
       }
     },
   });
+
   const [destroyItem] = useMutation(DESTROY_ITEM, {
     update: (
       cache,
@@ -85,6 +92,40 @@ export const Items: FunctionComponent = () => {
     },
   });
 
+  const add = (input = ""): void => {
+    addItem({
+      variables: { title: input },
+      optimisticResponse: {
+        __typename: "Mutation",
+        createItem: {
+          __typename: "Item",
+          id: tmpId(),
+          title: input,
+        },
+      },
+    });
+  };
+
+  const makeDestroy = (id: ItemId) => (): void => {
+    destroyItem({
+      variables: { id },
+      optimisticResponse: {
+        __typename: "Mutation",
+        destroyItem: {
+          __typename: "Item",
+          id,
+        },
+      },
+    });
+  };
+
+  return { data, loading, error, add, makeDestroy };
+};
+
+export const Items: FunctionComponent = () => {
+  const classes = useStyles();
+  const { data, loading, error, add, makeDestroy } = useItems();
+
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
 
@@ -92,38 +133,13 @@ export const Items: FunctionComponent = () => {
     <Fragment>
       <Title>Items</Title>
       <List
-        addItemProps={{
-          add: (input = ""): void => {
-            addItem({
-              variables: { title: input },
-              optimisticResponse: {
-                __typename: "Mutation",
-                createItem: {
-                  __typename: "Item",
-                  id: tmpId(),
-                  title: input,
-                },
-              },
-            });
-          },
-        }}
+        addItemProps={{ add }}
         listItems={data.items.map(({ id, title }: GQLItem) => {
           return {
-            itemId: id,
+            itemId: String(id),
             primary: title,
             deleteButtonProps: {
-              onClick: (): void => {
-                destroyItem({
-                  variables: { id },
-                  optimisticResponse: {
-                    __typename: "Mutation",
-                    destroyItem: {
-                      __typename: "Item",
-                      id,
-                    },
-                  },
-                });
-              },
+              onClick: makeDestroy(id),
             },
           };
         })}
