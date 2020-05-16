@@ -1,9 +1,9 @@
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import {
-  MutationToCreateItemArgs,
-  MutationToUpdateItemArgs,
-  MutationToDestroyItemArgs,
-  QueryToItemArgs,
+  MutationCreateItemArgs,
+  MutationUpdateItemArgs,
+  MutationDestroyItemArgs,
+  QueryItemArgs,
   APIContext,
   GQLItem,
 } from "../../types";
@@ -24,9 +24,7 @@ export class ItemAPI<
     this.context = config.context;
   }
 
-  async createItem({
-    title,
-  }: MutationToCreateItemArgs): Promise<GQLItem | null> {
+  async createItem({ title }: MutationCreateItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
@@ -40,7 +38,7 @@ export class ItemAPI<
   async updateItem({
     id,
     ...args
-  }: MutationToUpdateItemArgs): Promise<GQLItem | null> {
+  }: MutationUpdateItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
@@ -57,9 +55,7 @@ export class ItemAPI<
     }
   }
 
-  async destroyItem({
-    id,
-  }: MutationToDestroyItemArgs): Promise<GQLItem | null> {
+  async destroyItem({ id }: MutationDestroyItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {
@@ -87,7 +83,7 @@ export class ItemAPI<
     return items.map((item) => item.values);
   }
 
-  async getItemById({ id }: QueryToItemArgs): Promise<GQLItem | null> {
+  async getItemById({ id }: QueryItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {

@@ -1,0 +1,7 @@
+# import Mutation from "mutation.graphql"
+
+mutation DestroyItem($id: Int!) {
+  destroyItem(id: $id) {
+    id
+  }
+}

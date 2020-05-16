@@ -3,7 +3,7 @@ import {
   // MutationToCreateItemArgs,
   // MutationToUpdateItemArgs,
   // MutationToDestroyItemArgs,
-  QueryToSubItemsArgs,
+  QuerySubItemsArgs,
   APIContext,
   GQLItem,
 } from "../../types";
@@ -77,7 +77,7 @@ export class RelationAPI<
   //   }
   // }
 
-  async getAllItems({ itemId1 }: QueryToSubItemsArgs): Promise<GQLItem[]> {
+  async getAllItems({ itemId1 }: QuerySubItemsArgs): Promise<GQLItem[]> {
     const userId = this.context?.user?.id;
 
     if (!userId) {

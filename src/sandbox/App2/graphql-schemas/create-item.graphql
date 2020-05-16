@@ -1,0 +1,8 @@
+# import Mutation from "mutation.graphql"
+
+mutation CreateItem($title: String!) {
+  createItem(title: $title) {
+    id
+    title
+  }
+}

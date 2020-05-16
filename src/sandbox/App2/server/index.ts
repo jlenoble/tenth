@@ -8,7 +8,7 @@ import { resolvers } from "../graphql-resolvers";
 import { APIMap } from "../types";
 
 const typeDefs = importSchema(
-  path.join(__dirname, "../graphql-schemas/index.graphql")
+  path.join(__dirname, "../graphql-schemas/server.graphql")
 );
 
 const store = createStore();

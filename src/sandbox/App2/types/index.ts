@@ -1,7 +1,22 @@
-export * from "./graphql-resolvers";
-export * from "./graphql-schemas";
+import * as Generated from "../__types__2";
+
+interface SequelizeDefaultAttributes {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type ItemId = Generated.Item["id"];
+export type UserId = Generated.User["id"];
+export type RelationId = Generated.Relation["id"];
+
+export type GQLItem = Generated.Item & SequelizeDefaultAttributes;
+export type GQLUser = Generated.User & SequelizeDefaultAttributes;
+export type GQLRelation = Generated.Relation & SequelizeDefaultAttributes;
+
+export * from "../__types__2";
+
 export * from "./managers";
 
 // Keep last, to prevent circularity, as api depends on server/api
-// and the latter depends on many types
+// and the latter depends on generated types
 export * from "./api";
