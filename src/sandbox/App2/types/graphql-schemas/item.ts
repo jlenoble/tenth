@@ -1,7 +1,5 @@
 import { SequelizeDefaultAttributes } from "./sequelize";
-import { UserId } from "./user";
-
-export type ItemId = number;
+import { ItemId, UserId } from "./ids";
 
 export interface GQLItem extends SequelizeDefaultAttributes {
   id: ItemId;

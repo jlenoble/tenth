@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GET_ITEMS = gql`
+export const GET_ITEMS = gql`
   query GetItems {
     items {
       id
@@ -47,21 +47,16 @@ const DESTROY_ITEM = gql`
   }
 `;
 
-export const useItems = (): {
-  data: { items: GQLItem[] };
-  loading: boolean;
-  error?: ApolloError;
+export const useMutateItems = (): {
   add: () => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
-  const { data, loading, error } = useQuery(GET_ITEMS);
-
   const [addItem] = useMutation(CREATE_ITEM, {
     update: (cache, { data: { createItem } }) => {
       const data = cache.readQuery<{ items: GQLItem[] }>({ query: GET_ITEMS });
 
       if (data) {
-        cache.writeQuery({
+        cache.writeQuery<{ items: GQLItem[] }>({
           query: GET_ITEMS,
           data: { items: [...data.items, createItem] },
         });
@@ -86,7 +81,10 @@ export const useItems = (): {
 
         if (index !== -1) {
           items = [...items.slice(0, index), ...items.slice(index + 1)];
-          cache.writeQuery({ query: GET_ITEMS, data: { items } });
+          cache.writeQuery<{ items: GQLItem[] }>({
+            query: GET_ITEMS,
+            data: { items },
+          });
         }
       }
     },
@@ -119,7 +117,17 @@ export const useItems = (): {
     });
   };
 
-  return { data, loading, error, add, makeDestroy };
+  return { add, makeDestroy };
+};
+
+export const useItems = (): {
+  data?: { items: GQLItem[] };
+  loading: boolean;
+  error?: ApolloError;
+  add: () => void;
+  makeDestroy: (id: ItemId) => () => void;
+} => {
+  return { ...useQuery<{ items: GQLItem[] }>(GET_ITEMS), ...useMutateItems() };
 };
 
 export const Items: FunctionComponent = () => {

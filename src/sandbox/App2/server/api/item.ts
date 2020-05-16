@@ -3,6 +3,7 @@ import {
   MutationToCreateItemArgs,
   MutationToUpdateItemArgs,
   MutationToDestroyItemArgs,
+  QueryToItemArgs,
   APIContext,
   GQLItem,
 } from "../../types";
@@ -86,7 +87,7 @@ export class ItemAPI<
     return items.map((item) => item.values);
   }
 
-  async getItemById({ id }: { id: number }): Promise<GQLItem | null> {
+  async getItemById({ id }: QueryToItemArgs): Promise<GQLItem | null> {
     const userId = this.context?.user?.id;
 
     if (!userId) {

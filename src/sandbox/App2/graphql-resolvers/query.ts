@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GQLQueryTypeResolver, DataSources, QueryToItemArgs } from "../types";
+import {
+  GQLQueryTypeResolver,
+  DataSources,
+  QueryToItemArgs,
+  QueryToSubItemsArgs,
+} from "../types";
 
 export const queryResolvers: GQLQueryTypeResolver<any, DataSources> = {
   items: (_: any, __: {}, { dataSources: { itemAPI } }: DataSources) =>
@@ -13,4 +18,10 @@ export const queryResolvers: GQLQueryTypeResolver<any, DataSources> = {
 
   me: (_: any, __: {}, { dataSources: { userAPI } }: DataSources) =>
     userAPI.findOrCreateUser(),
+
+  subItems: (
+    _: any,
+    item: QueryToSubItemsArgs,
+    { dataSources: { relationAPI } }: DataSources
+  ) => relationAPI.getAllItems(item),
 };

@@ -1,0 +1,6 @@
+type Relation {
+  id: Int!
+  type: String!
+  itemId1: Int!
+  itemId2: Int!
+}

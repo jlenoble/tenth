@@ -5,7 +5,8 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-import { Items, ItemsCard } from "./items";
+import { Items } from "./items";
+import { SubItemsCard } from "./subitems";
 import { mainStyles } from "./dashboard.style";
 
 const useStyles = makeStyles(mainStyles);
@@ -26,7 +27,7 @@ export const Main: FunctionComponent = () => {
           </Grid>
           {open && (
             <Grid item xs={12} md={6}>
-              <ItemsCard close={(): void => setOpen(false)} />
+              <SubItemsCard close={(): void => setOpen(false)} />
             </Grid>
           )}
         </Grid>

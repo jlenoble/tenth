@@ -1,4 +1,5 @@
 # import Item from "item.graphql"
+# import Relation from "relation.graphql"
 
 type Mutation {
   createItem(title: String!): Item!

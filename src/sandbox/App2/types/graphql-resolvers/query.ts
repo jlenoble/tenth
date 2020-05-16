@@ -7,6 +7,7 @@ export interface GQLQueryTypeResolver<TParent, TContext>
   items: QueryToItemsResolver<TParent, TContext>;
   item: QueryToItemResolver<TParent, TContext>;
   me: QueryToMeResolver<TParent, TContext>;
+  subItems: QueryToSubItemsResolver<TParent, TContext>;
 }
 
 export interface QueryToItemsResolver<TParent, TContext, TArgs = {}>
@@ -43,4 +44,20 @@ export interface QueryToMeResolver<TParent, TContext, TArgs = {}>
     context: TContext,
     info: GraphQLResolveInfo
   ): Promise<GQLUser | null>;
+}
+
+export interface QueryToSubItemsArgs {
+  itemId1: number;
+}
+export interface QueryToSubItemsResolver<
+  TParent,
+  TContext,
+  TArgs = QueryToSubItemsArgs
+> {
+  (
+    parent: TParent,
+    args: TArgs,
+    context: TContext,
+    info: GraphQLResolveInfo
+  ): Promise<GQLItem[]>;
 }
