@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { List } from "../../../../../core";
+import { List, ListCard } from "../../../../../core";
 import { Title } from "../../components";
 import { GQLItem, ItemId } from "../../../types";
 import { tmpId } from "../../tmp-id";
@@ -150,6 +150,29 @@ export const Items: FunctionComponent = () => {
         </Link>
       </div>
     </Fragment>
+  );
+};
+
+export const ItemsCard: FunctionComponent = () => {
+  const { data, loading, error, add, makeDestroy } = useItems();
+
+  if (loading) return <p>Loading...</p>;
+  if (error || !data) return <p>ERROR</p>;
+
+  return (
+    <ListCard
+      title="Items"
+      addItemProps={{ add }}
+      listItems={data.items.map(({ id, title }: GQLItem) => {
+        return {
+          itemId: String(id),
+          primary: title,
+          deleteButtonProps: {
+            onClick: makeDestroy(id),
+          },
+        };
+      })}
+    />
   );
 };
 

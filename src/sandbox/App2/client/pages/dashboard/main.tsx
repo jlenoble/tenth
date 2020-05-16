@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-import { Items } from "./items";
+import { Items, ItemsCard } from "./items";
 import { mainStyles } from "./dashboard.style";
 
 const useStyles = makeStyles(mainStyles);
@@ -18,10 +18,13 @@ export const Main: FunctionComponent = () => {
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
             <Paper className={classes.paper}>
               <Items />
             </Paper>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ItemsCard />
           </Grid>
         </Grid>
       </Container>
