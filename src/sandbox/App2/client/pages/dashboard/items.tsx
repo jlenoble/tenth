@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { List } from "../../../../../core";
 import { Title } from "../../components";
 import { GQLItem } from "../../../types";
+import { tmpId } from "../../tmp-id";
 
 function preventDefault(event: SyntheticEvent): void {
   event.preventDefault();
@@ -93,7 +94,17 @@ export const Items: FunctionComponent = () => {
       <List
         addItemProps={{
           add: (input = ""): void => {
-            addItem({ variables: { title: input } });
+            addItem({
+              variables: { title: input },
+              optimisticResponse: {
+                __typename: "Mutation",
+                createItem: {
+                  __typename: "Item",
+                  id: tmpId(),
+                  title: input,
+                },
+              },
+            });
           },
         }}
         listItems={data.items.map(({ id, title }: GQLItem) => {
