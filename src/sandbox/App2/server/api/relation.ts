@@ -1,11 +1,12 @@
+import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import {
-  // MutationToCreateItemArgs,
-  // MutationToUpdateItemArgs,
-  // MutationToDestroyItemArgs,
-  QuerySubItemsArgs,
+  QueryRelatedItemsArgs,
+  MutationCreateRelatedItemArgs,
   APIContext,
-  GQLItem,
+  GQLRelatedItem,
+  GQLItemWithRelatedItems,
+  UserId,
 } from "../../types";
 import { Store, Item, Relation } from "../db";
 
@@ -14,6 +15,16 @@ export class RelationAPI<
 > extends DataSource<Context> {
   private context: Context | undefined;
   private store: Store;
+
+  private get userId(): UserId {
+    const userId = this.context?.user?.id;
+
+    if (!userId) {
+      throw new AuthenticationError("not authenticated");
+    }
+
+    return userId;
+  }
 
   constructor({ store }: { store: Store }) {
     super();
@@ -24,89 +35,67 @@ export class RelationAPI<
     this.context = config.context;
   }
 
-  // async createRelation({
-  //   containerId,
-  //   itemId,
-  // }: MutationToCreateItemArgs): Promise<GQLRelation | null> {
-  //   const userId = this.context?.user?.id;
+  async createItem({
+    relatedToId,
+    relationType,
+    title,
+  }: MutationCreateRelatedItemArgs): Promise<GQLRelatedItem> {
+    const userId = this.userId;
 
-  //   if (!userId) {
-  //     return null;
-  //   }
-
-  //   const item = await this.store.Item.create<Item>({ title, userId });
-  //   return item.values;
-  // }
-
-  // async updateItem({
-  //   id,
-  //   ...args
-  // }: MutationToUpdateItemArgs): Promise<GQLItem | null> {
-  //   const userId = this.context?.user?.id;
-
-  //   if (!userId) {
-  //     return null;
-  //   }
-
-  //   let item = await this.store.Item.findOne<Item>({ where: { id, userId } });
-
-  //   if (item) {
-  //     item = await item.update(args);
-  //     return item.values;
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
-  // async destroyItem({
-  //   id,
-  // }: MutationToDestroyItemArgs): Promise<GQLItem | null> {
-  //   const userId = this.context?.user?.id;
-
-  //   if (!userId) {
-  //     return null;
-  //   }
-
-  //   const item = await this.store.Item.findOne<Item>({ where: { id, userId } });
-
-  //   if (item) {
-  //     await item.destroy();
-  //     return item.values;
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
-  async getAllItems({ itemId1 }: QuerySubItemsArgs): Promise<GQLItem[]> {
-    const userId = this.context?.user?.id;
-
-    if (!userId) {
-      return [];
-    }
-
-    const item = await this.store.Item.findOne<Item>({
-      where: { id: itemId1, userId },
+    let item = await this.store.Item.findOne<Item>({
+      where: { id: relatedToId, userId },
     });
 
     if (!item) {
-      return [];
+      throw new ForbiddenError("failed to create");
+    }
+
+    item = await this.store.Item.create<Item>({
+      title,
+      userId,
+    });
+
+    await this.store.Relation.create<Relation>({
+      itemId1: relatedToId,
+      itemId2: item.id,
+      type: relationType,
+    });
+
+    return {
+      ...item.values,
+      __typename: "RelatedItem",
+      relatedToId,
+      relationType,
+    };
+  }
+
+  async getAllItems({
+    relatedToId,
+    relationType,
+  }: QueryRelatedItemsArgs): Promise<GQLItemWithRelatedItems> {
+    const item = await this.store.Item.findOne<Item>({
+      where: { id: relatedToId, userId: this.userId },
+    });
+
+    if (!item) {
+      throw new ForbiddenError("failed to fetch");
     }
 
     const relations = await this.store.Relation.findAll<Relation>({
-      where: { itemId1 },
+      where: { itemId1: relatedToId, type: relationType },
     });
 
-    return [];
+    const ids = relations.map(({ itemId2 }) => itemId2);
+
+    const items = await this.store.Item.findAll<Item>({
+      where: { id: ids },
+    });
+
+    return {
+      ...item.values,
+      __typename: "ItemWithRelatedItems",
+      relationType,
+      items,
+    };
   }
-
-  // async getItemById({ id }: { id: number }): Promise<GQLItem | null> {
-  //   const userId = this.context?.user?.id;
-
-  //   if (!userId) {
-  //     return null;
-  //   }
-
-  //   const item = await this.store.Item.findOne<Item>({ where: { id, userId } });
-  //   return item ? item.values : null;
-  // }
 }

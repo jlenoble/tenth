@@ -34,15 +34,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const useMutateItems = (): {
-  add: () => void;
+  add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
   const [addItem] = useMutation<
     CreateItemMutation,
     CreateItemMutationVariables
   >(CreateItem, {
-    update: (cache, { data, errors }) => {
-      console.log(errors);
+    update: (cache, { data }) => {
       const createItem = data?.createItem;
 
       if (createItem !== undefined) {
@@ -122,7 +121,7 @@ export const useItems = (): {
   data?: GetItemsQuery;
   loading: boolean;
   error?: ApolloError;
-  add: () => void;
+  add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
   return {
@@ -131,7 +130,9 @@ export const useItems = (): {
   };
 };
 
-export const Items: FunctionComponent = () => {
+export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
+  open,
+}) => {
   const classes = useStyles();
   const { data, loading, error, add, makeDestroy } = useItems();
 
@@ -149,6 +150,9 @@ export const Items: FunctionComponent = () => {
             primary: title,
             deleteButtonProps: {
               onClick: makeDestroy(id),
+            },
+            expandButtonProps: {
+              onClick: (): void => open(id),
             },
           };
         })}

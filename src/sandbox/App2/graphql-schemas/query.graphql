@@ -1,4 +1,5 @@
 # import Item from "item.graphql"
+# import ItemWithRelatedItems from "item-with-related-items.graphql"
 # import User from "user.graphql"
 
 type Query {
@@ -6,5 +7,5 @@ type Query {
   item(id: Int!): Item
   me: User
 
-  subItems(itemId1: Int!): [Item!]!
+  relatedItems(relatedToId: Int!, relationType: String!): ItemWithRelatedItems
 }

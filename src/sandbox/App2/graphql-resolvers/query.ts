@@ -7,6 +7,6 @@ export const queryResolvers: QueryResolvers<DataSources, {}> = {
 
   me: (_, __, { dataSources: { userAPI } }) => userAPI.findOrCreateUser(),
 
-  subItems: (_, item, { dataSources: { relationAPI } }) =>
+  relatedItems: (_, item, { dataSources: { relationAPI } }) =>
     relationAPI.getAllItems(item),
 };

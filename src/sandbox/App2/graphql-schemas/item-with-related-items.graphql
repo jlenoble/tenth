@@ -1,0 +1,12 @@
+# import Item from "item.graphql"
+
+type ItemWithRelatedItems {
+  # This part should match exactly Item
+  id: Int!
+  userId: Int!
+  title: String!
+
+  # This part extends Item
+  relationType: String!
+  items: [Item!]!
+}

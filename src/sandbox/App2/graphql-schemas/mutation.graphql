@@ -1,8 +1,11 @@
 # import Item from "item.graphql"
+# import RelatedItem from "related-item.graphql"
 # import Relation from "relation.graphql"
 
 type Mutation {
   createItem(title: String!): Item!
   updateItem(id: Int!, title: String!): Item!
   destroyItem(id: Int!): Item!
+
+  createRelatedItem(relatedToId: Int!, relationType: String!, title: String!): RelatedItem!
 }

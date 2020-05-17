@@ -1,0 +1,12 @@
+# import Query from "query.graphql"
+
+query GetRelatedItems($relatedToId: Int!, $relationType: String!) {
+  relatedItems(relatedToId: $relatedToId, relationType: $relationType) {
+    id
+    title
+    items {
+      id
+      title
+    }
+  }
+}

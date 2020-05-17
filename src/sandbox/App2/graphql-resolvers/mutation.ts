@@ -9,4 +9,7 @@ export const mutationResolvers: MutationResolvers<DataSources, {}> = {
 
   destroyItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.destroyItem(item),
+
+  createRelatedItem: (_, item, { dataSources: { relationAPI } }) =>
+    relationAPI.createItem(item),
 };

@@ -5,29 +5,35 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
+import { ItemId } from "../../../types";
 import { Items } from "./items";
-import { SubItemsCard } from "./subitems";
+import { RelatedItemsCard } from "./related-items";
 import { mainStyles } from "./dashboard.style";
 
 const useStyles = makeStyles(mainStyles);
 
 export const Main: FunctionComponent = () => {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
+  const [openedItemId, setOpenedItemId] = useState<ItemId>(0);
+  const relationType = "includes";
 
   return (
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={open ? 6 : 12}>
+          <Grid item xs={12} md={openedItemId > 0 ? 6 : 12}>
             <Paper className={classes.paper}>
-              <Items />
+              <Items open={setOpenedItemId} />
             </Paper>
           </Grid>
-          {open && (
+          {openedItemId > 0 && (
             <Grid item xs={12} md={6}>
-              <SubItemsCard close={(): void => setOpen(false)} />
+              <RelatedItemsCard
+                relatedToId={openedItemId}
+                relationType={relationType}
+                close={(): void => setOpenedItemId(0)}
+              />
             </Grid>
           )}
         </Grid>
