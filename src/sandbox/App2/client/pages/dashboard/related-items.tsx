@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import { ListCard, CloseButton } from "../../../../../core";
 import { ItemId } from "../../../types";
 import { tmpId } from "../../tmp-id";
-import { useMutateItems } from "./items";
+import { useMutateItems, updateOnCreateItem } from "./items";
 
 import {
   GetRelatedItems,
@@ -56,6 +56,10 @@ export const useMutateRelatedItems = (
               },
             }
           );
+
+          updateOnCreateItem(cache, {
+            data: { createItem: { ...createRelatedItem, __typename: "Item" } },
+          });
         }
       }
     },
