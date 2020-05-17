@@ -1,4 +1,4 @@
-import * as Generated from "../__types__2";
+import * as Generated from "../__generated__";
 
 interface SequelizeDefaultAttributes {
   createdAt: Date;
@@ -13,7 +13,7 @@ export type GQLItem = Generated.Item & SequelizeDefaultAttributes;
 export type GQLUser = Generated.User & SequelizeDefaultAttributes;
 export type GQLRelation = Generated.Relation & SequelizeDefaultAttributes;
 
-export * from "../__types__2";
+export * from "../__generated__";
 
 export * from "./managers";
 

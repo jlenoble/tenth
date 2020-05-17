@@ -1,15 +1,27 @@
 import React, { Fragment, FunctionComponent, SyntheticEvent } from "react";
 import { ApolloError } from "apollo-client";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import gql from "graphql-tag";
 
 import { Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
-import { GQLItem, ItemId } from "../../../types";
+import {
+  ItemId,
+  CreateItemMutation,
+  CreateItemMutationVariables,
+} from "../../../types";
 import { tmpId } from "../../tmp-id";
+import {
+  CreateItem,
+  DestroyItem,
+  GetItems,
+  GetItemsQuery,
+  GetItemsQueryVariables,
+  DestroyItemMutation,
+  DestroyItemMutationVariables,
+} from "../../../__generated__";
 
 function preventDefault(event: SyntheticEvent): void {
   event.preventDefault();
@@ -21,70 +33,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const GET_ITEMS = gql`
-  query GetItems {
-    items {
-      id
-      title
-    }
-  }
-`;
-
-const CREATE_ITEM = gql`
-  mutation CreateItem($title: String!) {
-    createItem(title: $title) {
-      id
-      title
-    }
-  }
-`;
-
-const DESTROY_ITEM = gql`
-  mutation DestroyItem($id: Int!) {
-    destroyItem(id: $id) {
-      id
-    }
-  }
-`;
-
 export const useMutateItems = (): {
   add: () => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
-  const [addItem] = useMutation(CREATE_ITEM, {
-    update: (cache, { data: { createItem } }) => {
-      const data = cache.readQuery<{ items: GQLItem[] }>({ query: GET_ITEMS });
+  const [addItem] = useMutation<
+    CreateItemMutation,
+    CreateItemMutationVariables
+  >(CreateItem, {
+    update: (cache, { data, errors }) => {
+      console.log(errors);
+      const createItem = data?.createItem;
 
-      if (data) {
-        cache.writeQuery<{ items: GQLItem[] }>({
-          query: GET_ITEMS,
-          data: { items: [...data.items, createItem] },
+      if (createItem !== undefined) {
+        const query = cache.readQuery<GetItemsQuery, GetItemsQueryVariables>({
+          query: GetItems,
         });
+
+        if (query !== null) {
+          cache.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
+            query: GetItems,
+            data: { items: [...query.items, createItem] },
+          });
+        }
       }
     },
   });
 
-  const [destroyItem] = useMutation(DESTROY_ITEM, {
-    update: (
-      cache,
-      {
-        data: {
-          destroyItem: { id },
-        },
-      }
-    ) => {
-      const data = cache.readQuery<{ items: GQLItem[] }>({ query: GET_ITEMS });
+  const [destroyItem] = useMutation<
+    DestroyItemMutation,
+    DestroyItemMutationVariables
+  >(DestroyItem, {
+    update: (cache, { data }) => {
+      const id = data?.destroyItem?.id;
 
-      if (data) {
-        let items = data.items;
-        const index = items.findIndex((item) => item.id === id);
+      if (id !== undefined) {
+        const query = cache.readQuery<GetItemsQuery, GetItemsQueryVariables>({
+          query: GetItems,
+        });
 
-        if (index !== -1) {
-          items = [...items.slice(0, index), ...items.slice(index + 1)];
-          cache.writeQuery<{ items: GQLItem[] }>({
-            query: GET_ITEMS,
-            data: { items },
-          });
+        if (query !== null) {
+          let items = query.items;
+          const index = items.findIndex((item) => item?.id === id);
+
+          if (index !== -1) {
+            items = [...items.slice(0, index), ...items.slice(index + 1)];
+            cache.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
+              query: GetItems,
+              data: { items },
+            });
+          }
         }
       }
     },
@@ -121,13 +119,16 @@ export const useMutateItems = (): {
 };
 
 export const useItems = (): {
-  data?: { items: GQLItem[] };
+  data?: GetItemsQuery;
   loading: boolean;
   error?: ApolloError;
   add: () => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
-  return { ...useQuery<{ items: GQLItem[] }>(GET_ITEMS), ...useMutateItems() };
+  return {
+    ...useQuery<GetItemsQuery, GetItemsQueryVariables>(GetItems),
+    ...useMutateItems(),
+  };
 };
 
 export const Items: FunctionComponent = () => {
@@ -142,7 +143,7 @@ export const Items: FunctionComponent = () => {
       <Title>Items</Title>
       <List
         addItemProps={{ add }}
-        listItems={data.items.map(({ id, title }: GQLItem) => {
+        listItems={data.items.map(({ id, title }) => {
           return {
             itemId: String(id),
             primary: title,
@@ -173,7 +174,7 @@ export const ItemsCard: FunctionComponent<{ close: () => void }> = ({
     <ListCard
       title="Items"
       addItemProps={{ add }}
-      listItems={data.items.map(({ id, title }: GQLItem) => {
+      listItems={data.items.map(({ id, title }) => {
         return {
           itemId: String(id),
           primary: title,
