@@ -7,20 +7,19 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
-import {
-  ItemId,
-  CreateItemMutation,
-  CreateItemMutationVariables,
-} from "../../../types";
+import { ItemId } from "../../../types";
 import { tmpId } from "../../tmp-id";
+
 import {
   CreateItem,
+  CreateItemMutation,
+  CreateItemMutationVariables,
   DestroyItem,
+  DestroyItemMutation,
+  DestroyItemMutationVariables,
   GetItems,
   GetItemsQuery,
   GetItemsQueryVariables,
-  DestroyItemMutation,
-  DestroyItemMutationVariables,
 } from "../../../__generated__";
 
 function preventDefault(event: SyntheticEvent): void {

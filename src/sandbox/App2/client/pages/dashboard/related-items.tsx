@@ -3,18 +3,18 @@ import { ApolloError } from "apollo-client";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 
 import { ListCard, CloseButton } from "../../../../../core";
-
-import {
-  ItemId,
-  GetRelatedItemsQuery,
-  GetRelatedItemsQueryVariables,
-  CreateRelatedItemMutation,
-  CreateRelatedItemMutationVariables,
-} from "../../../types";
-
-import { GetRelatedItems, CreateRelatedItem } from "../../../__generated__";
+import { ItemId } from "../../../types";
 import { tmpId } from "../../tmp-id";
 import { useMutateItems } from "./items";
+
+import {
+  GetRelatedItems,
+  GetRelatedItemsQuery,
+  GetRelatedItemsQueryVariables,
+  CreateRelatedItem,
+  CreateRelatedItemMutation,
+  CreateRelatedItemMutationVariables,
+} from "../../../__generated__";
 
 export const useMutateRelatedItems = (
   relatedToId: ItemId,

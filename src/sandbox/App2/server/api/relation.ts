@@ -1,14 +1,19 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
+
 import {
-  QueryRelatedItemsArgs,
-  MutationCreateRelatedItemArgs,
   APIContext,
   GQLRelatedItem,
   GQLItemWithRelatedItems,
   UserId,
 } from "../../types";
+
 import { Store, Item, Relation } from "../db";
+
+import {
+  QueryRelatedItemsArgs,
+  MutationCreateRelatedItemArgs,
+} from "../../__generated__";
 
 export class RelationAPI<
   Context extends APIContext = APIContext

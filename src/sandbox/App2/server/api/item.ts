@@ -1,15 +1,15 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
+
+import { APIContext, GQLItem, UserId } from "../../types";
+import { Store, Item } from "../db";
+
 import {
   MutationCreateItemArgs,
   MutationUpdateItemArgs,
   MutationDestroyItemArgs,
   QueryItemArgs,
-  APIContext,
-  GQLItem,
-  UserId,
-} from "../../types";
-import { Store, Item } from "../db";
+} from "../../__generated__";
 
 export class ItemAPI<
   Context extends APIContext = APIContext
