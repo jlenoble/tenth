@@ -72,7 +72,7 @@ try {
   gulp.task(
     autoTask,
     gulp.parallel(
-      gulp.series("tdd:transpile:gulp", "types", "tdd:transpile:src"),
+      gulp.series("tdd:transpile:gulp", "codegen", "tdd:transpile:src"),
       "tdd:copy"
     )
   );

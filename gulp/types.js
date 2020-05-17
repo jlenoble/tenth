@@ -1,25 +1,86 @@
 import gulp from "gulp";
+import ts from "gulp-typescript";
 import path from "path";
-import execa from "execa";
-import chalk from "chalk";
-import { srcDir } from "./helpers/dirs";
+import fse from "fs-extra";
 
-const schemaDir = path.join(srcDir, "sandbox/App2/graphql-schemas");
-const allTypeDefGlob = path.join(schemaDir, "**/*.graphql");
+const srcDir = "src";
+const libDir = "dev-build/src";
+const libGlob = ["src/sandbox/App2/**/*.ts", "src/sandbox/App2/**/*.tsx"];
+const tsProject = ts.createProject("tsconfig-emit.json");
 
-const execTypes = async () => {
-  try {
-    await execa("yarn", ["graphql-codegen"]);
-  } catch (e) {
-    let msg = chalk.yellow(e.stdout);
-    msg += `\n${chalk.red(e.stderr)}`;
-    console.log(msg);
-  }
+function reporter() {
+  const { error, finish } = ts.reporter.defaultReporter();
+  const results = { messages: [] };
+
+  const reportOptions = {
+    error: (err, ts) => {
+      error(err, ts);
+      reportOptions.results.messages.push(err.message);
+    },
+
+    finish: (results) => {
+      finish(results);
+      Object.assign(reportOptions.results, results);
+    },
+
+    results,
+  };
+
+  return reportOptions;
+}
+
+const handleTypes = () => {
+  const reportOptions = reporter();
+
+  const tsResult = gulp
+    .src(libGlob, {
+      base: srcDir,
+      since: gulp.lastRun(handleTypes),
+    })
+    .pipe(tsProject(reportOptions));
+
+  return new Promise((resolve, reject) => {
+    tsResult.dts
+      .pipe(gulp.dest(libDir))
+      .on("end", () => {
+        resolve(
+          fse.outputJson(
+            path.join("typescript-report", "report.json"),
+            reportOptions.results,
+            { spaces: 2 }
+          )
+        );
+      })
+      .on("error", (err) => {
+        fse
+          .outputJson(
+            path.join("typescript-report", "report.json"),
+            reportOptions.results,
+            { spaces: 2 }
+          )
+          .then(
+            () => reject(err),
+            (e) =>
+              reject(
+                new Error(`
+First error: ${err.message}
+Second error: ${e.message}
+`)
+              )
+          );
+      });
+  });
 };
 
-const watchTypes = (done) => {
-  gulp.watch(allTypeDefGlob, execTypes);
-  done();
-};
+// export const testTypes = () => {
+//   return gulp
+//     .src(["src/**/*.ts", "test/**/*.test.ts"], {
+//       base: srcDir,
+//       since: gulp.lastRun(handleTypes),
+//     })
+//     .pipe(tsProject()).dts;
+// };
 
-gulp.task("types", gulp.series(execTypes, watchTypes));
+gulp.task("types", handleTypes);
+
+// gulp.task("test-types", testTypes);

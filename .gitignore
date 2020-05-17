@@ -10,6 +10,7 @@
 /cypress/videos
 /dev-build
 /eslint-report
+/typescript-report
 __generated__*
 __types__*
 store.sqlite
