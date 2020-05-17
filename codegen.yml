@@ -3,10 +3,11 @@ hooks:
   afterAllFileWrite:
     - prettier --write
 generates:
-  ./src/sandbox/App2/__types__2.ts:
+  ./src/sandbox/App2/__generated__.ts:
       schema: ./src/sandbox/App2/graphql-schemas/index.graphql
       documents: ./src/sandbox/App2/graphql-schemas/**/*.graphql
       plugins:
         - typescript
         - typescript-resolvers
         - typescript-operations
+        - typescript-document-nodes
