@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, SyntheticEvent } from "react";
-import { ApolloError } from "apollo-client";
+import { ApolloError, MutationUpdaterFn } from "apollo-client";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 
 import { Link } from "@material-ui/core";
@@ -32,6 +32,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export const updateOnCreateItem: MutationUpdaterFn<CreateItemMutation> = (
+  cache,
+  { data }
+) => {
+  const createItem = data?.createItem;
+
+  if (createItem !== undefined) {
+    const query = cache.readQuery<GetItemsQuery, GetItemsQueryVariables>({
+      query: GetItems,
+    });
+
+    if (query !== null) {
+      cache.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
+        query: GetItems,
+        data: { items: [...query.items, createItem] },
+      });
+    }
+  }
+};
+
+export const updateOnDestroyItem: MutationUpdaterFn<DestroyItemMutation> = (
+  cache,
+  { data }
+) => {
+  const id = data?.destroyItem?.id;
+
+  if (id !== undefined) {
+    const query = cache.readQuery<GetItemsQuery, GetItemsQueryVariables>({
+      query: GetItems,
+    });
+
+    if (query !== null) {
+      let items = query.items;
+      const index = items.findIndex((item) => item?.id === id);
+
+      if (index !== -1) {
+        items = [...items.slice(0, index), ...items.slice(index + 1)];
+        cache.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
+          query: GetItems,
+          data: { items },
+        });
+      }
+    }
+  }
+};
+
 export const useMutateItems = (): {
   add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
@@ -40,50 +86,14 @@ export const useMutateItems = (): {
     CreateItemMutation,
     CreateItemMutationVariables
   >(CreateItem, {
-    update: (cache, { data }) => {
-      const createItem = data?.createItem;
-
-      if (createItem !== undefined) {
-        const query = cache.readQuery<GetItemsQuery, GetItemsQueryVariables>({
-          query: GetItems,
-        });
-
-        if (query !== null) {
-          cache.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
-            query: GetItems,
-            data: { items: [...query.items, createItem] },
-          });
-        }
-      }
-    },
+    update: updateOnCreateItem,
   });
 
   const [destroyItem] = useMutation<
     DestroyItemMutation,
     DestroyItemMutationVariables
   >(DestroyItem, {
-    update: (cache, { data }) => {
-      const id = data?.destroyItem?.id;
-
-      if (id !== undefined) {
-        const query = cache.readQuery<GetItemsQuery, GetItemsQueryVariables>({
-          query: GetItems,
-        });
-
-        if (query !== null) {
-          let items = query.items;
-          const index = items.findIndex((item) => item?.id === id);
-
-          if (index !== -1) {
-            items = [...items.slice(0, index), ...items.slice(index + 1)];
-            cache.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
-              query: GetItems,
-              data: { items },
-            });
-          }
-        }
-      }
-    },
+    update: updateOnDestroyItem,
   });
 
   const add = (input = ""): void => {
