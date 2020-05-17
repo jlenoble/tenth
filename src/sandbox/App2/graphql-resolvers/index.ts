@@ -1,8 +1,7 @@
-import { GQLResolver } from "../types";
 import { queryResolvers } from "./query";
 import { mutationResolvers } from "./mutation";
 
-export const resolvers: GQLResolver = {
+export const resolvers = {
   Query: queryResolvers,
   Mutation: mutationResolvers,
 };

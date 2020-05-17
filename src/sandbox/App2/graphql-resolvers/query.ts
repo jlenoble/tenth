@@ -1,7 +1,7 @@
 import { DataSources } from "../types";
 import { QueryResolvers } from "../__generated__";
 
-export const queryResolvers: QueryResolvers<DataSources, {}> = {
+export const queryResolvers: Required<QueryResolvers<DataSources, {}>> = {
   items: (_, __, { dataSources: { itemAPI } }) => itemAPI.getAllItems(),
   item: (_, item, { dataSources: { itemAPI } }) => itemAPI.getItemById(item),
   me: (_, __, { dataSources: { userAPI } }) => userAPI.findOrCreateUser(),
