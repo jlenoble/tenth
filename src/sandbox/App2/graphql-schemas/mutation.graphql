@@ -2,7 +2,7 @@
 # import Relation from "relation.graphql"
 
 type Mutation {
-  createItem(title: String!): Item
-  updateItem(id: Int!, title: String!): Item
-  destroyItem(id: Int!): Item
+  createItem(title: String!): Item!
+  updateItem(id: Int!, title: String!): Item!
+  destroyItem(id: Int!): Item!
 }

@@ -2,9 +2,9 @@
 # import User from "user.graphql"
 
 type Query {
-  items: [Item]!
+  items: [Item!]!
   item(id: Int!): Item
   me: User
 
-  subItems(itemId1: Int!): [Item]!
+  subItems(itemId1: Int!): [Item!]!
 }
