@@ -8,6 +8,9 @@ import { tmpId } from "../../tmp-id";
 import { useMutateItems, updateOnCreateItem } from "./items";
 
 import {
+  GetItems,
+  GetItemsQuery,
+  GetItemsQueryVariables,
   GetItemWithRelatedItems,
   GetItemWithRelatedItemsQuery,
   GetItemWithRelatedItemsQueryVariables,
@@ -90,10 +93,13 @@ export const useRelatedItems = (
   add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
+  useQuery<GetItemsQuery, GetItemsQueryVariables>(GetItems);
+
   const { data, loading, error } = useQuery<
     GetItemWithRelatedItemsQuery,
     GetItemWithRelatedItemsQueryVariables
   >(GetItemWithRelatedItems, { variables: { relatedToId, relationType } });
+
   const { add } = useMutateRelatedItems(relatedToId, relationType);
   const { makeDestroy } = useMutateItems();
 
@@ -131,9 +137,9 @@ export const RelatedItemsCard: FunctionComponent<{
         return {
           itemId: String(id),
           primary: title,
-          // deleteButtonProps: {
-          //   onClick: makeDestroy(id),
-          // },
+          deleteButtonProps: {
+            onClick: makeDestroy(id),
+          },
         };
       })}
       cardHeaderProps={{

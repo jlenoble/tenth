@@ -1,5 +1,6 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
+import { Op } from "sequelize";
 
 import { APIContext, GQLItem, UserId } from "../../types";
 import { Store, Item, Relation } from "../db";
@@ -8,6 +9,7 @@ import {
   ItemWithRelatedItems,
   QueryItemWithRelatedItemsArgs,
   MutationCreateRelatedItemArgs,
+  MutationDestroyItemArgs,
 } from "../../__generated__";
 
 export class RelationAPI<
@@ -62,6 +64,16 @@ export class RelationAPI<
     });
 
     return item.values;
+  }
+
+  async destroyRelationsForItem({
+    id,
+  }: MutationDestroyItemArgs): Promise<number> {
+    return this.store.Relation.destroy({
+      where: {
+        [Op.or]: [{ itemId1: id }, { itemId2: id }],
+      },
+    });
   }
 
   async getAllItems({
