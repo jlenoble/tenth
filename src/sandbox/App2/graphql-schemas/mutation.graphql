@@ -1,6 +1,4 @@
-# import Item from "item.graphql"
-# import RelatedItem from "related-item.graphql"
-# import Relation from "relation.graphql"
+# import Item, RelatedItem, Relation from "server/index.graphql"
 
 type Mutation {
   createItem(title: String!): Item!

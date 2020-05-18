@@ -1,5 +1,3 @@
-# import DateTime from "scalars.graphql"
-
 type Item {
   id: Int!
   userId: Int!
