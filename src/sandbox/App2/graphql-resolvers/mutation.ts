@@ -1,7 +1,10 @@
 import { DataSources } from "../types";
 import { MutationResolvers } from "../__generated__";
 
-export const mutationResolvers: Required<MutationResolvers<DataSources, {}>> = {
+export const mutationResolvers: Required<Omit<
+  MutationResolvers<DataSources, {}>,
+  "_empty"
+>> = {
   createItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.createItem(item),
   updateItem: (_, item, { dataSources: { itemAPI } }) =>
