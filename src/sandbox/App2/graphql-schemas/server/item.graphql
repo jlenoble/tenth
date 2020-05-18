@@ -3,3 +3,8 @@ type Item {
   userId: Int!
   title: String!
 }
+
+extend type Query {
+  items: [Item!]!
+  item(id: Int!): Item
+}
