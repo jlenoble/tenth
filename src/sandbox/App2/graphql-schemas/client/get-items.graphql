@@ -1,5 +1,3 @@
-# import Query from "server/index.graphql"
-
 query GetItems {
   items {
     id

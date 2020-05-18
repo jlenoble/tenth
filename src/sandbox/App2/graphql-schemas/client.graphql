@@ -1,3 +1,0 @@
-#import "create-item.graphql"
-#import "destroy-item.graphql"
-#import "get-items.graphql"

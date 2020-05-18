@@ -4,7 +4,7 @@ hooks:
     - prettier --write
 generates:
   ./src/sandbox/App2/__generated__.ts:
-      schema: ./src/sandbox/App2/graphql-schemas/index.graphql
+      schema: ./src/sandbox/App2/graphql-schemas/server/index.graphql
       documents: ./src/sandbox/App2/graphql-schemas/**/*.graphql
       plugins:
         - typescript

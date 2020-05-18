@@ -1,5 +1,3 @@
-# import Mutation from "server/index.graphql"
-
 mutation CreateRelatedItem($relatedToId: Int!, $relationType: String!, $title: String!) {
   createRelatedItem(relatedToId: $relatedToId, relationType: $relationType, title: $title) {
     id
