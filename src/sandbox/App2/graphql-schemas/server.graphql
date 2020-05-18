@@ -1,2 +1,2 @@
-# import Query from "server/query.graphql"
+# import Query from "server/index.graphql"
 # import Mutation from "server/mutation.graphql"
