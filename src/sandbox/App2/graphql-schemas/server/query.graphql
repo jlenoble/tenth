@@ -1,7 +1,0 @@
-# import Query from "item.graphql"
-# import Query from "user.graphql"
-# import Query from "item-with-related-items.graphql"
-
-type Query {
-  _empty: String @deprecated(reason: "")
-}
