@@ -1,4 +1,4 @@
-# import Mutation from "mutation.graphql"
+# import Mutation from "server/mutation.graphql"
 
 mutation CreateItem($title: String!) {
   createItem(title: $title) {

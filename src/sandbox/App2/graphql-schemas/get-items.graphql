@@ -1,4 +1,4 @@
-# import Query from "query.graphql"
+# import Query from "server/query.graphql"
 
 query GetItems {
   items {

@@ -1,4 +1,4 @@
-# import Mutation from "mutation.graphql"
+# import Mutation from "server/mutation.graphql"
 
 mutation DestroyItem($id: Int!) {
   destroyItem(id: $id) {

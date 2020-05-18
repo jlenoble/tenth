@@ -1,4 +1,4 @@
-# import Item, ItemWithRelatedItems, User from "server/index.graphql"
+# import Item, ItemWithRelatedItems, User from "index.graphql"
 
 type Query {
   items: [Item!]!
