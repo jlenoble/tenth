@@ -1,3 +1,10 @@
+query GetItems {
+  items {
+    id
+    title
+  }
+}
+
 query GetRelatedItems($relatedToId: Int!, $relationType: String!) {
   relatedItems(relatedToId: $relatedToId, relationType: $relationType) {
     id
