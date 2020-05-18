@@ -8,9 +8,9 @@ import { tmpId } from "../../tmp-id";
 import { useMutateItems, updateOnCreateItem } from "./items";
 
 import {
-  GetRelatedItems,
-  GetRelatedItemsQuery,
-  GetRelatedItemsQueryVariables,
+  GetItemWithRelatedItems,
+  GetItemWithRelatedItemsQuery,
+  GetItemWithRelatedItemsQueryVariables,
   CreateRelatedItem,
   CreateRelatedItemMutation,
   CreateRelatedItemMutationVariables,
@@ -31,34 +31,32 @@ export const useMutateRelatedItems = (
 
       if (createRelatedItem !== undefined) {
         const query = cache.readQuery<
-          GetRelatedItemsQuery,
-          GetRelatedItemsQueryVariables
+          GetItemWithRelatedItemsQuery,
+          GetItemWithRelatedItemsQueryVariables
         >({
           variables: { relatedToId, relationType },
-          query: GetRelatedItems,
+          query: GetItemWithRelatedItems,
         });
 
-        const relatedItems = query?.relatedItems;
+        const itemWithRelatedItems = query?.itemWithRelatedItems;
 
-        if (relatedItems) {
-          cache.writeQuery<GetRelatedItemsQuery, GetRelatedItemsQueryVariables>(
-            {
-              variables: { relatedToId, relationType },
-              query: GetRelatedItems,
-              data: {
-                relatedItems: {
-                  ...relatedItems,
-                  items: [
-                    ...relatedItems.items,
-                    { ...createRelatedItem, __typename: "Item" },
-                  ],
-                },
+        if (itemWithRelatedItems) {
+          cache.writeQuery<
+            GetItemWithRelatedItemsQuery,
+            GetItemWithRelatedItemsQueryVariables
+          >({
+            variables: { relatedToId, relationType },
+            query: GetItemWithRelatedItems,
+            data: {
+              itemWithRelatedItems: {
+                ...itemWithRelatedItems,
+                items: [...itemWithRelatedItems.items, createRelatedItem],
               },
-            }
-          );
+            },
+          });
 
           updateOnCreateItem(cache, {
-            data: { createItem: { ...createRelatedItem, __typename: "Item" } },
+            data: { createItem: createRelatedItem },
           });
         }
       }
@@ -71,7 +69,7 @@ export const useMutateRelatedItems = (
       optimisticResponse: {
         __typename: "Mutation",
         createRelatedItem: {
-          __typename: "RelatedItem",
+          __typename: "Item",
           id: tmpId(),
           title: input,
         },
@@ -86,16 +84,16 @@ export const useRelatedItems = (
   relatedToId: ItemId,
   relationType: string
 ): {
-  data?: GetRelatedItemsQuery;
+  data?: GetItemWithRelatedItemsQuery;
   loading: boolean;
   error?: ApolloError;
   add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
   const { data, loading, error } = useQuery<
-    GetRelatedItemsQuery,
-    GetRelatedItemsQueryVariables
-  >(GetRelatedItems, { variables: { relatedToId, relationType } });
+    GetItemWithRelatedItemsQuery,
+    GetItemWithRelatedItemsQueryVariables
+  >(GetItemWithRelatedItems, { variables: { relatedToId, relationType } });
   const { add } = useMutateRelatedItems(relatedToId, relationType);
   const { makeDestroy } = useMutateItems();
 
@@ -121,8 +119,9 @@ export const RelatedItemsCard: FunctionComponent<{
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
 
-  const title = data?.relatedItems?.title || "RelatedItems";
-  const items = data?.relatedItems?.items || [];
+  const title =
+    data?.itemWithRelatedItems?.item.title || "ItemWithRelatedItems";
+  const items = data?.itemWithRelatedItems?.items || [];
 
   return (
     <ListCard

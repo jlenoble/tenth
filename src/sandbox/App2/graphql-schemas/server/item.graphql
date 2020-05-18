@@ -4,13 +4,23 @@ type Item {
   title: String!
 }
 
+type ItemWithRelatedItems {
+  relationType: String!
+  item: Item!
+  items: [Item!]!
+}
+
 extend type Query {
   items: [Item!]!
   item(id: Int!): Item
+
+  itemWithRelatedItems(relatedToId: Int!, relationType: String!): ItemWithRelatedItems!
 }
 
 extend type Mutation {
   createItem(title: String!): Item!
   updateItem(id: Int!, title: String!): Item!
   destroyItem(id: Int!): Item!
+  
+  createRelatedItem(relatedToId: Int!, relationType: String!, title: String!): Item!
 }

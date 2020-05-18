@@ -1,17 +1,12 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 
-import {
-  APIContext,
-  GQLRelatedItem,
-  GQLItemWithRelatedItems,
-  UserId,
-} from "../../types";
-
+import { APIContext, GQLItem, UserId } from "../../types";
 import { Store, Item, Relation } from "../db";
 
 import {
-  QueryRelatedItemsArgs,
+  ItemWithRelatedItems,
+  QueryItemWithRelatedItemsArgs,
   MutationCreateRelatedItemArgs,
 } from "../../__generated__";
 
@@ -44,7 +39,7 @@ export class RelationAPI<
     relatedToId,
     relationType,
     title,
-  }: MutationCreateRelatedItemArgs): Promise<GQLRelatedItem> {
+  }: MutationCreateRelatedItemArgs): Promise<GQLItem> {
     const userId = this.userId;
 
     let item = await this.store.Item.findOne<Item>({
@@ -66,18 +61,13 @@ export class RelationAPI<
       type: relationType,
     });
 
-    return {
-      ...item.values,
-      __typename: "RelatedItem",
-      relatedToId,
-      relationType,
-    };
+    return item.values;
   }
 
   async getAllItems({
     relatedToId,
     relationType,
-  }: QueryRelatedItemsArgs): Promise<GQLItemWithRelatedItems> {
+  }: QueryItemWithRelatedItemsArgs): Promise<ItemWithRelatedItems> {
     const item = await this.store.Item.findOne<Item>({
       where: { id: relatedToId, userId: this.userId },
     });
@@ -97,9 +87,8 @@ export class RelationAPI<
     });
 
     return {
-      ...item.values,
-      __typename: "ItemWithRelatedItems",
       relationType,
+      item,
       items,
     };
   }

@@ -13,10 +13,6 @@ export type GQLItem = Generated.Item & SequelizeDefaultAttributes;
 export type GQLUser = Generated.User & SequelizeDefaultAttributes;
 export type GQLRelation = Generated.Relation & SequelizeDefaultAttributes;
 
-export type GQLRelatedItem = Generated.RelatedItem & SequelizeDefaultAttributes;
-export type GQLItemWithRelatedItems = Generated.ItemWithRelatedItems &
-  SequelizeDefaultAttributes;
-
 export * from "./managers";
 
 // Keep last, to prevent circularity, as api depends on server/api
