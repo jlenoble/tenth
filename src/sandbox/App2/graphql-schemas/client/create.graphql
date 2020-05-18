@@ -1,3 +1,10 @@
+mutation CreateItem($title: String!) {
+  createItem(title: $title) {
+    id
+    title
+  }
+}
+
 mutation CreateRelatedItem($relatedToId: Int!, $relationType: String!, $title: String!) {
   createRelatedItem(relatedToId: $relatedToId, relationType: $relationType, title: $title) {
     id
