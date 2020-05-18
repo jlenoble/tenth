@@ -1,9 +1,0 @@
-# import Item, RelatedItem, Relation from "index.graphql"
-
-type Mutation {
-  createItem(title: String!): Item!
-  updateItem(id: Int!, title: String!): Item!
-  destroyItem(id: Int!): Item!
-
-  createRelatedItem(relatedToId: Int!, relationType: String!, title: String!): RelatedItem!
-}

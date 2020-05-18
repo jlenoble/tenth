@@ -8,3 +8,9 @@ extend type Query {
   items: [Item!]!
   item(id: Int!): Item
 }
+
+extend type Mutation {
+  createItem(title: String!): Item!
+  updateItem(id: Int!, title: String!): Item!
+  destroyItem(id: Int!): Item!
+}

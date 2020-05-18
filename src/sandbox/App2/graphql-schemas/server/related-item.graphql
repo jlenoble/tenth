@@ -10,3 +10,7 @@ type RelatedItem {
   relationType: String!
   relatedToId: Int!
 }
+
+extend type Mutation {
+  createRelatedItem(relatedToId: Int!, relationType: String!, title: String!): RelatedItem!
+}
