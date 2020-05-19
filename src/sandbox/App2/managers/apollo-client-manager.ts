@@ -3,15 +3,21 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
-import { GQLItem, ItemId, Variables, Data } from "../types";
+import {
+  GQLItem,
+  ItemId,
+  Variables,
+  Data,
+  ApolloClientManagerInterface,
+  ItemKeys,
+} from "../types";
+
 import { nodes } from "../client/graphql-nodes";
 
 let id = 0;
 const tmpId = (): number => --id;
 
-type ItemKeys = "createItem" | "destroyItem" | "createRelatedItem";
-
-export class ApolloClientManager {
+export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
 
   constructor({ cache, link }: ApolloClientOptions<NormalizedCacheObject>) {
@@ -122,24 +128,22 @@ export class ApolloClientManager {
     }
   }
 
-  updateOnCreateItem(
-    _: DataProxy,
-    { data }: FetchResult<Data["createItem"]>
-  ): void {
-    const createItem = data?.createItem;
-    if (createItem !== undefined) {
-      this.addItem(createItem);
-    }
+  updateOnCreateItem() {
+    return (_: DataProxy, { data }: FetchResult<Data["createItem"]>): void => {
+      const createItem = data?.createItem;
+      if (createItem !== undefined) {
+        this.addItem(createItem);
+      }
+    };
   }
 
-  updateOnDestroyItem(
-    _: DataProxy,
-    { data }: FetchResult<Data["destroyItem"]>
-  ): void {
-    const destroyItem = data?.destroyItem;
-    if (destroyItem !== undefined) {
-      this.removeItem(destroyItem);
-    }
+  updateOnDestroyItem() {
+    return (_: DataProxy, { data }: FetchResult<Data["destroyItem"]>): void => {
+      const destroyItem = data?.destroyItem;
+      if (destroyItem !== undefined) {
+        this.removeItem(destroyItem);
+      }
+    };
   }
 
   updateOnCreateRelatedItem(relatedToId: ItemId, relationType: string) {

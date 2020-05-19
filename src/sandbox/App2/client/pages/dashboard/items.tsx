@@ -28,7 +28,7 @@ export const useMutateItems = (): {
   const [addItem] = useMutation<Data["createItem"], Variables["createItem"]>(
     nodes["createItem"],
     {
-      update: clientManager.updateOnCreateItem,
+      update: clientManager.updateOnCreateItem(),
     }
   );
 
@@ -36,7 +36,7 @@ export const useMutateItems = (): {
     Data["destroyItem"],
     Variables["destroyItem"]
   >(nodes["destroyItem"], {
-    update: clientManager.updateOnDestroyItem,
+    update: clientManager.updateOnDestroyItem(),
   });
 
   const add = (input = ""): void => {
