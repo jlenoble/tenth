@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
 import { ItemId } from "../../../types";
-import { tmpId } from "../../tmp-id";
+import { clientManager } from "../../apollo-client-manager";
 
 import {
   CreateItem,
@@ -99,14 +99,7 @@ export const useMutateItems = (): {
   const add = (input = ""): void => {
     addItem({
       variables: { title: input },
-      optimisticResponse: {
-        __typename: "Mutation",
-        createItem: {
-          __typename: "Item",
-          id: tmpId(),
-          title: input,
-        },
-      },
+      optimisticResponse: clientManager.optimisticItem({ title: input }),
     });
   };
 

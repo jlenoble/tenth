@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 
 import { ListCard, CloseButton } from "../../../../../core";
 import { ItemId } from "../../../types";
-import { tmpId } from "../../tmp-id";
+import { clientManager } from "../../apollo-client-manager";
 import { useMutateItems, updateOnCreateItem } from "./items";
 
 import {
@@ -69,14 +69,7 @@ export const useMutateRelatedItems = (
   const add = (input = ""): void => {
     addItem({
       variables: { relatedToId, relationType, title: input },
-      optimisticResponse: {
-        __typename: "Mutation",
-        createRelatedItem: {
-          __typename: "Item",
-          id: tmpId(),
-          title: input,
-        },
-      },
+      optimisticResponse: clientManager.optimisticRelatedItem({ title: input }),
     });
   };
 
