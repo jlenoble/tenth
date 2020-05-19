@@ -99,6 +99,7 @@ export class RelationAPI<
     });
 
     return {
+      __typename: "ItemWithRelatedItems",
       relationType,
       item,
       items,
