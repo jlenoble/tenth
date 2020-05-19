@@ -10,12 +10,9 @@ export const mutationResolvers: Required<Omit<
   updateItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.updateItem(item),
   destroyItem: async (_, item, { dataSources: { itemAPI, relationAPI } }) => {
-    const res = await Promise.all([
-      itemAPI.destroyItem(item),
-      relationAPI.destroyRelationsForItem(item),
-    ]);
-
-    return res[0];
+    const gqlItem = await itemAPI.destroyItem(item);
+    await relationAPI.destroyRelationsForItem(item, gqlItem.userId);
+    return gqlItem;
   },
 
   createRelatedItem: (_, item, { dataSources: { relationAPI } }) =>
