@@ -16,6 +16,14 @@ import {
   ApolloClientManagerInterface,
 } from "../types";
 
+type UseItems<Key extends keyof Data> = {
+  data?: Data[Key];
+  loading: boolean;
+  error?: ApolloError;
+  add: (input: string) => void;
+  makeDestroy: (id: ItemId) => () => void;
+};
+
 export class ApolloHooksManager {
   public readonly clientManager: ApolloClientManagerInterface;
 
@@ -98,17 +106,36 @@ export class ApolloHooksManager {
     return makeDestroy;
   }
 
-  useItems(): {
-    data?: Data["items"];
-    loading: boolean;
-    error?: ApolloError;
-    add: (input: string) => void;
-    makeDestroy: (id: ItemId) => () => void;
-  } {
+  useItems(): UseItems<"items"> {
     return {
       ...this.useQuery<"items">("items"),
       add: this.useAddItem(),
       makeDestroy: this.useMakeDestroyItem(),
+    };
+  }
+
+  useRelatedItems(
+    relatedToId: ItemId,
+    relationType: string
+  ): UseItems<"itemWithRelatedItems"> {
+    useQuery<Data["items"], Variables["items"]>(nodes["items"]);
+
+    const { data, loading, error } = useQuery<
+      Data["itemWithRelatedItems"],
+      Variables["itemWithRelatedItems"]
+    >(nodes["itemWithRelatedItems"], {
+      variables: { relatedToId, relationType },
+    });
+
+    const add = this.useAddRelatedItem(relatedToId, relationType);
+    const makeDestroy = this.useMakeDestroyItem();
+
+    return {
+      data,
+      loading,
+      error,
+      add,
+      makeDestroy,
     };
   }
 }
