@@ -3,7 +3,7 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
-import { GQLItem } from "../types";
+import { GQLItem, ItemId } from "../types";
 
 import {
   CreateItemMutation,
@@ -14,6 +14,9 @@ import {
   GetItems,
   GetItemsQuery,
   GetItemsQueryVariables,
+  GetItemWithRelatedItems,
+  GetItemWithRelatedItemsQuery,
+  GetItemWithRelatedItemsQueryVariables,
 } from "../__generated__";
 
 let id = 0;
@@ -32,6 +35,8 @@ export class ApolloClientManager {
 
     this.updateOnCreateItem = this.updateOnCreateItem.bind(this);
     this.updateOnDestroyItem = this.updateOnDestroyItem.bind(this);
+
+    this.updateOnCreateRelatedItem = this.updateOnCreateRelatedItem.bind(this);
   }
 
   optimisticItem(
@@ -59,7 +64,7 @@ export class ApolloClientManager {
     return this.optimisticItem("destroyItem", item) as DestroyItemMutation;
   }
 
-  optimisticRelatedItem(
+  optimisticCreateRelatedItem(
     item: CreateItemMutationVariables
   ): CreateRelatedItemMutation {
     return this.optimisticItem(
@@ -100,6 +105,38 @@ export class ApolloClientManager {
     }
   }
 
+  addRelatedItem(
+    relatedToId: ItemId,
+    relationType: string,
+    item: CreateRelatedItemMutation["createRelatedItem"]
+  ): void {
+    const query = this.client.readQuery<
+      GetItemWithRelatedItemsQuery,
+      GetItemWithRelatedItemsQueryVariables
+    >({
+      variables: { relatedToId, relationType },
+      query: GetItemWithRelatedItems,
+    });
+
+    const itemWithRelatedItems = query?.itemWithRelatedItems;
+
+    if (itemWithRelatedItems) {
+      this.client.writeQuery<
+        GetItemWithRelatedItemsQuery,
+        GetItemWithRelatedItemsQueryVariables
+      >({
+        variables: { relatedToId, relationType },
+        query: GetItemWithRelatedItems,
+        data: {
+          itemWithRelatedItems: {
+            ...itemWithRelatedItems,
+            items: [...itemWithRelatedItems.items, item],
+          },
+        },
+      });
+    }
+  }
+
   updateOnCreateItem(
     _: DataProxy,
     { data }: FetchResult<CreateItemMutation>
@@ -118,5 +155,18 @@ export class ApolloClientManager {
     if (destroyItem !== undefined) {
       this.removeItem(destroyItem);
     }
+  }
+
+  updateOnCreateRelatedItem(relatedToId: ItemId, relationType: string) {
+    return (
+      _: DataProxy,
+      { data }: FetchResult<CreateRelatedItemMutation>
+    ): void => {
+      const createRelatedItem = data?.createRelatedItem;
+      if (createRelatedItem !== undefined) {
+        this.addRelatedItem(relatedToId, relationType, createRelatedItem);
+        this.addItem(createRelatedItem);
+      }
+    };
   }
 }

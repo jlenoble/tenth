@@ -29,47 +29,15 @@ export const useMutateRelatedItems = (
     CreateRelatedItemMutation,
     CreateRelatedItemMutationVariables
   >(CreateRelatedItem, {
-    update: (cache, { data }) => {
-      const createRelatedItem = data?.createRelatedItem;
-
-      if (createRelatedItem !== undefined) {
-        const query = cache.readQuery<
-          GetItemWithRelatedItemsQuery,
-          GetItemWithRelatedItemsQueryVariables
-        >({
-          variables: { relatedToId, relationType },
-          query: GetItemWithRelatedItems,
-        });
-
-        const itemWithRelatedItems = query?.itemWithRelatedItems;
-
-        if (itemWithRelatedItems) {
-          cache.writeQuery<
-            GetItemWithRelatedItemsQuery,
-            GetItemWithRelatedItemsQueryVariables
-          >({
-            variables: { relatedToId, relationType },
-            query: GetItemWithRelatedItems,
-            data: {
-              itemWithRelatedItems: {
-                ...itemWithRelatedItems,
-                items: [...itemWithRelatedItems.items, createRelatedItem],
-              },
-            },
-          });
-
-          clientManager.updateOnCreateItem(cache, {
-            data: { createItem: createRelatedItem },
-          });
-        }
-      }
-    },
+    update: clientManager.updateOnCreateRelatedItem(relatedToId, relationType),
   });
 
   const add = (input = ""): void => {
     addItem({
       variables: { relatedToId, relationType, title: input },
-      optimisticResponse: clientManager.optimisticRelatedItem({ title: input }),
+      optimisticResponse: clientManager.optimisticCreateRelatedItem({
+        title: input,
+      }),
     });
   };
 
