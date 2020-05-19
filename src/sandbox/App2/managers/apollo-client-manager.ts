@@ -3,21 +3,8 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
-import { GQLItem, ItemId } from "../types";
-
-import {
-  CreateItemMutation,
-  CreateRelatedItemMutation,
-  CreateItemMutationVariables,
-  DestroyItemMutation,
-  DestroyItemMutationVariables,
-  GetItems,
-  GetItemsQuery,
-  GetItemsQueryVariables,
-  GetItemWithRelatedItems,
-  GetItemWithRelatedItemsQuery,
-  GetItemWithRelatedItemsQueryVariables,
-} from "../__generated__";
+import { GQLItem, ItemId, Variables, Data } from "../types";
+import { nodes } from "../client/graphql-nodes";
 
 let id = 0;
 const tmpId = (): number => --id;
@@ -54,41 +41,39 @@ export class ApolloClientManager {
     };
   }
 
-  optimisticCreateItem(item: CreateItemMutationVariables): CreateItemMutation {
-    return this.optimisticItem("createItem", item) as CreateItemMutation;
+  optimisticCreateItem(item: Variables["createItem"]): Data["createItem"] {
+    return this.optimisticItem("createItem", item) as Data["createItem"];
   }
 
-  optimisticDestroyItem(
-    item: DestroyItemMutationVariables
-  ): DestroyItemMutation {
-    return this.optimisticItem("destroyItem", item) as DestroyItemMutation;
+  optimisticDestroyItem(item: Variables["destroyItem"]): Data["destroyItem"] {
+    return this.optimisticItem("destroyItem", item) as Data["destroyItem"];
   }
 
   optimisticCreateRelatedItem(
-    item: CreateItemMutationVariables
-  ): CreateRelatedItemMutation {
+    item: Variables["createItem"]
+  ): Data["createRelatedItem"] {
     return this.optimisticItem(
       "createRelatedItem",
       item
-    ) as CreateRelatedItemMutation;
+    ) as Data["createRelatedItem"];
   }
 
-  addItem(item: CreateItemMutation["createItem"]): void {
-    const query = this.client.readQuery<GetItemsQuery, GetItemsQueryVariables>({
-      query: GetItems,
+  addItem(item: Data["createItem"]["createItem"]): void {
+    const query = this.client.readQuery<Data["items"], Variables["items"]>({
+      query: nodes["items"],
     });
 
     if (query !== null) {
-      this.client.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
-        query: GetItems,
+      this.client.writeQuery<Data["items"], Variables["items"]>({
+        query: nodes["items"],
         data: { items: [...query.items, item] },
       });
     }
   }
 
-  removeItem({ id }: DestroyItemMutation["destroyItem"]): void {
-    const query = this.client.readQuery<GetItemsQuery, GetItemsQueryVariables>({
-      query: GetItems,
+  removeItem({ id }: Data["destroyItem"]["destroyItem"]): void {
+    const query = this.client.readQuery<Data["items"], Variables["items"]>({
+      query: nodes["items"],
     });
 
     if (query !== null) {
@@ -97,8 +82,8 @@ export class ApolloClientManager {
 
       if (index !== -1) {
         items = [...items.slice(0, index), ...items.slice(index + 1)];
-        this.client.writeQuery<GetItemsQuery, GetItemsQueryVariables>({
-          query: GetItems,
+        this.client.writeQuery<Data["items"], Variables["items"]>({
+          query: nodes["items"],
           data: { items },
         });
       }
@@ -108,25 +93,25 @@ export class ApolloClientManager {
   addRelatedItem(
     relatedToId: ItemId,
     relationType: string,
-    item: CreateRelatedItemMutation["createRelatedItem"]
+    item: Data["createRelatedItem"]["createRelatedItem"]
   ): void {
     const query = this.client.readQuery<
-      GetItemWithRelatedItemsQuery,
-      GetItemWithRelatedItemsQueryVariables
+      Data["itemWithRelatedItems"],
+      Variables["itemWithRelatedItems"]
     >({
       variables: { relatedToId, relationType },
-      query: GetItemWithRelatedItems,
+      query: nodes["itemWithRelatedItems"],
     });
 
     const itemWithRelatedItems = query?.itemWithRelatedItems;
 
     if (itemWithRelatedItems) {
       this.client.writeQuery<
-        GetItemWithRelatedItemsQuery,
-        GetItemWithRelatedItemsQueryVariables
+        Data["itemWithRelatedItems"],
+        Variables["itemWithRelatedItems"]
       >({
         variables: { relatedToId, relationType },
-        query: GetItemWithRelatedItems,
+        query: nodes["itemWithRelatedItems"],
         data: {
           itemWithRelatedItems: {
             ...itemWithRelatedItems,
@@ -139,7 +124,7 @@ export class ApolloClientManager {
 
   updateOnCreateItem(
     _: DataProxy,
-    { data }: FetchResult<CreateItemMutation>
+    { data }: FetchResult<Data["createItem"]>
   ): void {
     const createItem = data?.createItem;
     if (createItem !== undefined) {
@@ -149,7 +134,7 @@ export class ApolloClientManager {
 
   updateOnDestroyItem(
     _: DataProxy,
-    { data }: FetchResult<DestroyItemMutation>
+    { data }: FetchResult<Data["destroyItem"]>
   ): void {
     const destroyItem = data?.destroyItem;
     if (destroyItem !== undefined) {
@@ -160,7 +145,7 @@ export class ApolloClientManager {
   updateOnCreateRelatedItem(relatedToId: ItemId, relationType: string) {
     return (
       _: DataProxy,
-      { data }: FetchResult<CreateRelatedItemMutation>
+      { data }: FetchResult<Data["createRelatedItem"]>
     ): void => {
       const createRelatedItem = data?.createRelatedItem;
       if (createRelatedItem !== undefined) {

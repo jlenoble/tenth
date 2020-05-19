@@ -1,15 +1,8 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 
-import { APIContext, GQLItem, UserId } from "../../types";
+import { APIContext, GQLItem, UserId, Args } from "../../types";
 import { Store, Item } from "../db";
-
-import {
-  MutationCreateItemArgs,
-  MutationUpdateItemArgs,
-  MutationDestroyItemArgs,
-  QueryItemArgs,
-} from "../../__generated__";
 
 export class ItemAPI<
   Context extends APIContext = APIContext
@@ -36,7 +29,7 @@ export class ItemAPI<
     this.context = config.context;
   }
 
-  async createItem({ title }: MutationCreateItemArgs): Promise<GQLItem> {
+  async createItem({ title }: Args["createItem"]): Promise<GQLItem> {
     const item = await this.store.Item.create<Item>({
       title,
       userId: this.userId,
@@ -44,7 +37,7 @@ export class ItemAPI<
     return item.values;
   }
 
-  async updateItem({ id, ...args }: MutationUpdateItemArgs): Promise<GQLItem> {
+  async updateItem({ id, ...args }: Args["updateItem"]): Promise<GQLItem> {
     let item = await this.store.Item.findOne<Item>({
       where: { id, userId: this.userId },
     });
@@ -57,7 +50,7 @@ export class ItemAPI<
     throw new ForbiddenError("failed to update");
   }
 
-  async destroyItem({ id }: MutationDestroyItemArgs): Promise<GQLItem> {
+  async destroyItem({ id }: Args["destroyItem"]): Promise<GQLItem> {
     const item = await this.store.Item.findOne<Item>({
       where: { id, userId: this.userId },
     });
@@ -77,7 +70,7 @@ export class ItemAPI<
     return items.map((item) => item.values);
   }
 
-  async getItemById({ id }: QueryItemArgs): Promise<GQLItem | null> {
+  async getItemById({ id }: Args["item"]): Promise<GQLItem | null> {
     const item = await this.store.Item.findOne<Item>({
       where: { id, userId: this.userId },
     });

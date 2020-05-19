@@ -1,5 +1,4 @@
-import { DataSources } from "../types";
-import { QueryResolvers } from "../__generated__";
+import { DataSources, QueryResolvers } from "../types";
 
 export const queryResolvers: Required<Omit<
   QueryResolvers<DataSources, {}>,

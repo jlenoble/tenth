@@ -7,20 +7,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
-import { ItemId } from "../../../types";
+import { ItemId, Data, Variables } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
-
-import {
-  CreateItem,
-  CreateItemMutation,
-  CreateItemMutationVariables,
-  DestroyItem,
-  DestroyItemMutation,
-  DestroyItemMutationVariables,
-  GetItems,
-  GetItemsQuery,
-  GetItemsQueryVariables,
-} from "../../../__generated__";
+import { nodes } from "../../graphql-nodes";
 
 function preventDefault(event: SyntheticEvent): void {
   event.preventDefault();
@@ -36,17 +25,17 @@ export const useMutateItems = (): {
   add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
-  const [addItem] = useMutation<
-    CreateItemMutation,
-    CreateItemMutationVariables
-  >(CreateItem, {
-    update: clientManager.updateOnCreateItem,
-  });
+  const [addItem] = useMutation<Data["createItem"], Variables["createItem"]>(
+    nodes["createItem"],
+    {
+      update: clientManager.updateOnCreateItem,
+    }
+  );
 
   const [destroyItem] = useMutation<
-    DestroyItemMutation,
-    DestroyItemMutationVariables
-  >(DestroyItem, {
+    Data["destroyItem"],
+    Variables["destroyItem"]
+  >(nodes["destroyItem"], {
     update: clientManager.updateOnDestroyItem,
   });
 
@@ -68,14 +57,14 @@ export const useMutateItems = (): {
 };
 
 export const useItems = (): {
-  data?: GetItemsQuery;
+  data?: Data["items"];
   loading: boolean;
   error?: ApolloError;
   add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
   return {
-    ...useQuery<GetItemsQuery, GetItemsQueryVariables>(GetItems),
+    ...useQuery<Data["items"], Variables["items"]>(nodes["items"]),
     ...useMutateItems(),
   };
 };

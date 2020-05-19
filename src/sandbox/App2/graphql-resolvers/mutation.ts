@@ -1,5 +1,4 @@
-import { DataSources } from "../types";
-import { MutationResolvers } from "../__generated__";
+import { DataSources, MutationResolvers } from "../types";
 
 export const mutationResolvers: Required<Omit<
   MutationResolvers<DataSources, {}>,

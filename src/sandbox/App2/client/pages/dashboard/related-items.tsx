@@ -3,21 +3,10 @@ import { ApolloError } from "apollo-client";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 
 import { ListCard, CloseButton } from "../../../../../core";
-import { ItemId } from "../../../types";
+import { ItemId, Variables, Data } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
 import { useMutateItems } from "./items";
-
-import {
-  GetItems,
-  GetItemsQuery,
-  GetItemsQueryVariables,
-  GetItemWithRelatedItems,
-  GetItemWithRelatedItemsQuery,
-  GetItemWithRelatedItemsQueryVariables,
-  CreateRelatedItem,
-  CreateRelatedItemMutation,
-  CreateRelatedItemMutationVariables,
-} from "../../../__generated__";
+import { nodes } from "../../graphql-nodes";
 
 export const useMutateRelatedItems = (
   relatedToId: ItemId,
@@ -26,9 +15,9 @@ export const useMutateRelatedItems = (
   add: (input: string) => void;
 } => {
   const [addItem] = useMutation<
-    CreateRelatedItemMutation,
-    CreateRelatedItemMutationVariables
-  >(CreateRelatedItem, {
+    Data["createRelatedItem"],
+    Variables["createRelatedItem"]
+  >(nodes["createRelatedItem"], {
     update: clientManager.updateOnCreateRelatedItem(relatedToId, relationType),
   });
 
@@ -48,18 +37,20 @@ export const useRelatedItems = (
   relatedToId: ItemId,
   relationType: string
 ): {
-  data?: GetItemWithRelatedItemsQuery;
+  data?: Data["itemWithRelatedItems"];
   loading: boolean;
   error?: ApolloError;
   add: (input: string) => void;
   makeDestroy: (id: ItemId) => () => void;
 } => {
-  useQuery<GetItemsQuery, GetItemsQueryVariables>(GetItems);
+  useQuery<Data["items"], Variables["items"]>(nodes["items"]);
 
   const { data, loading, error } = useQuery<
-    GetItemWithRelatedItemsQuery,
-    GetItemWithRelatedItemsQueryVariables
-  >(GetItemWithRelatedItems, { variables: { relatedToId, relationType } });
+    Data["itemWithRelatedItems"],
+    Variables["itemWithRelatedItems"]
+  >(nodes["itemWithRelatedItems"], {
+    variables: { relatedToId, relationType },
+  });
 
   const { add } = useMutateRelatedItems(relatedToId, relationType);
   const { makeDestroy } = useMutateItems();

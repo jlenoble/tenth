@@ -2,7 +2,7 @@ import { InMemoryCache, defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 
 import { ApolloClientManager } from "../managers";
-import { ItemWithRelatedItems } from "../__generated__";
+import { ItemWithRelatedItems } from "../types";
 
 const link = new HttpLink({
   uri: "http://localhost:4000/",

@@ -2,15 +2,15 @@ import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import { Op } from "sequelize";
 
-import { APIContext, GQLItem, UserId } from "../../types";
-import { Store, Item, Relation } from "../db";
-
 import {
+  APIContext,
+  GQLItem,
+  UserId,
+  Args,
   ItemWithRelatedItems,
-  QueryItemWithRelatedItemsArgs,
-  MutationCreateRelatedItemArgs,
-  MutationDestroyItemArgs,
-} from "../../__generated__";
+} from "../../types";
+
+import { Store, Item, Relation } from "../db";
 
 export class RelationAPI<
   Context extends APIContext = APIContext
@@ -41,7 +41,7 @@ export class RelationAPI<
     relatedToId,
     relationType,
     title,
-  }: MutationCreateRelatedItemArgs): Promise<GQLItem> {
+  }: Args["createRelatedItem"]): Promise<GQLItem> {
     const userId = this.userId;
 
     let item = await this.store.Item.findOne<Item>({
@@ -67,7 +67,7 @@ export class RelationAPI<
   }
 
   async destroyRelationsForItem(
-    { id }: MutationDestroyItemArgs,
+    { id }: Args["destroyItem"],
     userId: UserId
   ): Promise<number> {
     if (userId === this.userId) {
@@ -84,7 +84,7 @@ export class RelationAPI<
   async getAllRelatedItems({
     relatedToId,
     relationType,
-  }: QueryItemWithRelatedItemsArgs): Promise<ItemWithRelatedItems> {
+  }: Args["itemWithRelatedItems"]): Promise<ItemWithRelatedItems> {
     const item = await this.store.Item.findOne<Item>({
       where: { id: relatedToId, userId: this.userId },
     });
