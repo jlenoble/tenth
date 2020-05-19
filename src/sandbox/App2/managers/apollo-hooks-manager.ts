@@ -37,7 +37,7 @@ export class ApolloHooksManager {
     return useMutation<Data[Key], Variables[Key]>(nodes[key], options);
   }
 
-  useAdd(): (input?: string) => void {
+  useAddItem(): (input?: string) => void {
     const [addItem] = this.useMutation<"createItem">("createItem", {
       update: this.clientManager.updateOnCreateItem(),
     });
@@ -54,7 +54,33 @@ export class ApolloHooksManager {
     return add;
   }
 
-  useMakeDestroy(): (id: number) => () => void {
+  useAddRelatedItem(
+    relatedToId: ItemId,
+    relationType: string
+  ): (input?: string) => void {
+    const [addItem] = useMutation<
+      Data["createRelatedItem"],
+      Variables["createRelatedItem"]
+    >(nodes["createRelatedItem"], {
+      update: this.clientManager.updateOnCreateRelatedItem(
+        relatedToId,
+        relationType
+      ),
+    });
+
+    const add = (input = ""): void => {
+      addItem({
+        variables: { relatedToId, relationType, title: input },
+        optimisticResponse: this.clientManager.optimisticCreateRelatedItem({
+          title: input,
+        }),
+      });
+    };
+
+    return add;
+  }
+
+  useMakeDestroyItem(): (id: number) => () => void {
     const [destroyItem] = useMutation<
       Data["destroyItem"],
       Variables["destroyItem"]
@@ -81,8 +107,8 @@ export class ApolloHooksManager {
   } {
     return {
       ...this.useQuery<"items">("items"),
-      add: this.useAdd(),
-      makeDestroy: this.useMakeDestroy(),
+      add: this.useAddItem(),
+      makeDestroy: this.useMakeDestroyItem(),
     };
   }
 }

@@ -1,37 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { ApolloError } from "apollo-client";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 
 import { ListCard, CloseButton } from "../../../../../core";
 import { ItemId, Variables, Data } from "../../../types";
-import { clientManager } from "../../apollo-client-manager";
 import { hooksManager } from "./items";
 import { nodes } from "../../graphql-nodes";
-
-export const useMutateRelatedItems = (
-  relatedToId: ItemId,
-  relationType: string
-): {
-  add: (input: string) => void;
-} => {
-  const [addItem] = useMutation<
-    Data["createRelatedItem"],
-    Variables["createRelatedItem"]
-  >(nodes["createRelatedItem"], {
-    update: clientManager.updateOnCreateRelatedItem(relatedToId, relationType),
-  });
-
-  const add = (input = ""): void => {
-    addItem({
-      variables: { relatedToId, relationType, title: input },
-      optimisticResponse: clientManager.optimisticCreateRelatedItem({
-        title: input,
-      }),
-    });
-  };
-
-  return { add };
-};
 
 export const useRelatedItems = (
   relatedToId: ItemId,
@@ -52,8 +26,8 @@ export const useRelatedItems = (
     variables: { relatedToId, relationType },
   });
 
-  const { add } = useMutateRelatedItems(relatedToId, relationType);
-  const makeDestroy = hooksManager.useMakeDestroy();
+  const add = hooksManager.useAddRelatedItem(relatedToId, relationType);
+  const makeDestroy = hooksManager.useMakeDestroyItem();
 
   return {
     data,
