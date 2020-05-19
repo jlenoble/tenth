@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import { ListCard, CloseButton } from "../../../../../core";
 import { ItemId, Variables, Data } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
-import { useMutateItems } from "./items";
+import { hooksManager } from "./items";
 import { nodes } from "../../graphql-nodes";
 
 export const useMutateRelatedItems = (
@@ -53,7 +53,7 @@ export const useRelatedItems = (
   });
 
   const { add } = useMutateRelatedItems(relatedToId, relationType);
-  const { makeDestroy } = useMutateItems();
+  const makeDestroy = hooksManager.useMakeDestroy();
 
   return {
     data,
