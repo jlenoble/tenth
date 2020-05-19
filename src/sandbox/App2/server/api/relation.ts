@@ -37,7 +37,7 @@ export class RelationAPI<
     this.context = config.context;
   }
 
-  async createItem({
+  async createRelatedItem({
     relatedToId,
     relationType,
     title,
@@ -76,7 +76,7 @@ export class RelationAPI<
     });
   }
 
-  async getAllItems({
+  async getAllRelatedItems({
     relatedToId,
     relationType,
   }: QueryItemWithRelatedItemsArgs): Promise<ItemWithRelatedItems> {

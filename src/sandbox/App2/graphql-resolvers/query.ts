@@ -10,5 +10,5 @@ export const queryResolvers: Required<Omit<
   me: (_, __, { dataSources: { userAPI } }) => userAPI.findOrCreateUser(),
 
   itemWithRelatedItems: (_, item, { dataSources: { relationAPI } }) =>
-    relationAPI.getAllItems(item),
+    relationAPI.getAllRelatedItems(item),
 };
