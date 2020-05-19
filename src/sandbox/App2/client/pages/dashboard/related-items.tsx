@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import { ListCard, CloseButton } from "../../../../../core";
 import { ItemId } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
-import { useMutateItems, updateOnCreateItem } from "./items";
+import { useMutateItems } from "./items";
 
 import {
   GetItems,
@@ -58,7 +58,7 @@ export const useMutateRelatedItems = (
             },
           });
 
-          updateOnCreateItem(cache, {
+          clientManager.updateOnCreateItem(cache, {
             data: { createItem: createRelatedItem },
           });
         }
