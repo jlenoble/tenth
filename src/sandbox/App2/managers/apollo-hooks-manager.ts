@@ -118,8 +118,6 @@ export class ApolloHooksManager {
     relatedToId: ItemId,
     relationType: string
   ): UseItems<"itemWithRelatedItems"> {
-    useQuery<Data["items"], Variables["items"]>(nodes["items"]);
-
     const { data, loading, error } = useQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
