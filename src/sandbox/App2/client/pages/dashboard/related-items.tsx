@@ -20,9 +20,8 @@ export const RelatedItemsCard: FunctionComponent<{
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
 
-  const title =
-    data?.itemWithRelatedItems?.item.title || "ItemWithRelatedItems";
-  const items = data?.itemWithRelatedItems?.items || [];
+  const title = data.itemWithRelatedItems?.item.title || "ItemWithRelatedItems";
+  const items = data.itemWithRelatedItems?.items || [];
 
   return (
     <ListCard
