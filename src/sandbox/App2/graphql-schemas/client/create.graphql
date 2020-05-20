@@ -11,3 +11,12 @@ mutation CreateRelatedItem($relatedToId: Int!, $relationType: String!, $title: S
     title
   }
 }
+
+mutation CreateRelation($relatedToId: Int!, $relationType: String!, $relatedId: Int!) {
+  createRelation(relatedToId: $relatedToId, relationType: $relationType, relatedId: $relatedId) {
+    id
+    type
+    itemId1
+    itemId2
+  }
+}

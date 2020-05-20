@@ -68,7 +68,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     ) as Data["createRelatedItem"];
   }
 
-  addItem(item: Data["createItem"]["createItem"]): void {
+  _addItem(item: Data["createItem"]["createItem"]): void {
     const query = this.client.readQuery<Data["items"], Variables["items"]>({
       query: nodes["items"],
     });
@@ -81,7 +81,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  removeItem({ id }: Data["destroyItem"]["destroyItem"]): void {
+  _removeItem({ id }: Data["destroyItem"]["destroyItem"]): void {
     const query = this.client.readQuery<Data["items"], Variables["items"]>({
       query: nodes["items"],
     });
@@ -100,7 +100,15 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  addRelatedItem(
+  _addRelation(relation: Data["createRelation"]["createRelation"]): void {
+    this.client.writeQuery<Data["relation"], Variables["relation"]>({
+      query: nodes["relation"],
+      variables: { id: relation.id },
+      data: { relation: { __typename: "Relation", ...relation } },
+    });
+  }
+
+  _addRelatedItem(
     relatedToId: ItemId,
     relationType: string,
     item: Data["createRelatedItem"]["createRelatedItem"]
@@ -132,7 +140,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  removeRelatedItem(
+  _removeRelatedItem(
     relatedToId: ItemId,
     relationType: string,
     { id }: Data["destroyItem"]["destroyItem"]
@@ -171,11 +179,35 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
+  onCompletedGetItemWithRelatedItems() {
+    return (data: Data["itemWithRelatedItems"]): void => {
+      const itemWithRelatedItems = data?.itemWithRelatedItems;
+
+      if (itemWithRelatedItems !== undefined) {
+        const {
+          relationType: type,
+          item: { id: itemId1 },
+          items,
+          relations,
+        } = itemWithRelatedItems;
+
+        relations.forEach((id, i) => {
+          this._addRelation({
+            id,
+            type,
+            itemId1,
+            itemId2: items[i].id,
+          });
+        });
+      }
+    };
+  }
+
   updateOnCreateItem() {
     return (_: DataProxy, { data }: FetchResult<Data["createItem"]>): void => {
       const createItem = data?.createItem;
       if (createItem !== undefined) {
-        this.addItem(createItem);
+        this._addItem(createItem);
       }
     };
   }
@@ -184,7 +216,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     return (_: DataProxy, { data }: FetchResult<Data["destroyItem"]>): void => {
       const destroyItem = data?.destroyItem;
       if (destroyItem !== undefined) {
-        this.removeItem(destroyItem);
+        this._removeItem(destroyItem);
       }
     };
   }
@@ -196,8 +228,8 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     ): void => {
       const createRelatedItem = data?.createRelatedItem;
       if (createRelatedItem !== undefined) {
-        this.addRelatedItem(relatedToId, relationType, createRelatedItem);
-        this.addItem(createRelatedItem);
+        this._addRelatedItem(relatedToId, relationType, createRelatedItem);
+        this._addItem(createRelatedItem);
       }
     };
   }

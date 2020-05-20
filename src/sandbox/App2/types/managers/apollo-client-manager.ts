@@ -3,17 +3,12 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
-import { GQLItem, ItemId, Data, Variables } from "../main";
+import { ItemId, Data, Variables } from "../main";
 
 export type ItemKeys = "createItem" | "destroyItem" | "createRelatedItem";
 
 export interface ApolloClientManagerInterface {
   client: ApolloClient<NormalizedCacheObject>;
-
-  optimisticItem(
-    itemKey: ItemKeys,
-    item: Partial<GQLItem>
-  ): { __typename: "Mutation" } & { [itemKey in ItemKeys]?: Partial<GQLItem> };
 
   optimisticCreateItem(item: Variables["createItem"]): Data["createItem"];
   optimisticDestroyItem(item: Variables["destroyItem"]): Data["destroyItem"];
@@ -21,18 +16,9 @@ export interface ApolloClientManagerInterface {
     item: Variables["createItem"]
   ): Data["createRelatedItem"];
 
-  addItem(item: Data["createItem"]["createItem"]): void;
-  removeItem({ id }: Data["destroyItem"]["destroyItem"]): void;
-  addRelatedItem(
-    relatedToId: ItemId,
-    relationType: string,
-    item: Data["createRelatedItem"]["createRelatedItem"]
-  ): void;
-  removeRelatedItem(
-    relatedToId: ItemId,
-    relationType: string,
-    { id }: Data["destroyItem"]["destroyItem"]
-  ): void;
+  onCompletedGetItemWithRelatedItems(): (
+    data: Data["itemWithRelatedItems"]
+  ) => void;
 
   updateOnCreateItem(): (
     _: DataProxy,

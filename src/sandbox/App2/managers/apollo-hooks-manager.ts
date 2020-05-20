@@ -123,6 +123,7 @@ export class ApolloHooksManager {
       Variables["itemWithRelatedItems"]
     >(nodes["itemWithRelatedItems"], {
       variables: { relatedToId, relationType },
+      onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(),
     });
 
     const add = this.useAddRelatedItem(relatedToId, relationType);
