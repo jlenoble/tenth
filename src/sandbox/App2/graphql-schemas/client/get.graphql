@@ -16,5 +16,6 @@ query GetItemWithRelatedItems($relatedToId: Int!, $relationType: String!) {
       id
       title
     }
+    relations
   }
 }

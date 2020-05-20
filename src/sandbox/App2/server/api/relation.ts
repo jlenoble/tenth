@@ -108,6 +108,7 @@ export class RelationAPI<
       relationType,
       item,
       items,
+      relations: relations.map(({ id }) => id),
     };
   }
 }

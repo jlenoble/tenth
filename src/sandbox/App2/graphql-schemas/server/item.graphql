@@ -8,6 +8,7 @@ type ItemWithRelatedItems {
   relationType: String!
   item: Item!
   items: [Item!]!
+  relations: [Int!]!
 }
 
 extend type Query {
