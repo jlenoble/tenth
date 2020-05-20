@@ -13,18 +13,22 @@ import {
 } from "../types";
 
 import { nodes } from "../client/graphql-nodes";
+import { ApolloHooksManager } from "./apollo-hooks-manager";
 
 let id = 0;
 const tmpId = (): number => --id;
 
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
+  public readonly hooks: ApolloHooksManager;
 
   constructor({ cache, link }: ApolloClientOptions<NormalizedCacheObject>) {
     this.client = new ApolloClient({
       cache,
       link,
     });
+
+    this.hooks = new ApolloHooksManager(this);
 
     this.updateOnCreateItem = this.updateOnCreateItem.bind(this);
     this.updateOnDestroyItem = this.updateOnDestroyItem.bind(this);

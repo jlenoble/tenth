@@ -7,7 +7,6 @@ import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
 import { ItemId } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
-import { ApolloHooksManager } from "../../../managers";
 
 function preventDefault(event: SyntheticEvent): void {
   event.preventDefault();
@@ -19,13 +18,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const hooksManager = new ApolloHooksManager(clientManager);
-
 export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
   open,
 }) => {
   const classes = useStyles();
-  const { data, loading, error, add, makeDestroy } = hooksManager.useItems();
+  const {
+    data,
+    loading,
+    error,
+    add,
+    makeDestroy,
+  } = clientManager.hooks.useItems();
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
@@ -60,7 +63,13 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
 export const ItemsCard: FunctionComponent<{ close: () => void }> = ({
   close,
 }) => {
-  const { data, loading, error, add, makeDestroy } = hooksManager.useItems();
+  const {
+    data,
+    loading,
+    error,
+    add,
+    makeDestroy,
+  } = clientManager.hooks.useItems();
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;

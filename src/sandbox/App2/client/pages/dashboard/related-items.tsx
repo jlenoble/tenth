@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 
 import { ListCard, CloseButton } from "../../../../../core";
 import { ItemId } from "../../../types";
-import { hooksManager } from "./items";
+import { clientManager } from "../../apollo-client-manager";
 
 export const RelatedItemsCard: FunctionComponent<{
   relatedToId: ItemId;
@@ -15,7 +15,7 @@ export const RelatedItemsCard: FunctionComponent<{
     error,
     add,
     makeDestroy,
-  } = hooksManager.useRelatedItems(relatedToId, relationType);
+  } = clientManager.hooks.useRelatedItems(relatedToId, relationType);
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
