@@ -7,16 +7,15 @@ mutation CreateItem($title: String!) {
 
 mutation CreateRelatedItem($relatedToId: Int!, $relationType: String!, $title: String!) {
   createRelatedItem(relatedToId: $relatedToId, relationType: $relationType, title: $title) {
-    id
-    title
-  }
-}
-
-mutation CreateRelation($relatedToId: Int!, $relationType: String!, $relatedId: Int!) {
-  createRelation(relatedToId: $relatedToId, relationType: $relationType, relatedId: $relatedId) {
-    id
-    type
-    itemId1
-    itemId2
+    item {
+      id
+      title
+    }
+    relation {
+      id
+      type
+      itemId1
+      itemId2
+    }
   }
 }

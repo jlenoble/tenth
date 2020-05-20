@@ -4,10 +4,9 @@ import { Op } from "sequelize";
 
 import {
   APIContext,
-  GQLItem,
-  GQLRelation,
   UserId,
   Args,
+  ItemWithRelation,
   ItemWithRelatedItems,
 } from "../../types";
 
@@ -42,7 +41,7 @@ export class RelationAPI<
     relatedToId,
     relationType,
     title,
-  }: Args["createRelatedItem"]): Promise<GQLItem> {
+  }: Args["createRelatedItem"]): Promise<ItemWithRelation> {
     const userId = this.userId;
 
     let item = await this.store.Item.findOne<Item>({
@@ -58,13 +57,13 @@ export class RelationAPI<
       userId,
     });
 
-    await this.store.Relation.create<Relation>({
+    const relation = await this.store.Relation.create<Relation>({
       itemId1: relatedToId,
       itemId2: item.id,
       type: relationType,
     });
 
-    return item.values;
+    return { item: item.values, relation: relation.values };
   }
 
   async getAllRelatedItems({
@@ -111,12 +110,5 @@ export class RelationAPI<
     }
 
     return 0;
-  }
-
-  async getRelationById({ id }: Args["relation"]): Promise<GQLRelation | null> {
-    const relation = await this.store.Relation.findOne<Relation>({
-      where: { id, userId: this.userId },
-    });
-    return relation ? relation.values : null;
   }
 }

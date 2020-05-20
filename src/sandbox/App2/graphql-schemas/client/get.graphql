@@ -5,15 +5,6 @@ query GetItems {
   }
 }
 
-query GetRelation($id: Int!) {
-  relation(id: $id) {
-    id
-    type
-    itemId1
-    itemId2
-  }
-}
-
 query GetItemWithRelatedItems($relatedToId: Int!, $relationType: String!) {
   itemWithRelatedItems(relatedToId: $relatedToId, relationType: $relationType) {
     relationType

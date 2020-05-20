@@ -4,12 +4,10 @@ import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
 import {
-  GQLItem,
   ItemId,
   Variables,
   Data,
   ApolloClientManagerInterface,
-  ItemKeys,
 } from "../types";
 
 import { nodes } from "../client/graphql-nodes";
@@ -36,36 +34,52 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     this.updateOnCreateRelatedItem = this.updateOnCreateRelatedItem.bind(this);
   }
 
-  optimisticItem(
-    itemKey: ItemKeys,
-    item: Partial<GQLItem>
-  ): { __typename: "Mutation" } & { [itemKey in ItemKeys]?: Partial<GQLItem> } {
-    const { id, ...other } = item;
+  optimisticCreateItem(item: Variables["createItem"]): Data["createItem"] {
     return {
       __typename: "Mutation",
-      [itemKey]: {
+      createItem: {
         __typename: "Item",
-        id: id || tmpId(),
-        ...other,
+        id: tmpId(),
+        ...item,
       },
     };
   }
 
-  optimisticCreateItem(item: Variables["createItem"]): Data["createItem"] {
-    return this.optimisticItem("createItem", item) as Data["createItem"];
-  }
-
   optimisticDestroyItem(item: Variables["destroyItem"]): Data["destroyItem"] {
-    return this.optimisticItem("destroyItem", item) as Data["destroyItem"];
+    return {
+      __typename: "Mutation",
+      destroyItem: {
+        __typename: "Item",
+        ...item,
+      },
+    };
   }
 
-  optimisticCreateRelatedItem(
-    item: Variables["createItem"]
-  ): Data["createRelatedItem"] {
-    return this.optimisticItem(
-      "createRelatedItem",
-      item
-    ) as Data["createRelatedItem"];
+  optimisticCreateRelatedItem({
+    relatedToId,
+    relationType,
+    ...item
+  }: Variables["createRelatedItem"]): Data["createRelatedItem"] {
+    const itemId2 = tmpId();
+
+    return {
+      __typename: "Mutation",
+      createRelatedItem: {
+        __typename: "ItemWithRelation",
+        item: {
+          __typename: "Item",
+          id: itemId2,
+          ...item,
+        },
+        relation: {
+          __typename: "Relation",
+          id: tmpId(),
+          type: relationType,
+          itemId1: relatedToId,
+          itemId2,
+        },
+      },
+    };
   }
 
   _addItem(item: Data["createItem"]["createItem"]): void {
@@ -100,19 +114,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  _addRelation(relation: Data["createRelation"]["createRelation"]): void {
-    this.client.writeQuery<Data["relation"], Variables["relation"]>({
-      query: nodes["relation"],
-      variables: { id: relation.id },
-      data: { relation: { __typename: "Relation", ...relation } },
-    });
-  }
-
-  _addRelatedItem(
-    relatedToId: ItemId,
-    relationType: string,
-    item: Data["createRelatedItem"]["createRelatedItem"]
-  ): void {
+  _addRelatedItem({
+    item,
+    relation: { id: relationId, itemId1: relatedToId, type: relationType },
+  }: Data["createRelatedItem"]["createRelatedItem"]): void {
     const query = this.client.readQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
@@ -134,6 +139,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           itemWithRelatedItems: {
             ...itemWithRelatedItems,
             items: [...itemWithRelatedItems.items, item],
+            relations: [...itemWithRelatedItems.relations, relationId],
           },
         },
       });
@@ -192,7 +198,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
         } = itemWithRelatedItems;
 
         relations.forEach((id, i) => {
-          this._addRelation({
+          console.log({
             id,
             type,
             itemId1,
@@ -221,15 +227,15 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     };
   }
 
-  updateOnCreateRelatedItem(relatedToId: ItemId, relationType: string) {
+  updateOnCreateRelatedItem() {
     return (
       _: DataProxy,
       { data }: FetchResult<Data["createRelatedItem"]>
     ): void => {
       const createRelatedItem = data?.createRelatedItem;
       if (createRelatedItem !== undefined) {
-        this._addRelatedItem(relatedToId, relationType, createRelatedItem);
-        this._addItem(createRelatedItem);
+        this._addRelatedItem(createRelatedItem);
+        this._addItem(createRelatedItem.item);
       }
     };
   }

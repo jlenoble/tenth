@@ -51,11 +51,10 @@ export class ApolloHooksManager {
     });
 
     const add = (input = ""): void => {
+      const variables = { title: input };
       addItem({
-        variables: { title: input },
-        optimisticResponse: this.clientManager.optimisticCreateItem({
-          title: input,
-        }),
+        variables,
+        optimisticResponse: this.clientManager.optimisticCreateItem(variables),
       });
     };
 
@@ -70,18 +69,16 @@ export class ApolloHooksManager {
       Data["createRelatedItem"],
       Variables["createRelatedItem"]
     >(nodes["createRelatedItem"], {
-      update: this.clientManager.updateOnCreateRelatedItem(
-        relatedToId,
-        relationType
-      ),
+      update: this.clientManager.updateOnCreateRelatedItem(),
     });
 
     const add = (input = ""): void => {
+      const variables = { relatedToId, relationType, title: input };
       addItem({
-        variables: { relatedToId, relationType, title: input },
-        optimisticResponse: this.clientManager.optimisticCreateRelatedItem({
-          title: input,
-        }),
+        variables,
+        optimisticResponse: this.clientManager.optimisticCreateRelatedItem(
+          variables
+        ),
       });
     };
 
@@ -97,9 +94,10 @@ export class ApolloHooksManager {
     });
 
     const makeDestroy = (id: ItemId) => (): void => {
+      const variables = { id };
       destroyItem({
-        variables: { id },
-        optimisticResponse: this.clientManager.optimisticDestroyItem({ id }),
+        variables,
+        optimisticResponse: this.clientManager.optimisticDestroyItem(variables),
       });
     };
 

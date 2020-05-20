@@ -14,6 +14,7 @@ export type GQLUser = Generated.User & SequelizeDefaultAttributes;
 export type GQLRelation = Generated.Relation & SequelizeDefaultAttributes;
 
 export type {
+  ItemWithRelation,
   ItemWithRelatedItems,
   QueryResolvers,
   MutationResolvers,
@@ -22,33 +23,27 @@ export type {
 export interface Data {
   items: Generated.GetItemsQuery;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQuery;
-  relation: Generated.GetRelationQuery;
 
   createItem: Generated.CreateItemMutation;
   destroyItem: Generated.DestroyItemMutation;
   createRelatedItem: Generated.CreateRelatedItemMutation;
-  createRelation: Generated.CreateRelationMutation;
 }
 
 export interface Args {
   item: Generated.QueryItemArgs;
   itemWithRelatedItems: Generated.QueryItemWithRelatedItemsArgs;
-  relation: Generated.QueryRelationArgs;
 
   createItem: Generated.MutationCreateItemArgs;
   updateItem: Generated.MutationUpdateItemArgs;
   destroyItem: Generated.MutationDestroyItemArgs;
   createRelatedItem: Generated.MutationCreateRelatedItemArgs;
-  createRelation: Generated.MutationCreateRelationArgs;
 }
 
 export interface Variables {
   items: Generated.GetItemsQueryVariables;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
-  relation: Generated.GetRelationQueryVariables;
 
   createItem: Generated.CreateItemMutationVariables;
   destroyItem: Generated.DestroyItemMutationVariables;
   createRelatedItem: Generated.CreateRelatedItemMutationVariables;
-  createRelation: Generated.CreateRelationMutationVariables;
 }

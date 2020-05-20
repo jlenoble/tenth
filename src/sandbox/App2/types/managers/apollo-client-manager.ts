@@ -3,9 +3,7 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
-import { ItemId, Data, Variables } from "../main";
-
-export type ItemKeys = "createItem" | "destroyItem" | "createRelatedItem";
+import { Data, Variables } from "../main";
 
 export interface ApolloClientManagerInterface {
   client: ApolloClient<NormalizedCacheObject>;
@@ -28,8 +26,8 @@ export interface ApolloClientManagerInterface {
     _: DataProxy,
     { data }: FetchResult<Data["destroyItem"]>
   ) => void;
-  updateOnCreateRelatedItem(
-    relatedToId: ItemId,
-    relationType: string
-  ): (_: DataProxy, { data }: FetchResult<Data["createRelatedItem"]>) => void;
+  updateOnCreateRelatedItem(): (
+    _: DataProxy,
+    { data }: FetchResult<Data["createRelatedItem"]>
+  ) => void;
 }

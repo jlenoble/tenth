@@ -4,6 +4,11 @@ type Item {
   title: String!
 }
 
+type ItemWithRelation {
+  item: Item!
+  relation: Relation!
+}
+
 type ItemWithRelatedItems {
   relationType: String!
   item: Item!
@@ -23,5 +28,5 @@ extend type Mutation {
   updateItem(id: Int!, title: String!): Item!
   destroyItem(id: Int!): Item!
   
-  createRelatedItem(relatedToId: Int!, relationType: String!, title: String!): Item!
+  createRelatedItem(relatedToId: Int!, relationType: String!, title: String!): ItemWithRelation!
 }
