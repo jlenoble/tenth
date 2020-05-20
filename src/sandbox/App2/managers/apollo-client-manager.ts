@@ -84,7 +84,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     if (query !== null) {
       let items = query.items;
-      const index = items.findIndex((item) => item?.id === id);
+      const index = items.findIndex((item) => item.id === id);
 
       if (index !== -1) {
         items = [...items.slice(0, index), ...items.slice(index + 1)];
@@ -125,6 +125,45 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           },
         },
       });
+    }
+  }
+
+  removeRelatedItem(
+    relatedToId: ItemId,
+    relationType: string,
+    { id }: Data["destroyItem"]["destroyItem"]
+  ): void {
+    const query = this.client.readQuery<
+      Data["itemWithRelatedItems"],
+      Variables["itemWithRelatedItems"]
+    >({
+      variables: { relatedToId, relationType },
+      query: nodes["itemWithRelatedItems"],
+    });
+
+    const itemWithRelatedItems = query?.itemWithRelatedItems;
+
+    if (itemWithRelatedItems) {
+      let items = itemWithRelatedItems.items;
+      const index = items.findIndex((item) => item.id === id);
+
+      if (index !== -1) {
+        items = [...items.slice(0, index), ...items.slice(index + 1)];
+
+        this.client.writeQuery<
+          Data["itemWithRelatedItems"],
+          Variables["itemWithRelatedItems"]
+        >({
+          variables: { relatedToId, relationType },
+          query: nodes["itemWithRelatedItems"],
+          data: {
+            itemWithRelatedItems: {
+              ...itemWithRelatedItems,
+              items,
+            },
+          },
+        });
+      }
     }
   }
 

@@ -28,6 +28,11 @@ export interface ApolloClientManagerInterface {
     relationType: string,
     item: Data["createRelatedItem"]["createRelatedItem"]
   ): void;
+  removeRelatedItem(
+    relatedToId: ItemId,
+    relationType: string,
+    { id }: Data["destroyItem"]["destroyItem"]
+  ): void;
 
   updateOnCreateItem(): (
     _: DataProxy,
