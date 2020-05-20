@@ -4,3 +4,7 @@ type Relation {
   itemId1: Int!
   itemId2: Int!
 }
+
+extend type Query {
+  relation(id: Int!): Relation
+}

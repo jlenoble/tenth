@@ -5,6 +5,7 @@ import { Op } from "sequelize";
 import {
   APIContext,
   GQLItem,
+  GQLRelation,
   UserId,
   Args,
   ItemWithRelatedItems,
@@ -66,21 +67,6 @@ export class RelationAPI<
     return item.values;
   }
 
-  async destroyRelationsForItem(
-    { id }: Args["destroyItem"],
-    userId: UserId
-  ): Promise<number> {
-    if (userId === this.userId) {
-      return this.store.Relation.destroy({
-        where: {
-          [Op.or]: [{ itemId1: id }, { itemId2: id }],
-        },
-      });
-    }
-
-    return 0;
-  }
-
   async getAllRelatedItems({
     relatedToId,
     relationType,
@@ -110,5 +96,27 @@ export class RelationAPI<
       items,
       relations: relations.map(({ id }) => id),
     };
+  }
+
+  async destroyRelationsForItem(
+    { id }: Args["destroyItem"],
+    userId: UserId
+  ): Promise<number> {
+    if (userId === this.userId) {
+      return this.store.Relation.destroy({
+        where: {
+          [Op.or]: [{ itemId1: id }, { itemId2: id }],
+        },
+      });
+    }
+
+    return 0;
+  }
+
+  async getRelationById({ id }: Args["relation"]): Promise<GQLRelation | null> {
+    const relation = await this.store.Relation.findOne<Relation>({
+      where: { id, userId: this.userId },
+    });
+    return relation ? relation.values : null;
   }
 }

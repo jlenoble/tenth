@@ -22,6 +22,7 @@ export type {
 export interface Data {
   items: Generated.GetItemsQuery;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQuery;
+
   createItem: Generated.CreateItemMutation;
   destroyItem: Generated.DestroyItemMutation;
   createRelatedItem: Generated.CreateRelatedItemMutation;
@@ -30,6 +31,8 @@ export interface Data {
 export interface Args {
   item: Generated.QueryItemArgs;
   itemWithRelatedItems: Generated.QueryItemWithRelatedItemsArgs;
+  relation: Generated.QueryRelationArgs;
+
   createItem: Generated.MutationCreateItemArgs;
   updateItem: Generated.MutationUpdateItemArgs;
   destroyItem: Generated.MutationDestroyItemArgs;
@@ -39,6 +42,7 @@ export interface Args {
 export interface Variables {
   items: Generated.GetItemsQueryVariables;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
+
   createItem: Generated.CreateItemMutationVariables;
   destroyItem: Generated.DestroyItemMutationVariables;
   createRelatedItem: Generated.CreateRelatedItemMutationVariables;

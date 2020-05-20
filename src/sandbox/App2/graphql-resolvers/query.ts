@@ -4,9 +4,13 @@ export const queryResolvers: Required<Omit<
   QueryResolvers<DataSources, {}>,
   "_empty"
 >> = {
-  items: (_, __, { dataSources: { itemAPI } }) => itemAPI.getAllItems(),
-  item: (_, item, { dataSources: { itemAPI } }) => itemAPI.getItemById(item),
   me: (_, __, { dataSources: { userAPI } }) => userAPI.findOrCreateUser(),
+
+  item: (_, item, { dataSources: { itemAPI } }) => itemAPI.getItemById(item),
+  items: (_, __, { dataSources: { itemAPI } }) => itemAPI.getAllItems(),
+
+  relation: (_, relation, { dataSources: { relationAPI } }) =>
+    relationAPI.getRelationById(relation),
 
   itemWithRelatedItems: (_, item, { dataSources: { relationAPI } }) =>
     relationAPI.getAllRelatedItems(item),
