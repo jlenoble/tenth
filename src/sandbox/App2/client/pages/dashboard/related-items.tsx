@@ -6,16 +6,15 @@ import { clientManager } from "../../apollo-client-manager";
 
 export const RelatedItemsCard: FunctionComponent<{
   relatedToId: ItemId;
-  relationType: string;
   close: () => void;
-}> = ({ relatedToId, relationType, close }) => {
+}> = ({ relatedToId, close }) => {
   const {
     data,
     loading,
     error,
     add,
     makeDestroy,
-  } = clientManager.hooks.useRelatedItems(relatedToId, relationType);
+  } = clientManager.hooks.useRelatedItems(relatedToId, relationId);
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;

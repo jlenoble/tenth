@@ -1,8 +1,12 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
+import { Op } from "sequelize";
 
-import { APIContext, GQLItem, UserId, Args } from "../../types";
+import { APIContext, GQLItem, ItemId, UserId, Args } from "../../types";
 import { Store, Item } from "../db";
+
+const coreRelationTitles: string[] = ["⊃", "⊂", "→", "←"];
+const coreRelations: Map<ItemId, Item> = new Map();
 
 export class ItemAPI<
   Context extends APIContext = APIContext
@@ -25,8 +29,38 @@ export class ItemAPI<
     this.store = store;
   }
 
-  initialize(config: DataSourceConfig<Context>): void {
+  async initialize(config: DataSourceConfig<Context>): Promise<void> {
     this.context = config.context;
+
+    await this._setCoreRelations();
+  }
+
+  async _setCoreRelations(): Promise<void> {
+    if (!coreRelations.size) {
+      let items = await this.store.Item.findAll<Item>({
+        where: {
+          [Op.and]: coreRelationTitles.map((title) => ({
+            userId: 1,
+            title,
+          })),
+        },
+        limit: coreRelationTitles.length,
+      });
+
+      const leftTitles = new Set(coreRelationTitles);
+      items.forEach((item) => leftTitles.delete(item.title));
+
+      if (leftTitles.size) {
+        items = await this.store.Item.bulkCreate<Item>(
+          Array.from(leftTitles).map((title) => ({
+            userId: 1,
+            title,
+          }))
+        );
+      }
+
+      items.forEach((item) => coreRelations.set(item.id, item));
+    }
   }
 
   async createItem({ title }: Args["createItem"]): Promise<GQLItem> {
@@ -51,13 +85,15 @@ export class ItemAPI<
   }
 
   async destroyItem({ id }: Args["destroyItem"]): Promise<GQLItem> {
-    const item = await this.store.Item.findOne<Item>({
-      where: { id, userId: this.userId },
-    });
+    if (!coreRelations.has(id)) {
+      const item = await this.store.Item.findOne<Item>({
+        where: { id, userId: this.userId },
+      });
 
-    if (item) {
-      await item.destroy();
-      return item.values;
+      if (item) {
+        await item.destroy();
+        return item.values;
+      }
     }
 
     throw new ForbiddenError("failed to destroy");

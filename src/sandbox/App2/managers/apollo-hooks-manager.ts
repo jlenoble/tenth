@@ -63,7 +63,7 @@ export class ApolloHooksManager {
 
   useAddRelatedItem(
     relatedToId: ItemId,
-    relationType: string
+    relationId: ItemId
   ): (input?: string) => void {
     const [addItem] = useMutation<
       Data["createRelatedItem"],
@@ -73,7 +73,7 @@ export class ApolloHooksManager {
     });
 
     const add = (input = ""): void => {
-      const variables = { relatedToId, relationType, title: input };
+      const variables = { relatedToId, relationId, title: input };
       addItem({
         variables,
         optimisticResponse: this.clientManager.optimisticCreateRelatedItem(
@@ -114,17 +114,17 @@ export class ApolloHooksManager {
 
   useRelatedItems(
     relatedToId: ItemId,
-    relationType: string
+    relationId: ItemId
   ): UseItems<"itemWithRelatedItems"> {
     const { data, loading, error } = useQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
     >(nodes["itemWithRelatedItems"], {
-      variables: { relatedToId, relationType },
+      variables: { relatedToId, relationId },
       onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(),
     });
 
-    const add = this.useAddRelatedItem(relatedToId, relationType);
+    const add = this.useAddRelatedItem(relatedToId, relationId);
     const makeDestroy = this.useMakeDestroyItem();
 
     return {

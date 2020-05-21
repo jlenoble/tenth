@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server";
 import { importSchema } from "graphql-import";
 import path from "path";
 import { createStore, User } from "./db";
-import { ItemAPI, RelationAPI, UserAPI } from "./api";
+import { ItemAPI, RelationshipAPI, UserAPI } from "./api";
 import isEmail from "isemail";
 import { resolvers } from "../graphql-resolvers";
 import { APIMap } from "../types";
@@ -28,7 +28,7 @@ const server = new ApolloServer({
 
   dataSources: (): APIMap => ({
     itemAPI: new ItemAPI({ store }),
-    relationAPI: new RelationAPI({ store }),
+    relationshipAPI: new RelationshipAPI({ store }),
     userAPI: new UserAPI({ store }),
   }),
 });

@@ -15,7 +15,6 @@ const useStyles = makeStyles(mainStyles);
 export const Main: FunctionComponent = () => {
   const classes = useStyles();
   const [openedItemId, setOpenedItemId] = useState<ItemId>(0);
-  const relationType = "includes";
 
   return (
     <main className={classes.content}>
@@ -31,7 +30,6 @@ export const Main: FunctionComponent = () => {
             <Grid item xs={12} md={6}>
               <RelatedItemsCard
                 relatedToId={openedItemId}
-                relationType={relationType}
                 close={(): void => setOpenedItemId(0)}
               />
             </Grid>

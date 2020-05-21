@@ -1,8 +1,8 @@
-import { ItemAPI, RelationAPI, UserAPI } from "../../server/api";
+import { ItemAPI, RelationshipAPI, UserAPI } from "../../server/api";
 
 export type APIMap = {
   itemAPI: ItemAPI;
-  relationAPI: RelationAPI;
+  relationshipAPI: RelationshipAPI;
   userAPI: UserAPI;
 };
 

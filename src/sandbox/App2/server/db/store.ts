@@ -1,11 +1,11 @@
 import { Sequelize, ModelCtor } from "sequelize";
 import { Item, itemDataType } from "./item";
-import { Relation, relationDataType } from "./relation";
+import { Relationship, relationshipDataType } from "./relationship";
 import { User, userDataType } from "./user";
 
 export type Store = {
   Item: ModelCtor<Item>;
-  Relation: ModelCtor<Relation>;
+  Relationship: ModelCtor<Relationship>;
   User: ModelCtor<User>;
 };
 
@@ -21,9 +21,9 @@ export const createStore = (): Store => {
     freezeTableName: true,
   });
 
-  Relation.init(relationDataType, {
+  Relationship.init(relationshipDataType, {
     sequelize,
-    modelName: Relation.name,
+    modelName: Relationship.name,
     freezeTableName: true,
   });
 
@@ -33,5 +33,5 @@ export const createStore = (): Store => {
     freezeTableName: true,
   });
 
-  return { Item, Relation, User };
+  return { Item, Relationship, User };
 };

@@ -1,3 +1,3 @@
 export { ItemAPI } from "./item";
-export { RelationAPI } from "./relation";
+export { RelationshipAPI } from "./relationship";
 export { UserAPI } from "./user";

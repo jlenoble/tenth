@@ -17,9 +17,9 @@ const cache = new InMemoryCache({
       case "ItemWithRelatedItems": {
         const {
           item: { id },
-          relationType,
+          relation: { id: relationId },
         } = object as ItemWithRelatedItems;
-        return `ItemWithRelatedItems:${id}:${relationType}`;
+        return `ItemWithRelatedItems:${id}:${relationId}`;
       }
 
       default:

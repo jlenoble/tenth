@@ -6,13 +6,13 @@ import {
   APIContext,
   UserId,
   Args,
-  ItemWithRelation,
+  RelatedItem,
   ItemWithRelatedItems,
 } from "../../types";
 
-import { Store, Item, Relation } from "../db";
+import { Store, Item, Relationship } from "../db";
 
-export class RelationAPI<
+export class RelationshipAPI<
   Context extends APIContext = APIContext
 > extends DataSource<Context> {
   private context: Context | undefined;
@@ -33,15 +33,15 @@ export class RelationAPI<
     this.store = store;
   }
 
-  initialize(config: DataSourceConfig<Context>): void {
+  async initialize(config: DataSourceConfig<Context>): Promise<void> {
     this.context = config.context;
   }
 
   async createRelatedItem({
     relatedToId,
-    relationType,
+    relationId,
     title,
-  }: Args["createRelatedItem"]): Promise<ItemWithRelation> {
+  }: Args["createRelatedItem"]): Promise<RelatedItem> {
     const userId = this.userId;
 
     let item = await this.store.Item.findOne<Item>({
@@ -57,32 +57,36 @@ export class RelationAPI<
       userId,
     });
 
-    const relation = await this.store.Relation.create<Relation>({
-      itemId1: relatedToId,
-      itemId2: item.id,
-      type: relationType,
+    const relationship = await this.store.Relationship.create<Relationship>({
+      relatedToId,
+      relatedId: item.id,
+      relationId,
     });
 
-    return { item: item.values, relation: relation.values };
+    return { item: item.values, relationship: relationship.values };
   }
 
   async getAllRelatedItems({
     relatedToId,
-    relationType,
+    relationId,
   }: Args["itemWithRelatedItems"]): Promise<ItemWithRelatedItems> {
     const item = await this.store.Item.findOne<Item>({
       where: { id: relatedToId, userId: this.userId },
     });
 
-    if (!item) {
+    const relation = await this.store.Item.findOne<Item>({
+      where: { id: relationId },
+    });
+
+    if (!item || !relation) {
       throw new ForbiddenError("failed to fetch");
     }
 
-    const relations = await this.store.Relation.findAll<Relation>({
-      where: { itemId1: relatedToId, type: relationType },
+    const relationships = await this.store.Relationship.findAll<Relationship>({
+      where: { relatedToId, relationId },
     });
 
-    const ids = relations.map(({ itemId2 }) => itemId2);
+    const ids = relationships.map(({ ids: [, , relatedId] }) => relatedId);
 
     const items = await this.store.Item.findAll<Item>({
       where: { id: ids },
@@ -90,21 +94,21 @@ export class RelationAPI<
 
     return {
       __typename: "ItemWithRelatedItems",
-      relationType,
+      relation,
       item,
       items,
-      relations: relations.map(({ id }) => id),
+      relationshipIds: relationships.map(({ id }) => id),
     };
   }
 
-  async destroyRelationsForItem(
+  async destroyRelationshipsForItem(
     { id }: Args["destroyItem"],
     userId: UserId
   ): Promise<number> {
     if (userId === this.userId) {
-      return this.store.Relation.destroy({
+      return this.store.Relationship.destroy({
         where: {
-          [Op.or]: [{ itemId1: id }, { itemId2: id }],
+          [Op.or]: [{ relatedToId: id }, { relatedId: id }],
         },
       });
     }

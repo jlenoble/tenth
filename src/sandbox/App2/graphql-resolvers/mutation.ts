@@ -8,12 +8,16 @@ export const mutationResolvers: Required<Omit<
     itemAPI.createItem(item),
   updateItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.updateItem(item),
-  destroyItem: async (_, item, { dataSources: { itemAPI, relationAPI } }) => {
+  destroyItem: async (
+    _,
+    item,
+    { dataSources: { itemAPI, relationshipAPI } }
+  ) => {
     const gqlItem = await itemAPI.destroyItem(item);
-    await relationAPI.destroyRelationsForItem(item, gqlItem.userId);
+    await relationshipAPI.destroyRelationshipsForItem(item, gqlItem.userId);
     return gqlItem;
   },
 
-  createRelatedItem: (_, item, { dataSources: { relationAPI } }) =>
-    relationAPI.createRelatedItem(item),
+  createRelatedItem: (_, item, { dataSources: { relationshipAPI } }) =>
+    relationshipAPI.createRelatedItem(item),
 };

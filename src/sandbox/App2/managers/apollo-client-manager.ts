@@ -3,13 +3,7 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 
-import {
-  ItemId,
-  Variables,
-  Data,
-  ApolloClientManagerInterface,
-} from "../types";
-
+import { Variables, Data, ApolloClientManagerInterface } from "../types";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
 
@@ -57,26 +51,24 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
   optimisticCreateRelatedItem({
     relatedToId,
-    relationType,
+    relationId,
     ...item
   }: Variables["createRelatedItem"]): Data["createRelatedItem"] {
-    const itemId2 = tmpId();
+    const relatedId = tmpId();
 
     return {
       __typename: "Mutation",
       createRelatedItem: {
-        __typename: "ItemWithRelation",
+        __typename: "RelatedItem",
         item: {
           __typename: "Item",
-          id: itemId2,
+          id: relatedId,
           ...item,
         },
-        relation: {
-          __typename: "Relation",
+        relationship: {
+          __typename: "Relationship",
           id: tmpId(),
-          type: relationType,
-          itemId1: relatedToId,
-          itemId2,
+          ids: [relatedToId, relationId, relatedId],
         },
       },
     };
@@ -116,13 +108,16 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
   _addRelatedItem({
     item,
-    relation: { id: relationId, itemId1: relatedToId, type: relationType },
+    relationship: {
+      id: relationshipId,
+      ids: [relatedToId, relationId],
+    },
   }: Data["createRelatedItem"]["createRelatedItem"]): void {
     const query = this.client.readQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
     >({
-      variables: { relatedToId, relationType },
+      variables: { relatedToId, relationId },
       query: nodes["itemWithRelatedItems"],
     });
 
@@ -133,55 +128,19 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
         Data["itemWithRelatedItems"],
         Variables["itemWithRelatedItems"]
       >({
-        variables: { relatedToId, relationType },
+        variables: { relatedToId, relationId },
         query: nodes["itemWithRelatedItems"],
         data: {
           itemWithRelatedItems: {
             ...itemWithRelatedItems,
             items: [...itemWithRelatedItems.items, item],
-            relations: [...itemWithRelatedItems.relations, relationId],
+            relationshipIds: [
+              ...itemWithRelatedItems.relationshipIds,
+              relationshipId,
+            ],
           },
         },
       });
-    }
-  }
-
-  _removeRelatedItem(
-    relatedToId: ItemId,
-    relationType: string,
-    { id }: Data["destroyItem"]["destroyItem"]
-  ): void {
-    const query = this.client.readQuery<
-      Data["itemWithRelatedItems"],
-      Variables["itemWithRelatedItems"]
-    >({
-      variables: { relatedToId, relationType },
-      query: nodes["itemWithRelatedItems"],
-    });
-
-    const itemWithRelatedItems = query?.itemWithRelatedItems;
-
-    if (itemWithRelatedItems) {
-      let items = itemWithRelatedItems.items;
-      const index = items.findIndex((item) => item.id === id);
-
-      if (index !== -1) {
-        items = [...items.slice(0, index), ...items.slice(index + 1)];
-
-        this.client.writeQuery<
-          Data["itemWithRelatedItems"],
-          Variables["itemWithRelatedItems"]
-        >({
-          variables: { relatedToId, relationType },
-          query: nodes["itemWithRelatedItems"],
-          data: {
-            itemWithRelatedItems: {
-              ...itemWithRelatedItems,
-              items,
-            },
-          },
-        });
-      }
     }
   }
 
@@ -191,18 +150,16 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
       if (itemWithRelatedItems !== undefined) {
         const {
-          relationType: type,
-          item: { id: itemId1 },
+          relation: { id: relationId },
+          item: { id: relatedToId },
           items,
-          relations,
+          relationshipIds,
         } = itemWithRelatedItems;
 
-        relations.forEach((id, i) => {
+        relationshipIds.forEach((id, i) => {
           console.log({
             id,
-            type,
-            itemId1,
-            itemId2: items[i].id,
+            ids: [relatedToId, relationId, items[i].id],
           });
         });
       }

@@ -1,0 +1,4 @@
+type Relationship {
+  id: Int!
+  ids: [Int!]!
+}
