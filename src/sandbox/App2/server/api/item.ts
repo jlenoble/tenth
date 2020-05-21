@@ -1,18 +1,16 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
-import { Op } from "sequelize";
 
 import { APIContext, GQLItem, ItemId, UserId, Args } from "../../types";
 import { Store, Item } from "../db";
-
-const coreRelationTitles: string[] = ["⊃", "⊂", "→", "←"];
-const coreRelations: Map<ItemId, Item> = new Map();
+import { DBInitManager, dbCoreData } from "../../managers";
 
 export class ItemAPI<
   Context extends APIContext = APIContext
 > extends DataSource<Context> {
   private context: Context | undefined;
   private store: Store;
+  private coreItems: Map<ItemId, Item> = new Map();
 
   private get userId(): UserId {
     const userId = this.context?.user?.id;
@@ -32,23 +30,12 @@ export class ItemAPI<
   async initialize(config: DataSourceConfig<Context>): Promise<void> {
     this.context = config.context;
 
-    await this._setCoreRelations();
+    await this._setCoreItems();
   }
 
-  async _setCoreRelations(): Promise<void> {
-    if (!coreRelations.size) {
-      const items = await this.store.Item.findAll<Item>({
-        where: {
-          [Op.and]: coreRelationTitles.map((title) => ({
-            userId: 1,
-            title,
-          })),
-        },
-        limit: coreRelationTitles.length,
-      });
-
-      items.forEach((item) => coreRelations.set(item.id, item));
-    }
+  async _setCoreItems(): Promise<void> {
+    const initManager = new DBInitManager({ store: this.store, dbCoreData });
+    this.coreItems = await initManager.getItems();
   }
 
   async createItem({ title }: Args["createItem"]): Promise<GQLItem> {
@@ -73,7 +60,7 @@ export class ItemAPI<
   }
 
   async destroyItem({ id }: Args["destroyItem"]): Promise<GQLItem> {
-    if (!coreRelations.has(id)) {
+    if (!this.coreItems.has(id)) {
       const item = await this.store.Item.findOne<Item>({
         where: { id, userId: this.userId },
       });

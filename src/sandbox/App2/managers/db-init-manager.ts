@@ -1,5 +1,5 @@
 import { Store, Item, Relationship } from "../server/db";
-import { GQLItem } from "../types";
+import { ItemId, GQLItem } from "../types";
 
 type Data = string | string[] | { [key: string]: Data };
 
@@ -35,6 +35,22 @@ export class DBInitManager {
   async addCoreData(): Promise<void> {
     const root = await this._findOrCreateItem("/");
     await this._addData(this.dbCoreData, root);
+  }
+
+  async getItems(): Promise<Map<ItemId, Item>> {
+    await this.addCoreData();
+
+    const items: [ItemId, Item][] = [];
+
+    for (const { id } of this.items.values()) {
+      const item = await this.store.Item.findOne<Item>({ where: { id } });
+
+      if (item) {
+        items.push([id, item]);
+      }
+    }
+
+    return new Map(items);
   }
 
   async _addData(data: Data, parent: GQLItem): Promise<void> {
