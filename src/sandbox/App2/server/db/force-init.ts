@@ -1,10 +1,8 @@
-import { createStore, Store } from "./store";
+import { createStore } from "./store";
+import { DBInitManager, dbCoreData } from "../../managers";
 
 const store = createStore();
 
-(Object.keys(store) as (keyof Store)[]).forEach(
-  async (tableName): Promise<void> => {
-    await store[tableName].sync({ force: true });
-    console.log(`Created or reset ${tableName}`);
-  }
-);
+const manager = new DBInitManager({ store, dbCoreData });
+
+manager.resetTables();

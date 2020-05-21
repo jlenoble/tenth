@@ -37,7 +37,7 @@ export class ItemAPI<
 
   async _setCoreRelations(): Promise<void> {
     if (!coreRelations.size) {
-      let items = await this.store.Item.findAll<Item>({
+      const items = await this.store.Item.findAll<Item>({
         where: {
           [Op.and]: coreRelationTitles.map((title) => ({
             userId: 1,
@@ -46,18 +46,6 @@ export class ItemAPI<
         },
         limit: coreRelationTitles.length,
       });
-
-      const leftTitles = new Set(coreRelationTitles);
-      items.forEach((item) => leftTitles.delete(item.title));
-
-      if (leftTitles.size) {
-        items = await this.store.Item.bulkCreate<Item>(
-          Array.from(leftTitles).map((title) => ({
-            userId: 1,
-            title,
-          }))
-        );
-      }
 
       items.forEach((item) => coreRelations.set(item.id, item));
     }
