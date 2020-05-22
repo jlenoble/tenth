@@ -5,6 +5,20 @@ query GetItems {
   }
 }
 
+query GetCoreItem($title: String!) {
+  coreItem(title: $title) {
+    id
+    title
+  }
+}
+
+query GetCoreItems {
+  coreItems {
+    id
+    title
+  }
+}
+
 query GetItemWithRelatedItems($relatedToId: Int!, $relationId: Int!) {
   itemWithRelatedItems(relatedToId: $relatedToId, relationId: $relationId) {
     relation {

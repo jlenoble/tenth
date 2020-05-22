@@ -112,6 +112,14 @@ export class ApolloHooksManager {
     };
   }
 
+  useCoreItems(): {
+    data?: Data["coreItems"];
+    loading: boolean;
+    error?: ApolloError;
+  } {
+    return this.useQuery<"coreItems">("coreItems");
+  }
+
   useRelatedItems(
     relatedToId: ItemId,
     relationId: ItemId

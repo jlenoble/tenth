@@ -9,6 +9,10 @@ export const queryResolvers: Required<Omit<
   item: (_, item, { dataSources: { itemAPI } }) => itemAPI.getItemById(item),
   items: (_, __, { dataSources: { itemAPI } }) => itemAPI.getAllItems(),
 
+  coreItems: (_, __, { dataSources: { itemAPI } }) => itemAPI.getCoreItems(),
+  coreItem: (_, item, { dataSources: { itemAPI } }) =>
+    itemAPI.getCoreItemByTitle(item),
+
   itemWithRelatedItems: (_, item, { dataSources: { relationshipAPI } }) =>
     relationshipAPI.getAllRelatedItems(item),
 };

@@ -20,6 +20,9 @@ extend type Query {
   items: [Item!]!
   item(id: Int!): Item
 
+  coreItems: [Item!]!
+  coreItem(title: String!): Item
+
   itemWithRelatedItems(relatedToId: Int!, relationId: Int!): ItemWithRelatedItems!
 }
 

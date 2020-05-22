@@ -1,7 +1,7 @@
 import { AuthenticationError, ForbiddenError } from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 
-import { APIContext, GQLItem, ItemId, UserId, Args } from "../../types";
+import { APIContext, GQLItem, UserId, Args } from "../../types";
 import { Store, Item } from "../db";
 import { DBInitManager, dbCoreData } from "../../managers";
 
@@ -10,7 +10,8 @@ export class ItemAPI<
 > extends DataSource<Context> {
   private context: Context | undefined;
   private store: Store;
-  private coreItems: Map<ItemId, Item> = new Map();
+  private coreItemsById: Map<number, Item> = new Map();
+  private coreItemsByTitle: Map<string, Item> = new Map();
 
   private get userId(): UserId {
     const userId = this.context?.user?.id;
@@ -35,7 +36,11 @@ export class ItemAPI<
 
   async _setCoreItems(): Promise<void> {
     const initManager = new DBInitManager({ store: this.store, dbCoreData });
-    this.coreItems = await initManager.getItems();
+    this.coreItemsById = await initManager.getItems();
+
+    for (const item of this.coreItemsById.values()) {
+      this.coreItemsByTitle.set(item.title, item);
+    }
   }
 
   async createItem({ title }: Args["createItem"]): Promise<GQLItem> {
@@ -60,7 +65,7 @@ export class ItemAPI<
   }
 
   async destroyItem({ id }: Args["destroyItem"]): Promise<GQLItem> {
-    if (!this.coreItems.has(id)) {
+    if (!this.coreItemsById.has(id)) {
       const item = await this.store.Item.findOne<Item>({
         where: { id, userId: this.userId },
       });
@@ -86,5 +91,15 @@ export class ItemAPI<
       where: { id, userId: this.userId },
     });
     return item ? item.values : null;
+  }
+
+  async getCoreItems(): Promise<GQLItem[]> {
+    return Array.from(this.coreItemsById.values()).map((item) => item.values);
+  }
+
+  async getCoreItemByTitle({
+    title,
+  }: Args["coreItem"]): Promise<GQLItem | null> {
+    return this.coreItemsByTitle.get(title) || null;
   }
 }
