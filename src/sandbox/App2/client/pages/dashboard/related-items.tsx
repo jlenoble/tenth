@@ -14,7 +14,7 @@ export const RelatedItemsCard: FunctionComponent<{
     error,
     add,
     makeDestroy,
-  } = clientManager.hooks.useRelatedItems(relatedToId, relationId);
+  } = clientManager.hooks.useRelatedItems(relatedToId, 2);
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
