@@ -1,7 +1,13 @@
-import React, { Fragment, FunctionComponent, SyntheticEvent } from "react";
+import React, {
+  Fragment,
+  FunctionComponent,
+  SyntheticEvent,
+  useState,
+} from "react";
 
 import { Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 import { List, ListCard, CloseButton } from "../../../../../core";
 import { Title } from "../../components";
@@ -29,6 +35,16 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
     add,
     makeDestroy,
   } = clientManager.hooks.useItems();
+  const [actionError, setActionError] = useState<Error | null>(null);
+  const catchError = <Args extends any[]>(
+    fn: (...args: Args) => Promise<void>
+  ) => async (...args: Args): Promise<void> => {
+    try {
+      await fn(...args);
+    } catch (e) {
+      setActionError(e);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
@@ -36,14 +52,19 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
   return (
     <Fragment>
       <Title>Items</Title>
+      {actionError && (
+        <Alert variant="outlined" severity="error">
+          <AlertTitle>{actionError.message}</AlertTitle>
+        </Alert>
+      )}
       <List
-        addItemProps={{ add }}
+        addItemProps={{ add: catchError(add) }}
         listItems={data.items.map(({ id, title }) => {
           return {
             itemId: String(id),
             primary: title,
             deleteButtonProps: {
-              onClick: makeDestroy(id),
+              onClick: catchError(makeDestroy(id)),
             },
             expandButtonProps: {
               onClick: (): void => open(id),
