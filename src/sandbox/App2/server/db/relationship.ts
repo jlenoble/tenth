@@ -40,6 +40,27 @@ export class Relationship extends Model implements GQLRelationship {
     this.set("ids", value);
   }
 
+  public get relatedToId(): ItemId {
+    return this.get("relatedToId");
+  }
+  public set relatedToId(value: ItemId) {
+    this.set("relatedToId", value);
+  }
+
+  public get relationId(): ItemId {
+    return this.get("relationId");
+  }
+  public set relationId(value: ItemId) {
+    this.set("relationId", value);
+  }
+
+  public get relatedId(): ItemId {
+    return this.get("relatedId");
+  }
+  public set relatedId(value: ItemId) {
+    this.set("relatedId", value);
+  }
+
   public get createdAt(): Date {
     return this.get("createdAt");
   }

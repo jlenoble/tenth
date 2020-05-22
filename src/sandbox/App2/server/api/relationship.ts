@@ -86,7 +86,7 @@ export class RelationshipAPI<
       where: { relatedToId, relationId },
     });
 
-    const ids = relationships.map(({ ids: [, , relatedId] }) => relatedId);
+    const ids = relationships.map(({ relatedId }) => relatedId);
 
     const items = await this.store.Item.findAll<Item>({
       where: { id: ids },
