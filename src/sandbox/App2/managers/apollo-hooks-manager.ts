@@ -20,8 +20,8 @@ type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
   loading: boolean;
   error?: ApolloError;
-  add: (input: string) => void;
-  makeDestroy: (id: ItemId) => () => void;
+  add: (input: string) => Promise<void>;
+  makeDestroy: (id: ItemId) => () => Promise<void>;
 };
 
 export class ApolloHooksManager {
@@ -45,14 +45,14 @@ export class ApolloHooksManager {
     return useMutation<Data[Key], Variables[Key]>(nodes[key], options);
   }
 
-  useAddItem(): (input?: string) => void {
+  useAddItem(): (input?: string) => Promise<void> {
     const [addItem] = this.useMutation<"createItem">("createItem", {
       update: this.clientManager.updateOnCreateItem(),
     });
 
-    const add = (input = ""): void => {
+    const add = async (input = ""): Promise<void> => {
       const variables = { title: input };
-      addItem({
+      await addItem({
         variables,
         optimisticResponse: this.clientManager.optimisticCreateItem(variables),
       });
@@ -64,7 +64,7 @@ export class ApolloHooksManager {
   useAddRelatedItem(
     relatedToId: ItemId,
     relationId: ItemId
-  ): (input?: string) => void {
+  ): (input?: string) => Promise<void> {
     const [addItem] = useMutation<
       Data["createRelatedItem"],
       Variables["createRelatedItem"]
@@ -72,9 +72,9 @@ export class ApolloHooksManager {
       update: this.clientManager.updateOnCreateRelatedItem(),
     });
 
-    const add = (input = ""): void => {
+    const add = async (input = ""): Promise<void> => {
       const variables = { relatedToId, relationId, title: input };
-      addItem({
+      await addItem({
         variables,
         optimisticResponse: this.clientManager.optimisticCreateRelatedItem(
           variables
@@ -85,7 +85,7 @@ export class ApolloHooksManager {
     return add;
   }
 
-  useMakeDestroyItem(): (id: number) => () => void {
+  useMakeDestroyItem(): (id: number) => () => Promise<void> {
     const [destroyItem] = useMutation<
       Data["destroyItem"],
       Variables["destroyItem"]
@@ -93,9 +93,9 @@ export class ApolloHooksManager {
       update: this.clientManager.updateOnDestroyItem(),
     });
 
-    const makeDestroy = (id: ItemId) => (): void => {
+    const makeDestroy = (id: ItemId) => async (): Promise<void> => {
       const variables = { id };
-      destroyItem({
+      await destroyItem({
         variables,
         optimisticResponse: this.clientManager.optimisticDestroyItem(variables),
       });
