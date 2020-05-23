@@ -2,6 +2,7 @@ import React, { FunctionComponent } from "react";
 import { Card, CardContent, CardProps } from "@material-ui/core";
 import { CardHeader, CardHeaderProps, BaseCardHeaderProps } from "./CardHeader";
 import { List, ListProps, BaseListProps } from "./List";
+import { useErrorFeedback } from "./ErrorFeedback";
 
 export interface ListCardProps extends CardHeaderProps, ListProps {
   cardHeaderProps?: BaseCardHeaderProps;
@@ -32,6 +33,8 @@ export const ListCard: FunctionComponent<FullListCardProps> = ({
 
   ...other
 }) => {
+  const { ErrorFeedback, catchError } = useErrorFeedback();
+
   return (
     <Card {...other}>
       <CardHeader
@@ -45,6 +48,7 @@ export const ListCard: FunctionComponent<FullListCardProps> = ({
         {...cardHeaderProps}
       />
       <CardContent>
+        {ErrorFeedback && <ErrorFeedback />}
         <List
           droppableId={droppableId}
           addItemProps={addItemProps}
@@ -52,6 +56,7 @@ export const ListCard: FunctionComponent<FullListCardProps> = ({
           checkboxProps={checkboxProps}
           listItemTextProps={listItemTextProps}
           deleteButtonProps={deleteButtonProps}
+          catchError={catchError}
           {...listProps}
         />
       </CardContent>
