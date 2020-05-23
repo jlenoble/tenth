@@ -10,7 +10,7 @@ import {
   BaseListItemTextProps,
 } from "./ListItemText";
 import { DeleteButton, OpenInNewButton, IconButtonProps } from "./buttons";
-import { CatchError } from "./catch-error";
+import { CatchError } from "./ErrorFeedback";
 
 export interface ListItemProps extends ListItemTextProps {
   itemId: string;

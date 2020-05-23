@@ -1,19 +1,12 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  SyntheticEvent,
-  useState,
-} from "react";
+import React, { Fragment, FunctionComponent, SyntheticEvent } from "react";
 
 import { Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Alert, AlertTitle } from "@material-ui/lab";
-
 import {
   List,
   ListCard,
   CloseButton,
-  makeCatchError,
+  useErrorFeedback,
 } from "../../../../../core";
 import { Title } from "../../components";
 import { ItemId } from "../../../types";
@@ -40,8 +33,7 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
     add,
     makeDestroy,
   } = clientManager.hooks.useItems();
-  const [actionError, setActionError] = useState<Error | null>(null);
-  const catchError = makeCatchError(setActionError);
+  const { ErrorFeedback, catchError } = useErrorFeedback();
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
@@ -49,17 +41,7 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
   return (
     <Fragment>
       <Title>Items</Title>
-      {actionError && (
-        <Alert
-          variant="outlined"
-          severity="error"
-          onClose={(): void => {
-            console.log("close");
-          }}
-        >
-          <AlertTitle>{actionError.message}</AlertTitle>
-        </Alert>
-      )}
+      {ErrorFeedback && <ErrorFeedback />}
       <List
         addItemProps={{ add }}
         listItems={data.items.map(({ id, title }) => {

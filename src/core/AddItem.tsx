@@ -12,7 +12,7 @@ import {
   Button,
   ButtonProps,
 } from "@material-ui/core";
-import { CatchError } from "./catch-error";
+import { CatchError } from "./ErrorFeedback";
 
 export type AddItemProps = TextFieldProps & {
   buttonProps?: ButtonProps;

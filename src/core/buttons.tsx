@@ -9,7 +9,7 @@ import {
   DeleteOutlined,
   OpenInNewOutlined,
 } from "@material-ui/icons";
-import { CatchError } from "./catch-error";
+import { CatchError } from "./ErrorFeedback";
 
 export const buttonLabels = {
   add: "Add item",

@@ -7,7 +7,7 @@ import {
   StatefulAddItem as AddItem,
   StatefulAddItemProps as AddItemProps,
 } from "./AddItem";
-import { CatchError } from "./catch-error";
+import { CatchError } from "./ErrorFeedback";
 
 export interface ListProps {
   droppableId?: string;
