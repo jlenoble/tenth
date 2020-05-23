@@ -1,5 +1,5 @@
 import React, { FunctionComponent, memo } from "react";
-import { Checkbox, CheckboxProps, IconButtonProps } from "@material-ui/core";
+import { Checkbox, CheckboxProps } from "@material-ui/core";
 import {
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps,
@@ -9,7 +9,8 @@ import {
   ListItemTextProps,
   BaseListItemTextProps,
 } from "./ListItemText";
-import { DeleteButton, OpenInNewButton } from "./buttons";
+import { DeleteButton, OpenInNewButton, IconButtonProps } from "./buttons";
+import { CatchError } from "./catch-error";
 
 export interface ListItemProps extends ListItemTextProps {
   itemId: string;
@@ -18,6 +19,7 @@ export interface ListItemProps extends ListItemTextProps {
   listItemTextProps?: BaseListItemTextProps;
   deleteButtonProps?: IconButtonProps;
   expandButtonProps?: IconButtonProps;
+  catchError?: CatchError;
 }
 
 export type BaseListItemProps = MuiListItemProps;
@@ -40,6 +42,8 @@ const ListItem: FunctionComponent<FullListItemProps> = ({
   deleteButtonProps,
   expandButtonProps,
 
+  catchError,
+
   ...other
 }) => {
   return (
@@ -54,8 +58,12 @@ const ListItem: FunctionComponent<FullListItemProps> = ({
         primaryTextFieldProps={primaryTextFieldProps}
         {...listItemTextProps}
       />
-      {expandButtonProps && <OpenInNewButton {...expandButtonProps} />}
-      {deleteButtonProps && <DeleteButton {...deleteButtonProps} />}
+      {expandButtonProps && (
+        <OpenInNewButton {...expandButtonProps} catchError={catchError} />
+      )}
+      {deleteButtonProps && (
+        <DeleteButton {...deleteButtonProps} catchError={catchError} />
+      )}
     </MuiListItem>
   );
 };

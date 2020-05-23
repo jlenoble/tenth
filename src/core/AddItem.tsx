@@ -12,6 +12,7 @@ import {
   Button,
   ButtonProps,
 } from "@material-ui/core";
+import { CatchError } from "./catch-error";
 
 export type AddItemProps = TextFieldProps & {
   buttonProps?: ButtonProps;
@@ -88,13 +89,17 @@ export const useAddItem = (
 export interface StatefulAddItemProps {
   add: (value: string) => void;
   button?: boolean;
+  catchError?: CatchError;
 }
 
 export const StatefulAddItem: FunctionComponent<StatefulAddItemProps> = ({
   add,
   button = true,
+  catchError,
 }) => {
-  const { value, changeInput, clearInputAndAdd, keyInput } = useAddItem(add);
+  const { value, changeInput, clearInputAndAdd, keyInput } = useAddItem(
+    catchError ? catchError(add) : add
+  );
 
   return (
     <AddItem

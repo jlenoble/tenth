@@ -7,3 +7,4 @@ export * from "./ListItemText";
 export * from "./Tooltip";
 
 export * from "./buttons";
+export * from "./catch-error";

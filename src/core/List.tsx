@@ -7,6 +7,7 @@ import {
   StatefulAddItem as AddItem,
   StatefulAddItemProps as AddItemProps,
 } from "./AddItem";
+import { CatchError } from "./catch-error";
 
 export interface ListProps {
   droppableId?: string;
@@ -15,6 +16,7 @@ export interface ListProps {
   checkboxProps?: Omit<CheckboxProps, "checked">;
   listItemTextProps?: BaseListItemTextProps;
   deleteButtonProps?: IconButtonProps;
+  catchError?: CatchError;
 }
 
 export type BaseListProps = MuiListProps;
@@ -27,6 +29,7 @@ export const List: FunctionComponent<FullListProps> = ({
   checkboxProps,
   listItemTextProps,
   deleteButtonProps,
+  catchError,
   ...other
 }) => {
   const dnd = Boolean(droppableId);
@@ -36,7 +39,7 @@ export const List: FunctionComponent<FullListProps> = ({
 
   return (
     <>
-      {addItemProps && <AddItem {...addItemProps} />}
+      {addItemProps && <AddItem {...addItemProps} catchError={catchError} />}
       <MuiList droppableProps={droppableProps} {...other}>
         {listItems &&
           listItems.map((listItem, index) => {
@@ -50,6 +53,7 @@ export const List: FunctionComponent<FullListProps> = ({
                 checkboxProps={checkboxProps}
                 listItemTextProps={listItemTextProps}
                 deleteButtonProps={deleteButtonProps}
+                catchError={catchError}
                 {...other}
               />
             );

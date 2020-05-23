@@ -9,7 +9,12 @@ import { Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
-import { List, ListCard, CloseButton } from "../../../../../core";
+import {
+  List,
+  ListCard,
+  CloseButton,
+  makeCatchError,
+} from "../../../../../core";
 import { Title } from "../../components";
 import { ItemId } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
@@ -36,15 +41,7 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
     makeDestroy,
   } = clientManager.hooks.useItems();
   const [actionError, setActionError] = useState<Error | null>(null);
-  const catchError = <Args extends any[]>(
-    fn: (...args: Args) => Promise<void>
-  ) => async (...args: Args): Promise<void> => {
-    try {
-      await fn(...args);
-    } catch (e) {
-      setActionError(e);
-    }
-  };
+  const catchError = makeCatchError(setActionError);
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
@@ -53,24 +50,31 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
     <Fragment>
       <Title>Items</Title>
       {actionError && (
-        <Alert variant="outlined" severity="error">
+        <Alert
+          variant="outlined"
+          severity="error"
+          onClose={(): void => {
+            console.log("close");
+          }}
+        >
           <AlertTitle>{actionError.message}</AlertTitle>
         </Alert>
       )}
       <List
-        addItemProps={{ add: catchError(add) }}
+        addItemProps={{ add }}
         listItems={data.items.map(({ id, title }) => {
           return {
             itemId: String(id),
             primary: title,
             deleteButtonProps: {
-              onClick: catchError(makeDestroy(id)),
+              onClick: makeDestroy(id),
             },
             expandButtonProps: {
               onClick: (): void => open(id),
             },
           };
         })}
+        catchError={catchError}
       />
       <div className={classes.seeMore}>
         <Link color="primary" href="#" onClick={preventDefault}>
