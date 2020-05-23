@@ -40,6 +40,19 @@ export class DBInitManager {
   async addCoreData(): Promise<void> {
     const root = await this._findOrCreateItem("/");
     await this._addData(this.dbCoreData, root);
+
+    const coreItems = await this._findOrCreateItem("Core Items");
+    const me = await this._findOrCreateItem("Me");
+
+    for (const item of this.items.values()) {
+      if (
+        item.id !== me.id &&
+        item.id !== root.id &&
+        item.id !== coreItems.id
+      ) {
+        await this._addData(item.title, coreItems);
+      }
+    }
   }
 
   async getItems(): Promise<Map<ItemId, Item>> {
@@ -65,10 +78,12 @@ export class DBInitManager {
       const item = await this._findOrCreateItem(data);
 
       if (this.alterTables) {
-        await this.store.Relationship.create<Relationship>({
-          relatedToId: parent.id,
-          relatedId: item.id,
-          relationId: has.id,
+        await this.store.Relationship.findOrCreate<Relationship>({
+          where: {
+            relatedToId: parent.id,
+            relatedId: item.id,
+            relationId: has.id,
+          },
         });
 
         console.log(`Created ${data} of ${parent.title}`);

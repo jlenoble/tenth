@@ -32,19 +32,26 @@ export const Items: FunctionComponent<{ open: (id: ItemId) => void }> = ({
     error,
     add,
     makeDestroy,
-  } = clientManager.hooks.useItems();
+  } = clientManager.hooks.useRelatedItems(1, 2);
   const { ErrorFeedback, catchError } = useErrorFeedback();
 
   if (loading) return <p>Loading...</p>;
   if (error || !data) return <p>ERROR</p>;
 
+  const {
+    itemWithRelatedItems: {
+      item: { title },
+      items,
+    },
+  } = data;
+
   return (
     <Fragment>
-      <Title>Items</Title>
+      <Title>{title}</Title>
       {ErrorFeedback && <ErrorFeedback />}
       <List
         addItemProps={{ add }}
-        listItems={data.items.map(({ id, title }) => {
+        listItems={items.map(({ id, title }) => {
           return {
             itemId: String(id),
             primary: title,
