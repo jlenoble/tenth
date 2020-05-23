@@ -23,7 +23,7 @@ export const relationshipDataType = {
 
 export class Relationship extends Model implements GQLRelationship {
   public get values(): GQLRelationship {
-    return this.get() as GQLRelationship;
+    return { ...this.get(), ids: this.ids } as GQLRelationship;
   }
 
   public get id(): RelationId {
@@ -34,10 +34,7 @@ export class Relationship extends Model implements GQLRelationship {
   }
 
   public get ids(): ItemId[] {
-    return this.get("ids");
-  }
-  public set ids(value: ItemId[]) {
-    this.set("ids", value);
+    return [this.relatedToId, this.relationId, this.relatedId];
   }
 
   public get relatedToId(): ItemId {

@@ -6,6 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
 import { ItemId } from "../../../types";
+import { clientManager } from "../../apollo-client-manager";
 import { Items } from "./items";
 import { RelatedItemsCard } from "./related-items";
 import { mainStyles } from "./dashboard.style";
@@ -15,6 +16,7 @@ const useStyles = makeStyles(mainStyles);
 export const Main: FunctionComponent = () => {
   const classes = useStyles();
   const [openedItemId, setOpenedItemId] = useState<ItemId>(0);
+  clientManager.hooks.useItems();
 
   return (
     <main className={classes.content}>

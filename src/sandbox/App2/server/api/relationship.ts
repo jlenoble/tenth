@@ -63,7 +63,10 @@ export class RelationshipAPI<
       relationId,
     });
 
-    return { item: item.values, relationship: relationship.values };
+    return {
+      item: item.values,
+      relationship: relationship.values,
+    };
   }
 
   async getAllRelatedItems({
