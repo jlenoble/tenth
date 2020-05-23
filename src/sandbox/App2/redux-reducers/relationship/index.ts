@@ -8,7 +8,7 @@ export const relationshipReducer = (
   state = initialState,
   action: Action
 ): typeof initialState => {
-  if (action) {
+  if (action && Array.isArray(action.ids)) {
     const ids = action.ids;
     const [relatedToId, relationId, relatedId] = ids;
 
