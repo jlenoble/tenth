@@ -1,11 +1,16 @@
 import { Store, Item, Relationship } from "../server/db";
 import { ItemId, GQLItem } from "../types";
 
-type Data = string | string[] | { [key: string]: Data };
+type Data = string | string[] | { [key: string]: Data } | Data[];
 
-export const dbCoreData: Data = {
-  Rel: ["⊃", "⊂", "→", "←"],
-};
+export const dbCoreData: Data = [
+  {
+    "Core Items": {
+      Rel: ["⊃", "⊂", "→", "←"],
+    },
+  },
+  "Me",
+];
 
 export class DBInitManager {
   private store: Store;
