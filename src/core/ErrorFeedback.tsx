@@ -3,12 +3,13 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Args = any[];
+type SetError = (e: Error | null) => void;
 
 export type CatchError = (
   fn: (...args: Args) => Promise<void> | void
 ) => (...args: Args) => void;
 
-export const makeCatchError = (setError: (e: Error) => void): CatchError => (
+export const makeCatchError = (setError: SetError): CatchError => (
   fn: (...args: Args) => Promise<void> | void
 ) => (...args: Args): void => {
   try {
@@ -21,8 +22,12 @@ export const makeCatchError = (setError: (e: Error) => void): CatchError => (
   }
 };
 
-export const makeErrorFeedBack: (error: Error) => FunctionComponent = (
-  error: Error
+export const makeErrorFeedBack: (
+  error: Error,
+  setError: SetError
+) => FunctionComponent = (
+  error: Error,
+  setError: SetError
 ): FunctionComponent => {
   const ErrorFeedback: FunctionComponent = () => {
     return (
@@ -30,7 +35,7 @@ export const makeErrorFeedBack: (error: Error) => FunctionComponent = (
         variant="outlined"
         severity="error"
         onClose={(): void => {
-          console.log("close");
+          setError(null);
         }}
       >
         <AlertTitle>{error.message}</AlertTitle>
@@ -48,5 +53,8 @@ export const useErrorFeedback = (): {
   const [error, setError] = useState<Error | null>(null);
   const catchError = makeCatchError(setError);
 
-  return { ErrorFeedback: error && makeErrorFeedBack(error), catchError };
+  return {
+    ErrorFeedback: error && makeErrorFeedBack(error, setError),
+    catchError,
+  };
 };
