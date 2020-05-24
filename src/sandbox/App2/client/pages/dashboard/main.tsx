@@ -1,13 +1,10 @@
 import React, { FunctionComponent, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+import { Container, Grid } from "@material-ui/core";
 
 import { ItemId } from "../../../types";
-import { clientManager } from "../../apollo-client-manager";
-import { Items } from "./items";
+// import { clientManager } from "../../apollo-client-manager";
 import { RelatedItemsCard } from "./related-items";
 import { mainStyles } from "./dashboard.style";
 
@@ -16,7 +13,7 @@ const useStyles = makeStyles(mainStyles);
 export const Main: FunctionComponent = () => {
   const classes = useStyles();
   const [openedItemId, setOpenedItemId] = useState<ItemId>(0);
-  clientManager.hooks.useItems();
+  // clientManager.hooks.useItems();
 
   return (
     <main className={classes.content}>
@@ -24,9 +21,7 @@ export const Main: FunctionComponent = () => {
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={openedItemId > 0 ? 6 : 12}>
-            <Paper className={classes.paper}>
-              <Items open={setOpenedItemId} />
-            </Paper>
+            <RelatedItemsCard relatedToId={1} open={setOpenedItemId} />
           </Grid>
           {openedItemId > 0 && (
             <Grid item xs={12} md={6}>

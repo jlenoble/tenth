@@ -7,6 +7,7 @@ import {
   MutationHookOptions,
   MutationTuple,
 } from "@apollo/react-hooks";
+import { useDispatch } from "react-redux";
 
 import { nodes } from "../client/graphql-nodes";
 import {
@@ -46,8 +47,10 @@ export class ApolloHooksManager {
   }
 
   useAddItem(): (input?: string) => Promise<void> {
+    const dispatch = useDispatch();
+
     const [addItem] = this.useMutation<"createItem">("createItem", {
-      update: this.clientManager.updateOnCreateItem(),
+      update: this.clientManager.updateOnCreateItem(dispatch),
     });
 
     const add = async (input = ""): Promise<void> => {
@@ -65,11 +68,13 @@ export class ApolloHooksManager {
     relatedToId: ItemId,
     relationId: ItemId
   ): (input?: string) => Promise<void> {
+    const dispatch = useDispatch();
+
     const [addItem] = useMutation<
       Data["createRelatedItem"],
       Variables["createRelatedItem"]
     >(nodes["createRelatedItem"], {
-      update: this.clientManager.updateOnCreateRelatedItem(),
+      update: this.clientManager.updateOnCreateRelatedItem(dispatch),
     });
 
     const add = async (input = ""): Promise<void> => {
@@ -86,11 +91,13 @@ export class ApolloHooksManager {
   }
 
   useMakeDestroyItem(): (id: number) => () => Promise<void> {
+    const dispatch = useDispatch();
+
     const [destroyItem] = useMutation<
       Data["destroyItem"],
       Variables["destroyItem"]
     >(nodes["destroyItem"], {
-      update: this.clientManager.updateOnDestroyItem(),
+      update: this.clientManager.updateOnDestroyItem(dispatch),
     });
 
     const makeDestroy = (id: ItemId) => async (): Promise<void> => {
@@ -124,12 +131,16 @@ export class ApolloHooksManager {
     relatedToId: ItemId,
     relationId: ItemId
   ): UseItems<"itemWithRelatedItems"> {
+    const dispatch = useDispatch();
+
     const { data, loading, error } = useQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
     >(nodes["itemWithRelatedItems"], {
       variables: { relatedToId, relationId },
-      onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(),
+      onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(
+        dispatch
+      ),
     });
 
     const add = this.useAddRelatedItem(relatedToId, relationId);

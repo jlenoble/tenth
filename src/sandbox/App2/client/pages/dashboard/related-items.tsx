@@ -6,8 +6,9 @@ import { clientManager } from "../../apollo-client-manager";
 
 export const RelatedItemsCard: FunctionComponent<{
   relatedToId: ItemId;
-  close: () => void;
-}> = ({ relatedToId, close }) => {
+  open?: (id: ItemId) => void;
+  close?: () => void;
+}> = ({ relatedToId, open, close }) => {
   const {
     data,
     loading,
@@ -33,11 +34,16 @@ export const RelatedItemsCard: FunctionComponent<{
           deleteButtonProps: {
             onClick: makeDestroy(id),
           },
+          expandButtonProps: open && {
+            onClick: (): void => open(id),
+          },
         };
       })}
-      cardHeaderProps={{
-        action: <CloseButton onClick={close} />,
-      }}
+      cardHeaderProps={
+        close && {
+          action: <CloseButton onClick={close} />,
+        }
+      }
     />
   );
 };

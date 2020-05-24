@@ -2,8 +2,10 @@ import { ApolloClient, ApolloClientOptions } from "apollo-client";
 import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
+import { Dispatch } from "redux";
 
 import { Variables, Data, ApolloClientManagerInterface } from "../types";
+import { addRelationships } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
 
@@ -74,77 +76,77 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     };
   }
 
-  _addItem(item: Data["createItem"]["createItem"]): void {
-    const query = this.client.readQuery<Data["items"], Variables["items"]>({
-      query: nodes["items"],
-    });
+  // _addItem(item: Data["createItem"]["createItem"]): void {
+  //   const query = this.client.readQuery<Data["items"], Variables["items"]>({
+  //     query: nodes["items"],
+  //   });
 
-    if (query !== null) {
-      this.client.writeQuery<Data["items"], Variables["items"]>({
-        query: nodes["items"],
-        data: { items: [...query.items, item] },
-      });
-    }
-  }
+  //   if (query !== null) {
+  //     this.client.writeQuery<Data["items"], Variables["items"]>({
+  //       query: nodes["items"],
+  //       data: { items: [...query.items, item] },
+  //     });
+  //   }
+  // }
 
-  _removeItem({ id }: Data["destroyItem"]["destroyItem"]): void {
-    const query = this.client.readQuery<Data["items"], Variables["items"]>({
-      query: nodes["items"],
-    });
+  // _removeItem({ id }: Data["destroyItem"]["destroyItem"]): void {
+  //   const query = this.client.readQuery<Data["items"], Variables["items"]>({
+  //     query: nodes["items"],
+  //   });
 
-    if (query !== null) {
-      let items = query.items;
-      const index = items.findIndex((item) => item.id === id);
+  //   if (query !== null) {
+  //     let items = query.items;
+  //     const index = items.findIndex((item) => item.id === id);
 
-      if (index !== -1) {
-        items = [...items.slice(0, index), ...items.slice(index + 1)];
-        this.client.writeQuery<Data["items"], Variables["items"]>({
-          query: nodes["items"],
-          data: { items },
-        });
-      }
-    }
-  }
+  //     if (index !== -1) {
+  //       items = [...items.slice(0, index), ...items.slice(index + 1)];
+  //       this.client.writeQuery<Data["items"], Variables["items"]>({
+  //         query: nodes["items"],
+  //         data: { items },
+  //       });
+  //     }
+  //   }
+  // }
 
-  _addRelatedItem({
-    item,
-    relationship: {
-      id: relationshipId,
-      ids: [relatedToId, relationId],
-    },
-  }: Data["createRelatedItem"]["createRelatedItem"]): void {
-    const query = this.client.readQuery<
-      Data["itemWithRelatedItems"],
-      Variables["itemWithRelatedItems"]
-    >({
-      variables: { relatedToId, relationId },
-      query: nodes["itemWithRelatedItems"],
-    });
+  // _addRelatedItem({
+  //   item,
+  //   relationship: {
+  //     id: relationshipId,
+  //     ids: [relatedToId, relationId],
+  //   },
+  // }: Data["createRelatedItem"]["createRelatedItem"]): void {
+  //   const query = this.client.readQuery<
+  //     Data["itemWithRelatedItems"],
+  //     Variables["itemWithRelatedItems"]
+  //   >({
+  //     variables: { relatedToId, relationId },
+  //     query: nodes["itemWithRelatedItems"],
+  //   });
 
-    const itemWithRelatedItems = query?.itemWithRelatedItems;
+  //   const itemWithRelatedItems = query?.itemWithRelatedItems;
 
-    if (itemWithRelatedItems) {
-      this.client.writeQuery<
-        Data["itemWithRelatedItems"],
-        Variables["itemWithRelatedItems"]
-      >({
-        variables: { relatedToId, relationId },
-        query: nodes["itemWithRelatedItems"],
-        data: {
-          itemWithRelatedItems: {
-            ...itemWithRelatedItems,
-            items: [...itemWithRelatedItems.items, item],
-            relationshipIds: [
-              ...itemWithRelatedItems.relationshipIds,
-              relationshipId,
-            ],
-          },
-        },
-      });
-    }
-  }
+  //   if (itemWithRelatedItems) {
+  //     this.client.writeQuery<
+  //       Data["itemWithRelatedItems"],
+  //       Variables["itemWithRelatedItems"]
+  //     >({
+  //       variables: { relatedToId, relationId },
+  //       query: nodes["itemWithRelatedItems"],
+  //       data: {
+  //         itemWithRelatedItems: {
+  //           ...itemWithRelatedItems,
+  //           items: [...itemWithRelatedItems.items, item],
+  //           relationshipIds: [
+  //             ...itemWithRelatedItems.relationshipIds,
+  //             relationshipId,
+  //           ],
+  //         },
+  //       },
+  //     });
+  //   }
+  // }
 
-  onCompletedGetItemWithRelatedItems() {
+  onCompletedGetItemWithRelatedItems(dispatch: Dispatch) {
     return (data: Data["itemWithRelatedItems"]): void => {
       const itemWithRelatedItems = data?.itemWithRelatedItems;
 
@@ -156,43 +158,47 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           relationshipIds,
         } = itemWithRelatedItems;
 
-        relationshipIds.forEach((id, i) => {
-          console.log({
-            id,
-            ids: [relatedToId, relationId, items[i].id],
-          });
-        });
+        dispatch(
+          addRelationships(
+            relationshipIds.map((id, i) => {
+              return [relatedToId, relationId, items[i].id];
+            })
+          )
+        );
       }
     };
   }
 
-  updateOnCreateItem() {
+  updateOnCreateItem(dispatch: Dispatch) {
     return (_: DataProxy, { data }: FetchResult<Data["createItem"]>): void => {
       const createItem = data?.createItem;
       if (createItem !== undefined) {
-        this._addItem(createItem);
+        console.log("updateOnCreateItem", createItem);
+        // this._addItem(createItem);
       }
     };
   }
 
-  updateOnDestroyItem() {
+  updateOnDestroyItem(dispatch: Dispatch) {
     return (_: DataProxy, { data }: FetchResult<Data["destroyItem"]>): void => {
       const destroyItem = data?.destroyItem;
       if (destroyItem !== undefined) {
-        this._removeItem(destroyItem);
+        console.log("updateOnDestroyItem", destroyItem);
+        // this._removeItem(destroyItem);
       }
     };
   }
 
-  updateOnCreateRelatedItem() {
+  updateOnCreateRelatedItem(dispatch: Dispatch) {
     return (
       _: DataProxy,
       { data }: FetchResult<Data["createRelatedItem"]>
     ): void => {
       const createRelatedItem = data?.createRelatedItem;
       if (createRelatedItem !== undefined) {
-        this._addRelatedItem(createRelatedItem);
-        this._addItem(createRelatedItem.item);
+        console.log("updateOnCreateRelatedItem", createRelatedItem);
+        // this._addRelatedItem(createRelatedItem);
+        // this._addItem(createRelatedItem.item);
       }
     };
   }

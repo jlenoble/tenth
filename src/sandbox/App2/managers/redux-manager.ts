@@ -1,12 +1,14 @@
 import { createStore, applyMiddleware, Middleware, Store } from "redux";
 import { createLogger } from "redux-logger";
+import { SagaGenerator } from "../../../generics";
 import { relationshipReducer } from "../redux-reducers";
-import { ReduxHooksManager } from "./redux-hooks-manager";
 import { sagaMiddleware, SagaManager } from "./saga-manager";
+import * as Sagas from "../sagas";
+
+type SagaMap = { [key: string]: () => SagaGenerator };
 
 export class ReduxManager {
   public readonly store: Store;
-  public readonly hooksManager: ReduxHooksManager;
   public readonly sagaManager: SagaManager;
 
   constructor({ log = false }: { log?: boolean }) {
@@ -22,7 +24,10 @@ export class ReduxManager {
       relationshipReducer,
       applyMiddleware(...middleWares)
     );
-    this.hooksManager = new ReduxHooksManager();
     this.sagaManager = new SagaManager();
+
+    Object.keys(Sagas).forEach((sagaName: keyof SagaMap) => {
+      this.sagaManager.add(sagaName as string, (Sagas as SagaMap)[sagaName]);
+    });
   }
 }
