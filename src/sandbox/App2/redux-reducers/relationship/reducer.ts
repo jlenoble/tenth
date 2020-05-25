@@ -63,19 +63,19 @@ export const relationshipReducer = (
   if (action) {
     switch (action.type) {
       case ADD_RELATIONSHIP: {
-        return addRelationship(state, action.ids);
+        return addRelationship(state, action.payload);
       }
 
       case REMOVE_RELATIONSHIP: {
-        return removeRelationship(state, action.ids);
+        return removeRelationship(state, action.payload);
       }
 
       case ADD_RELATIONSHIPS: {
-        return action.relationships.reduce(addRelationship, state);
+        return action.payload.reduce(addRelationship, state);
       }
 
       case REMOVE_RELATIONSHIPS: {
-        return action.relationships.reduce(removeRelationship, state);
+        return action.payload.reduce(removeRelationship, state);
       }
 
       default:
