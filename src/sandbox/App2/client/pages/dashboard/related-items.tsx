@@ -17,7 +17,8 @@ export const RelatedItemsCard: FunctionComponent<{
     makeDestroy,
   } = clientManager.hooks.useRelatedItems(relatedToId, 2);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <ListCard title="" listItems={[]} />;
+
   if (error || !data) return <p>ERROR</p>;
 
   const title = data.itemWithRelatedItems?.item.title || "ItemWithRelatedItems";
