@@ -14,6 +14,9 @@ export type GQLUser = Generated.User & SequelizeDefaultAttributes;
 export type GQLRelationship = Generated.Relationship &
   SequelizeDefaultAttributes;
 
+export type RelationshipState = Map<ItemId, Set<string>>;
+export type Ids = [ItemId, ItemId, ItemId];
+
 export type {
   RelatedItem,
   ItemWithRelatedItems,

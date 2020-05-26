@@ -6,9 +6,11 @@ import {
   CREATE_RELATED_ITEM,
   DESTROY_ITEM,
 } from "./consts";
-import { ItemId, Data } from "../../types";
+import { Ids, Data } from "../../types";
+import { ApolloClientManager } from "../../managers";
 
-type Ids = [ItemId, ItemId, ItemId];
+export type Meta = { optimisticId: number; manager: ApolloClientManager };
+export type MetaAction<Action> = Action & { meta: Meta };
 
 export type AddRelationshipAction = {
   type: typeof ADD_RELATIONSHIP;
@@ -30,20 +32,20 @@ export type RemoveRelationshipsAction = {
   payload: Ids[];
 };
 
-export type createRelatedItemAction = {
+export type CreateRelatedItemAction = MetaAction<{
   type: typeof CREATE_RELATED_ITEM;
   payload: Data["createRelatedItem"]["createRelatedItem"];
-};
+}>;
 
-export type destroyItemAction = {
+export type DestroyItemAction = MetaAction<{
   type: typeof DESTROY_ITEM;
   payload: Data["destroyItem"]["destroyItem"];
-};
+}>;
 
 export type RelationshipAction =
   | AddRelationshipAction
   | RemoveRelationshipAction
   | AddRelationshipsAction
   | RemoveRelationshipsAction
-  | createRelatedItemAction
-  | destroyItemAction;
+  | CreateRelatedItemAction
+  | DestroyItemAction;

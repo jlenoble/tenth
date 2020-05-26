@@ -5,7 +5,11 @@ import { NormalizedCacheObject } from "apollo-cache-inmemory";
 import { Dispatch } from "redux";
 
 import { Variables, Data, ApolloClientManagerInterface } from "../types";
-import { addRelationships } from "../redux-reducers";
+import {
+  addRelationships,
+  createRelatedItem,
+  destroyItem,
+} from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
 
@@ -15,6 +19,8 @@ const tmpId = (): number => --id;
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
   public readonly hooks: ApolloHooksManager;
+
+  private optimisticCacheLayers: any = new Map();
 
   constructor({ cache, link }: ApolloClientOptions<NormalizedCacheObject>) {
     this.client = new ApolloClient({
@@ -108,55 +114,55 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   //   }
   // }
 
-  // _addRelatedItem({
-  //   item,
-  //   relationship: {
-  //     id: relationshipId,
-  //     ids: [relatedToId, relationId],
-  //   },
-  // }: Data["createRelatedItem"]["createRelatedItem"]): void {
-  //   const query = this.client.readQuery<
-  //     Data["itemWithRelatedItems"],
-  //     Variables["itemWithRelatedItems"]
-  //   >({
-  //     variables: { relatedToId, relationId },
-  //     query: nodes["itemWithRelatedItems"],
-  //   });
+  addRelatedItem({
+    item,
+    relationship: {
+      id: relationshipId,
+      ids: [relatedToId, relationId],
+    },
+  }: Data["createRelatedItem"]["createRelatedItem"]): void {
+    const query = this.client.readQuery<
+      Data["itemWithRelatedItems"],
+      Variables["itemWithRelatedItems"]
+    >({
+      variables: { relatedToId, relationId },
+      query: nodes["itemWithRelatedItems"],
+    });
 
-  //   const itemWithRelatedItems = query?.itemWithRelatedItems;
+    const itemWithRelatedItems = query?.itemWithRelatedItems;
 
-  //   if (itemWithRelatedItems) {
-  //     this.client.writeQuery<
-  //       Data["itemWithRelatedItems"],
-  //       Variables["itemWithRelatedItems"]
-  //     >({
-  //       variables: { relatedToId, relationId },
-  //       query: nodes["itemWithRelatedItems"],
-  //       data: {
-  //         itemWithRelatedItems: {
-  //           ...itemWithRelatedItems,
-  //           items: [...itemWithRelatedItems.items, item],
-  //           relationshipIds: [
-  //             ...itemWithRelatedItems.relationshipIds,
-  //             relationshipId,
-  //           ],
-  //         },
-  //       },
-  //     });
-  //   }
-  // }
+    if (itemWithRelatedItems) {
+      this.client.writeQuery<
+        Data["itemWithRelatedItems"],
+        Variables["itemWithRelatedItems"]
+      >({
+        variables: { relatedToId, relationId },
+        query: nodes["itemWithRelatedItems"],
+        data: {
+          itemWithRelatedItems: {
+            ...itemWithRelatedItems,
+            items: [...itemWithRelatedItems.items, item],
+            relationshipIds: [
+              ...itemWithRelatedItems.relationshipIds,
+              relationshipId,
+            ],
+          },
+        },
+      });
+    }
+  }
 
   onCompletedGetItemWithRelatedItems(dispatch: Dispatch) {
     return (data: Data["itemWithRelatedItems"]): void => {
-      const itemWithRelatedItems = data?.itemWithRelatedItems;
+      const item = data?.itemWithRelatedItems;
 
-      if (itemWithRelatedItems !== undefined) {
+      if (item !== undefined) {
         const {
           relation: { id: relationId },
           item: { id: relatedToId },
           items,
           relationshipIds,
-        } = itemWithRelatedItems;
+        } = item;
 
         dispatch(
           addRelationships(
@@ -181,10 +187,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
   updateOnDestroyItem(dispatch: Dispatch) {
     return (_: DataProxy, { data }: FetchResult<Data["destroyItem"]>): void => {
-      const destroyItem = data?.destroyItem;
-      if (destroyItem !== undefined) {
-        console.log("updateOnDestroyItem", destroyItem);
-        // this._removeItem(destroyItem);
+      const item = data?.destroyItem;
+
+      if (item !== undefined) {
+        dispatch(destroyItem(item));
       }
     };
   }
@@ -194,12 +200,27 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       _: DataProxy,
       { data }: FetchResult<Data["createRelatedItem"]>
     ): void => {
-      const createRelatedItem = data?.createRelatedItem;
-      if (createRelatedItem !== undefined) {
-        console.log("updateOnCreateRelatedItem", createRelatedItem);
-        // this._addRelatedItem(createRelatedItem);
-        // this._addItem(createRelatedItem.item);
+      const item = data?.createRelatedItem;
+
+      if (item !== undefined) {
+        this._optimisticDispatch((optimisticId: number): void => {
+          dispatch(createRelatedItem(item, { optimisticId, manager: this }));
+        });
       }
     };
+  }
+
+  _optimisticDispatch(cb: (optimisticId: number) => void): void {
+    const data = (this.client.cache as any).data;
+
+    if (data.parent) {
+      const optimisticId = -parseInt(data.optimisticId, 10);
+      this.optimisticCacheLayers.set(data.parent, optimisticId);
+      cb(optimisticId);
+    } else {
+      const optimisticId = this.optimisticCacheLayers.get(data);
+      cb(optimisticId);
+      this.optimisticCacheLayers.delete(data);
+    }
   }
 }

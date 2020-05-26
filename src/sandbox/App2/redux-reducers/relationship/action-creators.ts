@@ -1,4 +1,4 @@
-import { ItemId, Data } from "../../types";
+import { Ids, Data } from "../../types";
 import {
   ADD_RELATIONSHIP,
   REMOVE_RELATIONSHIP,
@@ -7,42 +7,54 @@ import {
   CREATE_RELATED_ITEM,
   DESTROY_ITEM,
 } from "./consts";
-import { RelationshipAction } from "./actions";
+import {
+  Meta,
+  AddRelationshipAction,
+  RemoveRelationshipAction,
+  AddRelationshipsAction,
+  RemoveRelationshipsAction,
+  CreateRelatedItemAction,
+  DestroyItemAction,
+} from "./actions";
 
-type Ids = [ItemId, ItemId, ItemId];
-
-export const addRelationship = (ids: Ids): RelationshipAction => ({
+export const addRelationship = (ids: Ids): AddRelationshipAction => ({
   type: ADD_RELATIONSHIP,
   payload: ids,
 });
 
-export const removeRelationship = (ids: Ids): RelationshipAction => ({
+export const removeRelationship = (ids: Ids): RemoveRelationshipAction => ({
   type: REMOVE_RELATIONSHIP,
   payload: ids,
 });
 
-export const addRelationships = (relationships: Ids[]): RelationshipAction => ({
+export const addRelationships = (
+  relationships: Ids[]
+): AddRelationshipsAction => ({
   type: ADD_RELATIONSHIPS,
   payload: relationships,
 });
 
 export const removeRelationships = (
   relationships: Ids[]
-): RelationshipAction => ({
+): RemoveRelationshipsAction => ({
   type: REMOVE_RELATIONSHIPS,
   payload: relationships,
 });
 
 export const createRelatedItem = (
-  item: Data["createRelatedItem"]["createRelatedItem"]
-): RelationshipAction => ({
+  item: Data["createRelatedItem"]["createRelatedItem"],
+  meta: Meta
+): CreateRelatedItemAction => ({
   type: CREATE_RELATED_ITEM,
   payload: item,
+  meta,
 });
 
 export const destroyItem = (
-  item: Data["destroyItem"]["destroyItem"]
-): RelationshipAction => ({
+  item: Data["destroyItem"]["destroyItem"],
+  meta: Meta
+): DestroyItemAction => ({
   type: DESTROY_ITEM,
   payload: item,
+  meta,
 });
