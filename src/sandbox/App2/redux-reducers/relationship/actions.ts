@@ -9,7 +9,11 @@ import {
 import { Ids, Data } from "../../types";
 import { ApolloClientManager } from "../../managers";
 
-export type Meta = { optimisticId: number; manager: ApolloClientManager };
+export type Meta = {
+  optimisticId: number;
+  begin: boolean;
+  manager: ApolloClientManager;
+};
 export type MetaAction<Action> = Action & { meta: Meta };
 
 export type AddRelationshipAction = {
