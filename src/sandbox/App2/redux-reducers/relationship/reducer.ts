@@ -21,12 +21,9 @@ const addRelationship = (state: State, ids: Ids): State => {
   const newState = new Map(state);
 
   ids.forEach((id) => {
-    if (newState.has(id)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      newState.get(id)!.add(relationship);
-    } else {
-      newState.set(id, new Set([relationship]));
-    }
+    const newRelationships = new Set(newState.get(id));
+    newRelationships.add(relationship);
+    newState.set(id, newRelationships);
   });
 
   return newState;
@@ -42,14 +39,9 @@ const removeRelationship = (state: State, ids: Ids): State => {
   const newState = new Map(state);
 
   ids.forEach((id) => {
-    if (newState.has(id)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const relationships = newState.get(id)!;
-      relationships.delete(relationship);
-      if (relationships.size === 0) {
-        newState.delete(id);
-      }
-    }
+    const newRelationships = new Set(newState.get(id));
+    newRelationships.delete(relationship);
+    newState.set(id, newRelationships);
   });
 
   return newState;
