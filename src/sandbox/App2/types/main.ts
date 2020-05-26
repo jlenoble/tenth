@@ -15,6 +15,8 @@ export type GQLRelationship = Generated.Relationship &
   SequelizeDefaultAttributes;
 
 export type RelationshipState = Map<ItemId, Set<string>>;
+export type State = RelationshipState;
+
 export type Ids = [ItemId, ItemId, ItemId];
 
 export type {
@@ -22,6 +24,7 @@ export type {
   ItemWithRelatedItems,
   QueryResolvers,
   MutationResolvers,
+  ResolverFn,
 } from "../__generated__";
 
 export interface Data {
@@ -32,6 +35,7 @@ export interface Data {
   createItem: Generated.CreateItemMutation;
   destroyItem: Generated.DestroyItemMutation;
   createRelatedItem: Generated.CreateRelatedItemMutation;
+  destroyRelatedItem: Generated.DestroyRelatedItemMutation;
 }
 
 export interface Args {
@@ -43,6 +47,7 @@ export interface Args {
   updateItem: Generated.MutationUpdateItemArgs;
   destroyItem: Generated.MutationDestroyItemArgs;
   createRelatedItem: Generated.MutationCreateRelatedItemArgs;
+  destroyRelatedItem: Generated.MutationDestroyRelatedItemArgs;
 }
 
 export interface Variables {
@@ -53,4 +58,5 @@ export interface Variables {
   createItem: Generated.CreateItemMutationVariables;
   destroyItem: Generated.DestroyItemMutationVariables;
   createRelatedItem: Generated.CreateRelatedItemMutationVariables;
+  destroyRelatedItem: Generated.DestroyRelatedItemMutationVariables;
 }

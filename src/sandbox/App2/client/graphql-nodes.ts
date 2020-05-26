@@ -8,4 +8,5 @@ export const nodes = {
   createItem: Generated.CreateItem,
   destroyItem: Generated.DestroyItem,
   createRelatedItem: Generated.CreateRelatedItem,
+  destroyRelatedItem: Generated.DestroyRelatedItem,
 };

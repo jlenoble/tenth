@@ -1,8 +1,8 @@
 import { DataSources, MutationResolvers } from "../types";
 
 export const mutationResolvers: Required<Omit<
-  MutationResolvers<DataSources, {}>,
-  "_empty"
+  MutationResolvers<DataSources, Record<string, unknown>>,
+  "_empty" | "destroyRelatedItem"
 >> = {
   createItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.createItem(item),

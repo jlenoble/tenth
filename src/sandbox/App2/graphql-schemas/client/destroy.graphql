@@ -3,3 +3,11 @@ mutation DestroyItem($id: Int!) {
     id
   }
 }
+
+mutation DestroyRelatedItem($relatedToId: Int!, $relationId: Int!, $related: Int!) {
+  destroyRelatedItem(relatedToId: $relatedToId, relationId: $relationId, related: $related) {
+    relationship {
+      ids
+    }
+  }
+}

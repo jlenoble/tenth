@@ -32,4 +32,5 @@ extend type Mutation {
   destroyItem(id: Int!): Item!
   
   createRelatedItem(relatedToId: Int!, relationId: Int!, title: String!): RelatedItem!
+  destroyRelatedItem(relatedToId: Int!, relationId: Int!, related: Int!): RelatedItem!
 }
