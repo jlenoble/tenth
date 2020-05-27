@@ -18,51 +18,52 @@ import { mainStyles } from "./dashboard.style";
 
 const useStyles = makeStyles(mainStyles);
 
-const TwoCards: FunctionComponent<{
-  leftCard?: { relatedToId: ItemId };
-  rightCard?: { relatedToId: ItemId };
-}> = ({ leftCard, rightCard }) => {
+const TwoCards: FunctionComponent = () => {
   const currentPath = useSelector(getCurrentPath);
   const dispatch = useDispatch();
-  const [[leftItemId, rightItemId], setIds] = useState<[ItemId, ItemId]>([
-    leftCard?.relatedToId || currentPath[currentPath.length - 1] || 1,
-    rightCard?.relatedToId || 0,
-  ]);
+  const [rightOpened, setRightOpened] = useState(false);
+
+  const [leftItemId, rightItemId] =
+    currentPath.length === 1
+      ? [currentPath[0], 0]
+      : rightOpened
+      ? [
+          currentPath[currentPath.length - 2],
+          currentPath[currentPath.length - 1],
+        ]
+      : [currentPath[currentPath.length - 1], 0];
+
+  const closeLeft = () => {
+    if (rightOpened) {
+      setRightOpened(false);
+    } else {
+      dispatch(moveBackCurrentPath());
+    }
+  };
 
   const openRight = (id: ItemId) => {
-    setIds([leftItemId, id]);
-    if (rightItemId > 0) {
+    if (rightOpened) {
       dispatch(setCurrentPathToSiblingPath(id));
     } else {
+      setRightOpened(true);
       dispatch(deepenCurrentPath(id));
     }
   };
 
   const closeRight = () => {
-    setIds([leftItemId, 0]);
+    setRightOpened(false);
     dispatch(moveBackCurrentPath());
   };
 
-  const openSubItem = (id: ItemId) => {
-    setIds([rightItemId, id]);
+  const openRightRight = (id: ItemId) => {
     dispatch(deepenCurrentPath(id));
   };
 
-  const moveBack = (currentPath: ItemId[], index: number) => () => {
-    const newPath = currentPath.concat();
-
-    if (rightItemId > 0) {
-      if (index > 0) {
-        setIds([currentPath[index - 1], currentPath[index]]);
-      } else {
-        setIds([currentPath[0], 0]);
-      }
-    } else {
-      setIds([currentPath[index], 0]);
+  const moveBack = (index: number) => () => {
+    if (index === 0) {
+      setRightOpened(false);
     }
-
-    newPath.splice(index + 1);
-    dispatch(setCurrentPath(newPath));
+    dispatch(setCurrentPath(currentPath.slice(0, index + 1)));
   };
 
   return (
@@ -70,14 +71,18 @@ const TwoCards: FunctionComponent<{
       <Grid item xs={12}>
         <Breadcrumbs moveBack={moveBack} />
       </Grid>
-      <Grid item xs={12} md={rightItemId > 0 ? 6 : 12}>
-        <RelatedItemsCard relatedToId={leftItemId} open={openRight} />
+      <Grid item xs={12} md={rightOpened ? 6 : 12}>
+        <RelatedItemsCard
+          relatedToId={leftItemId}
+          open={openRight}
+          close={(currentPath.length > 1 && closeLeft) || undefined}
+        />
       </Grid>
-      {rightItemId > 0 && (
+      {rightOpened && (
         <Grid item xs={12} md={6}>
           <RelatedItemsCard
             relatedToId={rightItemId}
-            open={openSubItem}
+            open={openRightRight}
             close={closeRight}
           />
         </Grid>
