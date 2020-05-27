@@ -34,7 +34,7 @@ const TwoCards: FunctionComponent<{
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Breadcrumbs />
+        <Breadcrumbs moveBack={setIds} childOpened={rightItemId > 0} />
       </Grid>
       <Grid item xs={12} md={rightItemId > 0 ? 6 : 12}>
         <RelatedItemsCard relatedToId={leftItemId} open={openRight} />

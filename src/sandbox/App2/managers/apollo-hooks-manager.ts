@@ -120,6 +120,16 @@ export class ApolloHooksManager {
     };
   }
 
+  useItemsById(ids: ItemId[]): UseItems<"itemsById"> {
+    return {
+      ...this.useQuery<"itemsById">("itemsById", {
+        variables: { ids },
+      }),
+      add: this.useAddItem(),
+      makeDestroy: this.useMakeDestroyItem(),
+    };
+  }
+
   useCoreItems(): {
     data?: Data["coreItems"];
     loading: boolean;
@@ -156,9 +166,23 @@ export class ApolloHooksManager {
     };
   }
 
-  useBreadcrumbs() {
+  useBreadcrumbs(): {
+    currentPath: ItemId[];
+    friendlyCurrentPath: string[];
+  } {
     const currentPath = useSelector(getCurrentPath);
+    const { data, loading, error } = this.useItemsById(currentPath);
 
-    return { currentPath };
+    if (!loading && !error && data) {
+      return {
+        currentPath,
+        friendlyCurrentPath: currentPath.map((id) => {
+          const item = data.itemsById.find((item) => item.id === id);
+          return item?.title || "" + id;
+        }),
+      };
+    }
+
+    return { currentPath, friendlyCurrentPath: [] };
   }
 }

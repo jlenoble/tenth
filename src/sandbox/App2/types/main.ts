@@ -34,6 +34,7 @@ export type {
 
 export interface Data {
   items: Generated.GetItemsQuery;
+  itemsById: Generated.GetItemsByIdQuery;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQuery;
   coreItems: Generated.GetCoreItemsQuery;
 
@@ -58,6 +59,7 @@ export interface Args {
 
 export interface Variables {
   items: Generated.GetItemsQueryVariables;
+  itemsById: Generated.GetItemsByIdQueryVariables;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
   coreItems: Generated.GetCoreItemsQueryVariables;
 
