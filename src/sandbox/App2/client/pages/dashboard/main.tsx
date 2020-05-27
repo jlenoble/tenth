@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Grid } from "@material-ui/core";
@@ -10,6 +10,7 @@ import {
   moveBackCurrentPath,
   setCurrentPath,
   setCurrentPathToSiblingPath,
+  getCurrentPath,
 } from "../../../redux-reducers";
 import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
@@ -21,11 +22,12 @@ const TwoCards: FunctionComponent<{
   leftCard?: { relatedToId: ItemId };
   rightCard?: { relatedToId: ItemId };
 }> = ({ leftCard, rightCard }) => {
+  const currentPath = useSelector(getCurrentPath);
+  const dispatch = useDispatch();
   const [[leftItemId, rightItemId], setIds] = useState<[ItemId, ItemId]>([
-    leftCard?.relatedToId || 1,
+    leftCard?.relatedToId || currentPath[currentPath.length - 1] || 1,
     rightCard?.relatedToId || 0,
   ]);
-  const dispatch = useDispatch();
 
   const openRight = (id: ItemId) => {
     setIds([leftItemId, id]);
@@ -55,12 +57,11 @@ const TwoCards: FunctionComponent<{
       } else {
         setIds([currentPath[0], 0]);
       }
-      newPath.splice(index + 1);
     } else {
       setIds([currentPath[index], 0]);
-      newPath.splice(index);
     }
 
+    newPath.splice(index + 1);
     dispatch(setCurrentPath(newPath));
   };
 

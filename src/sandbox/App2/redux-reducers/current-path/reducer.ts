@@ -9,7 +9,11 @@ import {
 } from "./consts";
 import { CurrentPathAction } from "./actions";
 
-const initialState: State = [1];
+const initialState: State = JSON.parse(
+  (typeof localStorage !== "undefined" &&
+    localStorage.getItem("currentPath")) ||
+    "[1]"
+);
 
 export const currentPathReducer: Reducer<OptimisticState<State>> = optimistic<
   State
