@@ -111,7 +111,7 @@ export class RelationshipAPI<
     if (userId === this.userId) {
       return this.store.Relationship.destroy({
         where: {
-          [Op.or]: [{ relatedToId: id }, { relatedId: id }],
+          [Op.or]: [{ relatedToId: id }, { relationId: id }, { relatedId: id }],
         },
       });
     }
