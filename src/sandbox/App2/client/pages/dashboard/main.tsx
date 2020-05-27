@@ -1,9 +1,14 @@
 import React, { FunctionComponent, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Grid } from "@material-ui/core";
 
 import { ItemId } from "../../../types";
+import {
+  deepenCurrentPath,
+  moveBackCurrentPath,
+} from "../../../redux-reducers";
 import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
 import { mainStyles } from "./dashboard.style";
@@ -18,17 +23,21 @@ const TwoCards: FunctionComponent<{
     leftCard?.relatedToId || 1,
     rightCard?.relatedToId || 0,
   ]);
+  const dispatch = useDispatch();
 
   const openRight = (id: ItemId) => {
     setIds([leftItemId, id]);
+    dispatch(deepenCurrentPath(id));
   };
 
   const closeRight = () => {
     setIds([leftItemId, 0]);
+    dispatch(moveBackCurrentPath());
   };
 
   const openSubItem = (id: ItemId) => {
     setIds([rightItemId, id]);
+    dispatch(deepenCurrentPath(id));
   };
 
   return (

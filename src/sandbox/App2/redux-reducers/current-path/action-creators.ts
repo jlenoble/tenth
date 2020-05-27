@@ -1,6 +1,23 @@
-import { SET_CURRENT_PATH } from "./consts";
-import { SetCurrentPathAction } from "./actions";
+import {
+  DEEPEN_CURRENT_PATH,
+  MOVE_BACK_CURRENT_PATH,
+  SET_CURRENT_PATH,
+} from "./consts";
+import {
+  DeepenCurrentPathAction,
+  MoveBackCurrentPathAction,
+  SetCurrentPathAction,
+} from "./actions";
 import { ItemId } from "../../types";
+
+export const deepenCurrentPath = (id: ItemId): DeepenCurrentPathAction => ({
+  type: DEEPEN_CURRENT_PATH,
+  payload: id,
+});
+
+export const moveBackCurrentPath = (): MoveBackCurrentPathAction => ({
+  type: MOVE_BACK_CURRENT_PATH,
+});
 
 export const setCurrentPath = (ids: ItemId[]): SetCurrentPathAction => ({
   type: SET_CURRENT_PATH,
