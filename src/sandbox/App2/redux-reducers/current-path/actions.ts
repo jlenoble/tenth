@@ -2,6 +2,7 @@ import {
   DEEPEN_CURRENT_PATH,
   MOVE_BACK_CURRENT_PATH,
   SET_CURRENT_PATH,
+  SET_CURRENT_PATH_TO_SIBLING_PATH,
 } from "./consts";
 import { ItemId } from "../../types";
 
@@ -19,7 +20,13 @@ export type SetCurrentPathAction = {
   payload: ItemId[];
 };
 
+export type SetCurrentPathToSiblingPathAction = {
+  type: typeof SET_CURRENT_PATH_TO_SIBLING_PATH;
+  payload: ItemId;
+};
+
 export type CurrentPathAction =
   | DeepenCurrentPathAction
   | MoveBackCurrentPathAction
-  | SetCurrentPathAction;
+  | SetCurrentPathAction
+  | SetCurrentPathToSiblingPathAction;

@@ -5,6 +5,7 @@ import {
   DEEPEN_CURRENT_PATH,
   MOVE_BACK_CURRENT_PATH,
   SET_CURRENT_PATH,
+  SET_CURRENT_PATH_TO_SIBLING_PATH,
 } from "./consts";
 import { CurrentPathAction } from "./actions";
 
@@ -26,6 +27,12 @@ export const currentPathReducer: Reducer<OptimisticState<State>> = optimistic<
 
         case SET_CURRENT_PATH: {
           return action.payload;
+        }
+
+        case SET_CURRENT_PATH_TO_SIBLING_PATH: {
+          const newState = state.concat();
+          newState[state.length - 1] = action.payload;
+          return newState;
         }
 
         default: {

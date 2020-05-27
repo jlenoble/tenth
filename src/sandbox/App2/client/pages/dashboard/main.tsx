@@ -8,6 +8,8 @@ import { ItemId } from "../../../types";
 import {
   deepenCurrentPath,
   moveBackCurrentPath,
+  setCurrentPath,
+  setCurrentPathToSiblingPath,
 } from "../../../redux-reducers";
 import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
@@ -27,7 +29,11 @@ const TwoCards: FunctionComponent<{
 
   const openRight = (id: ItemId) => {
     setIds([leftItemId, id]);
-    dispatch(deepenCurrentPath(id));
+    if (rightItemId > 0) {
+      dispatch(setCurrentPathToSiblingPath(id));
+    } else {
+      dispatch(deepenCurrentPath(id));
+    }
   };
 
   const closeRight = () => {
@@ -40,10 +46,28 @@ const TwoCards: FunctionComponent<{
     dispatch(deepenCurrentPath(id));
   };
 
+  const moveBack = (currentPath: ItemId[], index: number) => () => {
+    const newPath = currentPath.concat();
+
+    if (rightItemId > 0) {
+      if (index > 0) {
+        setIds([currentPath[index - 1], currentPath[index]]);
+      } else {
+        setIds([currentPath[0], 0]);
+      }
+      newPath.splice(index + 1);
+    } else {
+      setIds([currentPath[index], 0]);
+      newPath.splice(index);
+    }
+
+    dispatch(setCurrentPath(newPath));
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Breadcrumbs moveBack={setIds} childOpened={rightItemId > 0} />
+        <Breadcrumbs moveBack={moveBack} />
       </Grid>
       <Grid item xs={12} md={rightItemId > 0 ? 6 : 12}>
         <RelatedItemsCard relatedToId={leftItemId} open={openRight} />
