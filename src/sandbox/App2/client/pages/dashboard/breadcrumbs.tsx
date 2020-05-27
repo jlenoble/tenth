@@ -15,7 +15,7 @@ export const Breadcrumbs: FunctionComponent<{
   return (
     <BaseBreadcrumbs aria-label="breadcrumb">
       {friendlyCurrentPath.map((path, i, a) =>
-        i !== a.length ? (
+        i !== a.length - 1 ? (
           <Link
             key={i}
             color="inherit"
