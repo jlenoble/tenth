@@ -93,6 +93,13 @@ export class ItemAPI<
     return item ? item.values : null;
   }
 
+  async getItemsById({ ids }: Args["itemsById"]): Promise<GQLItem[]> {
+    const items = await this.store.Item.findAll<Item>({
+      where: { userId: this.userId, id: ids },
+    });
+    return items.map((item) => item.values);
+  }
+
   async getCoreItems(): Promise<GQLItem[]> {
     return Array.from(this.coreItemsById.values()).map((item) => item.values);
   }

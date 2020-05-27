@@ -45,6 +45,7 @@ export interface Data {
 
 export interface Args {
   item: Generated.QueryItemArgs;
+  itemsById: Generated.QueryItemsByIdArgs;
   itemWithRelatedItems: Generated.QueryItemWithRelatedItemsArgs;
   coreItem: Generated.QueryCoreItemArgs;
 

@@ -1,5 +1,19 @@
+query GetItem($id: Int!) {
+  item(id: $id) {
+    id
+    title
+  }
+}
+
 query GetItems {
   items {
+    id
+    title
+  }
+}
+
+query GetItemsById($ids: [Int!]!) {
+  itemsById(ids: $ids) {
     id
     title
   }
