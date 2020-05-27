@@ -15,7 +15,12 @@ const createReportDir = (path) => {
 };
 
 export const handleLint = () => {
-  const f = filter(["**", "!*src/sandbox/**/*", "*src/sandbox/App2/**/*"]);
+  const f = filter([
+    "**",
+    "!*src/sandbox/**/*",
+    "*src/sandbox/App2/**/*",
+    "!*src/sandbox/App2/__generated__.ts",
+  ]);
 
   return srcGlob
     .src()
