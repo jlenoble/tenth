@@ -7,7 +7,7 @@ import {
   MutationHookOptions,
   MutationTuple,
 } from "@apollo/react-hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { nodes } from "../client/graphql-nodes";
 import {
@@ -16,6 +16,7 @@ import {
   Variables,
   ApolloClientManagerInterface,
 } from "../types";
+import { getCurrentPath } from "../redux-reducers";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -153,5 +154,11 @@ export class ApolloHooksManager {
       add,
       makeDestroy,
     };
+  }
+
+  useBreadcrumbs() {
+    const currentPath = useSelector(getCurrentPath);
+
+    return { currentPath };
   }
 }

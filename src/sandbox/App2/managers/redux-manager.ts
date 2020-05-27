@@ -1,7 +1,16 @@
-import { createStore, applyMiddleware, Middleware, Store } from "redux";
+import {
+  createStore,
+  applyMiddleware,
+  combineReducers,
+  Middleware,
+  Store,
+} from "redux";
 import { createLogger } from "redux-logger";
 import { SagaGenerator } from "../../../generics";
-import { relationshipReducer } from "../redux-reducers";
+import {
+  relationshipReducer as relationships,
+  currentPathReducer as currentPath,
+} from "../redux-reducers";
 import { sagaMiddleware, SagaManager } from "./saga-manager";
 import * as Sagas from "../sagas";
 
@@ -21,7 +30,7 @@ export class ReduxManager {
     middleWares.push(sagaMiddleware);
 
     this.store = createStore(
-      relationshipReducer,
+      combineReducers({ relationships, currentPath }),
       applyMiddleware(...middleWares)
     );
     this.sagaManager = new SagaManager();

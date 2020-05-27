@@ -14,8 +14,13 @@ export type GQLUser = Generated.User & SequelizeDefaultAttributes;
 export type GQLRelationship = Generated.Relationship &
   SequelizeDefaultAttributes;
 
+export type CurrentPathState = ItemId[];
 export type RelationshipState = Map<ItemId, Set<string>>;
-export type State = RelationshipState;
+
+export type State = {
+  currentPath: CurrentPathState;
+  relationships: RelationshipState;
+};
 
 export type Ids = [ItemId, ItemId, ItemId];
 

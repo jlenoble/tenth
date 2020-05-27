@@ -4,17 +4,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Container, Grid } from "@material-ui/core";
 
 import { ItemId } from "../../../types";
+import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
 import { mainStyles } from "./dashboard.style";
 
 const useStyles = makeStyles(mainStyles);
 
 const TwoCards: FunctionComponent<{
-  leftCard: { relatedToId: ItemId };
+  leftCard?: { relatedToId: ItemId };
   rightCard?: { relatedToId: ItemId };
 }> = ({ leftCard, rightCard }) => {
   const [[leftItemId, rightItemId], setIds] = useState<[ItemId, ItemId]>([
-    leftCard.relatedToId,
+    leftCard?.relatedToId || 1,
     rightCard?.relatedToId || 0,
   ]);
 
@@ -32,6 +33,9 @@ const TwoCards: FunctionComponent<{
 
   return (
     <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Breadcrumbs />
+      </Grid>
       <Grid item xs={12} md={rightItemId > 0 ? 6 : 12}>
         <RelatedItemsCard relatedToId={leftItemId} open={openRight} />
       </Grid>
@@ -55,7 +59,7 @@ export const Main: FunctionComponent = () => {
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
-        <TwoCards leftCard={{ relatedToId: 1 }} />
+        <TwoCards />
       </Container>
     </main>
   );
