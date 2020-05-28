@@ -7,7 +7,7 @@ interface SequelizeDefaultAttributes {
 
 export type ItemId = Generated.Item["id"];
 export type UserId = Generated.User["id"];
-export type RelationId = Generated.Relationship["id"];
+export type RelationshipId = Generated.Relationship["id"];
 
 export type GQLItem = Generated.Item & SequelizeDefaultAttributes;
 export type GQLUser = Generated.User & SequelizeDefaultAttributes;

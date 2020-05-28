@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { GQLRelationship, ItemId, RelationId } from "../../types";
+import { GQLRelationship, ItemId, RelationshipId } from "../../types";
 
 export const relationshipDataType = {
   id: {
@@ -26,10 +26,10 @@ export class Relationship extends Model implements GQLRelationship {
     return { ...this.get(), ids: this.ids } as GQLRelationship;
   }
 
-  public get id(): RelationId {
+  public get id(): RelationshipId {
     return this.get("id");
   }
-  public set id(value: RelationId) {
+  public set id(value: RelationshipId) {
     this.set("id", value);
   }
 
