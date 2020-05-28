@@ -1,9 +1,14 @@
-import { AuthenticationError, ForbiddenError } from "apollo-server";
+import {
+  ApolloError,
+  AuthenticationError,
+  ForbiddenError,
+} from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import { Op } from "sequelize";
 
 import {
   APIContext,
+  ItemId,
   UserId,
   Args,
   RelatedItem,
@@ -11,6 +16,11 @@ import {
 } from "../../types";
 
 import { Store, Item, Relationship } from "../db";
+
+type RelationshipSelector =
+  | { relatedToId: ItemId }
+  | { relationId: ItemId }
+  | { relatedId: ItemId };
 
 export class RelationshipAPI<
   Context extends APIContext = APIContext
@@ -104,18 +114,60 @@ export class RelationshipAPI<
     };
   }
 
-  async destroyRelationshipsForItem(
-    { id }: Args["destroyItem"],
-    userId: UserId
-  ): Promise<number> {
-    if (userId === this.userId) {
-      return this.store.Relationship.destroy({
-        where: {
-          [Op.or]: [{ relatedToId: id }, { relationId: id }, { relatedId: id }],
-        },
-      });
+  async getRelationshipsForItem({
+    id,
+  }: Args["relationshipsForItem"]): Promise<Relationship[]> {
+    const item = await this.store.Item.findOne<Item>({
+      where: { id, userId: this.userId },
+    });
+
+    if (!item) {
+      throw new ForbiddenError("failed to fetch");
     }
 
-    return 0;
+    const relationships = await this.store.Relationship.findAll<Relationship>({
+      where: {
+        [Op.or]: [{ relatedToId: id }, { relationId: id }, { relatedId: id }],
+      },
+    });
+
+    return relationships;
+  }
+
+  async destroyRelationshipsForItem({
+    id,
+  }: Args["destroyItem"]): Promise<Relationship[]> {
+    const relationships = await this.getRelationshipsForItem({ id });
+
+    await this.store.Relationship.destroy({
+      where: { id: relationships.map(({ id }) => id) },
+    });
+
+    return relationships;
+  }
+
+  async destroyRelationships(
+    { ids }: Args["destroyRelationships"],
+    userId: UserId
+  ): Promise<Relationship[]> {
+    if (userId === this.userId) {
+      const relationships = await this.store.Relationship.findAll<Relationship>(
+        {
+          where: { id: ids },
+        }
+      );
+
+      const n = await this.store.Relationship.destroy({
+        where: { id: ids },
+      });
+
+      if (n !== relationships.length) {
+        throw new ApolloError("failed to destroy");
+      }
+
+      return relationships;
+    }
+
+    return [];
   }
 }

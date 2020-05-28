@@ -11,3 +11,15 @@ mutation DestroyRelatedItem($relatedToId: Int!, $relationId: Int!, $related: Int
     }
   }
 }
+
+mutation DestroyItems($ids: [Int!]!) {
+  destroyItems(ids: $ids) {
+    id
+  }
+}
+
+mutation DestroyRelationships($ids: [Int!]!) {
+  destroyRelationships(ids: $ids) {
+    id
+  }
+}

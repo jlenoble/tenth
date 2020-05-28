@@ -2,3 +2,11 @@ type Relationship {
   id: Int!
   ids: [Int!]!
 }
+
+extend type Query {
+  relationshipsForItem(id: Int!): [Relationship!]!
+}
+
+extend type Mutation {
+  destroyRelationships(ids: [Int!]!): [Item!]!
+}

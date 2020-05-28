@@ -1,4 +1,8 @@
-import { AuthenticationError, ForbiddenError } from "apollo-server";
+import {
+  ApolloError,
+  AuthenticationError,
+  ForbiddenError,
+} from "apollo-server";
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 
 import { APIContext, GQLItem, UserId, Args } from "../../types";
@@ -77,6 +81,22 @@ export class ItemAPI<
     }
 
     throw new ForbiddenError("failed to destroy");
+  }
+
+  async destroyItems({ ids }: Args["destroyItems"]): Promise<GQLItem[]> {
+    ids = ids.filter((id) => !this.coreItemsById.has(id));
+
+    const items = await this.getItemsById({ ids });
+
+    const n = await this.store.Item.destroy({
+      where: { id: ids, userId: this.userId },
+    });
+
+    if (n !== items.length) {
+      throw new ApolloError("failed to destroy");
+    }
+
+    return items;
   }
 
   async getAllItems(): Promise<GQLItem[]> {

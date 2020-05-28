@@ -1,5 +1,5 @@
 # import Item, ItemWithRelation, ItemWithRelatedItems, Query, Mutation from "item.graphql"
-# import Relationship from "relationship.graphql"
+# import Relationship, Query, Mutation from "relationship.graphql"
 # import User, Query from "user.graphql"
 
 type Query {

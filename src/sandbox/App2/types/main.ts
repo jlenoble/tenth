@@ -37,11 +37,14 @@ export interface Data {
   itemsById: Generated.GetItemsByIdQuery;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQuery;
   coreItems: Generated.GetCoreItemsQuery;
+  relationshipsForItem: Generated.GetRelationshipsForItemQuery;
 
   createItem: Generated.CreateItemMutation;
   destroyItem: Generated.DestroyItemMutation;
+  destroyItems: Generated.DestroyItemsMutation;
   createRelatedItem: Generated.CreateRelatedItemMutation;
   destroyRelatedItem: Generated.DestroyRelatedItemMutation;
+  destroyRelationships: Generated.DestroyRelationshipsMutation;
 }
 
 export interface Args {
@@ -49,12 +52,15 @@ export interface Args {
   itemsById: Generated.QueryItemsByIdArgs;
   itemWithRelatedItems: Generated.QueryItemWithRelatedItemsArgs;
   coreItem: Generated.QueryCoreItemArgs;
+  relationshipsForItem: Generated.QueryRelationshipsForItemArgs;
 
   createItem: Generated.MutationCreateItemArgs;
   updateItem: Generated.MutationUpdateItemArgs;
   destroyItem: Generated.MutationDestroyItemArgs;
+  destroyItems: Generated.MutationDestroyItemsArgs;
   createRelatedItem: Generated.MutationCreateRelatedItemArgs;
   destroyRelatedItem: Generated.MutationDestroyRelatedItemArgs;
+  destroyRelationships: Generated.MutationDestroyRelationshipsArgs;
 }
 
 export interface Variables {
@@ -62,9 +68,12 @@ export interface Variables {
   itemsById: Generated.GetItemsByIdQueryVariables;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
   coreItems: Generated.GetCoreItemsQueryVariables;
+  relationshipsForItem: Generated.GetRelationshipsForItemQueryVariables;
 
   createItem: Generated.CreateItemMutationVariables;
   destroyItem: Generated.DestroyItemMutationVariables;
+  destroyItems: Generated.DestroyItemsMutationVariables;
   createRelatedItem: Generated.CreateRelatedItemMutationVariables;
   destroyRelatedItem: Generated.DestroyRelatedItemMutationVariables;
+  destroyRelationships: Generated.DestroyRelationshipsMutationVariables;
 }

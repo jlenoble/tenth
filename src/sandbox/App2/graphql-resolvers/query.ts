@@ -17,4 +17,7 @@ export const queryResolvers: Required<Omit<
 
   itemWithRelatedItems: (_, item, { dataSources: { relationshipAPI } }) =>
     relationshipAPI.getAllRelatedItems(item),
+
+  relationshipsForItem: (_, item, { dataSources: { relationshipAPI } }) =>
+    relationshipAPI.getRelationshipsForItem(item),
 };

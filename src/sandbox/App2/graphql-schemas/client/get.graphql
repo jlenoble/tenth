@@ -50,3 +50,10 @@ query GetItemWithRelatedItems($relatedToId: Int!, $relationId: Int!) {
     relationshipIds
   }
 }
+
+query GetRelationshipsForItem($id: Int!) {
+  relationshipsForItem(id: $id) {
+    id
+    ids
+  }
+}
