@@ -6,21 +6,8 @@ import {
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import { Op } from "sequelize";
 
-import {
-  APIContext,
-  ItemId,
-  UserId,
-  Args,
-  RelatedItem,
-  ItemWithRelatedItems,
-} from "../../types";
-
+import { APIContext, UserId, Args, RelatedItem } from "../../types";
 import { Store, Item, Relationship } from "../db";
-
-type RelationshipSelector =
-  | { relatedToId: ItemId }
-  | { relationId: ItemId }
-  | { relatedId: ItemId };
 
 export class RelationshipAPI<
   Context extends APIContext = APIContext
@@ -79,41 +66,6 @@ export class RelationshipAPI<
     };
   }
 
-  async getAllRelatedItems({
-    relatedToId,
-    relationId,
-  }: Args["itemWithRelatedItems"]): Promise<ItemWithRelatedItems> {
-    const item = await this.store.Item.findOne<Item>({
-      where: { id: relatedToId, userId: this.userId },
-    });
-
-    const relation = await this.store.Item.findOne<Item>({
-      where: { id: relationId },
-    });
-
-    if (!item || !relation) {
-      throw new ForbiddenError("failed to fetch");
-    }
-
-    const relationships = await this.store.Relationship.findAll<Relationship>({
-      where: { relatedToId, relationId },
-    });
-
-    const ids = relationships.map(({ relatedId }) => relatedId);
-
-    const items = await this.store.Item.findAll<Item>({
-      where: { id: ids },
-    });
-
-    return {
-      __typename: "ItemWithRelatedItems",
-      relation,
-      item,
-      items,
-      relationshipIds: relationships.map(({ id }) => id),
-    };
-  }
-
   async getRelationshipsForItem({
     id,
   }: Args["relationshipsForItem"]): Promise<Relationship[]> {
@@ -129,6 +81,68 @@ export class RelationshipAPI<
       where: {
         [Op.or]: [{ relatedToId: id }, { relationId: id }, { relatedId: id }],
       },
+    });
+
+    return relationships;
+  }
+
+  async getRelationshipsForItemAndRelation({
+    id,
+    relationId,
+  }: Args["relationshipsForItemAndRelation"]): Promise<Relationship[]> {
+    const item = await this.store.Item.findOne<Item>({
+      where: { id, userId: this.userId },
+    });
+
+    if (!item) {
+      throw new ForbiddenError("failed to fetch");
+    }
+
+    const relationships = await this.store.Relationship.findAll<Relationship>({
+      where: {
+        [Op.or]: [
+          { relatedToId: id, relationId },
+          { relatedId: id, relationId },
+        ],
+      },
+    });
+
+    return relationships;
+  }
+
+  async getRelationshipsForLeftItemAndRelation({
+    relatedToId,
+    relationId,
+  }: Args["relationshipsForLeftItemAndRelation"]): Promise<Relationship[]> {
+    const item = await this.store.Item.findOne<Item>({
+      where: { id: relatedToId, userId: this.userId },
+    });
+
+    if (!item) {
+      throw new ForbiddenError("failed to fetch");
+    }
+
+    const relationships = await this.store.Relationship.findAll<Relationship>({
+      where: { relatedToId, relationId },
+    });
+
+    return relationships;
+  }
+
+  async getRelationshipsForRightItemAndRelation({
+    relatedId,
+    relationId,
+  }: Args["relationshipsForRightItemAndRelation"]): Promise<Relationship[]> {
+    const item = await this.store.Item.findOne<Item>({
+      where: { id: relatedId, userId: this.userId },
+    });
+
+    if (!item) {
+      throw new ForbiddenError("failed to fetch");
+    }
+
+    const relationships = await this.store.Relationship.findAll<Relationship>({
+      where: { relatedId, relationId },
     });
 
     return relationships;

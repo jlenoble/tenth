@@ -22,10 +22,23 @@ export enum RelationType {
 
 export abstract class DataManager {
   abstract async getItem(id: ItemId): Promise<GQLItem>;
+  abstract async getItems(ids: ItemId[]): Promise<GQLItem[]>;
   abstract async getRelationshipsForItem(
     id: ItemId
   ): Promise<GQLRelationship[]>;
-  abstract async getRelationType(id: ItemId): Promise<RelationType>;
+  abstract async getRelationshipsForItemAndRelation(
+    itemId: ItemId,
+    relationId: ItemId
+  ): Promise<GQLRelationship[]>;
+  abstract async getRelationshipsForLeftItemAndRelation(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): Promise<GQLRelationship[]>;
+  abstract async getRelationshipsForRightItemAndRelation(
+    relatedId: ItemId,
+    relationId: ItemId
+  ): Promise<GQLRelationship[]>;
+  abstract async getRelationType(relationId: ItemId): Promise<RelationType>;
 
   abstract async filterStrongRelationships(
     relationships: GQLRelationship[]
@@ -120,6 +133,63 @@ export abstract class DataManager {
     }
 
     throw new Error("failed to destroy");
+  }
+
+  async getItemWithRelatedItems(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): Promise<{
+    relation: GQLItem;
+    item: GQLItem;
+    relationships: GQLRelationship[];
+    items: GQLItem[];
+  }> {
+    const item = await this.getItem(relatedToId);
+    const relation = await this.getItem(relationId);
+    const relationType = await this.getRelationType(relationId);
+
+    let relationships: GQLRelationship[] = [];
+    let ids: ItemId[] = [];
+
+    switch (relationType) {
+      case RelationType.ltr: {
+        relationships = await this.getRelationshipsForLeftItemAndRelation(
+          relatedToId,
+          relationId
+        );
+        ids = relationships.map(({ ids: [, , relatedId] }) => relatedId);
+        break;
+      }
+
+      case RelationType.rtl: {
+        relationships = await this.getRelationshipsForRightItemAndRelation(
+          relatedToId,
+          relationId
+        );
+        ids = relationships.map(({ ids: [relatedToId] }) => relatedToId);
+        break;
+      }
+
+      case RelationType.bidir: {
+        relationships = await this.getRelationshipsForItemAndRelation(
+          relatedToId,
+          relationId
+        );
+        ids = relationships.map(({ ids: [relatedToId, , relatedId] }) =>
+          relatedToId === item.id ? relatedId : relatedToId
+        );
+        break;
+      }
+    }
+
+    const items: GQLItem[] = await this.getItems(ids);
+
+    return {
+      relation,
+      item,
+      relationships,
+      items,
+    };
   }
 
   async destroyItem(id: ItemId): Promise<GQLItem> {

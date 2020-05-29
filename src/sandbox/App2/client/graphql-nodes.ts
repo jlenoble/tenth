@@ -6,6 +6,11 @@ export const nodes = {
   itemWithRelatedItems: Generated.GetItemWithRelatedItems,
   coreItems: Generated.GetCoreItems,
   relationshipsForItem: Generated.GetRelationshipsForItem,
+  relationshipsForItemAndRelation: Generated.GetRelationshipsForItemAndRelation,
+  relationshipsForLeftItemAndRelation:
+    Generated.GetRelationshipsForLeftItemAndRelation,
+  relationshipsForRightItemAndRelation:
+    Generated.GetRelationshipsForRightItemAndRelation,
 
   createItem: Generated.CreateItem,
   destroyItem: Generated.DestroyItem,

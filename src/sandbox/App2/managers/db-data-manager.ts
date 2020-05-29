@@ -22,8 +22,44 @@ export class DbDataManager extends DataManager {
     throw new Error("server error");
   }
 
+  async getItems(ids: ItemId[]): Promise<GQLItem[]> {
+    const items = await this.dataSources.itemAPI.getItemsById({ ids });
+    return items;
+  }
+
   async getRelationshipsForItem(id: ItemId): Promise<GQLRelationship[]> {
     return this.dataSources.relationshipAPI.getRelationshipsForItem({ id });
+  }
+
+  async getRelationshipsForItemAndRelation(
+    id: ItemId,
+    relationId: ItemId
+  ): Promise<GQLRelationship[]> {
+    return this.dataSources.relationshipAPI.getRelationshipsForItemAndRelation({
+      id,
+      relationId,
+    });
+  }
+
+  async getRelationshipsForLeftItemAndRelation(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): Promise<GQLRelationship[]> {
+    return this.dataSources.relationshipAPI.getRelationshipsForLeftItemAndRelation(
+      { relatedToId, relationId }
+    );
+  }
+
+  async getRelationshipsForRightItemAndRelation(
+    relatedId: ItemId,
+    relationId: ItemId
+  ): Promise<GQLRelationship[]> {
+    return this.dataSources.relationshipAPI.getRelationshipsForRightItemAndRelation(
+      {
+        relatedId,
+        relationId,
+      }
+    );
   }
 
   async getRelationType(relationId: ItemId): Promise<RelationType> {

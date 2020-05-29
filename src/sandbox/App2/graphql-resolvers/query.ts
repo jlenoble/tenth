@@ -1,4 +1,5 @@
 import { DataSources, QueryResolvers } from "../types";
+import { DbDataManager } from "../managers";
 
 export const queryResolvers: Required<Omit<
   QueryResolvers<DataSources, Record<string, unknown>>,
@@ -15,9 +16,41 @@ export const queryResolvers: Required<Omit<
   coreItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.getCoreItemByTitle(item),
 
-  itemWithRelatedItems: (_, item, { dataSources: { relationshipAPI } }) =>
-    relationshipAPI.getAllRelatedItems(item),
+  itemWithRelatedItems: async (
+    _,
+    { relatedToId, relationId },
+    { dataSources }
+  ) => {
+    const dataManager = new DbDataManager(dataSources);
+    const {
+      relation,
+      item,
+      relationships,
+      items,
+    } = await dataManager.getItemWithRelatedItems(relatedToId, relationId);
+    return {
+      relation,
+      item,
+      items,
+      relationshipIds: relationships.map(({ id }) => id),
+    };
+  },
 
   relationshipsForItem: (_, item, { dataSources: { relationshipAPI } }) =>
     relationshipAPI.getRelationshipsForItem(item),
+  relationshipsForItemAndRelation: (
+    _,
+    item,
+    { dataSources: { relationshipAPI } }
+  ) => relationshipAPI.getRelationshipsForItemAndRelation(item),
+  relationshipsForLeftItemAndRelation: (
+    _,
+    item,
+    { dataSources: { relationshipAPI } }
+  ) => relationshipAPI.getRelationshipsForLeftItemAndRelation(item),
+  relationshipsForRightItemAndRelation: (
+    _,
+    item,
+    { dataSources: { relationshipAPI } }
+  ) => relationshipAPI.getRelationshipsForRightItemAndRelation(item),
 };

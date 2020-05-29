@@ -57,3 +57,24 @@ query GetRelationshipsForItem($id: Int!) {
     ids
   }
 }
+
+query GetRelationshipsForItemAndRelation($id: Int!, $relationId: Int!) {
+  relationshipsForItemAndRelation(id: $id, relationId: $relationId) {
+    id
+    ids
+  }
+}
+
+query GetRelationshipsForLeftItemAndRelation($relatedToId: Int!, $relationId: Int!) {
+  relationshipsForLeftItemAndRelation(relatedToId: $relatedToId, relationId: $relationId) {
+    id
+    ids
+  }
+}
+
+query GetRelationshipsForRightItemAndRelation($relatedId: Int!, $relationId: Int!) {
+  relationshipsForRightItemAndRelation(relatedId: $relatedId, relationId: $relationId) {
+    id
+    ids
+  }
+}

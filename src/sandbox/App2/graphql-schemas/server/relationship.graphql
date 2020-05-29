@@ -5,6 +5,9 @@ type Relationship {
 
 extend type Query {
   relationshipsForItem(id: Int!): [Relationship!]!
+  relationshipsForItemAndRelation(id: Int!, relationId: Int!): [Relationship!]!
+  relationshipsForLeftItemAndRelation(relatedToId: Int!, relationId: Int!): [Relationship!]!
+  relationshipsForRightItemAndRelation(relatedId: Int!, relationId: Int!): [Relationship!]!
 }
 
 extend type Mutation {

@@ -38,6 +38,9 @@ export interface Data {
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQuery;
   coreItems: Generated.GetCoreItemsQuery;
   relationshipsForItem: Generated.GetRelationshipsForItemQuery;
+  relationshipsForItemAndRelation: Generated.GetRelationshipsForItemAndRelationQuery;
+  relationshipsForLeftItemAndRelation: Generated.GetRelationshipsForLeftItemAndRelationQuery;
+  relationshipsForRightItemAndRelation: Generated.GetRelationshipsForRightItemAndRelationQuery;
 
   createItem: Generated.CreateItemMutation;
   destroyItem: Generated.DestroyItemMutation;
@@ -53,6 +56,9 @@ export interface Args {
   itemWithRelatedItems: Generated.QueryItemWithRelatedItemsArgs;
   coreItem: Generated.QueryCoreItemArgs;
   relationshipsForItem: Generated.QueryRelationshipsForItemArgs;
+  relationshipsForItemAndRelation: Generated.QueryRelationshipsForItemAndRelationArgs;
+  relationshipsForLeftItemAndRelation: Generated.QueryRelationshipsForLeftItemAndRelationArgs;
+  relationshipsForRightItemAndRelation: Generated.QueryRelationshipsForRightItemAndRelationArgs;
 
   createItem: Generated.MutationCreateItemArgs;
   updateItem: Generated.MutationUpdateItemArgs;
@@ -69,6 +75,9 @@ export interface Variables {
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
   coreItems: Generated.GetCoreItemsQueryVariables;
   relationshipsForItem: Generated.GetRelationshipsForItemQueryVariables;
+  relationshipsForItemAndRelation: Generated.GetRelationshipsForItemAndRelationQueryVariables;
+  relationshipsForLeftItemAndRelation: Generated.GetRelationshipsForLeftItemAndRelationQueryVariables;
+  relationshipsForRightItemAndRelation: Generated.GetRelationshipsForRightItemAndRelationQueryVariables;
 
   createItem: Generated.CreateItemMutationVariables;
   destroyItem: Generated.DestroyItemMutationVariables;
