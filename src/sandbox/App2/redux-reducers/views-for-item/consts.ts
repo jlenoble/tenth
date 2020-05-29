@@ -1,0 +1,2 @@
+export const ADD_VIEW_FOR_ITEM = "ADD_VIEW_FOR_ITEM";
+export const REMOVE_VIEW_FOR_ITEM = "REMOVE_VIEW_FOR_ITEM";

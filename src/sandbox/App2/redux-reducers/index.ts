@@ -1,5 +1,10 @@
 export * from "./current-path";
+export * from "./items";
+export * from "./relationships";
 export * from "./relationships-for-item";
+export * from "./views-for-item";
+export * from "./views-for-subitem";
+
 import { Data } from "../types";
 import { ApolloClientManager } from "../managers";
 
