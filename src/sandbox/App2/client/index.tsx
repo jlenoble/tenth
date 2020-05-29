@@ -7,12 +7,11 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { Main } from "./pages";
 import theme from "./theme";
 import { clientManager } from "./apollo-client-manager";
-import { reduxManager } from "./redux-manager";
 
 const App: FunctionComponent = () => {
   return (
     <ApolloProvider client={clientManager.client}>
-      <Provider store={reduxManager.store}>
+      <Provider store={clientManager.redux.store}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Main />

@@ -12,6 +12,7 @@ import {
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
+import { ReduxManager } from "./redux-manager";
 
 let _id = 0;
 const tmpId = (): number => --_id;
@@ -19,6 +20,7 @@ const tmpId = (): number => --_id;
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
   public readonly hooks: ApolloHooksManager;
+  public readonly redux: ReduxManager;
 
   private optimisticCacheLayers: any = new Map();
 
@@ -29,6 +31,9 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     });
 
     this.hooks = new ApolloHooksManager(this);
+    this.redux = new ReduxManager({ log: true });
+
+    this.redux.sagaManager.run();
 
     this.updateOnCreateItem = this.updateOnCreateItem.bind(this);
     this.updateOnDestroyItem = this.updateOnDestroyItem.bind(this);
