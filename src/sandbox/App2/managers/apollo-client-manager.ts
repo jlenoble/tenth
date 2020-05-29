@@ -6,7 +6,7 @@ import { Dispatch } from "redux";
 
 import { Variables, Data, ApolloClientManagerInterface } from "../types";
 import {
-  addRelationships,
+  addRelationshipsForItem,
   createRelatedItem,
   destroyItem,
 } from "../redux-reducers";
@@ -95,7 +95,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
         } = item;
 
         dispatch(
-          addRelationships(
+          addRelationshipsForItem(
             relationshipIds.map((id, i) => {
               return [relatedToId, relationId, items[i].id];
             })

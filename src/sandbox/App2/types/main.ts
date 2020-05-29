@@ -15,11 +15,11 @@ export type GQLRelationship = Generated.Relationship &
   SequelizeDefaultAttributes;
 
 export type CurrentPathState = ItemId[];
-export type RelationshipState = Map<ItemId, Set<string>>;
+export type RelationshipsForItemState = Map<ItemId, Set<string>>;
 
 export type State = {
   currentPath: CurrentPathState;
-  relationships: RelationshipState;
+  relationshipsForItem: RelationshipsForItemState;
 };
 
 export type Ids = [ItemId, ItemId, ItemId];

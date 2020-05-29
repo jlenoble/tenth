@@ -3,7 +3,7 @@ import { ItemId, Ids, State } from "../../types";
 
 const makeGetRelationshipsForItem = (pos: 0 | 1 | 2) => (id: ItemId) => {
   return (state: State): Ids[] => {
-    const relationshipMap = ensureState(state.relationships);
+    const relationshipMap = ensureState(state.relationshipsForItem);
     const relationshipsForItem = relationshipMap.get(id);
 
     if (!relationshipsForItem) {

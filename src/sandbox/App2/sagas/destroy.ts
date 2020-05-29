@@ -2,8 +2,8 @@ import { put, select, take } from "redux-saga/effects";
 import { OptimisticAction, BEGIN, REVERT } from "redux-optimistic-ui";
 import { SagaGenerator } from "../../../generics";
 import {
-  RemoveRelationshipsAction,
-  removeRelationships,
+  RemoveRelationshipsForItemAction,
+  removeRelationshipsForItem,
   DESTROY_ITEM,
   DestroyItemAction,
   getRelationshipsForRightItem,
@@ -20,8 +20,9 @@ export function* destroyItemSaga(): SagaGenerator {
 
   let forRight: Ids[] = yield select(getRelationshipsForRightItem(id));
 
-  const optimisticAction: RemoveRelationshipsAction & OptimisticAction = {
-    ...removeRelationships(forRight),
+  const optimisticAction: RemoveRelationshipsForItemAction &
+    OptimisticAction = {
+    ...removeRelationshipsForItem(forRight),
     meta: { optimistic: { type: begin ? BEGIN : REVERT, id: optimisticId } },
   };
 
@@ -29,7 +30,7 @@ export function* destroyItemSaga(): SagaGenerator {
 
   if (!begin) {
     forRight = yield select(getRelationshipsForRightItem(id));
-    yield put(removeRelationships(forRight));
+    yield put(removeRelationshipsForItem(forRight));
   }
 
   for (const ids of forRight) {

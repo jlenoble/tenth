@@ -2,8 +2,8 @@ import { put, take } from "redux-saga/effects";
 import { OptimisticAction, BEGIN, REVERT } from "redux-optimistic-ui";
 import { SagaGenerator } from "../../../generics";
 import {
-  AddRelationshipAction,
-  addRelationship,
+  AddRelationshipForItemAction,
+  addRelationshipForItem,
   CREATE_RELATED_ITEM,
   CreateRelatedItemAction,
 } from "../redux-reducers";
@@ -19,15 +19,15 @@ export function* createRelatedItemSaga(): SagaGenerator {
     meta: { optimisticId, begin, manager },
   } = action;
 
-  const optimisticAction: AddRelationshipAction & OptimisticAction = {
-    ...addRelationship([ids[0], ids[1], optimisticId]),
+  const optimisticAction: AddRelationshipForItemAction & OptimisticAction = {
+    ...addRelationshipForItem([ids[0], ids[1], optimisticId]),
     meta: { optimistic: { type: begin ? BEGIN : REVERT, id: optimisticId } },
   };
 
   yield put(optimisticAction);
 
   if (!begin) {
-    yield put(addRelationship(ids as Ids));
+    yield put(addRelationshipForItem(ids as Ids));
   }
 
   manager._addRelatedItem(action.payload);

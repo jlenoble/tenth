@@ -1,13 +1,13 @@
 import { Reducer } from "redux";
 import { optimistic, OptimisticState } from "redux-optimistic-ui";
-import { Ids, RelationshipState as State } from "../../types";
+import { Ids, RelationshipsForItemState as State } from "../../types";
 import {
-  ADD_RELATIONSHIP,
-  REMOVE_RELATIONSHIP,
-  ADD_RELATIONSHIPS,
-  REMOVE_RELATIONSHIPS,
+  ADD_RELATIONSHIP_FOR_ITEM,
+  REMOVE_RELATIONSHIP_FOR_ITEM,
+  ADD_RELATIONSHIPS_FOR_ITEM,
+  REMOVE_RELATIONSHIPS_FOR_ITEM,
 } from "./consts";
-import { RelationshipAction } from "./actions";
+import { RelationshipsForItemAction } from "./actions";
 
 const initialState: State = new Map();
 
@@ -47,25 +47,25 @@ const removeRelationship = (state: State, ids: Ids): State => {
   return newState;
 };
 
-export const relationshipReducer: Reducer<OptimisticState<State>> = optimistic<
+export const relationshipsForItemReducer: Reducer<OptimisticState<
   State
->(
-  ((state = initialState, action: RelationshipAction): State => {
+>> = optimistic<State>(
+  ((state = initialState, action: RelationshipsForItemAction): State => {
     if (action) {
       switch (action.type) {
-        case ADD_RELATIONSHIP: {
+        case ADD_RELATIONSHIP_FOR_ITEM: {
           return addRelationship(state, action.payload);
         }
 
-        case REMOVE_RELATIONSHIP: {
+        case REMOVE_RELATIONSHIP_FOR_ITEM: {
           return removeRelationship(state, action.payload);
         }
 
-        case ADD_RELATIONSHIPS: {
+        case ADD_RELATIONSHIPS_FOR_ITEM: {
           return action.payload.reduce(addRelationship, state);
         }
 
-        case REMOVE_RELATIONSHIPS: {
+        case REMOVE_RELATIONSHIPS_FOR_ITEM: {
           return action.payload.reduce(removeRelationship, state);
         }
 
