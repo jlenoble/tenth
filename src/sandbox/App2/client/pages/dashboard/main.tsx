@@ -1,70 +1,27 @@
-import React, { FunctionComponent, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { FunctionComponent } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Grid } from "@material-ui/core";
 
-import { ItemId } from "../../../types";
-import {
-  deepenCurrentPath,
-  moveBackCurrentPath,
-  setCurrentPath,
-  setCurrentPathToSiblingPath,
-  getCurrentPath,
-} from "../../../redux-reducers";
 import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
 import { mainStyles } from "./dashboard.style";
+import { clientManager } from "../../apollo-client-manager";
 
 const useStyles = makeStyles(mainStyles);
 
 const TwoCards: FunctionComponent = () => {
-  const currentPath = useSelector(getCurrentPath);
-  const dispatch = useDispatch();
-  const [rightOpened, setRightOpened] = useState(false);
-
-  const [leftItemId, rightItemId] =
-    currentPath.length === 1
-      ? [currentPath[0], 0]
-      : rightOpened
-      ? [
-          currentPath[currentPath.length - 2],
-          currentPath[currentPath.length - 1],
-        ]
-      : [currentPath[currentPath.length - 1], 0];
-
-  const closeLeft = () => {
-    if (rightOpened) {
-      setRightOpened(false);
-    } else {
-      dispatch(moveBackCurrentPath());
-    }
-  };
-
-  const openRight = (id: ItemId) => {
-    if (rightOpened) {
-      dispatch(setCurrentPathToSiblingPath(id));
-    } else {
-      setRightOpened(true);
-      dispatch(deepenCurrentPath(id));
-    }
-  };
-
-  const closeRight = () => {
-    setRightOpened(false);
-    dispatch(moveBackCurrentPath());
-  };
-
-  const openRightRight = (id: ItemId) => {
-    dispatch(deepenCurrentPath(id));
-  };
-
-  const moveBack = (index: number) => () => {
-    if (index === 0) {
-      setRightOpened(false);
-    }
-    dispatch(setCurrentPath(currentPath.slice(0, index + 1)));
-  };
+  const {
+    currentPath,
+    leftItemId,
+    rightItemId,
+    rightOpened,
+    closeLeft,
+    openRight,
+    closeRight,
+    openRightRight,
+    moveBack,
+  } = clientManager.hooks.useTwoCards();
 
   return (
     <Grid container spacing={3}>

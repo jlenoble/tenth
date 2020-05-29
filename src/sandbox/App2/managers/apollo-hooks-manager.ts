@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ApolloError } from "apollo-client";
 import { QueryResult } from "@apollo/react-common";
 import {
@@ -17,7 +18,13 @@ import {
   State,
   ApolloClientManagerInterface,
 } from "../types";
-import { getCurrentPath } from "../redux-reducers";
+import {
+  getCurrentPath,
+  deepenCurrentPath,
+  moveBackCurrentPath,
+  setCurrentPath,
+  setCurrentPathToSiblingPath,
+} from "../redux-reducers";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -187,5 +194,75 @@ export class ApolloHooksManager {
     }
 
     return { currentPath, friendlyCurrentPath: [] };
+  }
+
+  useTwoCards(): {
+    currentPath: ItemId[];
+    leftItemId: ItemId;
+    rightItemId: ItemId;
+    rightOpened: boolean;
+    closeLeft: () => void;
+    openRight: (id: ItemId) => void;
+    closeRight: () => void;
+    openRightRight: (id: ItemId) => void;
+    moveBack: (id: ItemId) => () => void;
+  } {
+    const currentPath = this.select(getCurrentPath);
+    const [rightOpened, setRightOpened] = useState(false);
+
+    const [leftItemId, rightItemId] =
+      currentPath.length === 1
+        ? [currentPath[0], 0]
+        : rightOpened
+        ? [
+            currentPath[currentPath.length - 2],
+            currentPath[currentPath.length - 1],
+          ]
+        : [currentPath[currentPath.length - 1], 0];
+
+    const closeLeft = () => {
+      if (rightOpened) {
+        setRightOpened(false);
+      } else {
+        this.dispatch(moveBackCurrentPath());
+      }
+    };
+
+    const openRight = (id: ItemId) => {
+      if (rightOpened) {
+        this.dispatch(setCurrentPathToSiblingPath(id));
+      } else {
+        setRightOpened(true);
+        this.dispatch(deepenCurrentPath(id));
+      }
+    };
+
+    const closeRight = () => {
+      setRightOpened(false);
+      this.dispatch(moveBackCurrentPath());
+    };
+
+    const openRightRight = (id: ItemId) => {
+      this.dispatch(deepenCurrentPath(id));
+    };
+
+    const moveBack = (index: number) => () => {
+      if (index === 0) {
+        setRightOpened(false);
+      }
+      this.dispatch(setCurrentPath(currentPath.slice(0, index + 1)));
+    };
+
+    return {
+      currentPath,
+      leftItemId,
+      rightItemId,
+      rightOpened,
+      closeLeft,
+      openRight,
+      closeRight,
+      openRightRight,
+      moveBack,
+    };
   }
 }
