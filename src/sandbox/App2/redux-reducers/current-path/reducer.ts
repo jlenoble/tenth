@@ -9,11 +9,19 @@ import {
 } from "./consts";
 import { CurrentPathAction } from "./actions";
 
-const initialState: State = JSON.parse(
+let initialState: State = JSON.parse(
   (typeof localStorage !== "undefined" &&
     localStorage.getItem("currentPath")) ||
     "[1]"
 );
+
+if (
+  !Array.isArray(initialState) ||
+  !initialState.length ||
+  !initialState.every((id) => typeof id === "number")
+) {
+  initialState = [1];
+}
 
 export const currentPathReducer: Reducer<OptimisticState<State>> = optimistic<
   State
@@ -26,7 +34,10 @@ export const currentPathReducer: Reducer<OptimisticState<State>> = optimistic<
         }
 
         case MOVE_BACK_CURRENT_PATH: {
-          return state.slice(0, state.length - 1);
+          if (state.length > 1) {
+            return state.slice(0, state.length - 1);
+          }
+          break;
         }
 
         case SET_CURRENT_PATH: {
