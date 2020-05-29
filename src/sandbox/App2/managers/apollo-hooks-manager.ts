@@ -9,6 +9,7 @@ import {
   MutationTuple,
 } from "@apollo/react-hooks";
 import { Store, AnyAction } from "redux";
+import { useSelector } from "react-redux";
 
 import { nodes } from "../client/graphql-nodes";
 import {
@@ -180,7 +181,7 @@ export class ApolloHooksManager {
     currentPath: ItemId[];
     friendlyCurrentPath: string[];
   } {
-    const currentPath = this.select(getCurrentPath);
+    const currentPath = useSelector(getCurrentPath);
     const { data, loading, error } = this.useItemsById(currentPath);
 
     if (!loading && !error && data) {
@@ -207,7 +208,7 @@ export class ApolloHooksManager {
     openRightRight: (id: ItemId) => void;
     moveBack: (id: ItemId) => () => void;
   } {
-    const currentPath = this.select(getCurrentPath);
+    const currentPath = useSelector(getCurrentPath);
     const [rightOpened, setRightOpened] = useState(false);
 
     const [leftItemId, rightItemId] =
