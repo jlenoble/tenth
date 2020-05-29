@@ -2,9 +2,9 @@ import { ApolloClient, ApolloClientOptions } from "apollo-client";
 import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
-import { Dispatch } from "redux";
+import { AnyAction, Store } from "redux";
 
-import { Variables, Data, ApolloClientManagerInterface } from "../types";
+import { Variables, Data, State, ApolloClientManagerInterface } from "../types";
 import {
   addRelationshipsForItem,
   createRelatedItem,
@@ -21,6 +21,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
   public readonly hooks: ApolloHooksManager;
   public readonly redux: ReduxManager;
+  public readonly store: Store<State>;
 
   private optimisticCacheLayers: any = new Map();
 
@@ -30,8 +31,9 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       link,
     });
 
-    this.hooks = new ApolloHooksManager(this);
     this.redux = new ReduxManager({ log: true });
+    this.store = this.redux.store;
+    this.hooks = new ApolloHooksManager(this);
 
     this.redux.sagaManager.run();
 
@@ -39,6 +41,16 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     this.updateOnDestroyItem = this.updateOnDestroyItem.bind(this);
 
     this.updateOnCreateRelatedItem = this.updateOnCreateRelatedItem.bind(this);
+  }
+
+  dispatch<TAction extends AnyAction>(action: TAction): TAction {
+    return this.store.dispatch(action);
+  }
+
+  select<TSelected = unknown>(
+    selector: (state: State) => TSelected
+  ): TSelected {
+    return selector(this.store.getState());
   }
 
   optimisticCreateItem(item: Variables["createItem"]): Data["createItem"] {
@@ -87,7 +99,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     };
   }
 
-  onCompletedGetItemWithRelatedItems(dispatch: Dispatch) {
+  onCompletedGetItemWithRelatedItems() {
     return (data: Data["itemWithRelatedItems"]): void => {
       const item = data?.itemWithRelatedItems;
 
@@ -99,7 +111,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           relationshipIds,
         } = item;
 
-        dispatch(
+        this.dispatch(
           addRelationshipsForItem(
             relationshipIds.map((id, i) => {
               return [relatedToId, relationId, items[i].id];
@@ -110,7 +122,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     };
   }
 
-  updateOnCreateItem(dispatch: Dispatch) {
+  updateOnCreateItem() {
     return (_: DataProxy, { data }: FetchResult<Data["createItem"]>): void => {
       const createItem = data?.createItem;
       if (createItem !== undefined) {
@@ -120,21 +132,23 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     };
   }
 
-  updateOnDestroyItem(dispatch: Dispatch) {
+  updateOnDestroyItem() {
     return (_: DataProxy, { data }: FetchResult<Data["destroyItem"]>): void => {
       const item = data?.destroyItem;
 
       if (item !== undefined) {
         this._optimisticDispatch(
           (optimisticId: number, begin: boolean): void => {
-            dispatch(destroyItem(item, { optimisticId, begin, manager: this }));
+            this.dispatch(
+              destroyItem(item, { optimisticId, begin, manager: this })
+            );
           }
         );
       }
     };
   }
 
-  updateOnCreateRelatedItem(dispatch: Dispatch) {
+  updateOnCreateRelatedItem() {
     return (
       _: DataProxy,
       { data }: FetchResult<Data["createRelatedItem"]>
@@ -144,7 +158,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       if (item !== undefined) {
         this._optimisticDispatch(
           (optimisticId: number, begin: boolean): void => {
-            dispatch(
+            this.dispatch(
               createRelatedItem(item, { optimisticId, begin, manager: this })
             );
           }

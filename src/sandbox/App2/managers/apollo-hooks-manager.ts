@@ -7,13 +7,14 @@ import {
   MutationHookOptions,
   MutationTuple,
 } from "@apollo/react-hooks";
-import { useDispatch, useSelector } from "react-redux";
+import { Store, AnyAction } from "redux";
 
 import { nodes } from "../client/graphql-nodes";
 import {
   ItemId,
   Data,
   Variables,
+  State,
   ApolloClientManagerInterface,
 } from "../types";
 import { getCurrentPath } from "../redux-reducers";
@@ -28,9 +29,21 @@ type UseItems<Key extends keyof Data> = {
 
 export class ApolloHooksManager {
   public readonly clientManager: ApolloClientManagerInterface;
+  public readonly store: Store;
 
   constructor(clientManager: ApolloClientManagerInterface) {
     this.clientManager = clientManager;
+    this.store = clientManager.store;
+  }
+
+  dispatch<TAction extends AnyAction>(action: TAction): TAction {
+    return this.store.dispatch(action);
+  }
+
+  select<TSelected = unknown>(
+    selector: (state: State) => TSelected
+  ): TSelected {
+    return selector(this.store.getState());
   }
 
   useQuery<Key extends keyof Data>(
@@ -48,10 +61,8 @@ export class ApolloHooksManager {
   }
 
   useAddItem(): (input?: string) => Promise<void> {
-    const dispatch = useDispatch();
-
     const [addItem] = this.useMutation<"createItem">("createItem", {
-      update: this.clientManager.updateOnCreateItem(dispatch),
+      update: this.clientManager.updateOnCreateItem(),
     });
 
     const add = async (input = ""): Promise<void> => {
@@ -69,13 +80,11 @@ export class ApolloHooksManager {
     relatedToId: ItemId,
     relationId: ItemId
   ): (input?: string) => Promise<void> {
-    const dispatch = useDispatch();
-
     const [addItem] = useMutation<
       Data["createRelatedItem"],
       Variables["createRelatedItem"]
     >(nodes["createRelatedItem"], {
-      update: this.clientManager.updateOnCreateRelatedItem(dispatch),
+      update: this.clientManager.updateOnCreateRelatedItem(),
     });
 
     const add = async (input = ""): Promise<void> => {
@@ -92,13 +101,11 @@ export class ApolloHooksManager {
   }
 
   useMakeDestroyItem(): (id: number) => () => Promise<void> {
-    const dispatch = useDispatch();
-
     const [destroyItem] = useMutation<
       Data["destroyItem"],
       Variables["destroyItem"]
     >(nodes["destroyItem"], {
-      update: this.clientManager.updateOnDestroyItem(dispatch),
+      update: this.clientManager.updateOnDestroyItem(),
     });
 
     const makeDestroy = (id: ItemId) => async (): Promise<void> => {
@@ -142,16 +149,12 @@ export class ApolloHooksManager {
     relatedToId: ItemId,
     relationId: ItemId
   ): UseItems<"itemWithRelatedItems"> {
-    const dispatch = useDispatch();
-
     const { data, loading, error } = useQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
     >(nodes["itemWithRelatedItems"], {
       variables: { relatedToId, relationId },
-      onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(
-        dispatch
-      ),
+      onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(),
     });
 
     const add = this.useAddRelatedItem(relatedToId, relationId);
@@ -170,7 +173,7 @@ export class ApolloHooksManager {
     currentPath: ItemId[];
     friendlyCurrentPath: string[];
   } {
-    const currentPath = useSelector(getCurrentPath);
+    const currentPath = this.select(getCurrentPath);
     const { data, loading, error } = this.useItemsById(currentPath);
 
     if (!loading && !error && data) {
