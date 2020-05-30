@@ -13,11 +13,10 @@ export function* createRelatedItemSaga(): SagaGenerator {
   const action: CreateRelatedItemAction = yield take(CREATE_RELATED_ITEM);
 
   const {
-    payload: {
-      relationship: { ids },
-    },
+    payload: { item, relationship },
     meta: { optimisticId, begin, manager },
   } = action;
+  const { ids } = relationship;
 
   const optimisticAction: AddRelationshipForItemAction & OptimisticAction = {
     ...addRelationshipForItem([ids[0], ids[1], optimisticId]),
@@ -30,5 +29,5 @@ export function* createRelatedItemSaga(): SagaGenerator {
     yield put(addRelationshipForItem(ids as Ids));
   }
 
-  manager._addRelatedItem(action.payload);
+  manager._addRelatedItem(item, relationship);
 }

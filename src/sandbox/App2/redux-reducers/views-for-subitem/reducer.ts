@@ -1,8 +1,17 @@
 import { Reducer } from "redux";
 import { optimistic, OptimisticState } from "redux-optimistic-ui";
-import { ViewsForItemState as State } from "../../types";
-import { ADD_VIEW_FOR_SUBITEM, REMOVE_VIEW_FOR_SUBITEM } from "./consts";
+import { ViewsForSubItemState as State } from "../../types";
+import {
+  ADD_VIEW_FOR_SUBITEM,
+  REMOVE_VIEW_FOR_SUBITEM,
+  ADD_VIEW_FOR_SUBITEMS,
+  REMOVE_VIEW_FOR_SUBITEMS,
+} from "./consts";
 import { ViewsForSubItemAction } from "./actions";
+import {
+  addViewForItemReducer,
+  removeViewForItemReducer,
+} from "../views-for-item";
 
 const initialState: State = new Map();
 
@@ -13,37 +22,25 @@ export const viewsForSubItemReducer: Reducer<OptimisticState<
     if (action) {
       switch (action.type) {
         case ADD_VIEW_FOR_SUBITEM: {
-          const {
-            payload: { id, viewId },
-          } = action;
-
-          if (state.get(id)?.has(viewId)) {
-            return state;
-          }
-
-          const newState = new Map(state);
-          const newViews = new Set(newState.get(id));
-          newViews.add(viewId);
-          newState.set(id, newViews);
-
-          return newState;
+          return addViewForItemReducer(state, action.payload);
         }
 
         case REMOVE_VIEW_FOR_SUBITEM: {
-          const {
-            payload: { id, viewId },
-          } = action;
+          return removeViewForItemReducer(state, action.payload);
+        }
 
-          if (!state.get(id)?.has(viewId)) {
-            return state;
-          }
+        case ADD_VIEW_FOR_SUBITEMS: {
+          const { ids, viewId } = action.payload;
+          return ids
+            .map((id) => ({ id, viewId }))
+            .reduce(addViewForItemReducer, state);
+        }
 
-          const newState = new Map(state);
-          const newViews = new Set(newState.get(id));
-          newViews.delete(viewId);
-          newState.set(id, newViews);
-
-          return newState;
+        case REMOVE_VIEW_FOR_SUBITEMS: {
+          const { ids, viewId } = action.payload;
+          return ids
+            .map((id) => ({ id, viewId }))
+            .reduce(removeViewForItemReducer, state);
         }
 
         default:

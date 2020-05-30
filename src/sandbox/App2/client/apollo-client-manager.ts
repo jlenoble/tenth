@@ -1,8 +1,23 @@
-import { InMemoryCache, defaultDataIdFromObject } from "apollo-cache-inmemory";
+import { defaultDataIdFromObject, IdGetter } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 
 import { ApolloClientManager } from "../managers";
 import { ItemWithRelatedItems } from "../types";
+
+const dataIdFromObject: IdGetter = (object): string | null => {
+  switch (object.__typename) {
+    case "ItemWithRelatedItems": {
+      const {
+        item: { id },
+        relation: { id: relationId },
+      } = object as ItemWithRelatedItems;
+      return `ItemWithRelatedItems:${id}:${relationId}`;
+    }
+
+    default:
+      return defaultDataIdFromObject(object);
+  }
+};
 
 const link = new HttpLink({
   uri: "http://localhost:4000/",
@@ -11,21 +26,7 @@ const link = new HttpLink({
   },
 });
 
-const cache = new InMemoryCache({
-  dataIdFromObject: (object): string | null => {
-    switch (object.__typename) {
-      case "ItemWithRelatedItems": {
-        const {
-          item: { id },
-          relation: { id: relationId },
-        } = object as ItemWithRelatedItems;
-        return `ItemWithRelatedItems:${id}:${relationId}`;
-      }
-
-      default:
-        return defaultDataIdFromObject(object);
-    }
-  },
+export const clientManager = new ApolloClientManager({
+  link,
+  dataIdFromObject,
 });
-
-export const clientManager = new ApolloClientManager({ link, cache });

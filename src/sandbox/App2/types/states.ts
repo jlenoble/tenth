@@ -5,7 +5,7 @@ export type ItemsState = Map<ItemId, ClientItem>;
 export type RelationshipsState = Map<ItemId, ClientRelationship>;
 export type RelationshipsForItemState = Map<ItemId, Set<string>>;
 export type ViewsForItemState = Map<ItemId, Set<ViewId>>;
-export type ViewsForSubItemState = Map<ItemId, Set<ViewId>>;
+export type ViewsForSubItemState = ViewsForItemState;
 
 export type State = {
   currentPath: CurrentPathState;

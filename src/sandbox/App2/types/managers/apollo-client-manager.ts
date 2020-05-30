@@ -19,6 +19,7 @@ export interface ApolloClientManagerInterface {
   onCompletedGetItemWithRelatedItems(): (
     data: Data["itemWithRelatedItems"]
   ) => void;
+  onCompletedGetItemsById(): (data: Data["itemsById"]) => void;
 
   updateOnCreateItem(): (
     _: DataProxy,

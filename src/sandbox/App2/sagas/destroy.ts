@@ -34,6 +34,6 @@ export function* destroyItemSaga(): SagaGenerator {
   }
 
   for (const ids of forRight) {
-    manager._removeRelatedItem({ relationship: { ids } });
+    manager._removeRelatedItem(ids);
   }
 }

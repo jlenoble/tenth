@@ -139,6 +139,7 @@ export class ApolloHooksManager {
     return {
       ...this.useQuery<"itemsById">("itemsById", {
         variables: { ids },
+        onCompleted: this.clientManager.onCompletedGetItemsById(),
       }),
       add: this.useAddItem(),
       makeDestroy: this.useMakeDestroyItem(),

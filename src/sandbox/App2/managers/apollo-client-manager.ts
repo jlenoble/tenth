@@ -1,12 +1,30 @@
-import { ApolloClient, ApolloClientOptions } from "apollo-client";
+import { ApolloClient } from "apollo-client";
 import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
-import { NormalizedCacheObject } from "apollo-cache-inmemory";
+import {
+  NormalizedCacheObject,
+  InMemoryCache,
+  IdGetter,
+} from "apollo-cache-inmemory";
+import { HttpLink } from "apollo-link-http";
 import { AnyAction, Store } from "redux";
 
-import { Variables, Data, State, ApolloClientManagerInterface } from "../types";
 import {
+  ViewId,
+  Ids,
+  Variables,
+  Data,
+  State,
+  ApolloClientManagerInterface,
+  ClientItem,
+  ClientRelationship,
+} from "../types";
+import {
+  addItems,
+  addRelationships,
   addRelationshipsForItem,
+  addViewForItem,
+  addViewForSubItems,
   createRelatedItem,
   destroyItem,
 } from "../redux-reducers";
@@ -22,14 +40,23 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly hooks: ApolloHooksManager;
   public readonly redux: ReduxManager;
   public readonly store: Store<State>;
+  public readonly dataIdFromObject: IdGetter;
 
   private optimisticCacheLayers: any = new Map();
 
-  constructor({ cache, link }: ApolloClientOptions<NormalizedCacheObject>) {
+  constructor({
+    link,
+    dataIdFromObject,
+  }: {
+    link: HttpLink;
+    dataIdFromObject: IdGetter;
+  }) {
     this.client = new ApolloClient({
-      cache,
+      cache: new InMemoryCache({ dataIdFromObject }),
       link,
     });
+
+    this.dataIdFromObject = dataIdFromObject;
 
     this.redux = new ReduxManager({ log: true });
     this.store = this.redux.store;
@@ -101,25 +128,89 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
   onCompletedGetItemWithRelatedItems() {
     return (data: Data["itemWithRelatedItems"]): void => {
-      const item = data?.itemWithRelatedItems;
+      const itemWithRelatedItems = data.itemWithRelatedItems;
 
-      if (item !== undefined) {
-        const {
-          relation: { id: relationId },
-          item: { id: relatedToId },
+      if (itemWithRelatedItems !== undefined) {
+        const { relation, item, items, relationshipIds } = itemWithRelatedItems;
+        const { id: relatedToId } = item;
+        const { id: relationId } = relation;
+
+        const relationships = relationshipIds.map((id, i) => {
+          return { id, ids: [relatedToId, relationId, items[i].id] };
+        });
+
+        this._updateReduxStore({
+          item,
+          relation,
           items,
-          relationshipIds,
-        } = item;
+          relationships,
+          viewId: this.dataIdFromObject(itemWithRelatedItems),
+        });
+      }
+    };
+  }
 
+  onCompletedGetItemsById() {
+    return (data: Data["itemsById"]): void => {
+      this._updateReduxStore({ items: data.itemsById });
+    };
+  }
+
+  _updateReduxStore({
+    item,
+    relation,
+    items,
+    relationships = [],
+    viewId,
+  }: {
+    item?: ClientItem;
+    relation?: ClientItem;
+    items: ClientItem[];
+    relationships?: ClientRelationship[];
+    viewId?: ViewId | null;
+  }): void {
+    const allItems = item
+      ? relation
+        ? items.concat([item, relation])
+        : items.concat(item)
+      : relation
+      ? items.concat(relation)
+      : items;
+
+    if (allItems.length) {
+      this.dispatch(addItems(allItems));
+    }
+
+    if (viewId) {
+      if (item) {
+        this.dispatch(addViewForItem(viewId, item.id));
+      }
+
+      if (relation) {
+        this.dispatch(addViewForItem(viewId, relation.id));
+      }
+
+      if (items.length) {
         this.dispatch(
-          addRelationshipsForItem(
-            relationshipIds.map((id, i) => {
-              return [relatedToId, relationId, items[i].id];
-            })
+          addViewForSubItems(
+            viewId,
+            items.map(({ id }) => id)
           )
         );
       }
-    };
+    }
+
+    if (relationships.length) {
+      this.dispatch(addRelationships(relationships));
+
+      this.dispatch(
+        addRelationshipsForItem(
+          relationships.map(({ ids }) => {
+            return ids as Ids;
+          })
+        )
+      );
+    }
   }
 
   updateOnCreateItem() {
@@ -183,13 +274,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  _addRelatedItem({
-    item,
-    relationship: {
-      id: relationshipId,
-      ids: [relatedToId, relationId],
-    },
-  }: Data["createRelatedItem"]["createRelatedItem"]): void {
+  _addRelatedItem(
+    item: ClientItem,
+    { id: relationshipId, ids: [relatedToId, relationId] }: ClientRelationship
+  ): void {
     const query = this.client.readQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
@@ -221,11 +309,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  _removeRelatedItem({
-    relationship: {
-      ids: [relatedToId, relationId, relatedId],
-    },
-  }: Data["destroyRelatedItem"]["destroyRelatedItem"]): void {
+  _removeRelatedItem([relatedToId, relationId, relatedId]: Ids): void {
     const query = this.client.readQuery<
       Data["itemWithRelatedItems"],
       Variables["itemWithRelatedItems"]
