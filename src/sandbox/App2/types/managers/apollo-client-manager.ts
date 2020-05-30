@@ -4,7 +4,7 @@ import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 import { Store } from "redux";
 
-import { Data, Variables } from "../main";
+import { Data, Variables } from "../type-maps";
 
 export interface ApolloClientManagerInterface {
   client: ApolloClient<NormalizedCacheObject>;
