@@ -1,17 +1,24 @@
 import {
   ItemId,
   RelationshipId,
-  GQLItem,
-  GQLRelationship,
   UserId,
+  ClientItem,
+  ClientRelationship,
 } from "../types";
 
-export type Items = Map<ItemId, GQLItem>;
-export type Relationships = Map<RelationshipId, GQLRelationship>;
+export type Items<Item extends ClientItem> = Map<ItemId, Item>;
+export type Relationships<Relationship extends ClientRelationship> = Map<
+  RelationshipId,
+  Relationship
+>;
 
-export type Collector = {
-  items: Items;
-  relationships: Relationships;
+export type Collector<
+  Item extends ClientItem,
+  Relationship extends ClientRelationship
+> = {
+  items: Items<Item>;
+  relationships: Relationships<Relationship>;
+  userId: UserId;
 };
 
 export enum RelationType {
@@ -20,48 +27,64 @@ export enum RelationType {
   bidir,
 }
 
-export abstract class DataManager {
-  abstract async getItem(id: ItemId): Promise<GQLItem>;
-  abstract async getItems(ids: ItemId[]): Promise<GQLItem[]>;
-  abstract async getRelationshipsForItem(
-    id: ItemId
-  ): Promise<GQLRelationship[]>;
+export abstract class DataManager<
+  Item extends ClientItem,
+  Relationship extends ClientRelationship
+> {
+  abstract async getItem(id: ItemId): Promise<Item>;
+  abstract async getItems(ids: ItemId[]): Promise<Item[]>;
+  abstract async getRelationshipsForItem(id: ItemId): Promise<Relationship[]>;
   abstract async getRelationshipsForItemAndRelation(
     itemId: ItemId,
     relationId: ItemId
-  ): Promise<GQLRelationship[]>;
+  ): Promise<Relationship[]>;
   abstract async getRelationshipsForLeftItemAndRelation(
     relatedToId: ItemId,
     relationId: ItemId
-  ): Promise<GQLRelationship[]>;
+  ): Promise<Relationship[]>;
   abstract async getRelationshipsForRightItemAndRelation(
     relatedId: ItemId,
     relationId: ItemId
-  ): Promise<GQLRelationship[]>;
+  ): Promise<Relationship[]>;
   abstract async getRelationType(relationId: ItemId): Promise<RelationType>;
+  abstract async getUserId(item: Item): Promise<UserId>;
 
   abstract async filterStrongRelationships(
-    relationships: GQLRelationship[]
-  ): Promise<GQLRelationship[]>;
+    relationships: Relationship[]
+  ): Promise<Relationship[]>;
 
-  abstract async bulkDestroyItems(items: Items): Promise<void>;
+  abstract async bulkDestroyItems(items: Items<Item>): Promise<void>;
   abstract async bulkDestroyRelationships(
-    relationships: Relationships,
+    relationships: Relationships<Relationship>,
     userId: UserId
   ): Promise<void>;
 
   async collectStronglyRelatedDataForDestroyedItem(
-    collector: Collector,
+    collector: Collector<Item, Relationship>,
     id: ItemId
-  ): Promise<GQLItem> {
+  ): Promise<Item> {
     let item = collector.items.get(id);
 
     if (item) {
       // Already done
+      if (!collector.userId) {
+        collector.userId = await this.getUserId(item);
+      }
+
       return item;
     }
 
     item = await this.getItem(id);
+
+    if (!collector.userId) {
+      collector.userId = await this.getUserId(item);
+    } else {
+      const userId = await this.getUserId(item);
+
+      if (userId !== collector.userId) {
+        throw new Error("forbidden");
+      }
+    }
 
     if (item) {
       collector.items.set(id, item);
@@ -139,16 +162,16 @@ export abstract class DataManager {
     relatedToId: ItemId,
     relationId: ItemId
   ): Promise<{
-    relation: GQLItem;
-    item: GQLItem;
-    relationships: GQLRelationship[];
-    items: GQLItem[];
+    relation: Item;
+    item: Item;
+    relationships: Relationship[];
+    items: Item[];
   }> {
     const item = await this.getItem(relatedToId);
     const relation = await this.getItem(relationId);
     const relationType = await this.getRelationType(relationId);
 
-    let relationships: GQLRelationship[] = [];
+    let relationships: Relationship[] = [];
     let ids: ItemId[] = [];
 
     switch (relationType) {
@@ -182,7 +205,7 @@ export abstract class DataManager {
       }
     }
 
-    const items: GQLItem[] = await this.getItems(ids);
+    const items: Item[] = await this.getItems(ids);
 
     return {
       relation,
@@ -192,10 +215,11 @@ export abstract class DataManager {
     };
   }
 
-  async destroyItem(id: ItemId): Promise<GQLItem> {
-    const collector: Collector = {
+  async destroyItem(id: ItemId): Promise<Item> {
+    const collector: Collector<Item, Relationship> = {
       items: new Map(),
       relationships: new Map(),
+      userId: 0,
     };
 
     const item = await this.collectStronglyRelatedDataForDestroyedItem(
@@ -203,8 +227,15 @@ export abstract class DataManager {
       id
     );
 
+    if (!collector.userId) {
+      throw new Error("user is not identified");
+    }
+
     await this.bulkDestroyItems(collector.items);
-    await this.bulkDestroyRelationships(collector.relationships, item.userId);
+    await this.bulkDestroyRelationships(
+      collector.relationships,
+      collector.userId
+    );
 
     return item;
   }

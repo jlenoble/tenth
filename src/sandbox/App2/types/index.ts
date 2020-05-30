@@ -1,13 +1,7 @@
-import { ItemId, ViewId } from "./models";
-
 export * from "./managers";
 export * from "./models";
 export * from "./states";
 export * from "./type-maps";
-
-export type Ids = [ItemId, ItemId, ItemId];
-export type ViewForItem = { id: ItemId; viewId: ViewId };
-export type ViewForSubItem = ViewForItem;
 
 export type {
   RelatedItem,

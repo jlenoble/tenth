@@ -6,7 +6,7 @@ import {
 } from "./data-manager";
 import { APIMap, ItemId, GQLItem, GQLRelationship, UserId } from "../types";
 
-export class DbDataManager extends DataManager {
+export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
   private dataSources: APIMap;
 
   constructor(dataSources: APIMap) {
@@ -66,20 +66,24 @@ export class DbDataManager extends DataManager {
     return RelationType.ltr;
   }
 
+  getUserId(item: GQLItem): Promise<UserId> {
+    return Promise.resolve(item.userId);
+  }
+
   async filterStrongRelationships(
     relationships: GQLRelationship[]
   ): Promise<GQLRelationship[]> {
     return relationships.filter(({ ids: [, relationId] }) => relationId === 2);
   }
 
-  async bulkDestroyItems(ids: Items): Promise<void> {
+  async bulkDestroyItems(ids: Items<GQLItem>): Promise<void> {
     await this.dataSources.itemAPI.destroyItems({
       ids: Array.from(ids.keys()),
     });
   }
 
   async bulkDestroyRelationships(
-    ids: Relationships,
+    ids: Relationships<GQLRelationship>,
     userId: UserId
   ): Promise<void> {
     await this.dataSources.relationshipAPI.destroyRelationships(

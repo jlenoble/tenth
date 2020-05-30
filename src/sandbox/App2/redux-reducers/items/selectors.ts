@@ -1,6 +1,6 @@
 import { ensureState } from "redux-optimistic-ui";
-import { GQLItem, State } from "../../types";
+import { ClientItem, State } from "../../types";
 
-export const getItems = (state: State): GQLItem[] => {
+export const getItems = (state: State): ClientItem[] => {
   return Array.from(ensureState(state.items).values());
 };
