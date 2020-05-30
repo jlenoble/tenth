@@ -1,3 +1,3 @@
-import { GQLUser } from "..";
+import { GQLUser } from "../models";
 
 export type APIContext = { user?: GQLUser };
