@@ -8,7 +8,8 @@ export const RelatedItemsCard: FunctionComponent<{
   relatedToId: ItemId;
   open?: (id: ItemId) => void;
   close?: () => void;
-}> = ({ relatedToId, open, close }) => {
+  viewKey?: string;
+}> = ({ relatedToId, open, close, viewKey }) => {
   const {
     data,
     loading,
@@ -31,6 +32,7 @@ export const RelatedItemsCard: FunctionComponent<{
       listItems={items.map(({ id, title }) => {
         return {
           itemId: String(id),
+          "data-view-key": viewKey,
           primary: title,
           deleteButtonProps: {
             onClick: makeDestroy(id),

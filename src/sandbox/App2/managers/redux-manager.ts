@@ -10,6 +10,7 @@ import { SagaGenerator } from "../../../generics";
 import {
   currentPathReducer as currentPath,
   itemsReducer as items,
+  nCardsReducer as nCards,
   relationshipsReducer as relationships,
   relationshipsForItemReducer as relationshipsForItem,
   viewsForItemReducer as viewsForItem,
@@ -37,6 +38,7 @@ export class ReduxManager {
       combineReducers({
         currentPath,
         items,
+        nCards,
         relationships,
         relationshipsForItem,
         viewsForItem,

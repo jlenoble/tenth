@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ApolloError } from "apollo-client";
 import { QueryResult } from "@apollo/react-common";
 import {
@@ -9,7 +8,7 @@ import {
   MutationTuple,
 } from "@apollo/react-hooks";
 import { Store, AnyAction } from "redux";
-import { useSelector } from "react-redux";
+import { useSelector, shallowEqual } from "react-redux";
 
 import { nodes } from "../client/graphql-nodes";
 import {
@@ -21,10 +20,13 @@ import {
 } from "../types";
 import {
   getCurrentPath,
+  getCurrentPathAndNCards,
   deepenCurrentPath,
   moveBackCurrentPath,
   setCurrentPath,
   setCurrentPathToSiblingPath,
+  incrementNCards,
+  decrementNCards,
 } from "../redux-reducers";
 
 type UseItems<Key extends keyof Data> = {
@@ -209,22 +211,21 @@ export class ApolloHooksManager {
     openRightRight: (id: ItemId) => void;
     moveBack: (id: ItemId) => () => void;
   } {
-    const currentPath = useSelector(getCurrentPath);
-    const [rightOpened, setRightOpened] = useState(false);
-
-    const [leftItemId, rightItemId] =
-      currentPath.length === 1
-        ? [currentPath[0], 0]
-        : rightOpened
-        ? [
-            currentPath[currentPath.length - 2],
-            currentPath[currentPath.length - 1],
-          ]
-        : [currentPath[currentPath.length - 1], 0];
+    const { currentPath, nCards } = useSelector(
+      getCurrentPathAndNCards,
+      shallowEqual
+    );
+    const rightOpened = nCards > 1 && currentPath.length > 1;
+    const [leftItemId, rightItemId] = rightOpened
+      ? [
+          currentPath[currentPath.length - 2],
+          currentPath[currentPath.length - 1],
+        ]
+      : [currentPath[currentPath.length - 1], 0];
 
     const closeLeft = () => {
       if (rightOpened) {
-        setRightOpened(false);
+        this.dispatch(decrementNCards());
       } else {
         this.dispatch(moveBackCurrentPath());
       }
@@ -234,13 +235,13 @@ export class ApolloHooksManager {
       if (rightOpened) {
         this.dispatch(setCurrentPathToSiblingPath(id));
       } else {
-        setRightOpened(true);
+        this.dispatch(incrementNCards());
         this.dispatch(deepenCurrentPath(id));
       }
     };
 
     const closeRight = () => {
-      setRightOpened(false);
+      this.dispatch(decrementNCards());
       this.dispatch(moveBackCurrentPath());
     };
 
@@ -250,7 +251,7 @@ export class ApolloHooksManager {
 
     const moveBack = (index: number) => () => {
       if (index === 0) {
-        setRightOpened(false);
+        this.dispatch(decrementNCards());
       }
       this.dispatch(setCurrentPath(currentPath.slice(0, index + 1)));
     };

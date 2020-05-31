@@ -23,6 +23,10 @@ const TwoCards: FunctionComponent = () => {
     moveBack,
   } = clientManager.hooks.useTwoCards();
 
+  // Counteract ListItem memoization to not leave UI in an inconsistent state
+  // when currentPath is changed.
+  const viewKey = currentPath.join(":");
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -30,6 +34,7 @@ const TwoCards: FunctionComponent = () => {
       </Grid>
       <Grid item xs={12} md={rightOpened ? 6 : 12}>
         <RelatedItemsCard
+          viewKey={viewKey}
           relatedToId={leftItemId}
           open={openRight}
           close={(currentPath.length > 1 && closeLeft) || undefined}
@@ -38,6 +43,7 @@ const TwoCards: FunctionComponent = () => {
       {rightOpened && (
         <Grid item xs={12} md={6}>
           <RelatedItemsCard
+            viewKey={viewKey}
             relatedToId={rightItemId}
             open={openRightRight}
             close={closeRight}

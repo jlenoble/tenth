@@ -20,6 +20,13 @@ export interface ListItemProps extends ListItemTextProps {
   deleteButtonProps?: IconButtonProps;
   expandButtonProps?: IconButtonProps;
   catchError?: CatchError;
+
+  // Special prop to force refresh:
+  // The behaviour of buttons may change depending on
+  // surrounding elements (open or not new stuff if some are here or not).
+  // Simpling equaling on visible content or own className would leave
+  // the UI in an inconsistent state if the ListItem were not forced to update.
+  "data-view-key"?: string;
 }
 
 export type BaseListItemProps = MuiListItemProps;
@@ -27,6 +34,7 @@ export type FullListItemProps = ListItemProps & BaseListItemProps;
 
 const ListItem: FunctionComponent<FullListItemProps> = ({
   itemId, // eslint-disable-line @typescript-eslint/no-unused-vars
+  "data-view-key": viewKey, // eslint-disable-line @typescript-eslint/no-unused-vars
 
   checked,
   checkboxProps,
@@ -72,7 +80,8 @@ const MemoizedListItem = memo(ListItem, (prevProps, nextProps) => {
   let eq =
     prevProps.itemId === nextProps.itemId &&
     prevProps.primary === nextProps.primary &&
-    prevProps.checked === nextProps.checked;
+    prevProps.checked === nextProps.checked &&
+    prevProps["data-view-key"] === nextProps["data-view-key"];
 
   const pdp = prevProps.draggableProps;
   const ndp = nextProps.draggableProps;
