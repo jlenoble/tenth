@@ -63,11 +63,6 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     this.hooks = new ApolloHooksManager(this);
 
     this.redux.sagaManager.run();
-
-    this.updateOnCreateItem = this.updateOnCreateItem.bind(this);
-    this.updateOnDestroyItem = this.updateOnDestroyItem.bind(this);
-
-    this.updateOnCreateRelatedItem = this.updateOnCreateRelatedItem.bind(this);
   }
 
   dispatch<TAction extends AnyAction>(action: TAction): TAction {
@@ -228,13 +223,13 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       const item = data?.destroyItem;
 
       if (item !== undefined) {
-        this._optimisticDispatch(
-          (optimisticId: number, begin: boolean): void => {
-            this.dispatch(
-              destroyItem(item, { optimisticId, begin, manager: this })
-            );
-          }
+        /* this._optimisticDispatch(
+          (optimisticId: number, begin: boolean): void => {*/
+        this.dispatch(
+          destroyItem(item /* , { optimisticId, begin, manager: this }*/)
         );
+        /* }
+        );*/
       }
     };
   }
@@ -247,107 +242,107 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       const item = data?.createRelatedItem;
 
       if (item !== undefined) {
-        this._optimisticDispatch(
-          (optimisticId: number, begin: boolean): void => {
-            this.dispatch(
-              createRelatedItem(item, { optimisticId, begin, manager: this })
-            );
-          }
+        /* this._optimisticDispatch(
+          (optimisticId: number, begin: boolean): void => {*/
+        this.dispatch(
+          createRelatedItem(item /* , { optimisticId, begin, manager: this }*/)
         );
+        /* }
+        );*/
       }
     };
   }
 
-  _optimisticDispatch(
-    cb: (optimisticId: number, begin: boolean) => void
-  ): void {
-    const data = (this.client.cache as any).data;
+  // _optimisticDispatch(
+  //   cb: (optimisticId: number, begin: boolean) => void
+  // ): void {
+  //   const data = (this.client.cache as any).data;
 
-    if (data.parent) {
-      const optimisticId = -parseInt(data.optimisticId, 10);
-      this.optimisticCacheLayers.set(data.parent, optimisticId);
-      cb(optimisticId, true);
-    } else {
-      const optimisticId = this.optimisticCacheLayers.get(data);
-      cb(optimisticId, false);
-      this.optimisticCacheLayers.delete(data);
-    }
-  }
+  //   if (data.parent) {
+  //     const optimisticId = -parseInt(data.optimisticId, 10);
+  //     this.optimisticCacheLayers.set(data.parent, optimisticId);
+  //     cb(optimisticId, true);
+  //   } else {
+  //     const optimisticId = this.optimisticCacheLayers.get(data);
+  //     cb(optimisticId, false);
+  //     this.optimisticCacheLayers.delete(data);
+  //   }
+  // }
 
-  _addRelatedItem(
-    item: ClientItem,
-    { id: relationshipId, ids: [relatedToId, relationId] }: ClientRelationship
-  ): void {
-    const query = this.client.readQuery<
-      Data["itemWithRelatedItems"],
-      Variables["itemWithRelatedItems"]
-    >({
-      variables: { relatedToId, relationId },
-      query: nodes["itemWithRelatedItems"],
-    });
+  // _addRelatedItem(
+  //   item: ClientItem,
+  //   { id: relationshipId, ids: [relatedToId, relationId] }: ClientRelationship
+  // ): void {
+  //   const query = this.client.readQuery<
+  //     Data["itemWithRelatedItems"],
+  //     Variables["itemWithRelatedItems"]
+  //   >({
+  //     variables: { relatedToId, relationId },
+  //     query: nodes["itemWithRelatedItems"],
+  //   });
 
-    const itemWithRelatedItems = query?.itemWithRelatedItems;
+  //   const itemWithRelatedItems = query?.itemWithRelatedItems;
 
-    if (itemWithRelatedItems) {
-      this.client.writeQuery<
-        Data["itemWithRelatedItems"],
-        Variables["itemWithRelatedItems"]
-      >({
-        variables: { relatedToId, relationId },
-        query: nodes["itemWithRelatedItems"],
-        data: {
-          itemWithRelatedItems: {
-            ...itemWithRelatedItems,
-            items: [...itemWithRelatedItems.items, item],
-            relationshipIds: [
-              ...itemWithRelatedItems.relationshipIds,
-              relationshipId,
-            ],
-          },
-        },
-      });
-    }
-  }
+  //   if (itemWithRelatedItems) {
+  //     this.client.writeQuery<
+  //       Data["itemWithRelatedItems"],
+  //       Variables["itemWithRelatedItems"]
+  //     >({
+  //       variables: { relatedToId, relationId },
+  //       query: nodes["itemWithRelatedItems"],
+  //       data: {
+  //         itemWithRelatedItems: {
+  //           ...itemWithRelatedItems,
+  //           items: [...itemWithRelatedItems.items, item],
+  //           relationshipIds: [
+  //             ...itemWithRelatedItems.relationshipIds,
+  //             relationshipId,
+  //           ],
+  //         },
+  //       },
+  //     });
+  //   }
+  // }
 
-  _removeRelatedItem([relatedToId, relationId, relatedId]: Ids): void {
-    const query = this.client.readQuery<
-      Data["itemWithRelatedItems"],
-      Variables["itemWithRelatedItems"]
-    >({
-      variables: { relatedToId, relationId },
-      query: nodes["itemWithRelatedItems"],
-    });
+  // _removeRelatedItem([relatedToId, relationId, relatedId]: Ids): void {
+  //   const query = this.client.readQuery<
+  //     Data["itemWithRelatedItems"],
+  //     Variables["itemWithRelatedItems"]
+  //   >({
+  //     variables: { relatedToId, relationId },
+  //     query: nodes["itemWithRelatedItems"],
+  //   });
 
-    const itemWithRelatedItems = query?.itemWithRelatedItems;
+  //   const itemWithRelatedItems = query?.itemWithRelatedItems;
 
-    if (itemWithRelatedItems) {
-      let items = itemWithRelatedItems.items;
-      let relationshipIds = itemWithRelatedItems.relationshipIds;
+  //   if (itemWithRelatedItems) {
+  //     let items = itemWithRelatedItems.items;
+  //     let relationshipIds = itemWithRelatedItems.relationshipIds;
 
-      const index = items.findIndex((item) => item.id === relatedId);
+  //     const index = items.findIndex((item) => item.id === relatedId);
 
-      if (index !== -1) {
-        items = [...items.slice(0, index), ...items.slice(index + 1)];
-        relationshipIds = [
-          ...relationshipIds.slice(0, index),
-          ...relationshipIds.slice(index + 1),
-        ];
+  //     if (index !== -1) {
+  //       items = [...items.slice(0, index), ...items.slice(index + 1)];
+  //       relationshipIds = [
+  //         ...relationshipIds.slice(0, index),
+  //         ...relationshipIds.slice(index + 1),
+  //       ];
 
-        this.client.writeQuery<
-          Data["itemWithRelatedItems"],
-          Variables["itemWithRelatedItems"]
-        >({
-          variables: { relatedToId, relationId },
-          query: nodes["itemWithRelatedItems"],
-          data: {
-            itemWithRelatedItems: {
-              ...itemWithRelatedItems,
-              items,
-              relationshipIds,
-            },
-          },
-        });
-      }
-    }
-  }
+  //       this.client.writeQuery<
+  //         Data["itemWithRelatedItems"],
+  //         Variables["itemWithRelatedItems"]
+  //       >({
+  //         variables: { relatedToId, relationId },
+  //         query: nodes["itemWithRelatedItems"],
+  //         data: {
+  //           itemWithRelatedItems: {
+  //             ...itemWithRelatedItems,
+  //             items,
+  //             relationshipIds,
+  //           },
+  //         },
+  //       });
+  //     }
+  //   }
+  // }
 }

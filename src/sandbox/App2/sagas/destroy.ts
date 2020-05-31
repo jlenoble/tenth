@@ -13,27 +13,27 @@ import { Ids } from "../types";
 export function* destroyItemSaga(): SagaGenerator {
   const action: DestroyItemAction = yield take(DESTROY_ITEM);
 
-  const {
-    payload: { id },
-    meta: { optimisticId, begin, manager },
-  } = action;
+  // const {
+  //   payload: { id },
+  //   meta: { optimisticId, begin, manager },
+  // } = action;
 
-  let forRight: Ids[] = yield select(getRelationshipsForRightItem(id));
+  // let forRight: Ids[] = yield select(getRelationshipsForRightItem(id));
 
-  const optimisticAction: RemoveRelationshipsForItemAction &
-    OptimisticAction = {
-    ...removeRelationshipsForItem(forRight),
-    meta: { optimistic: { type: begin ? BEGIN : REVERT, id: optimisticId } },
-  };
+  // const optimisticAction: RemoveRelationshipsForItemAction &
+  //   OptimisticAction = {
+  //   ...removeRelationshipsForItem(forRight),
+  //   meta: { optimistic: { type: begin ? BEGIN : REVERT, id: optimisticId } },
+  // };
 
-  yield put(optimisticAction);
+  // yield put(optimisticAction);
 
-  if (!begin) {
-    forRight = yield select(getRelationshipsForRightItem(id));
-    yield put(removeRelationshipsForItem(forRight));
-  }
+  // if (!begin) {
+  //   forRight = yield select(getRelationshipsForRightItem(id));
+  //   yield put(removeRelationshipsForItem(forRight));
+  // }
 
-  for (const ids of forRight) {
-    manager._removeRelatedItem(ids);
-  }
+  // for (const ids of forRight) {
+  //   manager._removeRelatedItem(ids);
+  // }
 }

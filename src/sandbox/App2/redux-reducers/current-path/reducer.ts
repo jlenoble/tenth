@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { optimistic, OptimisticState } from "redux-optimistic-ui";
+// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { CurrentPathState as State } from "../../types";
 import {
   DEEPEN_CURRENT_PATH,
@@ -23,9 +23,10 @@ if (
   initialState = [1];
 }
 
-export const currentPathReducer: Reducer<OptimisticState<State>> = optimistic<
+export const currentPathReducer: Reducer</* OptimisticState<*/ State /* >*/> =
+  /* optimistic<
   State
->(
+>(*/
   ((state = initialState, action: CurrentPathAction): State => {
     if (action) {
       switch (action.type) {
@@ -57,5 +58,5 @@ export const currentPathReducer: Reducer<OptimisticState<State>> = optimistic<
     }
 
     return state;
-  }) as Reducer<State>
-) as Reducer<OptimisticState<State>>;
+  }) as Reducer<State>; /*
+) as Reducer<OptimisticState<State>>*/

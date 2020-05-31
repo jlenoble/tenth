@@ -12,22 +12,22 @@ import { Ids } from "../types";
 export function* createRelatedItemSaga(): SagaGenerator {
   const action: CreateRelatedItemAction = yield take(CREATE_RELATED_ITEM);
 
-  const {
-    payload: { item, relationship },
-    meta: { optimisticId, begin, manager },
-  } = action;
-  const { ids } = relationship;
+  // const {
+  //   payload: { item, relationship },
+  //   meta: { optimisticId, begin, manager },
+  // } = action;
+  // const { ids } = relationship;
 
-  const optimisticAction: AddRelationshipForItemAction & OptimisticAction = {
-    ...addRelationshipForItem([ids[0], ids[1], optimisticId]),
-    meta: { optimistic: { type: begin ? BEGIN : REVERT, id: optimisticId } },
-  };
+  // const optimisticAction: AddRelationshipForItemAction & OptimisticAction = {
+  //   ...addRelationshipForItem([ids[0], ids[1], optimisticId]),
+  //   meta: { optimistic: { type: begin ? BEGIN : REVERT, id: optimisticId } },
+  // };
 
-  yield put(optimisticAction);
+  // yield put(optimisticAction);
 
-  if (!begin) {
-    yield put(addRelationshipForItem(ids as Ids));
-  }
+  // if (!begin) {
+  //   yield put(addRelationshipForItem(ids as Ids));
+  // }
 
-  manager._addRelatedItem(item, relationship);
+  // manager._addRelatedItem(item, relationship);
 }

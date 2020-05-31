@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { optimistic, OptimisticState } from "redux-optimistic-ui";
+// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { RelationshipsState as State } from "../../types";
 import {
   SET_RELATIONSHIPS,
@@ -12,9 +12,10 @@ import { RelationshipsAction } from "./actions";
 
 const initialState: State = new Map();
 
-export const relationshipsReducer: Reducer<OptimisticState<State>> = optimistic<
+export const relationshipsReducer: Reducer</* OptimisticState<*/ State /* >*/> =
+  /* optimistic<
   State
->(
+>(*/
   ((state = initialState, action: RelationshipsAction): State => {
     if (action) {
       switch (action.type) {
@@ -79,5 +80,5 @@ export const relationshipsReducer: Reducer<OptimisticState<State>> = optimistic<
     }
 
     return state;
-  }) as Reducer<State>
-) as Reducer<OptimisticState<State>>;
+  }) as Reducer<State>; /*
+) as Reducer<OptimisticState<State>>*/

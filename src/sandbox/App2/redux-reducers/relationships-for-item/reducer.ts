@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { optimistic, OptimisticState } from "redux-optimistic-ui";
+// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { Ids, RelationshipsForItemState as State } from "../../types";
 import {
   ADD_RELATIONSHIP_FOR_ITEM,
@@ -47,9 +47,10 @@ const removeRelationship = (state: State, ids: Ids): State => {
   return newState;
 };
 
-export const relationshipsForItemReducer: Reducer<OptimisticState<
-  State
->> = optimistic<State>(
+export const relationshipsForItemReducer: Reducer</* OptimisticState<*/
+State /*
+>*/> =
+  /* optimistic<State>(*/
   ((state = initialState, action: RelationshipsForItemAction): State => {
     if (action) {
       switch (action.type) {
@@ -75,5 +76,5 @@ export const relationshipsForItemReducer: Reducer<OptimisticState<
     }
 
     return state;
-  }) as Reducer<State>
-) as Reducer<OptimisticState<State>>;
+  }) as Reducer<State>; /*
+) as Reducer<OptimisticState<State>>*/

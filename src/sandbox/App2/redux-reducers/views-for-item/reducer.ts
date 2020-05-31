@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { optimistic, OptimisticState } from "redux-optimistic-ui";
+// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { ViewForItem, ViewsForItemState as State } from "../../types";
 import { ADD_VIEW_FOR_ITEM, REMOVE_VIEW_FOR_ITEM } from "./consts";
 import { ViewsForItemAction } from "./actions";
@@ -38,9 +38,10 @@ export const removeViewForItemReducer = (
   return newState;
 };
 
-export const viewsForItemReducer: Reducer<OptimisticState<State>> = optimistic<
+export const viewsForItemReducer: Reducer</* OptimisticState<*/ State /* >*/> =
+  /* optimistic<
   State
->(
+>(*/
   ((state = initialState, action: ViewsForItemAction): State => {
     if (action) {
       switch (action.type) {
@@ -58,5 +59,5 @@ export const viewsForItemReducer: Reducer<OptimisticState<State>> = optimistic<
     }
 
     return state;
-  }) as Reducer<State>
-) as Reducer<OptimisticState<State>>;
+  }) as Reducer<State>; /*
+) as Reducer<OptimisticState<State>>*/

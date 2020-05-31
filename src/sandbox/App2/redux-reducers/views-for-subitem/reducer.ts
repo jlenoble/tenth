@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { optimistic, OptimisticState } from "redux-optimistic-ui";
+// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { ViewsForSubItemState as State } from "../../types";
 import {
   ADD_VIEW_FOR_SUBITEM,
@@ -15,9 +15,10 @@ import {
 
 const initialState: State = new Map();
 
-export const viewsForSubItemReducer: Reducer<OptimisticState<
-  State
->> = optimistic<State>(
+export const viewsForSubItemReducer: Reducer</* OptimisticState<
+ */ State /*
+>*/> =
+  /* optimistic<State>(*/
   ((state = initialState, action: ViewsForSubItemAction): State => {
     if (action) {
       switch (action.type) {
@@ -49,5 +50,5 @@ export const viewsForSubItemReducer: Reducer<OptimisticState<
     }
 
     return state;
-  }) as Reducer<State>
-) as Reducer<OptimisticState<State>>;
+  }) as Reducer<State>; /*
+) as Reducer<OptimisticState<State>>*/
