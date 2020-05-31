@@ -5,15 +5,7 @@ export * from "./relationships-for-item";
 export * from "./views-for-item";
 export * from "./views-for-subitem";
 
-import { Data } from "../types";
-import { ApolloClientManager } from "../managers";
-
-export type Meta = {
-  optimisticId: number;
-  begin: boolean;
-  manager: ApolloClientManager;
-};
-export type MetaAction<Action> = Action & { meta: Meta };
+import { Data, Meta, MetaAction } from "../types";
 
 export const CREATE_RELATED_ITEM = "CREATE_RELATED_ITEM";
 export const DESTROY_ITEM = "DESTROY_ITEM";
