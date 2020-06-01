@@ -17,6 +17,7 @@ import {
   Variables,
   State,
   ApolloClientManagerInterface,
+  MetaAction,
 } from "../types";
 import {
   getCurrentPath,
@@ -46,14 +47,14 @@ export class ApolloHooksManager {
     this.store = clientManager.store;
   }
 
-  dispatch<TAction extends AnyAction>(action: TAction): TAction {
-    return this.store.dispatch(action);
+  dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
+    return this.clientManager.dispatch(action);
   }
 
   select<TSelected = unknown>(
     selector: (state: State) => TSelected
   ): TSelected {
-    return selector(this.store.getState());
+    return this.clientManager.select(selector);
   }
 
   useQuery<Key extends keyof Data>(
