@@ -4,9 +4,9 @@ import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 import { AnyAction, Store } from "redux";
 
-import { Data, Variables } from "../type-maps";
+import { Data } from "../type-maps";
 import { State } from "../states";
-import { ReduxManager } from "../../managers";
+import { ReduxManager, OptimistManager } from "../../managers";
 
 export type Meta = {
   // optimisticId: number;
@@ -19,15 +19,10 @@ export interface ApolloClientManagerInterface {
   client: ApolloClient<NormalizedCacheObject>;
   store: Store;
   redux: ReduxManager;
+  optimist: OptimistManager;
 
   dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction>;
   select<TSelected = unknown>(selector: (state: State) => TSelected): TSelected;
-
-  optimisticCreateItem(item: Variables["createItem"]): Data["createItem"];
-  optimisticDestroyItem(item: Variables["destroyItem"]): Data["destroyItem"];
-  optimisticCreateRelatedItem(
-    item: Variables["createItem"]
-  ): Data["createRelatedItem"];
 
   onCompletedGetItemWithRelatedItems(): (
     data: Data["itemWithRelatedItems"]

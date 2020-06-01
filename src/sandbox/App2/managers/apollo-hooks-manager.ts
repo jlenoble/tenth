@@ -29,6 +29,7 @@ import {
   incrementNCards,
   decrementNCards,
 } from "../redux-reducers";
+import { OptimistManager } from "./optimist-manager";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -41,10 +42,12 @@ type UseItems<Key extends keyof Data> = {
 export class ApolloHooksManager {
   public readonly clientManager: ApolloClientManagerInterface;
   public readonly store: Store;
+  public readonly optimistManager: OptimistManager;
 
   constructor(clientManager: ApolloClientManagerInterface) {
     this.clientManager = clientManager;
     this.store = clientManager.store;
+    this.optimistManager = clientManager.optimist;
   }
 
   dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
@@ -80,7 +83,7 @@ export class ApolloHooksManager {
       const variables = { title: input };
       await addItem({
         variables,
-        optimisticResponse: this.clientManager.optimisticCreateItem(variables),
+        optimisticResponse: this.optimistManager.createItem(variables),
       });
     };
 
@@ -102,9 +105,7 @@ export class ApolloHooksManager {
       const variables = { relatedToId, relationId, title: input };
       await addItem({
         variables,
-        optimisticResponse: this.clientManager.optimisticCreateRelatedItem(
-          variables
-        ),
+        optimisticResponse: this.optimistManager.createRelatedItem(variables),
       });
     };
 
@@ -123,7 +124,7 @@ export class ApolloHooksManager {
       const variables = { id };
       await destroyItem({
         variables,
-        optimisticResponse: this.clientManager.optimisticDestroyItem(variables),
+        optimisticResponse: this.optimistManager.destroyItem(variables),
       });
     };
 

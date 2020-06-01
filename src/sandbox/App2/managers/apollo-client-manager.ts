@@ -36,9 +36,7 @@ import {
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
 import { ReduxManager } from "./redux-manager";
-
-let _id = 0;
-const tmpId = (): number => --_id;
+import { OptimistManager } from "./optimist-manager";
 
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
@@ -47,6 +45,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
   public readonly hooks: ApolloHooksManager;
   public readonly redux: ReduxManager;
+  public readonly optimist: OptimistManager;
 
   private optimisticCacheLayers: any = new Map();
 
@@ -64,6 +63,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     this.dataIdFromObject = dataIdFromObject;
 
+    this.optimist = new OptimistManager(false);
     this.redux = new ReduxManager({ log: true, clientManager: this });
     this.store = this.redux.store;
     this.hooks = new ApolloHooksManager(this);
@@ -79,52 +79,6 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     selector: (state: State) => TSelected
   ): TSelected {
     return this.redux.select(selector);
-  }
-
-  optimisticCreateItem(item: Variables["createItem"]): Data["createItem"] {
-    return {
-      __typename: "Mutation",
-      createItem: {
-        __typename: "Item",
-        id: tmpId(),
-        ...item,
-      },
-    };
-  }
-
-  optimisticDestroyItem(item: Variables["destroyItem"]): Data["destroyItem"] {
-    return {
-      __typename: "Mutation",
-      destroyItem: {
-        __typename: "Item",
-        ...item,
-      },
-    };
-  }
-
-  optimisticCreateRelatedItem({
-    relatedToId,
-    relationId,
-    ...item
-  }: Variables["createRelatedItem"]): Data["createRelatedItem"] {
-    const relatedId = tmpId();
-
-    return {
-      __typename: "Mutation",
-      createRelatedItem: {
-        __typename: "RelatedItem",
-        item: {
-          __typename: "Item",
-          id: relatedId,
-          ...item,
-        },
-        relationship: {
-          __typename: "Relationship",
-          id: tmpId(),
-          ids: [relatedToId, relationId, relatedId],
-        },
-      },
-    };
   }
 
   onCompletedGetItemWithRelatedItems() {
