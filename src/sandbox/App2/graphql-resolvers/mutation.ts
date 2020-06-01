@@ -11,7 +11,8 @@ export const mutationResolvers: Required<Omit<
     itemAPI.updateItem(item),
   destroyItem: async (_, item, { dataSources }) => {
     const dataManager = new DbDataManager(dataSources);
-    return dataManager.destroyItem(item.id);
+    const destroyedData = await dataManager.destroyItem(item.id);
+    return destroyedData.item;
   },
 
   destroyItems: (_, items, { dataSources: { itemAPI } }) =>
