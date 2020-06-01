@@ -3,15 +3,6 @@ export * from "./models";
 export * from "./states";
 export * from "./type-maps";
 
-import { ApolloClientManagerInterface } from "./managers";
-
-export type Meta = {
-  optimisticId: number;
-  begin: boolean;
-  manager: ApolloClientManagerInterface;
-};
-export type MetaAction<Action> = Action & { meta: Meta };
-
 export type {
   RelatedItem,
   ItemWithRelatedItems,

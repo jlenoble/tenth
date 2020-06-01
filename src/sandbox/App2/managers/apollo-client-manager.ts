@@ -11,13 +11,13 @@ import { AnyAction, Store } from "redux";
 
 import {
   ViewId,
-  Ids,
   Variables,
   Data,
   State,
   ApolloClientManagerInterface,
   ClientItem,
   ClientRelationship,
+  MetaAction,
 } from "../types";
 import {
   addItems,
@@ -27,6 +27,8 @@ import {
   addViewForSubItems,
   createRelatedItem,
   destroyItem,
+  getViewsForItem,
+  getViewsForSubItem,
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
@@ -37,10 +39,11 @@ const tmpId = (): number => --_id;
 
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
-  public readonly hooks: ApolloHooksManager;
-  public readonly redux: ReduxManager;
   public readonly store: Store<State>;
   public readonly dataIdFromObject: IdGetter;
+
+  public readonly hooks: ApolloHooksManager;
+  public readonly redux: ReduxManager;
 
   private optimisticCacheLayers: any = new Map();
 
@@ -58,21 +61,21 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     this.dataIdFromObject = dataIdFromObject;
 
-    this.redux = new ReduxManager({ log: true });
+    this.redux = new ReduxManager({ log: true, clientManager: this });
     this.store = this.redux.store;
     this.hooks = new ApolloHooksManager(this);
 
     this.redux.sagaManager.run();
   }
 
-  dispatch<TAction extends AnyAction>(action: TAction): TAction {
-    return this.store.dispatch(action);
+  dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
+    return this.redux.dispatch(action);
   }
 
   select<TSelected = unknown>(
     selector: (state: State) => TSelected
   ): TSelected {
-    return selector(this.store.getState());
+    return this.redux.select(selector);
   }
 
   optimisticCreateItem(item: Variables["createItem"]): Data["createItem"] {
@@ -134,7 +137,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           return { id, ids: [relatedToId, relationId, items[i].id] };
         });
 
-        this._updateReduxStore({
+        this._updateReduxStoreOnCompletedQuery({
           item,
           relation,
           items,
@@ -147,11 +150,11 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
   onCompletedGetItemsById() {
     return (data: Data["itemsById"]): void => {
-      this._updateReduxStore({ items: data.itemsById });
+      this._updateReduxStoreOnCompletedQuery({ items: data.itemsById });
     };
   }
 
-  _updateReduxStore({
+  _updateReduxStoreOnCompletedQuery({
     item,
     relation,
     items,
@@ -197,14 +200,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     if (relationships.length) {
       this.dispatch(addRelationships(relationships));
-
-      this.dispatch(
-        addRelationshipsForItem(
-          relationships.map(({ ids }) => {
-            return ids as Ids;
-          })
-        )
-      );
+      this.dispatch(addRelationshipsForItem(relationships));
     }
   }
 
@@ -223,13 +219,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       const item = data?.destroyItem;
 
       if (item !== undefined) {
-        /* this._optimisticDispatch(
-          (optimisticId: number, begin: boolean): void => {*/
-        this.dispatch(
-          destroyItem(item /* , { optimisticId, begin, manager: this }*/)
-        );
-        /* }
-        );*/
+        this.dispatch(destroyItem(item));
       }
     };
   }
@@ -242,32 +232,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       const item = data?.createRelatedItem;
 
       if (item !== undefined) {
-        /* this._optimisticDispatch(
-          (optimisticId: number, begin: boolean): void => {*/
-        this.dispatch(
-          createRelatedItem(item /* , { optimisticId, begin, manager: this }*/)
-        );
-        /* }
-        );*/
+        this.dispatch(createRelatedItem(item));
       }
     };
   }
-
-  // _optimisticDispatch(
-  //   cb: (optimisticId: number, begin: boolean) => void
-  // ): void {
-  //   const data = (this.client.cache as any).data;
-
-  //   if (data.parent) {
-  //     const optimisticId = -parseInt(data.optimisticId, 10);
-  //     this.optimisticCacheLayers.set(data.parent, optimisticId);
-  //     cb(optimisticId, true);
-  //   } else {
-  //     const optimisticId = this.optimisticCacheLayers.get(data);
-  //     cb(optimisticId, false);
-  //     this.optimisticCacheLayers.delete(data);
-  //   }
-  // }
 
   // _addRelatedItem(
   //   item: ClientItem,
@@ -304,45 +272,66 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   //   }
   // }
 
-  // _removeRelatedItem([relatedToId, relationId, relatedId]: Ids): void {
-  //   const query = this.client.readQuery<
-  //     Data["itemWithRelatedItems"],
-  //     Variables["itemWithRelatedItems"]
-  //   >({
-  //     variables: { relatedToId, relationId },
-  //     query: nodes["itemWithRelatedItems"],
-  //   });
+  destroyViews(items: ClientItem[]): void {
+    for (const item of items) {
+      const viewsForItem = this.select(getViewsForItem(item.id));
+      viewsForItem;
+    }
+  }
 
-  //   const itemWithRelatedItems = query?.itemWithRelatedItems;
+  removeFromViews(items: ClientItem[]): void {
+    for (const item of items) {
+      const relatedId = item.id;
+      const viewsForSubItem = this.select(getViewsForSubItem(relatedId));
 
-  //   if (itemWithRelatedItems) {
-  //     let items = itemWithRelatedItems.items;
-  //     let relationshipIds = itemWithRelatedItems.relationshipIds;
+      for (const viewId of viewsForSubItem) {
+        const [viewName, itemId, _relationId] = viewId.split(":");
 
-  //     const index = items.findIndex((item) => item.id === relatedId);
+        if (viewName === "ItemWithRelatedItems") {
+          const relatedToId = parseInt(itemId, 10);
+          const relationId = parseInt(_relationId, 10);
 
-  //     if (index !== -1) {
-  //       items = [...items.slice(0, index), ...items.slice(index + 1)];
-  //       relationshipIds = [
-  //         ...relationshipIds.slice(0, index),
-  //         ...relationshipIds.slice(index + 1),
-  //       ];
+          const query = this.client.readQuery<
+            Data["itemWithRelatedItems"],
+            Variables["itemWithRelatedItems"]
+          >({
+            variables: { relatedToId, relationId },
+            query: nodes["itemWithRelatedItems"],
+          });
 
-  //       this.client.writeQuery<
-  //         Data["itemWithRelatedItems"],
-  //         Variables["itemWithRelatedItems"]
-  //       >({
-  //         variables: { relatedToId, relationId },
-  //         query: nodes["itemWithRelatedItems"],
-  //         data: {
-  //           itemWithRelatedItems: {
-  //             ...itemWithRelatedItems,
-  //             items,
-  //             relationshipIds,
-  //           },
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
+          const itemWithRelatedItems = query?.itemWithRelatedItems;
+
+          if (itemWithRelatedItems) {
+            let items = itemWithRelatedItems.items;
+            let relationshipIds = itemWithRelatedItems.relationshipIds;
+
+            const index = items.findIndex((item) => item.id === relatedId);
+
+            if (index !== -1) {
+              items = [...items.slice(0, index), ...items.slice(index + 1)];
+              relationshipIds = [
+                ...relationshipIds.slice(0, index),
+                ...relationshipIds.slice(index + 1),
+              ];
+
+              this.client.writeQuery<
+                Data["itemWithRelatedItems"],
+                Variables["itemWithRelatedItems"]
+              >({
+                variables: { relatedToId, relationId },
+                query: nodes["itemWithRelatedItems"],
+                data: {
+                  itemWithRelatedItems: {
+                    ...itemWithRelatedItems,
+                    items,
+                    relationshipIds,
+                  },
+                },
+              });
+            }
+          }
+        }
+      }
+    }
+  }
 }
