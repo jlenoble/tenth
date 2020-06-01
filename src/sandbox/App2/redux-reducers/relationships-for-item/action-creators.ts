@@ -1,10 +1,12 @@
-import { Ids } from "../../types";
+import { ClientRelationship } from "../../types";
+
 import {
   ADD_RELATIONSHIP_FOR_ITEM,
   REMOVE_RELATIONSHIP_FOR_ITEM,
   ADD_RELATIONSHIPS_FOR_ITEM,
   REMOVE_RELATIONSHIPS_FOR_ITEM,
 } from "./consts";
+
 import {
   AddRelationshipForItemAction,
   RemoveRelationshipForItemAction,
@@ -13,28 +15,28 @@ import {
 } from "./actions";
 
 export const addRelationshipForItem = (
-  ids: Ids
+  relationship: ClientRelationship
 ): AddRelationshipForItemAction => ({
   type: ADD_RELATIONSHIP_FOR_ITEM,
-  payload: ids,
+  payload: relationship,
 });
 
 export const removeRelationshipForItem = (
-  ids: Ids
+  relationship: ClientRelationship
 ): RemoveRelationshipForItemAction => ({
   type: REMOVE_RELATIONSHIP_FOR_ITEM,
-  payload: ids,
+  payload: relationship,
 });
 
 export const addRelationshipsForItem = (
-  relationships: Ids[]
+  relationships: ClientRelationship[]
 ): AddRelationshipsForItemAction => ({
   type: ADD_RELATIONSHIPS_FOR_ITEM,
   payload: relationships,
 });
 
 export const removeRelationshipsForItem = (
-  relationships: Ids[]
+  relationships: ClientRelationship[]
 ): RemoveRelationshipsForItemAction => ({
   type: REMOVE_RELATIONSHIPS_FOR_ITEM,
   payload: relationships,
