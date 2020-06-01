@@ -4,12 +4,14 @@ import {
   REMOVE_VIEW_FOR_SUBITEM,
   ADD_VIEW_FOR_SUBITEMS,
   REMOVE_VIEW_FOR_SUBITEMS,
+  REMOVE_ALL_VIEWS_FOR_SUBITEM,
 } from "./consts";
 import {
   AddViewForSubItemAction,
   RemoveViewForSubItemAction,
   AddViewForSubItemsAction,
   RemoveViewForSubItemsAction,
+  RemoveAllViewsForSubItemAction,
 } from "./actions";
 
 export const addViewForSubItem = (
@@ -42,4 +44,11 @@ export const removeViewForSubItems = (
 ): RemoveViewForSubItemsAction => ({
   type: REMOVE_VIEW_FOR_SUBITEMS,
   payload: { ids, viewId },
+});
+
+export const removeAllViewsForSubItem = (
+  id: ItemId
+): RemoveAllViewsForSubItemAction => ({
+  type: REMOVE_ALL_VIEWS_FOR_SUBITEM,
+  payload: id,
 });

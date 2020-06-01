@@ -3,8 +3,9 @@ import {
   REMOVE_VIEW_FOR_SUBITEM,
   ADD_VIEW_FOR_SUBITEMS,
   REMOVE_VIEW_FOR_SUBITEMS,
+  REMOVE_ALL_VIEWS_FOR_SUBITEM,
 } from "./consts";
-import { ViewForSubItem, ViewForSubItems } from "../../types";
+import { ItemId, ViewForSubItem, ViewForSubItems } from "../../types";
 
 export type AddViewForSubItemAction = {
   type: typeof ADD_VIEW_FOR_SUBITEM;
@@ -26,8 +27,14 @@ export type RemoveViewForSubItemsAction = {
   payload: ViewForSubItems;
 };
 
+export type RemoveAllViewsForSubItemAction = {
+  type: typeof REMOVE_ALL_VIEWS_FOR_SUBITEM;
+  payload: ItemId;
+};
+
 export type ViewsForSubItemAction =
   | AddViewForSubItemAction
   | RemoveViewForSubItemAction
   | AddViewForSubItemsAction
-  | RemoveViewForSubItemsAction;
+  | RemoveViewForSubItemsAction
+  | RemoveAllViewsForSubItemAction;

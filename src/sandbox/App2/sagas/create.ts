@@ -12,6 +12,8 @@ import { Ids } from "../types";
 export function* createRelatedItemSaga(): SagaGenerator {
   const action: CreateRelatedItemAction = yield take(CREATE_RELATED_ITEM);
 
+  console.log(action);
+
   // const {
   //   payload: { item, relationship },
   //   meta: { optimisticId, begin, manager },

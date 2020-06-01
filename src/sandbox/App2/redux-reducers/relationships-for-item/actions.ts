@@ -3,8 +3,9 @@ import {
   REMOVE_RELATIONSHIP_FOR_ITEM,
   ADD_RELATIONSHIPS_FOR_ITEM,
   REMOVE_RELATIONSHIPS_FOR_ITEM,
+  REMOVE_ALL_RELATIONSHIPS_FOR_ITEM,
 } from "./consts";
-import { ClientRelationship } from "../../types";
+import { ItemId, ClientRelationship } from "../../types";
 
 export type AddRelationshipForItemAction = {
   type: typeof ADD_RELATIONSHIP_FOR_ITEM;
@@ -26,8 +27,14 @@ export type RemoveRelationshipsForItemAction = {
   payload: ClientRelationship[];
 };
 
+export type RemoveAllRelationshipsForItemAction = {
+  type: typeof REMOVE_ALL_RELATIONSHIPS_FOR_ITEM;
+  payload: ItemId;
+};
+
 export type RelationshipsForItemAction =
   | AddRelationshipForItemAction
   | RemoveRelationshipForItemAction
   | AddRelationshipsForItemAction
-  | RemoveRelationshipsForItemAction;
+  | RemoveRelationshipsForItemAction
+  | RemoveAllRelationshipsForItemAction;

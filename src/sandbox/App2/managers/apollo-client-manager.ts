@@ -29,6 +29,9 @@ import {
   destroyItem,
   getViewsForItem,
   getViewsForSubItem,
+  removeAllRelationshipsForItem,
+  removeAllViewsForItem,
+  removeAllViewsForSubItem,
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
@@ -204,6 +207,14 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
+  _updateReduxStoreOnItemDestroy(items: ClientItem[]): void {
+    for (const { id } of items) {
+      this.dispatch(removeAllRelationshipsForItem(id));
+      this.dispatch(removeAllViewsForItem(id));
+      this.dispatch(removeAllViewsForSubItem(id));
+    }
+  }
+
   updateOnCreateItem() {
     return (_: DataProxy, { data }: FetchResult<Data["createItem"]>): void => {
       const createItem = data?.createItem;
@@ -333,5 +344,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
         }
       }
     }
+
+    this._updateReduxStoreOnItemDestroy(items);
   }
 }

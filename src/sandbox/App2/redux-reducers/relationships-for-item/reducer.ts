@@ -9,6 +9,7 @@ import {
   REMOVE_RELATIONSHIP_FOR_ITEM,
   ADD_RELATIONSHIPS_FOR_ITEM,
   REMOVE_RELATIONSHIPS_FOR_ITEM,
+  REMOVE_ALL_RELATIONSHIPS_FOR_ITEM,
 } from "./consts";
 import { RelationshipsForItemAction } from "./actions";
 
@@ -95,6 +96,15 @@ State /*
 
         case REMOVE_RELATIONSHIPS_FOR_ITEM: {
           return action.payload.reduce(removeRelationshipForItemReducer, state);
+        }
+
+        case REMOVE_ALL_RELATIONSHIPS_FOR_ITEM: {
+          if (state.has(action.payload)) {
+            const newState = new Map(state);
+            newState.delete(action.payload);
+            return newState;
+          }
+          return state;
         }
 
         default:

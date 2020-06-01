@@ -1,7 +1,11 @@
 import { Reducer } from "redux";
 // import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { ViewForItem, ViewsForItemState as State } from "../../types";
-import { ADD_VIEW_FOR_ITEM, REMOVE_VIEW_FOR_ITEM } from "./consts";
+import {
+  ADD_VIEW_FOR_ITEM,
+  REMOVE_VIEW_FOR_ITEM,
+  REMOVE_ALL_VIEWS_FOR_ITEM,
+} from "./consts";
 import { ViewsForItemAction } from "./actions";
 
 const initialState: State = new Map();
@@ -51,6 +55,15 @@ export const viewsForItemReducer: Reducer</* OptimisticState<*/ State /* >*/> =
 
         case REMOVE_VIEW_FOR_ITEM: {
           return removeViewForItemReducer(state, action.payload);
+        }
+
+        case REMOVE_ALL_VIEWS_FOR_ITEM: {
+          if (state.has(action.payload)) {
+            const newState = new Map(state);
+            newState.delete(action.payload);
+            return newState;
+          }
+          return state;
         }
 
         default:

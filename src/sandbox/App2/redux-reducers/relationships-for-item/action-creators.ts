@@ -1,10 +1,11 @@
-import { ClientRelationship } from "../../types";
+import { ItemId, ClientRelationship } from "../../types";
 
 import {
   ADD_RELATIONSHIP_FOR_ITEM,
   REMOVE_RELATIONSHIP_FOR_ITEM,
   ADD_RELATIONSHIPS_FOR_ITEM,
   REMOVE_RELATIONSHIPS_FOR_ITEM,
+  REMOVE_ALL_RELATIONSHIPS_FOR_ITEM,
 } from "./consts";
 
 import {
@@ -12,6 +13,7 @@ import {
   RemoveRelationshipForItemAction,
   AddRelationshipsForItemAction,
   RemoveRelationshipsForItemAction,
+  RemoveAllRelationshipsForItemAction,
 } from "./actions";
 
 export const addRelationshipForItem = (
@@ -40,4 +42,11 @@ export const removeRelationshipsForItem = (
 ): RemoveRelationshipsForItemAction => ({
   type: REMOVE_RELATIONSHIPS_FOR_ITEM,
   payload: relationships,
+});
+
+export const removeAllRelationshipsForItem = (
+  id: ItemId
+): RemoveAllRelationshipsForItemAction => ({
+  type: REMOVE_ALL_RELATIONSHIPS_FOR_ITEM,
+  payload: id,
 });
