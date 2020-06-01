@@ -54,7 +54,7 @@ export const removeRelationshipForItemReducer = (
     ids: [id1, id2, id3],
   } = relationship;
 
-  if (state.get(id1)?.has(id)) {
+  if (!state.get(id1)?.has(id)) {
     return state;
   }
 
@@ -99,10 +99,14 @@ State /*
         }
 
         case REMOVE_ALL_RELATIONSHIPS_FOR_ITEM: {
-          if (state.has(action.payload)) {
-            const newState = new Map(state);
-            newState.delete(action.payload);
-            return newState;
+          const relationshipMap = state.get(action.payload);
+
+          if (relationshipMap) {
+            const relationships = Array.from(relationshipMap.values());
+            return relationships.reduce(
+              removeRelationshipForItemReducer,
+              state
+            );
           }
           return state;
         }
