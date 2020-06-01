@@ -21,7 +21,7 @@ const TwoCards: FunctionComponent = () => {
     closeRight,
     openRightRight,
     moveBack,
-  } = clientManager.hooks.useTwoCards();
+  } = clientManager.hooksManager.useTwoCards();
 
   // Counteract ListItem memoization to not leave UI in an inconsistent state
   // when currentPath is changed.

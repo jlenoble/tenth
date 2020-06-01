@@ -1,12 +1,10 @@
 import { ApolloClient } from "apollo-client";
-import { FetchResult } from "apollo-link";
-import { DataProxy } from "apollo-cache";
 import { NormalizedCacheObject } from "apollo-cache-inmemory";
 import { AnyAction, Store } from "redux";
 
 import { Data } from "../type-maps";
 import { State } from "../states";
-import { ReduxManager, OptimistManager } from "../../managers";
+import { ReduxManager, OptimistManager, UpdateManager } from "../../managers";
 
 export type Meta = {
   // optimisticId: number;
@@ -18,8 +16,9 @@ export type MetaAction<Action> = Action & { meta?: Meta };
 export interface ApolloClientManagerInterface {
   client: ApolloClient<NormalizedCacheObject>;
   store: Store;
-  redux: ReduxManager;
-  optimist: OptimistManager;
+  reduxManager: ReduxManager;
+  optimistManager: OptimistManager;
+  updateManager: UpdateManager;
 
   dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction>;
   select<TSelected = unknown>(selector: (state: State) => TSelected): TSelected;
@@ -28,19 +27,6 @@ export interface ApolloClientManagerInterface {
     data: Data["itemWithRelatedItems"]
   ) => void;
   onCompletedGetItemsById(): (data: Data["itemsById"]) => void;
-
-  updateOnCreateItem(): (
-    _: DataProxy,
-    { data }: FetchResult<Data["createItem"]>
-  ) => void;
-  updateOnDestroyItem(): (
-    _: DataProxy,
-    { data }: FetchResult<Data["destroyItem"]>
-  ) => void;
-  updateOnCreateRelatedItem(): (
-    _: DataProxy,
-    { data }: FetchResult<Data["createRelatedItem"]>
-  ) => void;
 
   destroyViews(
     items: Data["itemWithRelatedItems"]["itemWithRelatedItems"]["items"]

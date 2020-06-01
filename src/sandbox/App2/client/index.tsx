@@ -11,7 +11,7 @@ import { clientManager } from "./apollo-client-manager";
 const App: FunctionComponent = () => {
   return (
     <ApolloProvider client={clientManager.client}>
-      <Provider store={clientManager.redux.store}>
+      <Provider store={clientManager.reduxManager.store}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Main />

@@ -23,7 +23,7 @@ export function* destroyItemSaga(): SagaGenerator {
 
     if (item) {
       const { items, relationships } = yield call(() =>
-        manager.redux.destroyItem(id)
+        manager.reduxManager.destroyItem(id)
       );
 
       yield call(() => manager.removeFromViews(items));

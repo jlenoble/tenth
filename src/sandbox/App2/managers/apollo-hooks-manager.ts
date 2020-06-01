@@ -7,7 +7,7 @@ import {
   MutationHookOptions,
   MutationTuple,
 } from "@apollo/react-hooks";
-import { Store, AnyAction } from "redux";
+import { Store } from "redux";
 import { useSelector, shallowEqual } from "react-redux";
 
 import { nodes } from "../client/graphql-nodes";
@@ -15,9 +15,7 @@ import {
   ItemId,
   Data,
   Variables,
-  State,
   ApolloClientManagerInterface,
-  MetaAction,
 } from "../types";
 import {
   getCurrentPath,
@@ -30,6 +28,7 @@ import {
   decrementNCards,
 } from "../redux-reducers";
 import { OptimistManager } from "./optimist-manager";
+import { UpdateManager } from "./update-manager";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -43,21 +42,13 @@ export class ApolloHooksManager {
   public readonly clientManager: ApolloClientManagerInterface;
   public readonly store: Store;
   public readonly optimistManager: OptimistManager;
+  public readonly updateManager: UpdateManager;
 
   constructor(clientManager: ApolloClientManagerInterface) {
     this.clientManager = clientManager;
     this.store = clientManager.store;
-    this.optimistManager = clientManager.optimist;
-  }
-
-  dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
-    return this.clientManager.dispatch(action);
-  }
-
-  select<TSelected = unknown>(
-    selector: (state: State) => TSelected
-  ): TSelected {
-    return this.clientManager.select(selector);
+    this.optimistManager = clientManager.optimistManager;
+    this.updateManager = clientManager.updateManager;
   }
 
   useQuery<Key extends keyof Data>(
@@ -76,7 +67,7 @@ export class ApolloHooksManager {
 
   useAddItem(): (input?: string) => Promise<void> {
     const [addItem] = this.useMutation<"createItem">("createItem", {
-      update: this.clientManager.updateOnCreateItem(),
+      update: this.updateManager.createItem(),
     });
 
     const add = async (input = ""): Promise<void> => {
@@ -98,7 +89,7 @@ export class ApolloHooksManager {
       Data["createRelatedItem"],
       Variables["createRelatedItem"]
     >(nodes["createRelatedItem"], {
-      update: this.clientManager.updateOnCreateRelatedItem(),
+      update: this.updateManager.createRelatedItem(),
     });
 
     const add = async (input = ""): Promise<void> => {
@@ -117,7 +108,7 @@ export class ApolloHooksManager {
       Data["destroyItem"],
       Variables["destroyItem"]
     >(nodes["destroyItem"], {
-      update: this.clientManager.updateOnDestroyItem(),
+      update: this.updateManager.destroyItem(),
     });
 
     const makeDestroy = (id: ItemId) => async (): Promise<void> => {
@@ -227,35 +218,37 @@ export class ApolloHooksManager {
 
     const closeLeft = () => {
       if (rightOpened) {
-        this.dispatch(decrementNCards());
+        this.clientManager.dispatch(decrementNCards());
       } else {
-        this.dispatch(moveBackCurrentPath());
+        this.clientManager.dispatch(moveBackCurrentPath());
       }
     };
 
     const openRight = (id: ItemId) => {
       if (rightOpened) {
-        this.dispatch(setCurrentPathToSiblingPath(id));
+        this.clientManager.dispatch(setCurrentPathToSiblingPath(id));
       } else {
-        this.dispatch(incrementNCards());
-        this.dispatch(deepenCurrentPath(id));
+        this.clientManager.dispatch(incrementNCards());
+        this.clientManager.dispatch(deepenCurrentPath(id));
       }
     };
 
     const closeRight = () => {
-      this.dispatch(decrementNCards());
-      this.dispatch(moveBackCurrentPath());
+      this.clientManager.dispatch(decrementNCards());
+      this.clientManager.dispatch(moveBackCurrentPath());
     };
 
     const openRightRight = (id: ItemId) => {
-      this.dispatch(deepenCurrentPath(id));
+      this.clientManager.dispatch(deepenCurrentPath(id));
     };
 
     const moveBack = (index: number) => () => {
       if (index === 0) {
-        this.dispatch(decrementNCards());
+        this.clientManager.dispatch(decrementNCards());
       }
-      this.dispatch(setCurrentPath(currentPath.slice(0, index + 1)));
+      this.clientManager.dispatch(
+        setCurrentPath(currentPath.slice(0, index + 1))
+      );
     };
 
     return {

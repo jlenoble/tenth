@@ -6,3 +6,4 @@ export * from "./db-init-manager";
 export * from "./optimist-manager";
 export * from "./redux-manager";
 export * from "./saga-manager";
+export * from "./update-manager";

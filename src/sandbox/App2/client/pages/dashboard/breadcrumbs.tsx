@@ -6,7 +6,7 @@ import { Link } from "../../components";
 export const Breadcrumbs: FunctionComponent<{
   moveBack: (index: number) => () => void;
 }> = ({ moveBack }) => {
-  const { friendlyCurrentPath } = clientManager.hooks.useBreadcrumbs();
+  const { friendlyCurrentPath } = clientManager.hooksManager.useBreadcrumbs();
 
   return (
     <BaseBreadcrumbs aria-label="breadcrumb">

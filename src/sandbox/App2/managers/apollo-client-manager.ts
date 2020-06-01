@@ -1,6 +1,4 @@
 import { ApolloClient } from "apollo-client";
-import { FetchResult } from "apollo-link";
-import { DataProxy } from "apollo-cache";
 import {
   NormalizedCacheObject,
   InMemoryCache,
@@ -25,8 +23,6 @@ import {
   addRelationshipsForItem,
   addViewForItem,
   addViewForSubItems,
-  createRelatedItem,
-  destroyItem,
   getViewsForItem,
   getViewsForSubItem,
   removeAllRelationshipsForItem,
@@ -37,15 +33,17 @@ import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
 import { ReduxManager } from "./redux-manager";
 import { OptimistManager } from "./optimist-manager";
+import { UpdateManager } from "./update-manager";
 
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
   public readonly store: Store<State>;
   public readonly dataIdFromObject: IdGetter;
 
-  public readonly hooks: ApolloHooksManager;
-  public readonly redux: ReduxManager;
-  public readonly optimist: OptimistManager;
+  public readonly hooksManager: ApolloHooksManager;
+  public readonly reduxManager: ReduxManager;
+  public readonly optimistManager: OptimistManager;
+  public readonly updateManager: UpdateManager;
 
   private optimisticCacheLayers: any = new Map();
 
@@ -63,22 +61,23 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     this.dataIdFromObject = dataIdFromObject;
 
-    this.optimist = new OptimistManager(false);
-    this.redux = new ReduxManager({ log: true, clientManager: this });
-    this.store = this.redux.store;
-    this.hooks = new ApolloHooksManager(this);
+    this.optimistManager = new OptimistManager();
+    this.updateManager = new UpdateManager({ clientManager: this });
+    this.reduxManager = new ReduxManager({ log: true, clientManager: this });
+    this.store = this.reduxManager.store;
+    this.hooksManager = new ApolloHooksManager(this);
 
-    this.redux.sagaManager.run();
+    this.reduxManager.sagaManager.run();
   }
 
   dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
-    return this.redux.dispatch(action);
+    return this.reduxManager.dispatch(action);
   }
 
   select<TSelected = unknown>(
     selector: (state: State) => TSelected
   ): TSelected {
-    return this.redux.select(selector);
+    return this.reduxManager.select(selector);
   }
 
   onCompletedGetItemWithRelatedItems() {
@@ -167,39 +166,6 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       this.dispatch(removeAllViewsForItem(id));
       this.dispatch(removeAllViewsForSubItem(id));
     }
-  }
-
-  updateOnCreateItem() {
-    return (_: DataProxy, { data }: FetchResult<Data["createItem"]>): void => {
-      const createItem = data?.createItem;
-      if (createItem !== undefined) {
-        console.log("updateOnCreateItem", createItem);
-        // this._addItem(createItem);
-      }
-    };
-  }
-
-  updateOnDestroyItem() {
-    return (_: DataProxy, { data }: FetchResult<Data["destroyItem"]>): void => {
-      const item = data?.destroyItem;
-
-      if (item !== undefined) {
-        this.dispatch(destroyItem(item));
-      }
-    };
-  }
-
-  updateOnCreateRelatedItem() {
-    return (
-      _: DataProxy,
-      { data }: FetchResult<Data["createRelatedItem"]>
-    ): void => {
-      const item = data?.createRelatedItem;
-
-      if (item !== undefined) {
-        this.dispatch(createRelatedItem(item));
-      }
-    };
   }
 
   // _addRelatedItem(
