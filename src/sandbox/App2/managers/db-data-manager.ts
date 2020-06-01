@@ -1,9 +1,4 @@
-import {
-  DataManager,
-  RelationType,
-  Items,
-  Relationships,
-} from "./data-manager";
+import { DataManager, Items, Relationships } from "./data-manager";
 import { APIMap, ItemId, GQLItem, GQLRelationship, UserId } from "../types";
 
 export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
@@ -62,33 +57,23 @@ export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
     );
   }
 
-  async getRelationType(relationId: ItemId): Promise<RelationType> {
-    return RelationType.ltr;
-  }
-
   getUserId(item: GQLItem): Promise<UserId> {
     return Promise.resolve(item.userId);
   }
 
-  async filterStrongRelationships(
-    relationships: GQLRelationship[]
-  ): Promise<GQLRelationship[]> {
-    return relationships.filter(({ ids: [, relationId] }) => relationId === 2);
-  }
-
-  async bulkDestroyItems(ids: Items<GQLItem>): Promise<void> {
-    await this.dataSources.itemAPI.destroyItems({
-      ids: Array.from(ids.keys()),
+  async bulkDestroyItems(items: Items<GQLItem>): Promise<GQLItem[]> {
+    return await this.dataSources.itemAPI.destroyItems({
+      ids: Array.from(items.keys()),
     });
   }
 
   async bulkDestroyRelationships(
-    ids: Relationships<GQLRelationship>,
+    relationships: Relationships<GQLRelationship>,
     userId: UserId
-  ): Promise<void> {
-    await this.dataSources.relationshipAPI.destroyRelationships(
+  ): Promise<GQLRelationship[]> {
+    return await this.dataSources.relationshipAPI.destroyRelationships(
       {
-        ids: Array.from(ids.keys()),
+        ids: Array.from(relationships.keys()),
       },
       userId
     );

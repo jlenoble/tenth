@@ -46,18 +46,23 @@ export abstract class DataManager<
     relatedId: ItemId,
     relationId: ItemId
   ): Promise<Relationship[]>;
-  abstract async getRelationType(relationId: ItemId): Promise<RelationType>;
   abstract async getUserId(item: Item): Promise<UserId>;
 
-  abstract async filterStrongRelationships(
-    relationships: Relationship[]
-  ): Promise<Relationship[]>;
-
-  abstract async bulkDestroyItems(items: Items<Item>): Promise<void>;
+  abstract async bulkDestroyItems(items: Items<Item>): Promise<Item[]>;
   abstract async bulkDestroyRelationships(
     relationships: Relationships<Relationship>,
     userId: UserId
-  ): Promise<void>;
+  ): Promise<Relationship[]>;
+
+  async getRelationType(relationId: ItemId): Promise<RelationType> {
+    return RelationType.ltr;
+  }
+
+  async filterStrongRelationships(
+    relationships: Relationship[]
+  ): Promise<Relationship[]> {
+    return relationships.filter(({ ids: [, relationId] }) => relationId === 2);
+  }
 
   async collectStronglyRelatedDataForDestroyedItem(
     collector: Collector<Item, Relationship>,
@@ -215,7 +220,13 @@ export abstract class DataManager<
     };
   }
 
-  async destroyItem(id: ItemId): Promise<Item> {
+  async destroyItem(
+    id: ItemId
+  ): Promise<{
+    item: Item;
+    items: Item[];
+    relationships: Relationship[];
+  }> {
     const collector: Collector<Item, Relationship> = {
       items: new Map(),
       relationships: new Map(),
@@ -231,12 +242,12 @@ export abstract class DataManager<
       throw new Error("user is not identified");
     }
 
-    await this.bulkDestroyItems(collector.items);
-    await this.bulkDestroyRelationships(
+    const items = await this.bulkDestroyItems(collector.items);
+    const relationships = await this.bulkDestroyRelationships(
       collector.relationships,
       collector.userId
     );
 
-    return item;
+    return { item, items, relationships };
   }
 }
