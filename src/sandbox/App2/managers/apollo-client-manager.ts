@@ -22,9 +22,12 @@ import {
   addViewForSubItems,
   getViewsForItem,
   getViewsForSubItem,
+  getCurrentPath,
   removeAllRelationshipsForItem,
   removeAllViewsForItem,
   removeAllViewsForSubItem,
+  setCurrentPath,
+  setNCards,
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
@@ -146,6 +149,29 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       this.dispatch(removeAllRelationshipsForItem(id));
       this.dispatch(removeAllViewsForItem(id));
       this.dispatch(removeAllViewsForSubItem(id));
+
+      const currentPath = this.select(getCurrentPath);
+      const index = currentPath.indexOf(id);
+
+      switch (index) {
+        case -1: {
+          break;
+        }
+
+        case 0: {
+          throw new Error("Root item may not be removed from path");
+        }
+
+        case 1: {
+          this.dispatch(setNCards(1));
+          this.dispatch(setCurrentPath([currentPath[0]]));
+          break;
+        }
+
+        default: {
+          this.dispatch(setCurrentPath(currentPath.slice(0, index)));
+        }
+      }
     }
   }
 
