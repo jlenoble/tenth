@@ -34,6 +34,7 @@ import { ApolloHooksManager } from "./apollo-hooks-manager";
 import { ReduxManager } from "./redux-manager";
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
+import { CompletedManager } from "./completed-manager";
 
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
@@ -44,8 +45,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly reduxManager: ReduxManager;
   public readonly optimistManager: OptimistManager;
   public readonly updateManager: UpdateManager;
-
-  private optimisticCacheLayers: any = new Map();
+  public readonly completedManager: CompletedManager;
 
   constructor({
     link,
@@ -67,6 +67,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     this.optimistManager = new OptimistManager(optimist);
     this.updateManager = new UpdateManager({ clientManager: this });
+    this.completedManager = new CompletedManager({ clientManager: this });
     this.reduxManager = new ReduxManager({
       log,
       optimist,
@@ -88,37 +89,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     return this.reduxManager.select(selector);
   }
 
-  onCompletedGetItemWithRelatedItems() {
-    return (data: Data["itemWithRelatedItems"]): void => {
-      const itemWithRelatedItems = data.itemWithRelatedItems;
-
-      if (itemWithRelatedItems !== undefined) {
-        const { relation, item, items, relationshipIds } = itemWithRelatedItems;
-        const { id: relatedToId } = item;
-        const { id: relationId } = relation;
-
-        const relationships = relationshipIds.map((id, i) => {
-          return { id, ids: [relatedToId, relationId, items[i].id] };
-        });
-
-        this._updateReduxStoreOnCompletedQuery({
-          item,
-          relation,
-          items,
-          relationships,
-          viewId: this.dataIdFromObject(itemWithRelatedItems),
-        });
-      }
-    };
-  }
-
-  onCompletedGetItemsById() {
-    return (data: Data["itemsById"]): void => {
-      this._updateReduxStoreOnCompletedQuery({ items: data.itemsById });
-    };
-  }
-
-  _updateReduxStoreOnCompletedQuery({
+  addToStore({
     item,
     relation,
     items,
@@ -168,7 +139,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  _updateReduxStoreOnItemDestroy(items: ClientItem[]): void {
+  removeFromStore(items: ClientItem[]): void {
     for (const { id } of items) {
       this.dispatch(removeAllRelationshipsForItem(id));
       this.dispatch(removeAllViewsForItem(id));
@@ -273,6 +244,6 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       }
     }
 
-    this._updateReduxStoreOnItemDestroy(items);
+    this.removeFromStore(items);
   }
 }

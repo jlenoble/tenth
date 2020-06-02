@@ -29,6 +29,7 @@ import {
 } from "../redux-reducers";
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
+import { CompletedManager } from "./completed-manager";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -43,12 +44,14 @@ export class ApolloHooksManager {
   public readonly store: Store;
   public readonly optimistManager: OptimistManager;
   public readonly updateManager: UpdateManager;
+  public readonly completedManager: CompletedManager;
 
   constructor(clientManager: ApolloClientManagerInterface) {
     this.clientManager = clientManager;
     this.store = clientManager.store;
     this.optimistManager = clientManager.optimistManager;
     this.updateManager = clientManager.updateManager;
+    this.completedManager = clientManager.completedManager;
   }
 
   useQuery<Key extends keyof Data>(
@@ -134,7 +137,7 @@ export class ApolloHooksManager {
     return {
       ...this.useQuery<"itemsById">("itemsById", {
         variables: { ids },
-        onCompleted: this.clientManager.onCompletedGetItemsById(),
+        onCompleted: this.completedManager.getItemsById(),
       }),
       add: this.useAddItem(),
       makeDestroy: this.useMakeDestroyItem(),
@@ -158,7 +161,7 @@ export class ApolloHooksManager {
       Variables["itemWithRelatedItems"]
     >(nodes["itemWithRelatedItems"], {
       variables: { relatedToId, relationId },
-      onCompleted: this.clientManager.onCompletedGetItemWithRelatedItems(),
+      onCompleted: this.completedManager.getItemWithRelatedItems(),
     });
 
     const add = this.useAddRelatedItem(relatedToId, relationId);

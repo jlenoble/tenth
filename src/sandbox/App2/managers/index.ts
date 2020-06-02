@@ -1,5 +1,6 @@
 export * from "./apollo-client-manager";
 export * from "./apollo-hooks-manager";
+export * from "./completed-manager";
 export { DataManager } from "./data-manager";
 export { DbDataManager } from "./db-data-manager";
 export * from "./db-init-manager";
