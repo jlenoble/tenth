@@ -1,10 +1,10 @@
-import { defaultDataIdFromObject, IdGetter } from "apollo-cache-inmemory";
+import { defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 
 import { ApolloClientManager } from "../managers";
-import { ItemWithRelatedItems } from "../types";
+import { ItemWithRelatedItems, DataIdFromObject } from "../types";
 
-const dataIdFromObject: IdGetter = (object): string | null => {
+const dataIdFromObject: DataIdFromObject = (object): string | null => {
   switch (object.__typename) {
     case "ItemWithRelatedItems": {
       const {

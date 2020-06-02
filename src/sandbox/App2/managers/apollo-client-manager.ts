@@ -1,9 +1,5 @@
 import { ApolloClient } from "apollo-client";
-import {
-  NormalizedCacheObject,
-  InMemoryCache,
-  IdGetter,
-} from "apollo-cache-inmemory";
+import { NormalizedCacheObject, InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import { AnyAction, Store } from "redux";
 
@@ -16,6 +12,7 @@ import {
   ClientItem,
   ClientRelationship,
   MetaAction,
+  DataIdFromObject,
 } from "../types";
 import {
   addItems,
@@ -40,7 +37,7 @@ import { CompletedManager } from "./completed-manager";
 export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly client: ApolloClient<NormalizedCacheObject>;
   public readonly store: Store<State>;
-  public readonly dataIdFromObject: IdGetter;
+  public readonly dataIdFromObject: DataIdFromObject;
 
   public readonly apolloHooksManager: ApolloHooksManager;
   public readonly reduxHooksManager: ReduxHooksManager;
@@ -57,7 +54,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     optimist = true,
   }: {
     link: HttpLink;
-    dataIdFromObject: IdGetter;
+    dataIdFromObject: DataIdFromObject;
     log?: boolean;
     optimist?: boolean;
   }) {
@@ -152,40 +149,52 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  // _addRelatedItem(
-  //   item: ClientItem,
-  //   { id: relationshipId, ids: [relatedToId, relationId] }: ClientRelationship
-  // ): void {
-  //   const query = this.client.readQuery<
-  //     Data["itemWithRelatedItems"],
-  //     Variables["itemWithRelatedItems"]
-  //   >({
-  //     variables: { relatedToId, relationId },
-  //     query: nodes["itemWithRelatedItems"],
-  //   });
+  addRelatedItem(item: ClientItem, relationship: ClientRelationship): void {
+    const {
+      id: relationshipId,
+      ids: [relatedToId, relationId],
+    } = relationship;
 
-  //   const itemWithRelatedItems = query?.itemWithRelatedItems;
+    const query = this.client.readQuery<
+      Data["itemWithRelatedItems"],
+      Variables["itemWithRelatedItems"]
+    >({
+      variables: { relatedToId, relationId },
+      query: nodes["itemWithRelatedItems"],
+    });
 
-  //   if (itemWithRelatedItems) {
-  //     this.client.writeQuery<
-  //       Data["itemWithRelatedItems"],
-  //       Variables["itemWithRelatedItems"]
-  //     >({
-  //       variables: { relatedToId, relationId },
-  //       query: nodes["itemWithRelatedItems"],
-  //       data: {
-  //         itemWithRelatedItems: {
-  //           ...itemWithRelatedItems,
-  //           items: [...itemWithRelatedItems.items, item],
-  //           relationshipIds: [
-  //             ...itemWithRelatedItems.relationshipIds,
-  //             relationshipId,
-  //           ],
-  //         },
-  //       },
-  //     });
-  //   }
-  // }
+    const itemWithRelatedItems = query?.itemWithRelatedItems;
+
+    if (itemWithRelatedItems) {
+      this.client.writeQuery<
+        Data["itemWithRelatedItems"],
+        Variables["itemWithRelatedItems"]
+      >({
+        variables: { relatedToId, relationId },
+        query: nodes["itemWithRelatedItems"],
+        data: {
+          itemWithRelatedItems: {
+            ...itemWithRelatedItems,
+            items: [...itemWithRelatedItems.items, item],
+            relationshipIds: [
+              ...itemWithRelatedItems.relationshipIds,
+              relationshipId,
+            ],
+          },
+        },
+      });
+    }
+
+    this.addToStore({
+      items: [item],
+      relationships: [relationship],
+      viewId: this.dataIdFromObject({
+        __typename: "ItemWithRelatedItems",
+        item: { id: relatedToId },
+        relation: { id: relationId },
+      }),
+    });
+  }
 
   destroyViews(items: ClientItem[]): void {
     for (const item of items) {
