@@ -1,5 +1,4 @@
 import { Reducer } from "redux";
-// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import {
   ClientRelationship,
   RelationshipsForItemState as State,
@@ -75,47 +74,42 @@ export const removeRelationshipForItemReducer = (
   return newState;
 };
 
-export const relationshipsForItemReducer: Reducer</* OptimisticState<*/
-State /*
->*/> =
-  /* optimistic<State>(*/
-  ((state = initialState, action: RelationshipsForItemAction): State => {
-    if (action) {
-      switch (action.type) {
-        case ADD_RELATIONSHIP_FOR_ITEM: {
-          return addRelationshipForItemReducer(state, action.payload);
-        }
-
-        case REMOVE_RELATIONSHIP_FOR_ITEM: {
-          return removeRelationshipForItemReducer(state, action.payload);
-        }
-
-        case ADD_RELATIONSHIPS_FOR_ITEM: {
-          return action.payload.reduce(addRelationshipForItemReducer, state);
-        }
-
-        case REMOVE_RELATIONSHIPS_FOR_ITEM: {
-          return action.payload.reduce(removeRelationshipForItemReducer, state);
-        }
-
-        case REMOVE_ALL_RELATIONSHIPS_FOR_ITEM: {
-          const relationshipMap = state.get(action.payload);
-
-          if (relationshipMap) {
-            const relationships = Array.from(relationshipMap.values());
-            return relationships.reduce(
-              removeRelationshipForItemReducer,
-              state
-            );
-          }
-          return state;
-        }
-
-        default:
-          return state;
+export const relationshipsForItemReducer: Reducer<State> = ((
+  state = initialState,
+  action: RelationshipsForItemAction
+): State => {
+  if (action) {
+    switch (action.type) {
+      case ADD_RELATIONSHIP_FOR_ITEM: {
+        return addRelationshipForItemReducer(state, action.payload);
       }
-    }
 
-    return state;
-  }) as Reducer<State>; /*
-) as Reducer<OptimisticState<State>>*/
+      case REMOVE_RELATIONSHIP_FOR_ITEM: {
+        return removeRelationshipForItemReducer(state, action.payload);
+      }
+
+      case ADD_RELATIONSHIPS_FOR_ITEM: {
+        return action.payload.reduce(addRelationshipForItemReducer, state);
+      }
+
+      case REMOVE_RELATIONSHIPS_FOR_ITEM: {
+        return action.payload.reduce(removeRelationshipForItemReducer, state);
+      }
+
+      case REMOVE_ALL_RELATIONSHIPS_FOR_ITEM: {
+        const relationshipMap = state.get(action.payload);
+
+        if (relationshipMap) {
+          const relationships = Array.from(relationshipMap.values());
+          return relationships.reduce(removeRelationshipForItemReducer, state);
+        }
+        return state;
+      }
+
+      default:
+        return state;
+    }
+  }
+
+  return state;
+}) as Reducer<State>;

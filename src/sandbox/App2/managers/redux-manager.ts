@@ -6,7 +6,7 @@ import {
   Store,
   AnyAction,
 } from "redux";
-
+import { optimistic } from "redux-optimistic-ui";
 import { createLogger } from "redux-logger";
 import { SagaGenerator } from "../../../generics";
 
@@ -51,9 +51,11 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
 
   constructor({
     log = false,
+    optimist = true,
     clientManager,
   }: {
     log?: boolean;
+    optimist?: boolean;
     clientManager: ApolloClientManagerInterface;
   }) {
     super();
@@ -68,16 +70,32 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
 
     middleWares.push(sagaMiddleware);
 
+    const reducers = optimist
+      ? {
+          currentPath: optimistic<State["currentPath"]>(currentPath),
+          items: optimistic<State["items"]>(items),
+          nCards: optimistic<State["nCards"]>(nCards),
+          relationships: optimistic<State["relationships"]>(relationships),
+          relationshipsForItem: optimistic<State["relationshipsForItem"]>(
+            relationshipsForItem
+          ),
+          viewsForItem: optimistic<State["viewsForItem"]>(viewsForItem),
+          viewsForSubItem: optimistic<State["viewsForSubItem"]>(
+            viewsForSubItem
+          ),
+        }
+      : {
+          currentPath,
+          items,
+          nCards,
+          relationships,
+          relationshipsForItem,
+          viewsForItem,
+          viewsForSubItem,
+        };
+
     this.store = createStore(
-      combineReducers({
-        currentPath,
-        items,
-        nCards,
-        relationships,
-        relationshipsForItem,
-        viewsForItem,
-        viewsForSubItem,
-      }),
+      combineReducers(reducers),
       applyMiddleware(...middleWares)
     );
     this.sagaManager = new SagaManager();

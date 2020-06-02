@@ -1,5 +1,4 @@
 import { Reducer } from "redux";
-// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { CurrentPathState as State } from "../../types";
 import {
   DEEPEN_CURRENT_PATH,
@@ -23,40 +22,38 @@ if (
   initialState = [1];
 }
 
-export const currentPathReducer: Reducer</* OptimisticState<*/ State /* >*/> =
-  /* optimistic<
-  State
->(*/
-  ((state = initialState, action: CurrentPathAction): State => {
-    if (action) {
-      switch (action.type) {
-        case DEEPEN_CURRENT_PATH: {
-          return [...state, action.payload];
-        }
+export const currentPathReducer: Reducer<State> = ((
+  state = initialState,
+  action: CurrentPathAction
+): State => {
+  if (action) {
+    switch (action.type) {
+      case DEEPEN_CURRENT_PATH: {
+        return [...state, action.payload];
+      }
 
-        case MOVE_BACK_CURRENT_PATH: {
-          if (state.length > 1) {
-            return state.slice(0, state.length - 1);
-          }
-          break;
+      case MOVE_BACK_CURRENT_PATH: {
+        if (state.length > 1) {
+          return state.slice(0, state.length - 1);
         }
+        break;
+      }
 
-        case SET_CURRENT_PATH: {
-          return action.payload;
-        }
+      case SET_CURRENT_PATH: {
+        return action.payload;
+      }
 
-        case SET_CURRENT_PATH_TO_SIBLING_PATH: {
-          const newState = state.concat();
-          newState[state.length - 1] = action.payload;
-          return newState;
-        }
+      case SET_CURRENT_PATH_TO_SIBLING_PATH: {
+        const newState = state.concat();
+        newState[state.length - 1] = action.payload;
+        return newState;
+      }
 
-        default: {
-          return state;
-        }
+      default: {
+        return state;
       }
     }
+  }
 
-    return state;
-  }) as Reducer<State>; /*
-) as Reducer<OptimisticState<State>>*/
+  return state;
+}) as Reducer<State>;

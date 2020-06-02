@@ -1,5 +1,4 @@
 import { Reducer } from "redux";
-// import { optimistic, OptimisticState } from "redux-optimistic-ui";
 import { ViewForItem, ViewsForItemState as State } from "../../types";
 import {
   ADD_VIEW_FOR_ITEM,
@@ -42,35 +41,33 @@ export const removeViewForItemReducer = (
   return newState;
 };
 
-export const viewsForItemReducer: Reducer</* OptimisticState<*/ State /* >*/> =
-  /* optimistic<
-  State
->(*/
-  ((state = initialState, action: ViewsForItemAction): State => {
-    if (action) {
-      switch (action.type) {
-        case ADD_VIEW_FOR_ITEM: {
-          return addViewForItemReducer(state, action.payload);
-        }
-
-        case REMOVE_VIEW_FOR_ITEM: {
-          return removeViewForItemReducer(state, action.payload);
-        }
-
-        case REMOVE_ALL_VIEWS_FOR_ITEM: {
-          if (state.has(action.payload)) {
-            const newState = new Map(state);
-            newState.delete(action.payload);
-            return newState;
-          }
-          return state;
-        }
-
-        default:
-          return state;
+export const viewsForItemReducer: Reducer<State> = ((
+  state = initialState,
+  action: ViewsForItemAction
+): State => {
+  if (action) {
+    switch (action.type) {
+      case ADD_VIEW_FOR_ITEM: {
+        return addViewForItemReducer(state, action.payload);
       }
-    }
 
-    return state;
-  }) as Reducer<State>; /*
-) as Reducer<OptimisticState<State>>*/
+      case REMOVE_VIEW_FOR_ITEM: {
+        return removeViewForItemReducer(state, action.payload);
+      }
+
+      case REMOVE_ALL_VIEWS_FOR_ITEM: {
+        if (state.has(action.payload)) {
+          const newState = new Map(state);
+          newState.delete(action.payload);
+          return newState;
+        }
+        return state;
+      }
+
+      default:
+        return state;
+    }
+  }
+
+  return state;
+}) as Reducer<State>;
