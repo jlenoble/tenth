@@ -13,8 +13,6 @@ import {
 import { ClientItem, ClientRelationship, ViewId } from "../models";
 
 export type Meta = {
-  // optimisticId: number;
-  // begin: boolean;
   manager: ApolloClientManagerInterface;
 };
 export type MetaAction<Action> = Action & { meta?: Meta };

@@ -7,35 +7,31 @@ export * from "./views-for-item";
 export * from "./views-for-subitem";
 export * from "./selectors";
 
-import { Data /* , Meta, MetaAction*/ } from "../types";
+import { Data } from "../types";
 
 export const CREATE_RELATED_ITEM = "CREATE_RELATED_ITEM";
 export const DESTROY_ITEM = "DESTROY_ITEM";
 
-export type CreateRelatedItemAction = /* MetaAction<*/ {
+export type CreateRelatedItemAction = {
   type: typeof CREATE_RELATED_ITEM;
   payload: Data["createRelatedItem"]["createRelatedItem"];
-}; /* >;*/
+};
 
-export type DestroyItemAction = /* MetaAction<*/ {
+export type DestroyItemAction = {
   type: typeof DESTROY_ITEM;
   payload: Data["destroyItem"]["destroyItem"];
-}; /* >;*/
+};
 
 export const createRelatedItem = (
-  item: Data["createRelatedItem"]["createRelatedItem"] /* ,
-  meta: Meta*/
+  item: Data["createRelatedItem"]["createRelatedItem"]
 ): CreateRelatedItemAction => ({
   type: CREATE_RELATED_ITEM,
   payload: item,
-  /* meta,*/
 });
 
 export const destroyItem = (
-  item: Data["destroyItem"]["destroyItem"] /* ,
-  meta: Meta*/
+  item: Data["destroyItem"]["destroyItem"]
 ): DestroyItemAction => ({
   type: DESTROY_ITEM,
   payload: item,
-  /* meta,*/
 });
