@@ -7,8 +7,6 @@ import {
   MutationHookOptions,
   MutationTuple,
 } from "@apollo/react-hooks";
-import { Store } from "redux";
-import { useSelector, shallowEqual } from "react-redux";
 
 import { nodes } from "../client/graphql-nodes";
 import {
@@ -17,16 +15,7 @@ import {
   Variables,
   ApolloClientManagerInterface,
 } from "../types";
-import {
-  getCurrentPath,
-  getCurrentPathAndNCards,
-  deepenCurrentPath,
-  moveBackCurrentPath,
-  setCurrentPath,
-  setCurrentPathToSiblingPath,
-  incrementNCards,
-  decrementNCards,
-} from "../redux-reducers";
+
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
 import { CompletedManager } from "./completed-manager";
@@ -41,14 +30,12 @@ type UseItems<Key extends keyof Data> = {
 
 export class ApolloHooksManager {
   public readonly clientManager: ApolloClientManagerInterface;
-  public readonly store: Store;
   public readonly optimistManager: OptimistManager;
   public readonly updateManager: UpdateManager;
   public readonly completedManager: CompletedManager;
 
   constructor(clientManager: ApolloClientManagerInterface) {
     this.clientManager = clientManager;
-    this.store = clientManager.store;
     this.optimistManager = clientManager.optimistManager;
     this.updateManager = clientManager.updateManager;
     this.completedManager = clientManager.completedManager;
@@ -176,16 +163,15 @@ export class ApolloHooksManager {
     };
   }
 
-  useBreadcrumbs(): {
-    currentPath: ItemId[];
+  useBreadcrumbs(
+    currentPath: ItemId[]
+  ): {
     friendlyCurrentPath: string[];
   } {
-    const currentPath = useSelector(getCurrentPath);
     const { data, loading, error } = this.useItemsById(currentPath);
 
     if (!loading && !error && data) {
       return {
-        currentPath,
         friendlyCurrentPath: currentPath.map((id) => {
           const item = data.itemsById.find((item) => item.id === id);
           return item?.title || "" + id;
@@ -193,77 +179,6 @@ export class ApolloHooksManager {
       };
     }
 
-    return { currentPath, friendlyCurrentPath: [] };
-  }
-
-  useTwoCards(): {
-    currentPath: ItemId[];
-    leftItemId: ItemId;
-    rightItemId: ItemId;
-    rightOpened: boolean;
-    closeLeft: () => void;
-    openRight: (id: ItemId) => void;
-    closeRight: () => void;
-    openRightRight: (id: ItemId) => void;
-    moveBack: (id: ItemId) => () => void;
-  } {
-    const { currentPath, nCards } = useSelector(
-      getCurrentPathAndNCards,
-      shallowEqual
-    );
-    const rightOpened = nCards > 1 && currentPath.length > 1;
-    const [leftItemId, rightItemId] = rightOpened
-      ? [
-          currentPath[currentPath.length - 2],
-          currentPath[currentPath.length - 1],
-        ]
-      : [currentPath[currentPath.length - 1], 0];
-
-    const closeLeft = () => {
-      if (rightOpened) {
-        this.clientManager.dispatch(decrementNCards());
-      } else {
-        this.clientManager.dispatch(moveBackCurrentPath());
-      }
-    };
-
-    const openRight = (id: ItemId) => {
-      if (rightOpened) {
-        this.clientManager.dispatch(setCurrentPathToSiblingPath(id));
-      } else {
-        this.clientManager.dispatch(incrementNCards());
-        this.clientManager.dispatch(deepenCurrentPath(id));
-      }
-    };
-
-    const closeRight = () => {
-      this.clientManager.dispatch(decrementNCards());
-      this.clientManager.dispatch(moveBackCurrentPath());
-    };
-
-    const openRightRight = (id: ItemId) => {
-      this.clientManager.dispatch(deepenCurrentPath(id));
-    };
-
-    const moveBack = (index: number) => () => {
-      if (index === 0) {
-        this.clientManager.dispatch(decrementNCards());
-      }
-      this.clientManager.dispatch(
-        setCurrentPath(currentPath.slice(0, index + 1))
-      );
-    };
-
-    return {
-      currentPath,
-      leftItemId,
-      rightItemId,
-      rightOpened,
-      closeLeft,
-      openRight,
-      closeRight,
-      openRightRight,
-      moveBack,
-    };
+    return { friendlyCurrentPath: [] };
   }
 }

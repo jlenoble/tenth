@@ -21,7 +21,7 @@ const TwoCards: FunctionComponent = () => {
     closeRight,
     openRightRight,
     moveBack,
-  } = clientManager.hooksManager.useTwoCards();
+  } = clientManager.reduxHooksManager.useTwoCards();
 
   // Counteract ListItem memoization to not leave UI in an inconsistent state
   // when currentPath is changed.
@@ -30,7 +30,7 @@ const TwoCards: FunctionComponent = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Breadcrumbs moveBack={moveBack} />
+        <Breadcrumbs currentPath={currentPath} moveBack={moveBack} />
       </Grid>
       <Grid item xs={12} md={rightOpened ? 6 : 12}>
         <RelatedItemsCard

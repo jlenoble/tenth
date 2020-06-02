@@ -2,11 +2,15 @@ import React, { FunctionComponent } from "react";
 import { Breadcrumbs as BaseBreadcrumbs } from "@material-ui/core";
 import { clientManager } from "../../apollo-client-manager";
 import { Link } from "../../components";
+import { ItemId } from "../../../types";
 
 export const Breadcrumbs: FunctionComponent<{
+  currentPath: ItemId[];
   moveBack: (index: number) => () => void;
-}> = ({ moveBack }) => {
-  const { friendlyCurrentPath } = clientManager.hooksManager.useBreadcrumbs();
+}> = ({ currentPath, moveBack }) => {
+  const {
+    friendlyCurrentPath,
+  } = clientManager.apolloHooksManager.useBreadcrumbs(currentPath);
 
   return (
     <BaseBreadcrumbs aria-label="breadcrumb">

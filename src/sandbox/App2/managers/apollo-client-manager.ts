@@ -31,6 +31,7 @@ import {
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
+import { ReduxHooksManager } from "./redux-hooks-manager";
 import { ReduxManager } from "./redux-manager";
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
@@ -41,7 +42,9 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   public readonly store: Store<State>;
   public readonly dataIdFromObject: IdGetter;
 
-  public readonly hooksManager: ApolloHooksManager;
+  public readonly apolloHooksManager: ApolloHooksManager;
+  public readonly reduxHooksManager: ReduxHooksManager;
+
   public readonly reduxManager: ReduxManager;
   public readonly optimistManager: OptimistManager;
   public readonly updateManager: UpdateManager;
@@ -74,7 +77,9 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       clientManager: this,
     });
     this.store = this.reduxManager.store;
-    this.hooksManager = new ApolloHooksManager(this);
+
+    this.apolloHooksManager = new ApolloHooksManager(this);
+    this.reduxHooksManager = new ReduxHooksManager(this);
 
     this.reduxManager.sagaManager.run();
   }

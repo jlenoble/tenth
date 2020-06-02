@@ -6,5 +6,6 @@ export { DbDataManager } from "./db-data-manager";
 export * from "./db-init-manager";
 export * from "./optimist-manager";
 export * from "./redux-manager";
+export * from "./redux-hooks-manager";
 export * from "./saga-manager";
 export * from "./update-manager";

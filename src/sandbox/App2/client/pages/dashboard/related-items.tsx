@@ -16,7 +16,7 @@ export const RelatedItemsCard: FunctionComponent<{
     error,
     add,
     makeDestroy,
-  } = clientManager.hooksManager.useRelatedItems(relatedToId, 2);
+  } = clientManager.apolloHooksManager.useRelatedItems(relatedToId, 2);
 
   if (loading) return <ListCard title="" listItems={[]} />;
 
