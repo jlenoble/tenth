@@ -29,4 +29,5 @@ const link = new HttpLink({
 export const clientManager = new ApolloClientManager({
   link,
   dataIdFromObject,
+  log: true,
 });

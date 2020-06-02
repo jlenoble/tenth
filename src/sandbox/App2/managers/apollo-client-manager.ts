@@ -50,9 +50,11 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   constructor({
     link,
     dataIdFromObject,
+    log = false,
   }: {
     link: HttpLink;
     dataIdFromObject: IdGetter;
+    log?: boolean;
   }) {
     this.client = new ApolloClient({
       cache: new InMemoryCache({ dataIdFromObject }),
@@ -63,7 +65,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     this.optimistManager = new OptimistManager();
     this.updateManager = new UpdateManager({ clientManager: this });
-    this.reduxManager = new ReduxManager({ log: true, clientManager: this });
+    this.reduxManager = new ReduxManager({ log, clientManager: this });
     this.store = this.reduxManager.store;
     this.hooksManager = new ApolloHooksManager(this);
 
