@@ -6,16 +6,12 @@ import { createRelatedItem, destroyItem } from "../redux-reducers";
 
 export class UpdateManager {
   public readonly clientManager: ApolloClientManagerInterface;
-  private enabled: boolean;
 
   constructor({
-    enabled = true,
     clientManager,
   }: {
-    enabled?: boolean;
     clientManager: ApolloClientManagerInterface;
   }) {
-    this.enabled = enabled;
     this.clientManager = clientManager;
   }
 
