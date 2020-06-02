@@ -67,9 +67,23 @@ export const removeRelationshipForItemReducer = (
   newViews2.delete(id);
   newViews3.delete(id);
 
-  newState.set(id1, newViews1);
-  newState.set(id2, newViews2);
-  newState.set(id3, newViews3);
+  if (newViews1.size) {
+    newState.set(id1, newViews1);
+  } else {
+    newState.delete(id1);
+  }
+
+  if (newViews2.size) {
+    newState.set(id2, newViews2);
+  } else {
+    newState.delete(id2);
+  }
+
+  if (newViews3.size) {
+    newState.set(id3, newViews3);
+  } else {
+    newState.delete(id3);
+  }
 
   return newState;
 };

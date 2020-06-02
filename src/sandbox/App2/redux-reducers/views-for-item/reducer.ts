@@ -36,7 +36,12 @@ export const removeViewForItemReducer = (
   const newState = new Map(state);
   const newViews = new Set(newState.get(id));
   newViews.delete(viewId);
-  newState.set(id, newViews);
+
+  if (newViews.size) {
+    newState.set(id, newViews);
+  } else {
+    newState.delete(id);
+  }
 
   return newState;
 };
