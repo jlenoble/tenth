@@ -30,5 +30,5 @@ export const clientManager = new ApolloClientManager({
   link,
   dataIdFromObject,
   log: true,
-  optimist: false,
+  // optimist: false,
 });

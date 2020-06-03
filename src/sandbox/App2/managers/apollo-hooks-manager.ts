@@ -19,6 +19,7 @@ import {
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
 import { CompletedManager } from "./completed-manager";
+import { destroyItem } from "../redux-reducers";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -83,11 +84,38 @@ export class ApolloHooksManager {
     });
 
     const add = async (input = ""): Promise<void> => {
-      const variables = { relatedToId, relationId, title: input };
-      await addItem({
-        variables,
-        optimisticResponse: this.optimistManager.createRelatedItem(variables),
-      });
+      const variables = {
+        relatedToId,
+        relationId,
+        title: input,
+      };
+
+      const optimisticResponse = this.optimistManager.createRelatedItem(
+        variables
+      );
+
+      try {
+        await addItem({
+          variables,
+          optimisticResponse,
+        });
+      } catch (e) {
+        switch (e.message) {
+          case "Network error: Failed to fetch":
+            throw new Error(`Network unavailable: Failed to add "${input}"`);
+
+          default:
+            throw e;
+        }
+      } finally {
+        if (optimisticResponse) {
+          // Destroy in cascade tmp item and relationship and their refs.
+          // Apollo has already updated/reverted the UI. All tmp elements are already unmounted.
+          this.clientManager.dispatch(
+            destroyItem(optimisticResponse.createRelatedItem.item)
+          );
+        }
+      }
     };
 
     return add;
