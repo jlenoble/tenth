@@ -68,7 +68,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     this.dataIdFromObject = dataIdFromObject;
 
-    this.optimistManager = new OptimistManager(optimist);
+    this.optimistManager = new OptimistManager({
+      enabled: optimist,
+      clientManager: this,
+    });
     this.updateManager = new UpdateManager({ clientManager: this });
     this.completedManager = new CompletedManager({ clientManager: this });
     this.reduxManager = new ReduxManager({

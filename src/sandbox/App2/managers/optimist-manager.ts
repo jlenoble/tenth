@@ -1,13 +1,22 @@
-import { Variables, Data } from "../types";
+import { Variables, Data, ApolloClientManagerInterface } from "../types";
 
 let _id = 0;
 const tmpId = (): number => --_id;
 
 export class OptimistManager {
+  public readonly clientManager: ApolloClientManagerInterface;
+
   private enabled: boolean;
 
-  constructor(enabled = true) {
+  constructor({
+    enabled = true,
+    clientManager,
+  }: {
+    enabled: boolean;
+    clientManager: ApolloClientManagerInterface;
+  }) {
     this.enabled = enabled;
+    this.clientManager = clientManager;
   }
 
   createItem(item: Variables["createItem"]): Data["createItem"] | undefined {
