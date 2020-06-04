@@ -88,13 +88,13 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   }
 
   dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
-    return this.reduxManager.dispatch(action);
+    return this.store.dispatch(action);
   }
 
   select<TSelected = unknown>(
     selector: (state: State) => TSelected
   ): TSelected {
-    return this.reduxManager.select(selector);
+    return selector(this.store.getState());
   }
 
   addToStore({

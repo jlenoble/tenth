@@ -4,7 +4,6 @@ import {
   combineReducers,
   Middleware,
   Store,
-  AnyAction,
 } from "redux";
 import { optimistic } from "redux-optimistic-ui";
 import { createLogger } from "redux-logger";
@@ -39,7 +38,6 @@ import {
   UserId,
   State,
   ApolloClientManagerInterface,
-  MetaAction,
 } from "../types";
 
 type SagaMap = { [key: string]: () => SagaGenerator };
@@ -105,21 +103,8 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     });
   }
 
-  dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
-    return this.store.dispatch({
-      ...action,
-      meta: { manager: this.clientManager },
-    });
-  }
-
-  select<TSelected = unknown>(
-    selector: (state: State) => TSelected
-  ): TSelected {
-    return selector(this.store.getState());
-  }
-
   async getItem(id: ItemId): Promise<ClientItem> {
-    const item = await this.select(getItem(id));
+    const item = await this.clientManager.select(getItem(id));
     if (item) {
       return item;
     }
@@ -127,19 +112,19 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
   }
 
   async getItems(ids: ItemId[]): Promise<ClientItem[]> {
-    const items = await this.select(getItemsById(ids));
+    const items = await this.clientManager.select(getItemsById(ids));
     return items;
   }
 
   async getRelationshipsForItem(id: ItemId): Promise<ClientRelationship[]> {
-    return this.select(getRelationshipsForItem(id));
+    return this.clientManager.select(getRelationshipsForItem(id));
   }
 
   async getRelationshipsForItemAndRelation(
     id: ItemId,
     relationId: ItemId
   ): Promise<ClientRelationship[]> {
-    return this.select(
+    return this.clientManager.select(
       getRelationshipsForItemAndRelation({
         id,
         relationId,
@@ -151,7 +136,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     relatedToId: ItemId,
     relationId: ItemId
   ): Promise<ClientRelationship[]> {
-    return this.select(
+    return this.clientManager.select(
       getRelationshipsForLeftItemAndRelation({ relatedToId, relationId })
     );
   }
@@ -160,7 +145,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     relatedId: ItemId,
     relationId: ItemId
   ): Promise<ClientRelationship[]> {
-    return this.select(
+    return this.clientManager.select(
       getRelationshipsForRightItemAndRelation({
         relatedId,
         relationId,
@@ -174,14 +159,16 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
   }
 
   async bulkDestroyItems(items: Items<ClientItem>): Promise<ClientItem[]> {
-    await this.dispatch(removeItems(Array.from(items.keys())));
+    await this.clientManager.dispatch(removeItems(Array.from(items.keys())));
     return Array.from(items.values());
   }
 
   async bulkDestroyRelationships(
     relationships: Relationships<ClientRelationship>
   ): Promise<ClientRelationship[]> {
-    await this.dispatch(removeRelationships(Array.from(relationships.keys())));
+    await this.clientManager.dispatch(
+      removeRelationships(Array.from(relationships.keys()))
+    );
     return Array.from(relationships.values());
   }
 }
