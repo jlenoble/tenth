@@ -1,15 +1,18 @@
-import { AnyAction } from "redux";
-import { OptimisticAction } from "redux-optimistic-ui";
+import { BEGIN, COMMIT, REVERT } from "redux-optimistic-ui";
 import {
   Variables,
   Data,
   ApolloClientManagerInterface,
+  FSA,
+  Meta,
   MetaAction,
+  OptimisticAction,
+  Optimistic,
 } from "../types";
 
-type OptimisticInit<
-  T extends "createItem" | "destroyItem" | "createRelatedItem"
-> = {
+type Mutations = "createItem" | "destroyItem" | "createRelatedItem";
+
+type OptimisticInit<T extends Mutations> = {
   optimisticResponse?: Data[T];
   variables: Variables[T];
 };
@@ -17,10 +20,16 @@ type OptimisticInit<
 let _id = 0;
 const tmpId = (): number => --_id;
 
-const isOptimisticAction = <TAction extends AnyAction>(
-  action: TAction
-): action is MetaAction<TAction> & OptimisticAction => {
-  const optimistic = action.meta?.optimistic || {};
+const isOptimisticAction = <
+  P,
+  M extends Partial<Optimistic>,
+  E extends Error = Error
+>(
+  action: FSA<P, M, E>
+): action is OptimisticAction<P, M, E> => {
+  const optimistic: Partial<Optimistic["optimistic"]> =
+    action.meta?.optimistic || {};
+
   return (
     Object.getOwnPropertyNames(optimistic).length === 2 &&
     typeof optimistic.id === "number" &&
@@ -44,88 +53,87 @@ export class OptimistManager {
     this.clientManager = clientManager;
   }
 
-  optimisticAction<TAction extends AnyAction>(
-    action: TAction
-  ): MetaAction<TAction> {
+  optimisticAction<
+    P,
+    M extends Partial<Meta & Optimistic>,
+    E extends Error = Error
+  >(action: FSA<P, M, E>): OptimisticAction<P, M, E> {
+    const meta: Meta & Optimistic = { manager: this.clientManager };
+
     if (this.enabled) {
-      if (!isOptimisticAction(action)) {
-        const meta = { ...action.meta };
-      }
+      // if (!isOptimisticAction(action)) {
+      //   meta.optimistic = {
+      //     type: BEGIN,
+      //     id: action.payload?.optimisticId || tmpId(),
+      //   };
+      //   // create optimistic BEGIN (get optimistic id from user action or attribute new (cascade action))
+      //   // for this id, map it ( or Set?)
+      // }
     }
 
-    return action;
+    return { ...action, meta: { ...action.meta, ...meta } };
+  }
+
+  optimisticInit<T extends Mutations>(
+    variables: Variables[T],
+    optimisticResponse: Data[T]
+  ): OptimisticInit<T> {
+    if (this.enabled) {
+      const optimisticId = tmpId();
+
+      const init: OptimisticInit<T> = {
+        variables: { ...variables, optimisticId },
+        optimisticResponse: { ...optimisticResponse, optimisticId },
+      };
+
+      return init;
+    }
+
+    return { optimisticResponse, variables };
   }
 
   createItem(item: Variables["createItem"]): OptimisticInit<"createItem"> {
-    const init: OptimisticInit<"createItem"> = { variables: { ...item } };
-
-    if (this.enabled) {
-      init.optimisticResponse = {
-        __typename: "Mutation",
-        optimisticId: tmpId(),
-        createItem: {
-          __typename: "Item",
-          id: tmpId(),
-          ...item,
-        },
-      };
-    }
-
-    return init;
+    return this.optimisticInit<"createItem">(item, {
+      __typename: "Mutation",
+      createItem: {
+        __typename: "Item",
+        id: tmpId(),
+        ...item,
+      },
+    });
   }
 
   destroyItem(item: Variables["destroyItem"]): OptimisticInit<"destroyItem"> {
-    const init: OptimisticInit<"destroyItem"> = { variables: { ...item } };
-
-    if (this.enabled) {
-      init.optimisticResponse = {
-        __typename: "Mutation",
-        optimisticId: tmpId(),
-        destroyItem: {
-          __typename: "Item",
-          ...item,
-        },
-      };
-    }
-
-    return init;
-  }
-
-  createRelatedItem({
-    relatedToId,
-    relationId,
-    ...item
-  }: Variables["createRelatedItem"]): OptimisticInit<"createRelatedItem"> {
-    const init: OptimisticInit<"createRelatedItem"> = {
-      variables: {
-        relatedToId,
-        relationId,
+    return this.optimisticInit<"destroyItem">(item, {
+      __typename: "Mutation",
+      destroyItem: {
+        __typename: "Item",
         ...item,
       },
-    };
+    });
+  }
 
-    if (this.enabled) {
-      const relatedId = tmpId();
+  createRelatedItem(
+    variables: Variables["createRelatedItem"]
+  ): OptimisticInit<"createRelatedItem"> {
+    const { relatedToId, relationId, ...item } = variables;
+    const relatedId = tmpId();
 
-      init.optimisticResponse = {
-        __typename: "Mutation",
-        optimisticId: tmpId(),
-        createRelatedItem: {
-          __typename: "RelatedItem",
-          item: {
-            __typename: "Item",
-            id: relatedId,
-            ...item,
-          },
-          relationship: {
-            __typename: "Relationship",
-            id: tmpId(),
-            ids: [relatedToId, relationId, relatedId],
-          },
+    return this.optimisticInit<"createRelatedItem">(variables, {
+      __typename: "Mutation",
+      createRelatedItem: {
+        __typename: "RelatedItem",
+        item: {
+          __typename: "Item",
+          id: relatedId,
+          ...item,
         },
-      };
-    }
-
-    return init;
+        relationship: {
+          __typename: "Relationship",
+          id: tmpId(),
+          ids: [relatedToId, relationId, relatedId],
+        },
+      },
+    });
   }
 }
