@@ -5,6 +5,8 @@ export const mutationResolvers: Required<Omit<
   MutationResolvers<DataSources, Record<string, unknown>>,
   "_empty" | "destroyRelatedItem" | "destroyRelationships"
 >> = {
+  optimisticId: (_, { optimisticId }) => optimisticId || null,
+
   createItem: (_, item, { dataSources: { itemAPI } }) =>
     itemAPI.createItem(item),
   updateItem: (_, item, { dataSources: { itemAPI } }) =>

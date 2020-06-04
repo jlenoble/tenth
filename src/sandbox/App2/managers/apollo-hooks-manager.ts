@@ -63,10 +63,7 @@ export class ApolloHooksManager {
 
     const add = async (input = ""): Promise<void> => {
       const variables = { title: input };
-      await addItem({
-        variables,
-        optimisticResponse: this.optimistManager.createItem(variables),
-      });
+      await addItem(this.optimistManager.createItem(variables));
     };
 
     return add;
@@ -84,15 +81,16 @@ export class ApolloHooksManager {
     });
 
     const add = async (input = ""): Promise<void> => {
-      const variables = {
+      const _variables = {
         relatedToId,
         relationId,
         title: input,
       };
 
-      const optimisticResponse = this.optimistManager.createRelatedItem(
-        variables
-      );
+      const {
+        variables,
+        optimisticResponse,
+      } = this.optimistManager.createRelatedItem(_variables);
 
       try {
         await addItem({
@@ -131,10 +129,7 @@ export class ApolloHooksManager {
 
     const makeDestroy = (id: ItemId) => async (): Promise<void> => {
       const variables = { id };
-      await destroyItem({
-        variables,
-        optimisticResponse: this.optimistManager.destroyItem(variables),
-      });
+      await destroyItem(this.optimistManager.destroyItem(variables));
     };
 
     return makeDestroy;

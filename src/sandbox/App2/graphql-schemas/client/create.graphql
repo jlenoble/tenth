@@ -1,11 +1,13 @@
-mutation CreateItem($title: String!) {
+mutation CreateItem($title: String!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
   createItem(title: $title) {
     id
     title
   }
 }
 
-mutation CreateRelatedItem($relatedToId: Int!, $relationId: Int!, $title: String!) {
+mutation CreateRelatedItem($relatedToId: Int!, $relationId: Int!, $title: String!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
   createRelatedItem(relatedToId: $relatedToId, relationId: $relationId, title: $title) {
     item {
       id

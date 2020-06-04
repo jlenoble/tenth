@@ -7,6 +7,13 @@ import {
   MetaAction,
 } from "../types";
 
+type OptimisticInit<
+  T extends "createItem" | "destroyItem" | "createRelatedItem"
+> = {
+  optimisticResponse?: Data[T];
+  variables: Variables[T];
+};
+
 let _id = 0;
 const tmpId = (): number => --_id;
 
@@ -40,18 +47,22 @@ export class OptimistManager {
   optimisticAction<TAction extends AnyAction>(
     action: TAction
   ): MetaAction<TAction> {
-    if (isOptimisticAction(action)) {
-      console.log(action.meta.optimistic);
-      return action;
+    if (this.enabled) {
+      if (!isOptimisticAction(action)) {
+        const meta = { ...action.meta };
+      }
     }
 
     return action;
   }
 
-  createItem(item: Variables["createItem"]): Data["createItem"] | undefined {
+  createItem(item: Variables["createItem"]): OptimisticInit<"createItem"> {
+    const init: OptimisticInit<"createItem"> = { variables: { ...item } };
+
     if (this.enabled) {
-      return {
+      init.optimisticResponse = {
         __typename: "Mutation",
+        optimisticId: tmpId(),
         createItem: {
           __typename: "Item",
           id: tmpId(),
@@ -59,30 +70,46 @@ export class OptimistManager {
         },
       };
     }
+
+    return init;
   }
 
-  destroyItem(item: Variables["destroyItem"]): Data["destroyItem"] | undefined {
+  destroyItem(item: Variables["destroyItem"]): OptimisticInit<"destroyItem"> {
+    const init: OptimisticInit<"destroyItem"> = { variables: { ...item } };
+
     if (this.enabled) {
-      return {
+      init.optimisticResponse = {
         __typename: "Mutation",
+        optimisticId: tmpId(),
         destroyItem: {
           __typename: "Item",
           ...item,
         },
       };
     }
+
+    return init;
   }
 
   createRelatedItem({
     relatedToId,
     relationId,
     ...item
-  }: Variables["createRelatedItem"]): Data["createRelatedItem"] | undefined {
+  }: Variables["createRelatedItem"]): OptimisticInit<"createRelatedItem"> {
+    const init: OptimisticInit<"createRelatedItem"> = {
+      variables: {
+        relatedToId,
+        relationId,
+        ...item,
+      },
+    };
+
     if (this.enabled) {
       const relatedId = tmpId();
 
-      return {
+      init.optimisticResponse = {
         __typename: "Mutation",
+        optimisticId: tmpId(),
         createRelatedItem: {
           __typename: "RelatedItem",
           item: {
@@ -98,5 +125,7 @@ export class OptimistManager {
         },
       };
     }
+
+    return init;
   }
 }

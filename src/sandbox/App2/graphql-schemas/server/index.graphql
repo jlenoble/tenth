@@ -7,5 +7,6 @@ type Query {
 }
 
 type Mutation {
-  _empty: String @deprecated(reason: "")
+  # _empty: String @deprecated(reason: "")
+  optimisticId(optimisticId: Int): Int
 }

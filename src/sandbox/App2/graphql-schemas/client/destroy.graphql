@@ -1,10 +1,12 @@
-mutation DestroyItem($id: Int!) {
+mutation DestroyItem($id: Int!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
   destroyItem(id: $id) {
     id
   }
 }
 
-mutation DestroyRelatedItem($relatedToId: Int!, $relationId: Int!, $related: Int!) {
+mutation DestroyRelatedItem($relatedToId: Int!, $relationId: Int!, $related: Int!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
   destroyRelatedItem(relatedToId: $relatedToId, relationId: $relationId, related: $related) {
     relationship {
       ids
@@ -12,13 +14,15 @@ mutation DestroyRelatedItem($relatedToId: Int!, $relationId: Int!, $related: Int
   }
 }
 
-mutation DestroyItems($ids: [Int!]!) {
+mutation DestroyItems($ids: [Int!]!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
   destroyItems(ids: $ids) {
     id
   }
 }
 
-mutation DestroyRelationships($ids: [Int!]!) {
+mutation DestroyRelationships($ids: [Int!]!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
   destroyRelationships(ids: $ids) {
     id
   }
