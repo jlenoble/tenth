@@ -88,7 +88,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   }
 
   dispatch<TAction extends AnyAction>(action: TAction): MetaAction<TAction> {
-    return this.store.dispatch(action);
+    const meta = { ...action.meta };
+    meta.manager = this;
+    action = { ...action, meta };
+    return this.store.dispatch(this.optimistManager.optimisticAction(action));
   }
 
   select<TSelected = unknown>(

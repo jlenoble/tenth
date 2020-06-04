@@ -37,7 +37,7 @@ export class OptimistManager {
     this.clientManager = clientManager;
   }
 
-  getMetaAction<TAction extends AnyAction>(
+  optimisticAction<TAction extends AnyAction>(
     action: TAction
   ): MetaAction<TAction> {
     if (isOptimisticAction(action)) {
