@@ -3010,13 +3010,6 @@
   dependencies:
     redux "^3.6.0"
 
-"@types/redux-optimistic-ui@^0.4.10":
-  version "0.4.10"
-  resolved "http://localhost:4873/@types%2fredux-optimistic-ui/-/redux-optimistic-ui-0.4.10.tgz#150c6d6ff7a622fc37576b4f80a3162f5717f29e"
-  integrity sha512-Yt9EOiEYywilK0xS0oEyxJid7YRNxqckACjbVnSJHNDukP8EjK8ik+EjLlzVM8f6ONa4gO3LbCZ5XLmRRjOhpg==
-  dependencies:
-    redux "^3.6.0"
-
 "@types/semver@^6.0.1":
   version "6.2.1"
   resolved "http://localhost:4873/@types%2fsemver/-/semver-6.2.1.tgz#a236185670a7860f1597cf73bea2e16d001461ba"
@@ -14955,11 +14948,6 @@ redux-logger@^3.0.6:
   integrity sha1-91VZZvMJjzyIYExEnPC69XeCdL8=
   dependencies:
     deep-diff "^0.3.5"
-
-redux-optimistic-ui@^3.1.0:
-  version "3.1.0"
-  resolved "http://localhost:4873/redux-optimistic-ui/-/redux-optimistic-ui-3.1.0.tgz#efd07bb8483185db221b50f3d0ea42ce93b12d6d"
-  integrity sha512-TYYre7+3GUKhQvzRInzJfP4sRnH6G8N7QtDoEnTMTifAkUg7iP3EtqDaKvYHBfP+dnny5c81IsLzqtbCDw6c0A==
 
 redux-saga@^1.1.3:
   version "1.1.3"
