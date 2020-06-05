@@ -1,10 +1,9 @@
-import { ensureState } from "redux-optimistic-ui";
 import { ItemId, RelationshipId, ClientRelationship, State } from "../../types";
 
 export const getRelationshipsForItem = (id: ItemId) => (
   state: State
 ): ClientRelationship[] => {
-  const relationshipMap = ensureState(state.relationshipsForItem);
+  const relationshipMap = state.relationshipsForItem;
   const relationshipsForItem = relationshipMap.get(id);
 
   if (!relationshipsForItem) {
@@ -21,7 +20,7 @@ export const getRelationshipsForItemAndRelation = ({
   id: ItemId;
   relationId: RelationshipId;
 }) => (state: State): ClientRelationship[] => {
-  const relationshipMap = ensureState(state.relationshipsForItem);
+  const relationshipMap = state.relationshipsForItem;
   const relationshipsForItem = relationshipMap.get(id);
   const relationshipsForItem2 = relationshipMap.get(relationId);
 

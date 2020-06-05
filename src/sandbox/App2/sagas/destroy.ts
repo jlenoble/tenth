@@ -1,13 +1,7 @@
-import { call, put, select, take } from "redux-saga/effects";
-import { OptimisticAction, BEGIN, REVERT } from "redux-optimistic-ui";
+import { call, select, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../../generics";
-import {
-  DESTROY_ITEM,
-  DestroyItemAction,
-  getItem,
-  getViewsForItem,
-} from "../redux-reducers";
-import { Ids, MetaAction } from "../types";
+import { DESTROY_ITEM, DestroyItemAction, getItem } from "../redux-reducers";
+import { MetaAction } from "../types";
 
 export function* destroyItemSaga(): SagaGenerator {
   const action: MetaAction<DestroyItemAction> = yield take(DESTROY_ITEM);
@@ -22,9 +16,7 @@ export function* destroyItemSaga(): SagaGenerator {
     const item = yield select(getItem(id));
 
     if (item) {
-      const { items, relationships } = yield call(() =>
-        manager.reduxManager.destroyItem(id)
-      );
+      const { items } = yield call(() => manager.reduxManager.destroyItem(id));
 
       yield call(() => manager.removeFromViews(items));
     }

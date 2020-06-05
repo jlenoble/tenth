@@ -1,13 +1,10 @@
-import { call, put, select, take } from "redux-saga/effects";
-import { OptimisticAction, BEGIN, REVERT } from "redux-optimistic-ui";
+import { call, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../../generics";
 import {
-  AddRelationshipForItemAction,
-  addRelationshipForItem,
   CREATE_RELATED_ITEM,
   CreateRelatedItemAction,
 } from "../redux-reducers";
-import { Ids, MetaAction } from "../types";
+import { MetaAction } from "../types";
 
 export function* createRelatedItemSaga(): SagaGenerator {
   const action: MetaAction<CreateRelatedItemAction> = yield take(

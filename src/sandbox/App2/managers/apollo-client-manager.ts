@@ -76,7 +76,6 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     this.completedManager = new CompletedManager({ clientManager: this });
     this.reduxManager = new ReduxManager({
       log,
-      optimist,
       clientManager: this,
     });
     this.store = this.reduxManager.store;

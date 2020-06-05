@@ -1,13 +1,9 @@
-import { BEGIN, COMMIT, REVERT } from "redux-optimistic-ui";
+import { AnyAction } from "redux";
 import {
   Variables,
   Data,
   ApolloClientManagerInterface,
-  FSA,
-  Meta,
   MetaAction,
-  OptimisticAction,
-  Optimistic,
 } from "../types";
 
 type Mutations = "createItem" | "destroyItem" | "createRelatedItem";
@@ -19,23 +15,6 @@ type OptimisticInit<T extends Mutations> = {
 
 let _id = 0;
 const tmpId = (): number => --_id;
-
-const isOptimisticAction = <
-  P,
-  M extends Partial<Optimistic>,
-  E extends Error = Error
->(
-  action: FSA<P, M, E>
-): action is OptimisticAction<P, M, E> => {
-  const optimistic: Partial<Optimistic["optimistic"]> =
-    action.meta?.optimistic || {};
-
-  return (
-    Object.getOwnPropertyNames(optimistic).length === 2 &&
-    typeof optimistic.id === "number" &&
-    typeof optimistic.type === "string"
-  );
-};
 
 export class OptimistManager {
   public readonly clientManager: ApolloClientManagerInterface;
@@ -53,24 +32,10 @@ export class OptimistManager {
     this.clientManager = clientManager;
   }
 
-  optimisticAction<
-    P,
-    M extends Partial<Meta & Optimistic>,
-    E extends Error = Error
-  >(action: FSA<P, M, E>): OptimisticAction<P, M, E> {
-    const meta: Meta & Optimistic = { manager: this.clientManager };
-
-    if (this.enabled) {
-      // if (!isOptimisticAction(action)) {
-      //   meta.optimistic = {
-      //     type: BEGIN,
-      //     id: action.payload?.optimisticId || tmpId(),
-      //   };
-      //   // create optimistic BEGIN (get optimistic id from user action or attribute new (cascade action))
-      //   // for this id, map it ( or Set?)
-      // }
-    }
-
+  optimisticAction<TAction extends AnyAction>(
+    action: TAction
+  ): MetaAction<TAction> {
+    const meta = { manager: this.clientManager };
     return { ...action, meta: { ...action.meta, ...meta } };
   }
 
