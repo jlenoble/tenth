@@ -35,11 +35,21 @@ export class ApolloHooksManager {
   public readonly updateManager: UpdateManager;
   public readonly completedManager: CompletedManager;
 
-  constructor(clientManager: ApolloClientManagerInterface) {
+  constructor({
+    clientManager,
+    optimistManager,
+    updateManager,
+    completedManager,
+  }: {
+    clientManager: ApolloClientManagerInterface;
+    optimistManager: OptimistManager;
+    updateManager: UpdateManager;
+    completedManager: CompletedManager;
+  }) {
     this.clientManager = clientManager;
-    this.optimistManager = clientManager.optimistManager;
-    this.updateManager = clientManager.updateManager;
-    this.completedManager = clientManager.completedManager;
+    this.optimistManager = optimistManager;
+    this.updateManager = updateManager;
+    this.completedManager = completedManager;
   }
 
   useQuery<Key extends keyof Data>(

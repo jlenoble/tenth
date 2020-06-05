@@ -80,7 +80,12 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     });
     this.store = this.reduxManager.store;
 
-    this.apolloHooksManager = new ApolloHooksManager(this);
+    this.apolloHooksManager = new ApolloHooksManager({
+      clientManager: this,
+      optimistManager: this.optimistManager,
+      updateManager: this.updateManager,
+      completedManager: this.completedManager,
+    });
     this.reduxHooksManager = new ReduxHooksManager(this);
 
     this.reduxManager.sagaManager.run();
