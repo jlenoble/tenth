@@ -28,8 +28,9 @@ export class OptimistManager {
   private readonly enabled: boolean;
   private beforeState: State | undefined;
   private readonly history: AnyAction[];
-  private readonly begunActions: Map<number, number>;
-  private readonly completedActions: Set<number>;
+  private readonly pendingActions: Map<number, number>;
+  private nCompletedActions: number;
+  private lastCompletedActions: Set<number>;
 
   constructor({
     enabled = true,
@@ -42,8 +43,9 @@ export class OptimistManager {
     this.clientManager = clientManager;
     this.beforeState = undefined;
     this.history = [];
-    this.begunActions = new Map();
-    this.completedActions = new Set();
+    this.pendingActions = new Map();
+    this.nCompletedActions = 0;
+    this.lastCompletedActions = new Set();
   }
 
   isPreOptimisticAction(
@@ -83,8 +85,9 @@ export class OptimistManager {
 
   clearHistory(): void {
     this.history.length = 0;
-    this.begunActions.clear();
-    this.completedActions.clear();
+    this.lastCompletedActions = new Set(this.pendingActions.keys());
+    this.nCompletedActions = 0;
+    this.pendingActions.clear();
     this.beforeState = undefined;
   }
 
@@ -92,6 +95,7 @@ export class OptimistManager {
     action: TAction
   ): MetaAction<TAction> {
     if (this.enabled) {
+      let isPending = false;
       let isOptimisticReupdateByApollo = false;
 
       if (this.isPreOptimisticAction(action)) {
@@ -103,15 +107,38 @@ export class OptimistManager {
           ? -_optimisticId
           : _optimisticId;
 
-        const isPending =
-          this.begunActions.has(optimisticId) &&
-          !this.completedActions.has(optimisticId);
+        isPending =
+          this.pendingActions.has(optimisticId) &&
+          this.pendingActions.get(optimisticId) !== -1;
 
-        isOptimisticReupdateByApollo = isOptimisticUpdate && !isPending;
+        let firstOptimisticId = -1;
+
+        if (this.history.length) {
+          const firstAction = this.history[0];
+          if (this.isOptimisticAction(firstAction)) {
+            firstOptimisticId = firstAction.meta.optimist.id;
+          }
+        }
+
+        // When a server response is received, all but the answered request are
+        // optimisticly reupdated by Apollo; This has the potential to leave the
+        // Redux store in an inconsistent state, so we always check for that.
+        // To help make the distinction, optimistic ids are always sent to the server
+        // as negative numbers and returned as their positive counterpart.
+        // If <0, we know we may have a reupdate: We must check on the first begun action
+        // not yet completed. Since optimistic ids always increase in absolute value,
+        // a reupdate have a strictly smaller id or it is pending.
+        // But this is not enough, last reupdates may be trailing after the last answer
+        // has been received, so we keep track of the previous batch of requests.
+        isOptimisticReupdateByApollo =
+          (isOptimisticUpdate &&
+            !isPending &&
+            optimisticId < firstOptimisticId) ||
+          this.lastCompletedActions.has(optimisticId);
 
         if (!isOptimisticReupdateByApollo) {
           if (isPending) {
-            let index = this.begunActions.get(optimisticId);
+            let index = this.pendingActions.get(optimisticId);
             if (index === undefined) {
               index = -1;
             }
@@ -155,11 +182,8 @@ export class OptimistManager {
                 );
               }
 
-              if (
-                !this.begunActions.has(id) &&
-                !this.completedActions.has(id)
-              ) {
-                this.begunActions.set(id, index);
+              if (!isPending) {
+                this.pendingActions.set(id, index);
               } else {
                 throw new Error(
                   `Cannot begin: Optimistic action "${id}" has already begun`
@@ -188,7 +212,7 @@ export class OptimistManager {
                 delete prevAction.meta.optimist;
 
                 if (index === 0) {
-                  if (this.begunActions.size === this.completedActions.size) {
+                  if (this.pendingActions.size === this.nCompletedActions) {
                     this.clearHistory();
                     break;
                   }
@@ -218,13 +242,13 @@ export class OptimistManager {
                       const { index, id } = optimist;
                       const idx = index - nextIndex;
                       action.meta.optimist = { ...optimist, index: idx };
-                      this.begunActions.set(id, idx);
+                      this.pendingActions.set(id, idx);
                     }
                   });
                 }
 
-                this.begunActions.set(id, -1);
-                this.completedActions.add(id);
+                this.pendingActions.set(id, -1);
+                this.nCompletedActions++;
               }
 
               break;
@@ -232,7 +256,11 @@ export class OptimistManager {
 
             case REVERT: {
               if (index !== -1) {
-                this.assertActionConsistency(this.history[index], action);
+                const prevAction = this.history[index];
+
+                this.assertActionConsistency(prevAction, action);
+
+                delete prevAction.meta.optimist;
               }
               // if REVERT, find index and from last to index, do revert actions for ui/apollo and reset state
               break;
