@@ -15,7 +15,28 @@ import { ClientItem, ClientRelationship, ViewId } from "../models";
 export type Meta = {
   manager: ApolloClientManagerInterface;
 };
-export type MetaAction<Action> = Action & { meta?: Meta };
+export type MetaAction<Action> = Action & { meta: Meta };
+
+export const BEGIN = "BEGIN";
+export const COMMIT = "COMMIT";
+export const REVERT = "REVERT";
+
+export type OptimistType = typeof BEGIN | typeof COMMIT | typeof REVERT;
+
+export type Optimist = {
+  optimist: {
+    id: number;
+    type: OptimistType;
+    index: number;
+  };
+};
+export type OptimisticAction<Action> = Action & { meta: Optimist };
+export type MaybePreOptimisticAction<Action> = Action & {
+  meta: { optimisticId?: number | null; error?: true };
+};
+export type PreOptimisticAction<Action> = Action & {
+  meta: { optimisticId: number; error?: true };
+};
 
 export type DataIdFromObject = (
   value: Partial<{

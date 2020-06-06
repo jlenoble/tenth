@@ -4,6 +4,9 @@ import {
   combineReducers,
   Middleware,
   Store,
+  Reducer,
+  AnyAction,
+  CombinedState,
 } from "redux";
 import { createLogger } from "redux-logger";
 import { SagaGenerator } from "../../../generics";
@@ -36,6 +39,7 @@ import {
   ClientRelationship,
   UserId,
   ApolloClientManagerInterface,
+  State,
 } from "../types";
 
 type SagaMap = { [key: string]: () => SagaGenerator };
@@ -44,6 +48,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
   public readonly store: Store;
   public readonly clientManager: ApolloClientManagerInterface;
   public readonly sagaManager: SagaManager;
+  public readonly combinedReducer: Reducer<CombinedState<State>, AnyAction>;
 
   constructor({
     log = false,
@@ -74,8 +79,10 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
       viewsForSubItem,
     };
 
+    this.combinedReducer = combineReducers(reducers);
+
     this.store = createStore(
-      combineReducers(reducers),
+      this.combinedReducer,
       applyMiddleware(...middleWares)
     );
     this.sagaManager = new SagaManager();

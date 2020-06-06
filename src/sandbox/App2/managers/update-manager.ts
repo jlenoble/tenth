@@ -30,7 +30,7 @@ export class UpdateManager {
       const item = data?.destroyItem;
 
       if (item !== undefined) {
-        this.clientManager.dispatch(destroyItem(item));
+        this.clientManager.dispatch(destroyItem(item, data?.optimisticId));
       }
     };
   }
