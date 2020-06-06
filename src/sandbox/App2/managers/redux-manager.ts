@@ -27,6 +27,8 @@ import {
   getRelationshipsForRightItemAndRelation,
   removeItems,
   removeRelationships,
+  RESET_ALL,
+  ResetAllAction,
 } from "../redux-reducers";
 
 import { DataManager, Items, Relationships } from "./data-manager";
@@ -81,10 +83,31 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
 
     this.combinedReducer = combineReducers(reducers);
 
-    this.store = createStore(
-      this.combinedReducer,
-      applyMiddleware(...middleWares)
-    );
+    const appReducer: Reducer<CombinedState<State>, AnyAction> = (
+      state,
+      action
+    ): CombinedState<State> => {
+      if (action.type === RESET_ALL) {
+        state = (action as ResetAllAction).payload;
+
+        return {
+          currentPath: currentPath(state.currentPath, action),
+          items: items(state.items, action),
+          nCards: nCards(state.nCards, action),
+          relationships: relationships(state.relationships, action),
+          relationshipsForItem: relationshipsForItem(
+            state.relationshipsForItem,
+            action
+          ),
+          viewsForItem: viewsForItem(state.viewsForItem, action),
+          viewsForSubItem: viewsForSubItem(state.viewsForSubItem, action),
+        };
+      }
+
+      return this.combinedReducer(state, action);
+    };
+
+    this.store = createStore(appReducer, applyMiddleware(...middleWares));
     this.sagaManager = new SagaManager();
 
     Object.keys(Sagas).forEach((sagaName: keyof SagaMap) => {
