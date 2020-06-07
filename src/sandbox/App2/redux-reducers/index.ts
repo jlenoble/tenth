@@ -7,12 +7,20 @@ export * from "./views-for-item";
 export * from "./views-for-subitem";
 export * from "./selectors";
 
-import { Data, MaybePreOptimisticAction, State } from "../types";
+import {
+  Data,
+  MaybePreOptimisticAction,
+  State,
+  ClientItem,
+  ClientRelationship,
+} from "../types";
 
 export const DO_NOTHING = "DO_NOTHING";
 export const RESET_ALL = "RESET_ALL";
 export const CREATE_RELATED_ITEM = "CREATE_RELATED_ITEM";
+
 export const DESTROY_ITEM = "DESTROY_ITEM";
+export const DESTROY_ITEM_REVERT = "DESTROY_ITEM_REVERT";
 
 export type DoNothingAction = {
   type: typeof DO_NOTHING;
@@ -20,7 +28,7 @@ export type DoNothingAction = {
 
 export type ResetAllAction = {
   type: typeof RESET_ALL;
-  payload: State;
+  payload: { views: Set<string>; state: State };
 };
 
 export type CreateRelatedItemAction = {
@@ -33,12 +41,17 @@ export type DestroyItemAction = {
   payload: Data["destroyItem"]["destroyItem"];
 };
 
+export type DestroyItemRevertAction = {
+  type: typeof DESTROY_ITEM_REVERT;
+  payload: { items: ClientItem[]; relationships: ClientRelationship[] };
+};
+
 export const doNothing = (): DoNothingAction => {
   return { type: DO_NOTHING };
 };
 
-export const resetAll = (state: State): ResetAllAction => {
-  return { type: RESET_ALL, payload: state };
+export const resetAll = (views: Set<string>, state: State): ResetAllAction => {
+  return { type: RESET_ALL, payload: { views, state } };
 };
 
 export const createRelatedItem = (
@@ -65,4 +78,11 @@ export const destroyItem = (
     optimisticId,
     error,
   },
+});
+
+export const destroyItemRevert = (
+  payload: DestroyItemRevertAction["payload"]
+): DestroyItemRevertAction => ({
+  type: DESTROY_ITEM_REVERT,
+  payload,
 });

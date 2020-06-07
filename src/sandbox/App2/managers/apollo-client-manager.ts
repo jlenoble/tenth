@@ -28,6 +28,8 @@ import {
   removeAllViewsForSubItem,
   setCurrentPath,
   setNCards,
+  getItemsById,
+  getRelationshipsForLeftItemAndRelation,
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
@@ -185,7 +187,56 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  addRelatedItem(item: ClientItem, relationship: ClientRelationship): void {
+  resetViews(views: Set<string>, state: State): void {
+    for (const viewId of views) {
+      const [viewName, itemId, _relationId] = viewId.split(":");
+
+      if (viewName === "ItemWithRelatedItems") {
+        const relatedToId = parseInt(itemId, 10);
+        const relationId = parseInt(_relationId, 10);
+
+        const relationships = getRelationshipsForLeftItemAndRelation({
+          relatedToId,
+          relationId,
+        })(state);
+        const items = getItemsById(
+          relationships.map(({ ids: [, , relatedId] }) => relatedId)
+        )(state);
+        const relationshipIds = relationships.map(({ id }) => id);
+
+        const query = this.client.readQuery<
+          Data["itemWithRelatedItems"],
+          Variables["itemWithRelatedItems"]
+        >({
+          variables: { relatedToId, relationId },
+          query: nodes["itemWithRelatedItems"],
+        });
+
+        if (query) {
+          this.client.writeQuery<
+            Data["itemWithRelatedItems"],
+            Variables["itemWithRelatedItems"]
+          >({
+            variables: { relatedToId, relationId },
+            query: nodes["itemWithRelatedItems"],
+            data: {
+              itemWithRelatedItems: {
+                ...query.itemWithRelatedItems,
+                items,
+                relationshipIds,
+              },
+            },
+          });
+        }
+      }
+    }
+  }
+
+  addRelatedItem(
+    item: ClientItem,
+    relationship: ClientRelationship,
+    updateStore = true
+  ): void {
     const {
       id: relationshipId,
       ids: [relatedToId, relationId],
@@ -221,15 +272,17 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       });
     }
 
-    this.addToStore({
-      items: [item],
-      relationships: [relationship],
-      viewId: this.dataIdFromObject({
-        __typename: "ItemWithRelatedItems",
-        item: { id: relatedToId },
-        relation: { id: relationId },
-      }),
-    });
+    if (updateStore) {
+      this.addToStore({
+        items: [item],
+        relationships: [relationship],
+        viewId: this.dataIdFromObject({
+          __typename: "ItemWithRelatedItems",
+          item: { id: relatedToId },
+          relation: { id: relationId },
+        }),
+      });
+    }
   }
 
   destroyViews(items: ClientItem[]): void {
@@ -239,7 +292,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
-  removeFromViews(items: ClientItem[]): void {
+  removeFromViews(items: ClientItem[], updateStore = true): void {
     for (const item of items) {
       const relatedId = item.id;
       const viewsForSubItem = this.select(getViewsForSubItem(relatedId));
@@ -294,6 +347,8 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
       }
     }
 
-    this.removeFromStore(items);
+    if (updateStore) {
+      this.removeFromStore(items);
+    }
   }
 }

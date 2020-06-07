@@ -88,7 +88,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
       action
     ): CombinedState<State> => {
       if (action.type === RESET_ALL) {
-        state = (action as ResetAllAction).payload;
+        state = (action as ResetAllAction).payload.state;
 
         return {
           currentPath: currentPath(state.currentPath, action),

@@ -130,7 +130,7 @@ export class ApolloHooksManager {
   }
 
   useMakeDestroyItem(): (id: number) => () => Promise<void> {
-    const [destroyItem] = useMutation<
+    const [_destroyItem] = useMutation<
       Data["destroyItem"],
       Variables["destroyItem"]
     >(nodes["destroyItem"], {
@@ -138,8 +138,40 @@ export class ApolloHooksManager {
     });
 
     const makeDestroy = (id: ItemId) => async (): Promise<void> => {
-      const variables = { id };
-      await destroyItem(this.optimistManager.destroyItem(variables));
+      const _variables = { id };
+
+      const {
+        variables,
+        optimisticResponse,
+      } = this.optimistManager.destroyItem(_variables);
+
+      try {
+        await _destroyItem({
+          variables,
+          optimisticResponse,
+        });
+      } catch (e) {
+        switch (e.message) {
+          case "Network error: Failed to fetch": {
+            if (optimisticResponse) {
+              const { destroyItem: item, optimisticId } = optimisticResponse;
+              this.clientManager.dispatch(
+                destroyItem(
+                  item,
+                  typeof optimisticId === "number"
+                    ? -optimisticId
+                    : optimisticId,
+                  true
+                )
+              );
+            }
+            throw new Error(`Network unavailable: Failed to delete "${id}"`);
+          }
+
+          default:
+            throw e;
+        }
+      }
     };
 
     return makeDestroy;

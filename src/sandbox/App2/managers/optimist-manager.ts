@@ -10,7 +10,16 @@ import {
   BEGIN,
   COMMIT,
   REVERT,
+  ClientItem,
+  ClientRelationship,
+  ItemId,
 } from "../types";
+import {
+  doNothing,
+  resetAll,
+  DESTROY_ITEM_REVERT,
+  DestroyItemRevertAction,
+} from "../redux-reducers";
 
 type Mutations = "createItem" | "destroyItem" | "createRelatedItem";
 
@@ -22,6 +31,13 @@ type OptimisticInit<T extends Mutations> = {
 let _id = 0;
 const tmpId = (): number => --_id;
 
+enum Response {
+  revert = -2,
+  commit = -1,
+}
+
+type Undo = { items: ClientItem[]; relationships: ClientRelationship[] };
+
 export class OptimistManager {
   public readonly clientManager: ApolloClientManagerInterface;
 
@@ -31,6 +47,7 @@ export class OptimistManager {
   private readonly pendingActions: Map<number, number>;
   private nCompletedActions: number;
   private lastCompletedActions: Set<number>;
+  private undoChanges: Map<number, AnyAction>;
 
   constructor({
     enabled = true,
@@ -46,6 +63,13 @@ export class OptimistManager {
     this.pendingActions = new Map();
     this.nCompletedActions = 0;
     this.lastCompletedActions = new Set();
+    this.undoChanges = new Map();
+  }
+
+  setUndoChange(optimisticId: number, action: AnyAction): void {
+    if (!this.undoChanges.has(optimisticId)) {
+      this.undoChanges.set(optimisticId, action);
+    }
   }
 
   isPreOptimisticAction(
@@ -83,33 +107,158 @@ export class OptimistManager {
     throw new Error("Inconsistent actions");
   }
 
-  clearHistory(): void {
+  collectRevertViews(reverted: number[], state: State): Set<string> {
+    const views: Set<string> = new Set();
+    const addView = (id: ItemId): void => {
+      const viewsForItem = state.viewsForItem.get(id);
+      const viewsForSubItem = state.viewsForSubItem.get(id);
+
+      if (viewsForItem) {
+        for (const view of viewsForItem) {
+          views.add(view);
+        }
+      }
+
+      if (viewsForSubItem) {
+        for (const view of viewsForSubItem) {
+          views.add(view);
+        }
+      }
+    };
+
+    reverted.forEach((optimisticId) => {
+      const action = this.undoChanges.get(optimisticId) || doNothing();
+
+      switch (action.type) {
+        case DESTROY_ITEM_REVERT: {
+          const { items } = (action as DestroyItemRevertAction).payload;
+          items.forEach(({ id }) => addView(id));
+        }
+      }
+    });
+
+    return views;
+  }
+
+  wrapUpCurrentBatch(action: AnyAction): void {
+    const reverted = Array.from(this.pendingActions.entries())
+      .filter(([, index]) => index === Response.revert)
+      .map(([id]) => id);
+
+    if (!reverted.length) {
+      Object.assign(action, doNothing());
+    } else if (reverted.length === this.pendingActions.size) {
+      Object.assign(
+        action,
+        this.beforeState
+          ? resetAll(
+              this.collectRevertViews(reverted, this.beforeState),
+              this.beforeState
+            )
+          : doNothing()
+      );
+    } else if (this.beforeState) {
+      this.beforeState = this.history.reduce(
+        this.clientManager.reduxManager.combinedReducer,
+        this.beforeState
+      ) as State;
+      Object.assign(
+        action,
+        resetAll(
+          this.collectRevertViews(reverted, this.beforeState),
+          this.beforeState
+        )
+      );
+    }
+
     this.history.length = 0;
     this.lastCompletedActions = new Set(this.pendingActions.keys());
     this.nCompletedActions = 0;
     this.pendingActions.clear();
     this.beforeState = undefined;
+    this.undoChanges.clear();
+  }
+
+  updateHistory(index: number, nextIndex: number, rollback = false): void {
+    if (index > 0 && !rollback) {
+      delete (this.history[index] as OptimisticAction<AnyAction>).meta.optimist;
+      return;
+    }
+
+    const delta = nextIndex - index;
+    this.history.splice(index, nextIndex);
+    this.history.forEach((action, i) => {
+      if (i >= index && this.isOptimisticAction(action)) {
+        const optimist = action.meta.optimist;
+        const { index, id } = optimist;
+        const idx = index - delta;
+        action.meta.optimist = { ...optimist, index: idx };
+        this.pendingActions.set(id, idx);
+      }
+    });
+  }
+
+  reduceBeforeState(index: number, nextIndex: number, rollback = false): void {
+    if (rollback) {
+      return;
+    }
+
+    if (this.beforeState) {
+      this.beforeState = this.history
+        .slice(index, nextIndex)
+        .reduce(
+          this.clientManager.reduxManager.combinedReducer,
+          this.beforeState
+        );
+    }
+  }
+
+  handleResponse(action: OptimisticAction<AnyAction>): void {
+    const { id, type, index } = action.meta.optimist;
+    const rollback = type === REVERT;
+    const prevAction = this.history[index];
+
+    this.assertActionConsistency(prevAction, action);
+    this.nCompletedActions++;
+    this.pendingActions.set(id, rollback ? Response.revert : Response.commit);
+
+    if (this.pendingActions.size === this.nCompletedActions) {
+      this.wrapUpCurrentBatch(action);
+      return;
+    }
+
+    const nextIndex = this.history.findIndex((action, i) => {
+      return i > index && this.isOptimisticAction(action);
+    });
+
+    if (nextIndex === -1) {
+      this.wrapUpCurrentBatch(action);
+      return;
+    }
+
+    this.reduceBeforeState(index, nextIndex, rollback);
+    this.updateHistory(index, nextIndex, rollback);
   }
 
   optimisticAction<TAction extends AnyAction>(
     action: TAction
   ): MetaAction<TAction> {
     if (this.enabled) {
-      let isPending = false;
+      const isPending = false;
       let isOptimisticReupdateByApollo = false;
 
       if (this.isPreOptimisticAction(action)) {
         const { optimisticId: _optimisticId, error } = action.meta;
-
         const isOptimisticUpdate = _optimisticId < 0;
 
         const optimisticId = isOptimisticUpdate
           ? -_optimisticId
           : _optimisticId;
 
-        isPending =
-          this.pendingActions.has(optimisticId) &&
-          this.pendingActions.get(optimisticId) !== -1;
+        const index = this.pendingActions.get(optimisticId);
+        const hasBegun = index !== undefined;
+        const isFinished = index && index < 0;
+        const isPending = hasBegun && !isFinished;
 
         let firstOptimisticId = -1;
 
@@ -132,15 +281,14 @@ export class OptimistManager {
         // has been received, so we keep track of the previous batch of requests.
         isOptimisticReupdateByApollo =
           (isOptimisticUpdate &&
-            !isPending &&
-            optimisticId < firstOptimisticId) ||
+            (isPending || (isFinished && optimisticId < firstOptimisticId))) ||
           this.lastCompletedActions.has(optimisticId);
 
         if (!isOptimisticReupdateByApollo) {
           if (isPending) {
             let index = this.pendingActions.get(optimisticId);
             if (index === undefined) {
-              index = -1;
+              index = error ? Response.revert : Response.commit;
             }
 
             action = {
@@ -174,106 +322,35 @@ export class OptimistManager {
         if (this.isOptimisticAction(action)) {
           const { id, type, index } = action.meta.optimist;
 
-          switch (type) {
-            case BEGIN: {
-              if (index !== this.history.length) {
-                throw new Error(
-                  "When passing an optimistic action directly, index must be consistent with history"
-                );
-              }
-
-              if (!isPending) {
-                this.pendingActions.set(id, index);
-              } else {
-                throw new Error(
-                  `Cannot begin: Optimistic action "${id}" has already begun`
-                );
-              }
-
-              if (!this.beforeState) {
-                if (this.history.length) {
-                  throw new Error("Cannot have history w/o beforState");
-                }
-
-                this.beforeState = this.clientManager.store.getState();
-              }
-
-              this.history.push(action);
-
-              break;
+          if (type === BEGIN) {
+            if (index !== this.history.length) {
+              throw new Error(
+                "When passing an optimistic action directly, index must be consistent with history"
+              );
             }
 
-            case COMMIT: {
-              if (index !== -1) {
-                const prevAction = this.history[index];
+            if (!isPending) {
+              this.pendingActions.set(id, index);
+            } else {
+              throw new Error(
+                `Cannot begin: Optimistic action "${id}" has already begun`
+              );
+            }
 
-                this.assertActionConsistency(prevAction, action);
-
-                delete prevAction.meta.optimist;
-
-                if (index === 0) {
-                  if (this.pendingActions.size === this.nCompletedActions) {
-                    this.clearHistory();
-                    break;
-                  }
-
-                  const nextIndex = this.history.findIndex((action) => {
-                    return this.isOptimisticAction(action);
-                  });
-
-                  if (nextIndex === -1) {
-                    this.clearHistory();
-                    break;
-                  }
-
-                  if (this.beforeState) {
-                    this.beforeState = this.history
-                      .slice(0, nextIndex)
-                      .reduce(
-                        this.clientManager.reduxManager.combinedReducer,
-                        this.beforeState
-                      );
-                  }
-
-                  this.history.splice(0, nextIndex);
-                  this.history.forEach((action) => {
-                    if (this.isOptimisticAction(action)) {
-                      const optimist = action.meta.optimist;
-                      const { index, id } = optimist;
-                      const idx = index - nextIndex;
-                      action.meta.optimist = { ...optimist, index: idx };
-                      this.pendingActions.set(id, idx);
-                    }
-                  });
-                }
-
-                this.pendingActions.set(id, -1);
-                this.nCompletedActions++;
+            if (!this.beforeState) {
+              if (this.history.length) {
+                throw new Error("Cannot have history w/o beforState");
               }
 
-              break;
+              this.beforeState = this.clientManager.store.getState();
             }
 
-            case REVERT: {
-              if (index !== -1) {
-                const prevAction = this.history[index];
-
-                this.assertActionConsistency(prevAction, action);
-
-                delete prevAction.meta.optimist;
-              }
-              // if REVERT, find index and from last to index, do revert actions for ui/apollo and reset state
-              break;
-            }
-
-            default: {
-              throw new Error(`"${type}" is not an optimistic type`);
-            }
-          }
-        } else {
-          if (this.history.length) {
             this.history.push(action);
+          } else if (index !== -1 && (type === COMMIT || type === REVERT)) {
+            this.handleResponse(action);
           }
+        } else if (this.history.length) {
+          this.history.push(action);
         }
       }
     }
