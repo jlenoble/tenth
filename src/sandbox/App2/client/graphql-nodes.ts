@@ -15,6 +15,8 @@ export const nodes = {
   createItem: Generated.CreateItem,
   destroyItem: Generated.DestroyItem,
   destroyItems: Generated.DestroyItems,
+  updateItem: Generated.UpdateItem,
+
   createRelatedItem: Generated.CreateRelatedItem,
   destroyRelatedItem: Generated.DestroyRelatedItem,
   destroyRelationships: Generated.DestroyRelationships,

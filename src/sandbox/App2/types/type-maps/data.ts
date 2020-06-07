@@ -13,6 +13,8 @@ export interface Data {
   createItem: Generated.CreateItemMutation;
   destroyItem: Generated.DestroyItemMutation;
   destroyItems: Generated.DestroyItemsMutation;
+  updateItem: Generated.UpdateItemMutation;
+
   createRelatedItem: Generated.CreateRelatedItemMutation;
   destroyRelatedItem: Generated.DestroyRelatedItemMutation;
   destroyRelationships: Generated.DestroyRelationshipsMutation;

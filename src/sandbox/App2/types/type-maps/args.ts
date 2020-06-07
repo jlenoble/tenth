@@ -11,9 +11,10 @@ export interface Args {
   relationshipsForRightItemAndRelation: Generated.QueryRelationshipsForRightItemAndRelationArgs;
 
   createItem: Generated.MutationCreateItemArgs;
-  updateItem: Generated.MutationUpdateItemArgs;
   destroyItem: Generated.MutationDestroyItemArgs;
   destroyItems: Generated.MutationDestroyItemsArgs;
+  updateItem: Generated.MutationUpdateItemArgs;
+
   createRelatedItem: Generated.MutationCreateRelatedItemArgs;
   destroyRelatedItem: Generated.MutationDestroyRelatedItemArgs;
   destroyRelationships: Generated.MutationDestroyRelationshipsArgs;

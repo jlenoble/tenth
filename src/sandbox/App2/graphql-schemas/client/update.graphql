@@ -1,0 +1,7 @@
+mutation UpdateItem($id: Int!, $title: String!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
+  updateItem(id: $id, title: $title) {
+    id
+    title
+  }
+}

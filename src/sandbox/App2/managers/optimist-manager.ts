@@ -21,7 +21,11 @@ import {
   DestroyItemRevertAction,
 } from "../redux-reducers";
 
-type Mutations = "createItem" | "destroyItem" | "createRelatedItem";
+type Mutations =
+  | "createItem"
+  | "destroyItem"
+  | "updateItem"
+  | "createRelatedItem";
 
 type OptimisticInit<T extends Mutations> = {
   optimisticResponse?: Data[T];
@@ -394,6 +398,16 @@ export class OptimistManager {
     return this.optimisticInit<"destroyItem">(item, {
       __typename: "Mutation",
       destroyItem: {
+        __typename: "Item",
+        ...item,
+      },
+    });
+  }
+
+  updateItem(item: Variables["updateItem"]): OptimisticInit<"updateItem"> {
+    return this.optimisticInit<"updateItem">(item, {
+      __typename: "Mutation",
+      updateItem: {
         __typename: "Item",
         ...item,
       },

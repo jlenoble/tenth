@@ -27,6 +27,7 @@ type UseItems<Key extends keyof Data> = {
   error?: ApolloError;
   add: (input: string) => Promise<void>;
   makeDestroy: (id: ItemId) => () => Promise<void>;
+  makeUpdate: (id: ItemId) => (title: string) => Promise<void>;
 };
 
 export class ApolloHooksManager {
@@ -177,11 +178,58 @@ export class ApolloHooksManager {
     return makeDestroy;
   }
 
+  useMakeUpdateItem(): (id: number) => (value: string) => Promise<void> {
+    const [_updateItem] = useMutation<
+      Data["updateItem"],
+      Variables["updateItem"]
+    >(nodes["updateItem"], {
+      update: this.updateManager.updateItem(),
+    });
+
+    const makeUpdate = (id: ItemId) => async (title: string): Promise<void> => {
+      const _variables = { id, title };
+
+      const { variables, optimisticResponse } = this.optimistManager.updateItem(
+        _variables
+      );
+
+      try {
+        await _updateItem({
+          variables,
+          optimisticResponse,
+        });
+      } catch (e) {
+        switch (e.message) {
+          //       case "Network error: Failed to fetch": {
+          //         if (optimisticResponse) {
+          //           const { destroyItem: item, optimisticId } = optimisticResponse;
+          //           this.clientManager.dispatch(
+          //             destroyItem(
+          //               item,
+          //               typeof optimisticId === "number"
+          //                 ? -optimisticId
+          //                 : optimisticId,
+          //               true
+          //             )
+          //           );
+          //         }
+          //         throw new Error(`Network unavailable: Failed to delete "${id}"`);
+          //       }
+          default:
+            throw e;
+        }
+      }
+    };
+
+    return makeUpdate;
+  }
+
   useItems(): UseItems<"items"> {
     return {
       ...this.useQuery<"items">("items"),
       add: this.useAddItem(),
       makeDestroy: this.useMakeDestroyItem(),
+      makeUpdate: this.useMakeUpdateItem(),
     };
   }
 
@@ -193,6 +241,7 @@ export class ApolloHooksManager {
       }),
       add: this.useAddItem(),
       makeDestroy: this.useMakeDestroyItem(),
+      makeUpdate: this.useMakeUpdateItem(),
     };
   }
 
@@ -218,6 +267,7 @@ export class ApolloHooksManager {
 
     const add = this.useAddRelatedItem(relatedToId, relationId);
     const makeDestroy = this.useMakeDestroyItem();
+    const makeUpdate = this.useMakeUpdateItem();
 
     return {
       data,
@@ -225,6 +275,7 @@ export class ApolloHooksManager {
       error,
       add,
       makeDestroy,
+      makeUpdate,
     };
   }
 

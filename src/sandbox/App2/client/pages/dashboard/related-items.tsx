@@ -16,6 +16,7 @@ export const RelatedItemsCard: FunctionComponent<{
     error,
     add,
     makeDestroy,
+    makeUpdate,
   } = clientManager.apolloHooksManager.useRelatedItems(relatedToId, 2);
 
   if (loading) return <ListCard title="" listItems={[]} />;
@@ -34,6 +35,7 @@ export const RelatedItemsCard: FunctionComponent<{
           itemId: String(id),
           "data-view-key": viewKey,
           primary: title,
+          primaryEnter: makeUpdate(id),
           deleteButtonProps: {
             onClick: makeDestroy(id),
           },

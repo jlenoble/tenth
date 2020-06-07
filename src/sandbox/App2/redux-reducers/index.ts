@@ -17,10 +17,11 @@ import {
 
 export const DO_NOTHING = "DO_NOTHING";
 export const RESET_ALL = "RESET_ALL";
-export const CREATE_RELATED_ITEM = "CREATE_RELATED_ITEM";
 
+export const CREATE_RELATED_ITEM = "CREATE_RELATED_ITEM";
 export const DESTROY_ITEM = "DESTROY_ITEM";
 export const DESTROY_ITEM_REVERT = "DESTROY_ITEM_REVERT";
+export const UPDATE_ITEM = "UPDATE_ITEM";
 
 export type DoNothingAction = {
   type: typeof DO_NOTHING;
@@ -44,6 +45,11 @@ export type DestroyItemAction = {
 export type DestroyItemRevertAction = {
   type: typeof DESTROY_ITEM_REVERT;
   payload: { items: ClientItem[]; relationships: ClientRelationship[] };
+};
+
+export type UpdateItemAction = {
+  type: typeof UPDATE_ITEM;
+  payload: Data["updateItem"]["updateItem"];
 };
 
 export const doNothing = (): DoNothingAction => {
@@ -85,4 +91,17 @@ export const destroyItemRevert = (
 ): DestroyItemRevertAction => ({
   type: DESTROY_ITEM_REVERT,
   payload,
+});
+
+export const updateItem = (
+  item: Data["updateItem"]["updateItem"],
+  optimisticId?: number | null,
+  error?: true
+): MaybePreOptimisticAction<UpdateItemAction> => ({
+  type: UPDATE_ITEM,
+  payload: item,
+  meta: {
+    optimisticId,
+    error,
+  },
 });
