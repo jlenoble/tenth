@@ -4,7 +4,7 @@ import {
   DESTROY_ITEM,
   DestroyItemAction,
   getItem,
-  DESTROY_ITEM_REVERT,
+  destroyItemRevert,
 } from "../redux-reducers";
 import { MetaAction, MaybePreOptimisticAction } from "../types";
 
@@ -28,13 +28,13 @@ export function* destroyItemSaga(): SagaGenerator {
       );
 
       if (optimisticId) {
-        manager.optimistManager.setUndoChange(Math.abs(optimisticId), {
-          type: DESTROY_ITEM_REVERT,
-          payload: {
+        manager.optimistManager.setUndoChange(
+          Math.abs(optimisticId),
+          destroyItemRevert({
             items,
             relationships,
-          },
-        });
+          })
+        );
       }
 
       yield call(() => manager.removeFromViews(items));
