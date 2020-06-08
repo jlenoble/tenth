@@ -8,6 +8,7 @@ export const Main: FunctionComponent = () => {
   return (
     <Router primary={false} component={Fragment}>
       <Dashboard path="/" />
+      <Dashboard path="/:mainId" />
       <Redirect from="/tenth" to="/" noThrow />
       <SignIn path="/sign-in" />
       <SignUp path="/sign-up" />

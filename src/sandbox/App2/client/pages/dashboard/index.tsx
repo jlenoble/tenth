@@ -3,7 +3,7 @@ import { RouteComponentProps } from "@reach/router";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar } from "./app-bar";
 import { Drawer } from "./drawer";
-import { Main } from "./main";
+import { Main, MainId } from "./main";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -12,8 +12,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const Dashboard: FunctionComponent<
-  RouteComponentProps & { relation?: string }
-> = ({ relation = "⊃" }) => {
+  RouteComponentProps & { mainId?: MainId }
+> = ({ mainId }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = (): void => {
@@ -27,7 +27,7 @@ export const Dashboard: FunctionComponent<
     <div className={classes.root}>
       <AppBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Drawer open={open} handleDrawerClose={handleDrawerClose} />
-      <Main relation={relation} />
+      <Main mainId={mainId} />
     </div>
   );
 };

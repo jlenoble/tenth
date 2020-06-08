@@ -188,7 +188,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     return Array.from(relationships.values());
   }
 
-  async getCoreItemId(title: string): Promise<ItemId> {
+  async getCoreItemId(title: string): Promise<ItemId | undefined> {
     let item = this.coreItemsByTitle.get(title);
     if (item) {
       return item.id;
@@ -198,7 +198,6 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
       this.coreItemsByTitle.set(title, item);
       return item.id;
     }
-    throw new Error("No item in store with title: " + title);
   }
 
   async updateItem(item: ClientItem): Promise<ClientItem> {

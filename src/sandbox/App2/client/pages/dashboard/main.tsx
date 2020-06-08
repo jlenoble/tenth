@@ -8,13 +8,33 @@ import { clientManager } from "../../apollo-client-manager";
 
 const useStyles = makeStyles(mainStyles);
 
-export const Main: FunctionComponent<{ relation: string }> = ({ relation }) => {
+export enum MainId {
+  items = "items",
+  categories = "categories",
+}
+
+const getRelation = (mainId: MainId): string => {
+  switch (mainId) {
+    case MainId.categories: {
+      return "→";
+    }
+
+    case MainId.items:
+    default:
+      return "⊃";
+  }
+};
+
+export const Main: FunctionComponent<{ mainId?: MainId }> = ({
+  mainId = MainId.items,
+}) => {
   const classes = useStyles();
+
   const {
     relationId,
     loading,
     error,
-  } = clientManager.apolloHooksManager.useRelation(relation);
+  } = clientManager.apolloHooksManager.useRelation(getRelation(mainId));
 
   if (loading) return <span />;
   if (error || !relationId) return <p>ERROR</p>;
