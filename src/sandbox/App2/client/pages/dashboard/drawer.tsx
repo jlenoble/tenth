@@ -47,7 +47,6 @@ export const Drawer: FunctionComponent<{
       <List>
         {Object.entries(icons).map(([key, IconComponent]) => {
           const path = "/" + key;
-          console.log(path, location.pathname, path === location.pathname);
 
           return (
             <ListItem
@@ -57,7 +56,8 @@ export const Drawer: FunctionComponent<{
                 navigate(path);
               }}
               className={
-                path === location.pathname
+                path === location.pathname ||
+                (path === "/items" && location.pathname === "/")
                   ? classes.activeDrawerItem
                   : undefined
               }
