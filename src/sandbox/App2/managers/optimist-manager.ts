@@ -17,8 +17,8 @@ import {
 import {
   doNothing,
   resetAll,
-  DESTROY_ITEM_REVERT,
-  DestroyItemRevertAction,
+  REVERT_DESTROY_ITEM,
+  RevertDestroyItemAction,
 } from "../redux-reducers";
 
 type Mutations =
@@ -134,8 +134,8 @@ export class OptimistManager {
       const action = this.undoChanges.get(optimisticId) || doNothing();
 
       switch (action.type) {
-        case DESTROY_ITEM_REVERT: {
-          const { items } = (action as DestroyItemRevertAction).payload;
+        case REVERT_DESTROY_ITEM: {
+          const { items } = (action as RevertDestroyItemAction).payload;
           items.forEach(({ id }) => addView(id));
         }
       }

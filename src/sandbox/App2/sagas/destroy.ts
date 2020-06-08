@@ -4,7 +4,7 @@ import {
   TRIGGER_DESTROY_ITEM,
   TriggerDestroyItemAction,
   getItem,
-  destroyItemRevert,
+  revertDestroyItem,
 } from "../redux-reducers";
 import { MetaAction, MaybePreOptimisticAction } from "../types";
 
@@ -30,7 +30,7 @@ export function* destroyItemSaga(): SagaGenerator {
       if (optimisticId) {
         manager.optimistManager.setUndoChange(
           Math.abs(optimisticId),
-          destroyItemRevert({
+          revertDestroyItem({
             items,
             relationships,
           })
