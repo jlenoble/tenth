@@ -6,6 +6,7 @@ import {
   REMOVE_ITEM,
   ADD_ITEMS,
   REMOVE_ITEMS,
+  UPDATE_ITEM,
 } from "./consts";
 import { ItemsAction } from "./actions";
 
@@ -57,6 +58,18 @@ export const itemsReducer: Reducer<State> = ((
         if (items.length) {
           const newState = new Map(state);
           items.forEach((id) => newState.delete(id));
+          return newState;
+        }
+
+        break;
+      }
+
+      case UPDATE_ITEM: {
+        const item = state.get(action.payload.id);
+
+        if (item) {
+          const newState = new Map(state);
+          newState.set(item.id, { ...item, ...action.payload });
           return newState;
         }
 

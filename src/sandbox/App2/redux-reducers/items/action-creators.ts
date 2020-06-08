@@ -4,6 +4,7 @@ import {
   REMOVE_ITEM,
   ADD_ITEMS,
   REMOVE_ITEMS,
+  UPDATE_ITEM,
 } from "./consts";
 import {
   SetItemsAction,
@@ -11,6 +12,7 @@ import {
   RemoveItemAction,
   AddItemsAction,
   RemoveItemsAction,
+  UpdateItemsAction,
 } from "./actions";
 import { ClientItem, ItemId } from "../../types";
 
@@ -37,4 +39,9 @@ export const addItems = (items: ClientItem[]): AddItemsAction => ({
 export const removeItems = (itemIds: ItemId[]): RemoveItemsAction => ({
   type: REMOVE_ITEMS,
   payload: itemIds,
+});
+
+export const updateItem = (item: ClientItem): UpdateItemsAction => ({
+  type: UPDATE_ITEM,
+  payload: item,
 });

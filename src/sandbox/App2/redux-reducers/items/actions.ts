@@ -4,6 +4,7 @@ import {
   REMOVE_ITEM,
   ADD_ITEMS,
   REMOVE_ITEMS,
+  UPDATE_ITEM,
 } from "./consts";
 import { ClientItem, ItemId } from "../../types";
 
@@ -32,9 +33,15 @@ export type RemoveItemsAction = {
   payload: ItemId[];
 };
 
+export type UpdateItemsAction = {
+  type: typeof UPDATE_ITEM;
+  payload: ClientItem;
+};
+
 export type ItemsAction =
   | SetItemsAction
   | AddItemAction
   | RemoveItemAction
   | AddItemsAction
-  | RemoveItemsAction;
+  | RemoveItemsAction
+  | UpdateItemsAction;

@@ -8,5 +8,5 @@ export type RevertDestroyItemAction = {
 
 export type RevertUpdateItemAction = {
   type: typeof REVERT_UPDATE_ITEM;
-  payload: { item: ClientItem };
+  payload: ClientItem;
 };
