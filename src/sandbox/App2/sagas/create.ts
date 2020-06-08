@@ -1,14 +1,14 @@
 import { call, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../../generics";
 import {
-  CREATE_RELATED_ITEM,
-  CreateRelatedItemAction,
+  TRIGGER_CREATE_RELATED_ITEM,
+  TriggerCreateRelatedItemAction,
 } from "../redux-reducers";
 import { MetaAction } from "../types";
 
 export function* createRelatedItemSaga(): SagaGenerator {
-  const action: MetaAction<CreateRelatedItemAction> = yield take(
-    CREATE_RELATED_ITEM
+  const action: MetaAction<TriggerCreateRelatedItemAction> = yield take(
+    TRIGGER_CREATE_RELATED_ITEM
   );
 
   const {

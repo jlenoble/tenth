@@ -1,17 +1,21 @@
 import { Data } from "../../../types";
-import { CREATE_RELATED_ITEM, DESTROY_ITEM, UPDATE_ITEM } from "./consts";
+import {
+  TRIGGER_CREATE_RELATED_ITEM,
+  TRIGGER_DESTROY_ITEM,
+  TRIGGER_UPDATE_ITEM,
+} from "./consts";
 
-export type CreateRelatedItemAction = {
-  type: typeof CREATE_RELATED_ITEM;
+export type TriggerCreateRelatedItemAction = {
+  type: typeof TRIGGER_CREATE_RELATED_ITEM;
   payload: Data["createRelatedItem"]["createRelatedItem"];
 };
 
-export type DestroyItemAction = {
-  type: typeof DESTROY_ITEM;
+export type TriggerDestroyItemAction = {
+  type: typeof TRIGGER_DESTROY_ITEM;
   payload: Data["destroyItem"]["destroyItem"];
 };
 
-export type UpdateItemAction = {
-  type: typeof UPDATE_ITEM;
+export type TriggerUpdateItemAction = {
+  type: typeof TRIGGER_UPDATE_ITEM;
   payload: Data["updateItem"]["updateItem"];
 };

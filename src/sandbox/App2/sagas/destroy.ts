@@ -1,8 +1,8 @@
 import { call, select, take } from "redux-saga/effects";
 import { SagaGenerator } from "../../../generics";
 import {
-  DESTROY_ITEM,
-  DestroyItemAction,
+  TRIGGER_DESTROY_ITEM,
+  TriggerDestroyItemAction,
   getItem,
   destroyItemRevert,
 } from "../redux-reducers";
@@ -10,8 +10,8 @@ import { MetaAction, MaybePreOptimisticAction } from "../types";
 
 export function* destroyItemSaga(): SagaGenerator {
   const action: MaybePreOptimisticAction<MetaAction<
-    DestroyItemAction
-  >> = yield take(DESTROY_ITEM);
+    TriggerDestroyItemAction
+  >> = yield take(TRIGGER_DESTROY_ITEM);
 
   const {
     payload: { id },

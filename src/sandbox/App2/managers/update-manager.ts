@@ -2,7 +2,11 @@ import { FetchResult } from "apollo-link";
 import { DataProxy } from "apollo-cache";
 
 import { Data, ApolloClientManagerInterface } from "../types";
-import { createRelatedItem, destroyItem, updateItem } from "../redux-reducers";
+import {
+  triggerCreateRelatedItem,
+  triggerDestroyItem,
+  triggerUpdateItem,
+} from "../redux-reducers";
 
 export class UpdateManager {
   public readonly clientManager: ApolloClientManagerInterface;
@@ -30,7 +34,9 @@ export class UpdateManager {
       const item = data?.destroyItem;
 
       if (item !== undefined) {
-        this.clientManager.dispatch(destroyItem(item, data?.optimisticId));
+        this.clientManager.dispatch(
+          triggerDestroyItem(item, data?.optimisticId)
+        );
       }
     };
   }
@@ -40,7 +46,9 @@ export class UpdateManager {
       const item = data?.updateItem;
 
       if (item !== undefined) {
-        this.clientManager.dispatch(updateItem(item, data?.optimisticId));
+        this.clientManager.dispatch(
+          triggerUpdateItem(item, data?.optimisticId)
+        );
       }
     };
   }
@@ -53,7 +61,7 @@ export class UpdateManager {
       const item = data?.createRelatedItem;
 
       if (item !== undefined) {
-        this.clientManager.dispatch(createRelatedItem(item));
+        this.clientManager.dispatch(triggerCreateRelatedItem(item));
       }
     };
   }

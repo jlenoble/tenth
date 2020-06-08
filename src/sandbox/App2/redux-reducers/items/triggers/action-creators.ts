@@ -1,17 +1,21 @@
 import { Data, MaybePreOptimisticAction } from "../../../types";
-import { CREATE_RELATED_ITEM, DESTROY_ITEM, UPDATE_ITEM } from "./consts";
 import {
-  CreateRelatedItemAction,
-  DestroyItemAction,
-  UpdateItemAction,
+  TRIGGER_CREATE_RELATED_ITEM,
+  TRIGGER_DESTROY_ITEM,
+  TRIGGER_UPDATE_ITEM,
+} from "./consts";
+import {
+  TriggerCreateRelatedItemAction,
+  TriggerDestroyItemAction,
+  TriggerUpdateItemAction,
 } from "./actions";
 
-export const createRelatedItem = (
+export const triggerCreateRelatedItem = (
   item: Data["createRelatedItem"]["createRelatedItem"],
   optimisticId?: number,
   error?: true
-): MaybePreOptimisticAction<CreateRelatedItemAction> => ({
-  type: CREATE_RELATED_ITEM,
+): MaybePreOptimisticAction<TriggerCreateRelatedItemAction> => ({
+  type: TRIGGER_CREATE_RELATED_ITEM,
   payload: item,
   meta: {
     optimisticId,
@@ -19,12 +23,12 @@ export const createRelatedItem = (
   },
 });
 
-export const destroyItem = (
+export const triggerDestroyItem = (
   item: Data["destroyItem"]["destroyItem"],
   optimisticId?: number | null,
   error?: true
-): MaybePreOptimisticAction<DestroyItemAction> => ({
-  type: DESTROY_ITEM,
+): MaybePreOptimisticAction<TriggerDestroyItemAction> => ({
+  type: TRIGGER_DESTROY_ITEM,
   payload: item,
   meta: {
     optimisticId,
@@ -32,12 +36,12 @@ export const destroyItem = (
   },
 });
 
-export const updateItem = (
+export const triggerUpdateItem = (
   item: Data["updateItem"]["updateItem"],
   optimisticId?: number | null,
   error?: true
-): MaybePreOptimisticAction<UpdateItemAction> => ({
-  type: UPDATE_ITEM,
+): MaybePreOptimisticAction<TriggerUpdateItemAction> => ({
+  type: TRIGGER_UPDATE_ITEM,
   payload: item,
   meta: {
     optimisticId,

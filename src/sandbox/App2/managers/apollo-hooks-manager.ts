@@ -19,7 +19,7 @@ import {
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
 import { CompletedManager } from "./completed-manager";
-import { destroyItem } from "../redux-reducers";
+import { triggerDestroyItem, triggerUpdateItem } from "../redux-reducers";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -121,7 +121,7 @@ export class ApolloHooksManager {
           // Destroy in cascade tmp item and relationship and their refs.
           // Apollo has already updated/reverted the UI. All tmp elements are already unmounted.
           this.clientManager.dispatch(
-            destroyItem(optimisticResponse.createRelatedItem.item)
+            triggerDestroyItem(optimisticResponse.createRelatedItem.item)
           );
         }
       }
@@ -157,7 +157,7 @@ export class ApolloHooksManager {
             if (optimisticResponse) {
               const { destroyItem: item, optimisticId } = optimisticResponse;
               this.clientManager.dispatch(
-                destroyItem(
+                triggerDestroyItem(
                   item,
                   typeof optimisticId === "number"
                     ? -optimisticId
@@ -200,21 +200,23 @@ export class ApolloHooksManager {
         });
       } catch (e) {
         switch (e.message) {
-          //       case "Network error: Failed to fetch": {
-          //         if (optimisticResponse) {
-          //           const { destroyItem: item, optimisticId } = optimisticResponse;
-          //           this.clientManager.dispatch(
-          //             destroyItem(
-          //               item,
-          //               typeof optimisticId === "number"
-          //                 ? -optimisticId
-          //                 : optimisticId,
-          //               true
-          //             )
-          //           );
-          //         }
-          //         throw new Error(`Network unavailable: Failed to delete "${id}"`);
-          //       }
+          case "Network error: Failed to fetch": {
+            if (optimisticResponse) {
+              const { updateItem: item, optimisticId } = optimisticResponse;
+              this.clientManager.dispatch(
+                triggerUpdateItem(
+                  item,
+                  typeof optimisticId === "number"
+                    ? -optimisticId
+                    : optimisticId,
+                  true
+                )
+              );
+            }
+            throw new Error(
+              `Network unavailable: Failed to update "${id}" with "${title}"`
+            );
+          }
           default:
             throw e;
         }
