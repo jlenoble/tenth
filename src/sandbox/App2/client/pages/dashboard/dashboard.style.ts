@@ -64,13 +64,19 @@ export const appBarStyles = (
 export const drawerStyles = (
   theme: Theme
 ): Record<
-  "toolbarIcon" | "drawerPaper" | "drawerPaperClose",
+  "toolbarIcon" | "activeDrawerItem" | "drawerPaper" | "drawerPaperClose",
   CSSProperties
 > => {
   const { toolbarIcon } = toolbarIconStyles(theme);
 
   return {
     toolbarIcon,
+    activeDrawerItem: {
+      backgroundColor: theme.palette.secondary.light,
+      "&:hover": {
+        backgroundColor: theme.palette.secondary.light,
+      },
+    },
     drawerPaper: {
       position: "relative",
       whiteSpace: "nowrap",
