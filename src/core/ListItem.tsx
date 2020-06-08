@@ -62,7 +62,9 @@ const ListItem: FunctionComponent<FullListItemProps> = ({
         primaryLabel={primaryLabel}
         primaryHelperText={primaryHelperText}
         primaryError={primaryError}
-        primaryEnter={primaryEnter}
+        primaryEnter={
+          catchError && primaryEnter ? catchError(primaryEnter) : primaryEnter
+        }
         primaryTextFieldProps={primaryTextFieldProps}
         {...listItemTextProps}
       />
