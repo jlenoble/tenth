@@ -1,0 +1,3 @@
+export const CREATE_RELATED_ITEM = "CREATE_RELATED_ITEM";
+export const DESTROY_ITEM = "DESTROY_ITEM";
+export const UPDATE_ITEM = "UPDATE_ITEM";
