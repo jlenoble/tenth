@@ -3,8 +3,11 @@ import { Grid } from "@material-ui/core";
 import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
 import { clientManager } from "../../apollo-client-manager";
+import { ItemId } from "../../../types";
 
-export const TwoCards: FunctionComponent = () => {
+export const TwoCards: FunctionComponent<{ relationId: ItemId }> = ({
+  relationId,
+}) => {
   const {
     currentPath,
     leftItemId,
@@ -30,6 +33,7 @@ export const TwoCards: FunctionComponent = () => {
         <RelatedItemsCard
           viewKey={viewKey}
           relatedToId={leftItemId}
+          relationId={relationId}
           open={openRight}
           close={(currentPath.length > 1 && closeLeft) || undefined}
         />
@@ -39,6 +43,7 @@ export const TwoCards: FunctionComponent = () => {
           <RelatedItemsCard
             viewKey={viewKey}
             relatedToId={rightItemId}
+            relationId={relationId}
             open={openRightRight}
             close={closeRight}
           />

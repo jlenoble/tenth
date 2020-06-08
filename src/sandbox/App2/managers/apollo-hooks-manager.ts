@@ -255,6 +255,28 @@ export class ApolloHooksManager {
     return this.useQuery<"coreItems">("coreItems");
   }
 
+  useRelation(
+    relation: string
+  ): {
+    relationId?: ItemId;
+    loading: boolean;
+    error?: ApolloError;
+  } {
+    const { data, loading, error } = useQuery<
+      Data["coreItem"],
+      Variables["coreItem"]
+    >(nodes["coreItem"], {
+      variables: { title: relation },
+      onCompleted: this.completedManager.getRelation(),
+    });
+
+    return {
+      relationId: data?.coreItem?.id,
+      loading,
+      error,
+    };
+  }
+
   useRelatedItems(
     relatedToId: ItemId,
     relationId: ItemId

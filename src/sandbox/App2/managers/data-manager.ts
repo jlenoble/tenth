@@ -6,6 +6,17 @@ import {
   ClientRelationship,
 } from "../types";
 
+type CoreData = string | string[] | { [key: string]: CoreData } | CoreData[];
+
+const coreData: CoreData = [
+  {
+    "Core Items": {
+      Rel: ["⊃", "⊂", "→", "←"],
+    },
+  },
+  "Me",
+];
+
 export type Items<Item extends ClientItem> = Map<ItemId, Item>;
 export type Relationships<Relationship extends ClientRelationship> = Map<
   RelationshipId,
@@ -31,6 +42,8 @@ export abstract class DataManager<
   Item extends ClientItem,
   Relationship extends ClientRelationship
 > {
+  protected coreData: CoreData = coreData;
+
   abstract async getItem(id: ItemId): Promise<Item>;
   abstract async getItems(ids: ItemId[]): Promise<Item[]>;
   abstract async getRelationshipsForItem(id: ItemId): Promise<Relationship[]>;
@@ -54,6 +67,8 @@ export abstract class DataManager<
     userId: UserId
   ): Promise<Relationship[]>;
 
+  abstract async getCoreItemId(title: string): Promise<ItemId>;
+
   async getRelationType(relationId: ItemId): Promise<RelationType> {
     return RelationType.ltr;
   }
@@ -61,7 +76,19 @@ export abstract class DataManager<
   async filterStrongRelationships(
     relationships: Relationship[]
   ): Promise<Relationship[]> {
-    return relationships.filter(({ ids: [, relationId] }) => relationId === 2);
+    const strongRelationships: Relationship[] = [];
+
+    for (const relationship of relationships) {
+      const {
+        ids: [, relationId],
+      } = relationship;
+
+      if (relationId === (await this.getCoreItemId("⊃"))) {
+        strongRelationships.push(relationship);
+      }
+    }
+
+    return strongRelationships;
   }
 
   async collectStronglyRelatedDataForDestroyedItem(

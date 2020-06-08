@@ -6,10 +6,11 @@ import { clientManager } from "../../apollo-client-manager";
 
 export const RelatedItemsCard: FunctionComponent<{
   relatedToId: ItemId;
+  relationId: ItemId;
   open?: (id: ItemId) => void;
   close?: () => void;
   viewKey?: string;
-}> = ({ relatedToId, open, close, viewKey }) => {
+}> = ({ relatedToId, relationId, open, close, viewKey }) => {
   const {
     data,
     loading,
@@ -17,7 +18,7 @@ export const RelatedItemsCard: FunctionComponent<{
     add,
     makeDestroy,
     makeUpdate,
-  } = clientManager.apolloHooksManager.useRelatedItems(relatedToId, 2);
+  } = clientManager.apolloHooksManager.useRelatedItems(relatedToId, relationId);
 
   if (loading) return <ListCard title="" listItems={[]} />;
 

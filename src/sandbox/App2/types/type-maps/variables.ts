@@ -4,6 +4,7 @@ export interface Variables {
   items: Generated.GetItemsQueryVariables;
   itemsById: Generated.GetItemsByIdQueryVariables;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
+  coreItem: Generated.GetCoreItemQueryVariables;
   coreItems: Generated.GetCoreItemsQueryVariables;
   relationshipsForItem: Generated.GetRelationshipsForItemQueryVariables;
   relationshipsForItemAndRelation: Generated.GetRelationshipsForItemAndRelationQueryVariables;

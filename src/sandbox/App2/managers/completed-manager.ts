@@ -42,4 +42,14 @@ export class CompletedManager {
       });
     };
   }
+
+  getRelation() {
+    return (data: Data["coreItem"]): void => {
+      if (data.coreItem) {
+        this.clientManager.addToStore({
+          items: [data.coreItem],
+        });
+      }
+    };
+  }
 }

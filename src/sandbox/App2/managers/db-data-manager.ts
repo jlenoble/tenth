@@ -78,4 +78,12 @@ export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
       userId
     );
   }
+
+  async getCoreItemId(title: string): Promise<ItemId> {
+    const item = await this.dataSources.itemAPI.getCoreItemByTitle({ title });
+    if (item) {
+      return item.id;
+    }
+    throw new Error("server error");
+  }
 }

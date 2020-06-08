@@ -30,6 +30,7 @@ import {
   RESET_ALL,
   ResetAllAction,
   updateItem,
+  getItemByTitle,
 } from "../redux-reducers";
 
 import { DataManager, Items, Relationships } from "./data-manager";
@@ -52,6 +53,8 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
   public readonly clientManager: ApolloClientManagerInterface;
   public readonly sagaManager: SagaManager;
   public readonly combinedReducer: Reducer<CombinedState<State>, AnyAction>;
+
+  private coreItemsByTitle: Map<string, ClientItem> = new Map();
 
   constructor({
     log = false,
@@ -183,6 +186,19 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
       removeRelationships(Array.from(relationships.keys()))
     );
     return Array.from(relationships.values());
+  }
+
+  async getCoreItemId(title: string): Promise<ItemId> {
+    let item = this.coreItemsByTitle.get(title);
+    if (item) {
+      return item.id;
+    }
+    item = this.clientManager.select(getItemByTitle(title));
+    if (item) {
+      this.coreItemsByTitle.set(title, item);
+      return item.id;
+    }
+    throw new Error("No item in store with title: " + title);
   }
 
   async updateItem(item: ClientItem): Promise<ClientItem> {

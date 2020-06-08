@@ -4,6 +4,7 @@ export const nodes = {
   items: Generated.GetItems,
   itemsById: Generated.GetItemsById,
   itemWithRelatedItems: Generated.GetItemWithRelatedItems,
+  coreItem: Generated.GetCoreItem,
   coreItems: Generated.GetCoreItems,
   relationshipsForItem: Generated.GetRelationshipsForItem,
   relationshipsForItemAndRelation: Generated.GetRelationshipsForItemAndRelation,

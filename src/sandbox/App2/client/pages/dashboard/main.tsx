@@ -4,17 +4,26 @@ import { Container } from "@material-ui/core";
 
 import { mainStyles } from "./dashboard.style";
 import { TwoCards } from "./two-cards";
+import { clientManager } from "../../apollo-client-manager";
 
 const useStyles = makeStyles(mainStyles);
 
-export const Main: FunctionComponent = () => {
+export const Main: FunctionComponent<{ relation: string }> = ({ relation }) => {
   const classes = useStyles();
+  const {
+    relationId,
+    loading,
+    error,
+  } = clientManager.apolloHooksManager.useRelation(relation);
+
+  if (loading) return <span />;
+  if (error || !relationId) return <p>ERROR</p>;
 
   return (
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
-        <TwoCards />
+        <TwoCards relationId={relationId} />
       </Container>
     </main>
   );

@@ -11,7 +11,9 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const Dashboard: FunctionComponent<RouteComponentProps> = () => {
+export const Dashboard: FunctionComponent<
+  RouteComponentProps & { relation?: string }
+> = ({ relation = "⊃" }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = (): void => {
@@ -25,7 +27,7 @@ export const Dashboard: FunctionComponent<RouteComponentProps> = () => {
     <div className={classes.root}>
       <AppBar open={open} handleDrawerOpen={handleDrawerOpen} />
       <Drawer open={open} handleDrawerClose={handleDrawerClose} />
-      <Main />
+      <Main relation={relation} />
     </div>
   );
 };
