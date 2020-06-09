@@ -188,7 +188,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     return Array.from(relationships.values());
   }
 
-  async getCoreItemId(title: string): Promise<ItemId | undefined> {
+  getCoreItemId(title: string): ItemId | undefined {
     let item = this.coreItemsByTitle.get(title);
     if (item) {
       return item.id;

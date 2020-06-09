@@ -67,7 +67,7 @@ export abstract class DataManager<
     userId: UserId
   ): Promise<Relationship[]>;
 
-  abstract async getCoreItemId(title: string): Promise<ItemId | undefined>;
+  abstract getCoreItemId(title: string): ItemId | undefined;
 
   async getRelationType(relationId: ItemId): Promise<RelationType> {
     return RelationType.ltr;

@@ -79,8 +79,8 @@ export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
     );
   }
 
-  async getCoreItemId(title: string): Promise<ItemId | undefined> {
-    const item = await this.dataSources.itemAPI.getCoreItemByTitle({ title });
+  getCoreItemId(title: string): ItemId | undefined {
+    const item = this.dataSources.itemAPI.getCoreItemByTitle({ title });
     if (item) {
       return item.id;
     }

@@ -120,13 +120,11 @@ export class ItemAPI<
     return items.map((item) => item.values);
   }
 
-  async getCoreItems(): Promise<GQLItem[]> {
+  getCoreItems(): GQLItem[] {
     return Array.from(this.coreItemsById.values()).map((item) => item.values);
   }
 
-  async getCoreItemByTitle({
-    title,
-  }: Args["coreItem"]): Promise<GQLItem | null> {
+  getCoreItemByTitle({ title }: Args["coreItem"]): GQLItem | null {
     return this.coreItemsByTitle.get(title) || null;
   }
 }
