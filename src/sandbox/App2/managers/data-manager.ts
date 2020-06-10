@@ -29,6 +29,11 @@ export type Collector<
 > = {
   items: Items<Item>;
   relationships: Relationships<Relationship>;
+  destroyedItems: Items<Item>;
+  destroyedRelationships: Relationships<Relationship>;
+  relationshipsForItem: Map<ItemId, Relationship[]>;
+  maybeInaccessibleItems: Items<Item>;
+  connections: Map<ItemId, Set<ItemId>>;
   userId: UserId;
 };
 
@@ -75,34 +80,91 @@ export abstract class DataManager<
 
   async filterStrongRelationships(
     relationships: Relationship[]
-  ): Promise<Relationship[]> {
-    const strongRelationships: Relationship[] = [];
+  ): Promise<Map<RelationshipId, Relationship>> {
+    const strongRelationships: Map<RelationshipId, Relationship> = new Map();
 
     for (const relationship of relationships) {
       const {
         ids: [, relationId],
       } = relationship;
 
-      if (relationId === (await this.getCoreItemId("⊃"))) {
-        strongRelationships.push(relationship);
+      if (relationId === this.getCoreItemId("⊃")) {
+        strongRelationships.set(relationship.id, relationship);
       }
     }
 
     return strongRelationships;
   }
 
-  async collectStronglyRelatedDataForDestroyedItem(
+  connect(
+    minId: ItemId,
+    maxId: ItemId,
+    connections: Map<ItemId, Set<ItemId>>
+  ): void {
+    if (maxId === minId) {
+      return;
+    }
+
+    if (maxId < minId) {
+      const id = minId;
+      minId = maxId;
+      maxId = id;
+    }
+
+    let minSet = connections.get(minId);
+    let maxSet = connections.get(maxId);
+    console.log("!!!", minId, maxId, minSet, maxSet);
+
+    if (!minSet) {
+      minSet = new Set([minId]);
+      connections.set(minId, minSet);
+    }
+
+    if (!maxSet) {
+      maxSet = new Set([maxId]);
+      connections.set(maxId, maxSet);
+    }
+
+    minSet.add(maxId);
+
+    for (const id of minSet) {
+      if (id < minId) {
+        minId = id;
+        const relSet = connections.get(id);
+        if (relSet) {
+          for (const id of relSet) {
+            minSet.add(id);
+          }
+        }
+      }
+    }
+
+    for (const id of maxSet) {
+      if (id < minId) {
+        minId = id;
+      }
+      minSet.add(id);
+    }
+
+    const newSet = new Set([minId]);
+
+    for (const id of minSet) {
+      connections.set(id, newSet);
+    }
+
+    connections.set(minId, minSet);
+    console.log(minId, maxId, minSet);
+  }
+
+  async collectRelatedDataForItem(
     collector: Collector<Item, Relationship>,
-    id: ItemId
+    id: ItemId,
+    willDestroy: boolean
   ): Promise<Item> {
     let item = collector.items.get(id);
 
     if (item) {
       // Already done
-      if (!collector.userId) {
-        collector.userId = await this.getUserId(item);
-      }
-
       return item;
     }
 
@@ -121,18 +183,34 @@ export abstract class DataManager<
     if (item) {
       collector.items.set(id, item);
 
-      let relationships = await this.getRelationshipsForItem(id);
+      if (willDestroy) {
+        collector.destroyedItems.set(id, item);
+        collector.maybeInaccessibleItems.delete(id);
+      }
+
+      let relationships = collector.relationshipsForItem.get(id);
+
+      if (!relationships) {
+        relationships = await this.getRelationshipsForItem(id);
+        collector.relationshipsForItem.set(id, relationships);
+      }
 
       // Remove already done
       relationships = relationships.filter(
         ({ id }) => !collector.relationships.has(id)
       );
 
+      for (const {
+        ids: [relatedToId, , relatedId],
+      } of relationships) {
+        this.connect(relatedToId, relatedId, collector.connections);
+      }
+
       const strongRelationships = await this.filterStrongRelationships(
         relationships
       );
 
-      for (const relationship of strongRelationships) {
+      for (const relationship of relationships) {
         const {
           id: relationshipId,
           ids: [relatedToId, relationId, relatedId],
@@ -141,47 +219,39 @@ export abstract class DataManager<
         // Don't handle twice if recursive call
         collector.relationships.set(relationshipId, relationship);
 
+        if (willDestroy) {
+          collector.destroyedRelationships.set(relationshipId, relationship);
+        }
+
         if (id === relationId) {
           // Do nothing: Whether strong or not, only the relationship
           // needs to be destroyed
           continue;
         }
 
+        const isStrong = strongRelationships.has(relationshipId);
         const relationType = await this.getRelationType(relationId);
+        const nextId = id === relatedToId ? relatedId : relatedToId;
+        const willDestroyNext =
+          willDestroy &&
+          isStrong &&
+          ((relationType === RelationType.ltr && nextId === relatedId) ||
+            (relationType === RelationType.rtl && nextId === relatedToId) ||
+            relationType === RelationType.bidir);
 
-        switch (relationType) {
-          case RelationType.ltr: {
-            if (relatedToId === id) {
-              await this.collectStronglyRelatedDataForDestroyedItem(
-                collector,
-                relatedId
-              );
-            }
-            break;
-          }
+        const nextItem = await this.collectRelatedDataForItem(
+          collector,
+          nextId,
+          willDestroyNext
+        );
 
-          case RelationType.rtl: {
-            if (relatedId === id) {
-              await this.collectStronglyRelatedDataForDestroyedItem(
-                collector,
-                relatedToId
-              );
-            }
-            break;
-          }
-
-          case RelationType.bidir: {
-            await this.collectStronglyRelatedDataForDestroyedItem(
-              collector,
-              id === relatedToId ? relatedId : relatedToId
-            );
-            break;
-          }
+        if (
+          willDestroy &&
+          !willDestroyNext &&
+          !collector.destroyedItems.has(nextId)
+        ) {
+          collector.maybeInaccessibleItems.set(nextId, nextItem);
         }
-      }
-
-      for (const relationship of relationships) {
-        collector.relationships.set(relationship.id, relationship);
       }
 
       return item;
@@ -257,22 +327,57 @@ export abstract class DataManager<
     const collector: Collector<Item, Relationship> = {
       items: new Map(),
       relationships: new Map(),
+      destroyedItems: new Map(),
+      destroyedRelationships: new Map(),
+      relationshipsForItem: new Map(),
+      maybeInaccessibleItems: new Map(),
+      connections: new Map(),
       userId: 0,
     };
+    const { destroyedItems, destroyedRelationships } = collector;
 
-    const item = await this.collectStronglyRelatedDataForDestroyedItem(
-      collector,
-      id
-    );
+    const item = await this.collectRelatedDataForItem(collector, id, true);
+    const userId = collector.userId;
 
-    if (!collector.userId) {
+    if (!userId) {
       throw new Error("user is not identified");
     }
 
-    const items = await this.bulkDestroyItems(collector.items);
+    console.log(collector);
+
+    const items = await this.bulkDestroyItems(destroyedItems);
+
+    // if (collector.maybeInaccessibleItems.size) {
+    //   const maybeLeftRelationships: Map<ItemId, Relationship[]> = new Map();
+
+    //   for (const itemId of collector.maybeInaccessibleItems) {
+    //     let relationships = collector.relationshipsForItem.get(itemId);
+
+    //     if (relationships) {
+    //       relationships = relationships.filter(
+    //         ({ id }) => !collector.relationships.has(id)
+    //       );
+
+    //       if (relationships.length) {
+    //         maybeLeftRelationships.set(itemId, relationships);
+    //       }
+    //     }
+    //   }
+
+    //   for (const itemId of maybeLeftRelationships) {
+    //     collector.maybeInaccessibleItems;
+    //   }
+
+    //   console.log(
+    //     collector.maybeInaccessibleItems,
+    //     collector.relationshipsForItem,
+    //     maybeLeftRelationships
+    //   );
+    // }
+
     const relationships = await this.bulkDestroyRelationships(
-      collector.relationships,
-      collector.userId
+      destroyedRelationships,
+      userId
     );
 
     return { item, items, relationships };
