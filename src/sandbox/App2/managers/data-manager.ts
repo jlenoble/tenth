@@ -235,6 +235,11 @@ export abstract class DataManager<
           continue;
         }
 
+        if (relatedToId === 1 || relatedId === 1) {
+          // Don't collect more if path is to root is found
+          continue;
+        }
+
         const isStrong = strongRelationships.has(relationshipId);
         const relationType = await this.getRelationType(relationId);
         const nextId = id === relatedToId ? relatedId : relatedToId;
@@ -379,6 +384,8 @@ export abstract class DataManager<
       destroyedRelationships,
       userId
     );
+
+    console.log(connections);
 
     return { item, items, relationships, inaccessible };
   }
