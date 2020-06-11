@@ -5,17 +5,7 @@ import {
   ClientItem,
   ClientRelationship,
 } from "../types";
-
-type CoreData = string | string[] | { [key: string]: CoreData } | CoreData[];
-
-const coreData: CoreData = [
-  {
-    "Core Items": {
-      Rel: ["⊃", "⊂", "→", "←"],
-    },
-  },
-  "Me",
-];
+import { CoreData, coreData } from "../server/db";
 
 export type Items<Item extends ClientItem> = Map<ItemId, Item>;
 export type Relationships<Relationship extends ClientRelationship> = Map<

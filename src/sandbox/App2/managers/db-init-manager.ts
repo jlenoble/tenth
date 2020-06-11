@@ -1,27 +1,16 @@
-import { Store, Item, Relationship } from "../server/db";
+import { Store, Item, Relationship, CoreData } from "../server/db";
 import { ItemId, GQLItem } from "../types";
-
-type Data = string | string[] | { [key: string]: Data } | Data[];
-
-export const dbCoreData: Data = [
-  {
-    "Core Items": {
-      Rel: ["⊃", "⊂", "→", "←"],
-    },
-  },
-  "Me",
-];
 
 export class DBInitManager {
   private store: Store;
-  private dbCoreData: Data;
+  private coreData: CoreData;
   private items: Map<string, GQLItem> = new Map();
   private alterTables = false;
   private counter = 0;
 
-  constructor({ store, dbCoreData }: { store: Store; dbCoreData: Data }) {
+  constructor({ store, coreData }: { store: Store; coreData: CoreData }) {
     this.store = store;
-    this.dbCoreData = dbCoreData;
+    this.coreData = coreData;
   }
 
   async resetTables(): Promise<void> {
@@ -39,7 +28,7 @@ export class DBInitManager {
 
   async addCoreData(): Promise<void> {
     const root = await this._findOrCreateItem("/");
-    await this._addData(this.dbCoreData, root);
+    await this._addData(this.coreData, root);
 
     const coreItems = await this._findOrCreateItem("Core Items");
     const me = await this._findOrCreateItem("Me");
@@ -71,7 +60,7 @@ export class DBInitManager {
     return new Map(items);
   }
 
-  async _addData(data: Data, parent: GQLItem): Promise<void> {
+  async _addData(data: CoreData, parent: GQLItem): Promise<void> {
     const has = await this._findOrCreateItem("⊃");
 
     if (typeof data === "string") {

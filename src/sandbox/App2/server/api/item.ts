@@ -7,7 +7,8 @@ import { DataSource, DataSourceConfig } from "apollo-datasource";
 
 import { APIContext, GQLItem, UserId, Args } from "../../types";
 import { Store, Item } from "../db";
-import { DBInitManager, dbCoreData } from "../../managers";
+import { DBInitManager } from "../../managers";
+import { coreData } from "../../server/db";
 
 export class ItemAPI<
   Context extends APIContext = APIContext
@@ -39,7 +40,7 @@ export class ItemAPI<
   }
 
   async _setCoreItems(): Promise<void> {
-    const initManager = new DBInitManager({ store: this.store, dbCoreData });
+    const initManager = new DBInitManager({ store: this.store, coreData });
     this.coreItemsById = await initManager.getItems();
 
     for (const item of this.coreItemsById.values()) {
