@@ -115,7 +115,6 @@ export abstract class DataManager<
 
     let minSet = connections.get(minId);
     let maxSet = connections.get(maxId);
-    console.log("!!!", minId, maxId, minSet, maxSet);
 
     if (!minSet) {
       minSet = new Set([minId]);
@@ -167,10 +166,6 @@ export abstract class DataManager<
     }
 
     connections.set(minId, minSet);
-    console.log(minId, maxId, minSet);
-
-    console.log(maxId, connections.get(maxId));
-    console.log("******************************");
   }
 
   async collectRelatedDataForItem(
@@ -343,6 +338,7 @@ export abstract class DataManager<
     item: Item;
     items: Item[];
     relationships: Relationship[];
+    inaccessible: ItemId[];
   }> {
     const collector: Collector<Item, Relationship> = {
       items: new Map(),
@@ -354,7 +350,13 @@ export abstract class DataManager<
       connections: new Map(),
       userId: 0,
     };
-    const { destroyedItems, destroyedRelationships } = collector;
+
+    const {
+      destroyedItems,
+      destroyedRelationships,
+      maybeInaccessibleItems,
+      connections,
+    } = collector;
 
     const item = await this.collectRelatedDataForItem(collector, id, true);
     const userId = collector.userId;
@@ -363,43 +365,21 @@ export abstract class DataManager<
       throw new Error("user is not identified");
     }
 
-    console.log(collector);
-
     const items = await this.bulkDestroyItems(destroyedItems);
 
-    // if (collector.maybeInaccessibleItems.size) {
-    //   const maybeLeftRelationships: Map<ItemId, Relationship[]> = new Map();
+    const connected = connections.get(1) || new Set<ItemId>();
 
-    //   for (const itemId of collector.maybeInaccessibleItems) {
-    //     let relationships = collector.relationshipsForItem.get(itemId);
+    for (const id of connected) {
+      maybeInaccessibleItems.delete(id);
+    }
 
-    //     if (relationships) {
-    //       relationships = relationships.filter(
-    //         ({ id }) => !collector.relationships.has(id)
-    //       );
-
-    //       if (relationships.length) {
-    //         maybeLeftRelationships.set(itemId, relationships);
-    //       }
-    //     }
-    //   }
-
-    //   for (const itemId of maybeLeftRelationships) {
-    //     collector.maybeInaccessibleItems;
-    //   }
-
-    //   console.log(
-    //     collector.maybeInaccessibleItems,
-    //     collector.relationshipsForItem,
-    //     maybeLeftRelationships
-    //   );
-    // }
+    const inaccessible = Array.from(maybeInaccessibleItems.keys());
 
     const relationships = await this.bulkDestroyRelationships(
       destroyedRelationships,
       userId
     );
 
-    return { item, items, relationships };
+    return { item, items, relationships, inaccessible };
   }
 }

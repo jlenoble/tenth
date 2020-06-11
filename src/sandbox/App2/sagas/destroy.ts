@@ -6,7 +6,13 @@ import {
   getItem,
   revertDestroyItem,
 } from "../redux-reducers";
-import { MetaAction, MaybePreOptimisticAction } from "../types";
+import {
+  ItemId,
+  ClientItem,
+  ClientRelationship,
+  MetaAction,
+  MaybePreOptimisticAction,
+} from "../types";
 
 export function* destroyItemSaga(): SagaGenerator {
   const action: MaybePreOptimisticAction<MetaAction<
@@ -23,9 +29,16 @@ export function* destroyItemSaga(): SagaGenerator {
     const item = yield select(getItem(id));
 
     if (item) {
-      const { items, relationships } = yield call(() =>
-        manager.reduxManager.destroyItem(id)
-      );
+      const {
+        items,
+        relationships,
+        inaccessible,
+      }: {
+        item: ClientItem;
+        items: ClientItem[];
+        relationships: ClientRelationship[];
+        inaccessible: ItemId[];
+      } = yield call(() => manager.reduxManager.destroyItem(id));
 
       if (optimisticId) {
         manager.optimistManager.setUndoChange(
@@ -36,6 +49,8 @@ export function* destroyItemSaga(): SagaGenerator {
           })
         );
       }
+
+      console.log(inaccessible);
 
       yield call(() => manager.removeFromViews(items));
     }
