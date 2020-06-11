@@ -99,8 +99,10 @@ export abstract class DataManager<
   connect(
     minId: ItemId,
     maxId: ItemId,
-    connections: Map<ItemId, Set<ItemId>>
+    collector: Collector<Item, Relationship>
   ): void {
+    const { connections, destroyedItems } = collector;
+
     if (maxId === minId) {
       return;
     }
@@ -128,20 +130,30 @@ export abstract class DataManager<
     minSet.add(maxId);
 
     for (const id of minSet) {
-      if (id < minId) {
+      if (id < minId && !destroyedItems.has(id)) {
         minId = id;
         const relSet = connections.get(id);
         if (relSet) {
           for (const id of relSet) {
-            minSet.add(id);
+            if (!destroyedItems.has(id)) {
+              minSet.add(id);
+            }
           }
         }
       }
     }
 
     for (const id of maxSet) {
-      if (id < minId) {
+      if (id < minId && !destroyedItems.has(id)) {
         minId = id;
+        const relSet = connections.get(id);
+        if (relSet) {
+          for (const id of relSet) {
+            if (!destroyedItems.has(id)) {
+              minSet.add(id);
+            }
+          }
+        }
       }
       minSet.add(id);
     }
@@ -149,11 +161,16 @@ export abstract class DataManager<
     const newSet = new Set([minId]);
 
     for (const id of minSet) {
-      connections.set(id, newSet);
+      if (!destroyedItems.has(id)) {
+        connections.set(id, newSet);
+      }
     }
 
     connections.set(minId, minSet);
     console.log(minId, maxId, minSet);
+
+    console.log(maxId, connections.get(maxId));
+    console.log("******************************");
   }
 
   async collectRelatedDataForItem(
@@ -200,12 +217,6 @@ export abstract class DataManager<
         ({ id }) => !collector.relationships.has(id)
       );
 
-      for (const {
-        ids: [relatedToId, , relatedId],
-      } of relationships) {
-        this.connect(relatedToId, relatedId, collector.connections);
-      }
-
       const strongRelationships = await this.filterStrongRelationships(
         relationships
       );
@@ -251,6 +262,15 @@ export abstract class DataManager<
           !collector.destroyedItems.has(nextId)
         ) {
           collector.maybeInaccessibleItems.set(nextId, nextItem);
+        }
+      }
+
+      for (const {
+        id,
+        ids: [relatedToId, , relatedId],
+      } of relationships) {
+        if (!collector.destroyedRelationships.has(id)) {
+          this.connect(relatedToId, relatedId, collector);
         }
       }
 
