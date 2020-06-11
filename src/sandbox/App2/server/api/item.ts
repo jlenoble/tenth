@@ -8,7 +8,7 @@ import { DataSource, DataSourceConfig } from "apollo-datasource";
 import { APIContext, GQLItem, UserId, Args } from "../../types";
 import { Store, Item } from "../db";
 import { DBInitManager } from "../../managers";
-import { coreData } from "../../server/db";
+import { coreData } from "../../server/db/core-data";
 
 export class ItemAPI<
   Context extends APIContext = APIContext

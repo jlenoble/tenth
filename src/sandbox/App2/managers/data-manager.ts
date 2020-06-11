@@ -5,7 +5,7 @@ import {
   ClientItem,
   ClientRelationship,
 } from "../types";
-import { CoreData, coreData } from "../server/db";
+import { CoreData, coreData } from "../server/db/core-data";
 
 export type Items<Item extends ClientItem> = Map<ItemId, Item>;
 export type Relationships<Relationship extends ClientRelationship> = Map<

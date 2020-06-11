@@ -1,4 +1,5 @@
-import { Store, Item, Relationship, CoreData } from "../server/db";
+import { Store, Item, Relationship } from "../server/db";
+import { CoreData } from "../server/db/core-data";
 import { ItemId, GQLItem } from "../types";
 
 export class DBInitManager {
