@@ -11,5 +11,6 @@ extend type Query {
 }
 
 extend type Mutation {
-  destroyRelationships(ids: [Int!]!): [Item!]!
+  createRelationships(ids: [[Int!]!]!): [Relationship!]!
+  destroyRelationships(ids: [Int!]!): [Relationship!]!
 }

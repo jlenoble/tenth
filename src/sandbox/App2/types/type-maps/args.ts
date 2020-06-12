@@ -17,5 +17,6 @@ export interface Args {
 
   createRelatedItem: Generated.MutationCreateRelatedItemArgs;
   destroyRelatedItem: Generated.MutationDestroyRelatedItemArgs;
+  createRelationships: Generated.MutationCreateRelationshipsArgs;
   destroyRelationships: Generated.MutationDestroyRelationshipsArgs;
 }

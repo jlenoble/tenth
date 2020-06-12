@@ -3,7 +3,10 @@ import { DbDataManager } from "../managers";
 
 export const mutationResolvers: Required<Omit<
   MutationResolvers<DataSources, Record<string, unknown>>,
-  "_empty" | "destroyRelatedItem" | "destroyRelationships"
+  | "_empty"
+  | "destroyRelatedItem"
+  | "createRelationships"
+  | "destroyRelationships"
 >> = {
   optimisticId: (_, { optimisticId }) => (optimisticId ? -optimisticId : null),
 

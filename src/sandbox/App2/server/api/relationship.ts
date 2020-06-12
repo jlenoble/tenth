@@ -66,6 +66,45 @@ export class RelationshipAPI<
     };
   }
 
+  async createRelationships(
+    { ids }: Args["createRelationships"],
+    userId: UserId
+  ): Promise<Relationship[]> {
+    if (userId === this.userId) {
+      const relationships = await this.store.Relationship.findAll<Relationship>(
+        {
+          where: {
+            [Op.or]: ids.map(([relatedToId, relationId, relatedId]) => ({
+              relatedToId,
+              relationId,
+              relatedId,
+            })),
+          },
+        }
+      );
+
+      if (relationships.length) {
+        throw new ForbiddenError("failed to create");
+      }
+
+      relationships.length = 0;
+
+      for (const [relatedToId, relationId, relatedId] of ids) {
+        relationships.push(
+          await this.store.Relationship.create<Relationship>({
+            relatedToId,
+            relatedId,
+            relationId,
+          })
+        );
+      }
+
+      return relationships;
+    }
+
+    return [];
+  }
+
   async getRelationshipsForItem({
     id,
   }: Args["relationshipsForItem"]): Promise<Relationship[]> {

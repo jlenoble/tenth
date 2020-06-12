@@ -57,6 +57,10 @@ export abstract class DataManager<
   abstract async getUserId(item: Item): Promise<UserId>;
 
   abstract async bulkDestroyItems(items: Items<Item>): Promise<Item[]>;
+  abstract async bulkCreateRelationships(
+    ids: ItemId[][],
+    userId: UserId
+  ): Promise<Relationship[]>;
   abstract async bulkDestroyRelationships(
     relationships: Relationships<Relationship>,
     userId: UserId
@@ -374,6 +378,18 @@ export abstract class DataManager<
       destroyedRelationships,
       userId
     );
+
+    if (inaccessible.length) {
+      const relatedToId = this.getCoreItemId("lost+found");
+      const relationId = this.getCoreItemId("→");
+
+      if (relatedToId && relationId) {
+        await this.bulkCreateRelationships(
+          inaccessible.map((id) => [relatedToId, relationId, id]),
+          userId
+        );
+      }
+    }
 
     console.log(connections);
 

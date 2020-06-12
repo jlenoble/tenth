@@ -179,6 +179,16 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     return Array.from(items.values());
   }
 
+  async bulkCreateRelationships(
+    ids: ItemId[][]
+  ): Promise<ClientRelationship[]> {
+    // await this.clientManager.dispatch(
+    //   addRelationships(Array.from(relationships.keys()))
+    // );
+    // return Array.from(relationships.values());
+    return [];
+  }
+
   async bulkDestroyRelationships(
     relationships: Relationships<ClientRelationship>
   ): Promise<ClientRelationship[]> {

@@ -67,14 +67,22 @@ export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
     });
   }
 
+  async bulkCreateRelationships(
+    ids: ItemId[][],
+    userId: UserId
+  ): Promise<GQLRelationship[]> {
+    return await this.dataSources.relationshipAPI.createRelationships(
+      { ids },
+      userId
+    );
+  }
+
   async bulkDestroyRelationships(
     relationships: Relationships<GQLRelationship>,
     userId: UserId
   ): Promise<GQLRelationship[]> {
     return await this.dataSources.relationshipAPI.destroyRelationships(
-      {
-        ids: Array.from(relationships.keys()),
-      },
+      { ids: Array.from(relationships.keys()) },
       userId
     );
   }
