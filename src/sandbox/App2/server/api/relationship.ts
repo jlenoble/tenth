@@ -41,15 +41,15 @@ export class RelationshipAPI<
   }: Args["createRelatedItem"]): Promise<RelatedItem> {
     const userId = this.userId;
 
-    let item = await this.store.Item.findOne<Item>({
-      where: { id: relatedToId, userId },
+    const items = await this.store.Item.findAll<Item>({
+      where: { id: [relatedToId, relationId], userId },
     });
 
-    if (!item) {
+    if (!items.length) {
       throw new ForbiddenError("failed to create");
     }
 
-    item = await this.store.Item.create<Item>({
+    const item = await this.store.Item.create<Item>({
       title,
       userId,
     });
