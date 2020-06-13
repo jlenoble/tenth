@@ -1,13 +1,15 @@
 import { Store, Item, Relationship } from "../server/db";
 import { CoreData } from "../server/db/core-data";
-import { ItemId, GQLItem } from "../types";
+import { ItemId, GQLItem, GQLRelationship } from "../types";
 
 export class DBInitManager {
   private store: Store;
   private coreData: CoreData;
   private items: Map<string, GQLItem> = new Map();
+  private relationships: Map<string, Set<string>> = new Map();
   private alterTables = false;
-  private counter = 0;
+  private counter = 0; // item
+  private counter2 = 0; // relationship
 
   constructor({ store, coreData }: { store: Store; coreData: CoreData }) {
     this.store = store;
@@ -32,15 +34,19 @@ export class DBInitManager {
     await this._addData(this.coreData, root);
 
     const coreItems = await this._findOrCreateItem("Core Items");
-    const me = await this._findOrCreateItem("Me");
+    const topItems = this.relationships.get("/");
 
-    for (const item of this.items.values()) {
-      if (
-        item.id !== me.id &&
-        item.id !== root.id &&
-        item.id !== coreItems.id
-      ) {
-        await this._addData(item.title, coreItems);
+    if (topItems) {
+      for (const item of this.items.values()) {
+        if (!topItems.has(item.title) && item.title !== "/") {
+          await this._addData(item.title, coreItems);
+        }
+      }
+
+      for (const title of topItems) {
+        if (title !== "Core Items") {
+          await this._findOrCreateRelationship(root, "→", title);
+        }
       }
     }
   }
@@ -62,22 +68,8 @@ export class DBInitManager {
   }
 
   async _addData(data: CoreData, parent: GQLItem): Promise<void> {
-    const has = await this._findOrCreateItem("⊃");
-
     if (typeof data === "string") {
-      const item = await this._findOrCreateItem(data);
-
-      if (this.alterTables) {
-        await this.store.Relationship.findOrCreate<Relationship>({
-          where: {
-            relatedToId: parent.id,
-            relatedId: item.id,
-            relationId: has.id,
-          },
-        });
-
-        console.log(`Created ${data} of ${parent.title}`);
-      }
+      await this._findOrCreateRelationship(parent, "⊃", data);
     } else if (Array.isArray(data)) {
       for (const datum of data) {
         await this._addData(datum, parent);
@@ -117,5 +109,54 @@ export class DBInitManager {
     this.items.set(title, item);
 
     return item;
+  }
+
+  async _findOrCreateRelationship(
+    relatedTo: GQLItem,
+    relationTitle: string,
+    relatedTitle: string
+  ): Promise<GQLRelationship> {
+    const relation = await this._findOrCreateItem(relationTitle);
+    const related = await this._findOrCreateItem(relatedTitle);
+    let relationship: GQLRelationship;
+    const ids = [relatedTo.id, relation.id, related.id];
+
+    if (this.alterTables) {
+      const [relatedToId, relationId, relatedId] = ids;
+
+      const [_relationship] = await this.store.Relationship.findOrCreate<
+        Relationship
+      >({
+        where: {
+          relatedToId,
+          relatedId,
+          relationId,
+        },
+      });
+
+      relationship = _relationship.values;
+
+      console.log(`Created ${relatedTitle} of ${relatedTo.title}`);
+    } else {
+      const date = new Date();
+      relationship = {
+        id: ++this.counter2,
+        ids,
+        createdAt: date,
+        updatedAt: date,
+      };
+    }
+
+    if (!this.relationships.has(relatedTo.title)) {
+      this.relationships.set(relatedTo.title, new Set());
+    }
+
+    const relationships = this.relationships.get(relatedTo.title);
+
+    if (relationships) {
+      relationships.add(relatedTitle);
+    }
+
+    return relationship;
   }
 }
