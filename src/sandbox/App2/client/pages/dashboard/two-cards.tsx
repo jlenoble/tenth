@@ -5,9 +5,10 @@ import { RelatedItemsCard } from "./related-items";
 import { clientManager } from "../../apollo-client-manager";
 import { ItemId } from "../../../types";
 
-export const TwoCards: FunctionComponent<{ relationId: ItemId }> = ({
-  relationId,
-}) => {
+export const TwoCards: FunctionComponent<{
+  relationId: ItemId;
+  mainId: string;
+}> = ({ relationId, mainId }) => {
   const {
     currentPath,
     leftItemId,
@@ -27,7 +28,11 @@ export const TwoCards: FunctionComponent<{ relationId: ItemId }> = ({
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Breadcrumbs currentPath={currentPath} moveBack={moveBack} />
+        <Breadcrumbs
+          currentPath={currentPath}
+          moveBack={moveBack}
+          mainId={mainId}
+        />
       </Grid>
       <Grid item xs={12} md={rightOpened ? 6 : 12}>
         <RelatedItemsCard

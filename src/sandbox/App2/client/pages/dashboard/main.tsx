@@ -43,7 +43,7 @@ export const Main: FunctionComponent<{ mainId?: MainId }> = ({
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
-        <TwoCards relationId={relationId} />
+        <TwoCards relationId={relationId} mainId={mainId} />
       </Container>
     </main>
   );
