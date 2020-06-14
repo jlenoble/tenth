@@ -43,3 +43,20 @@ export const OneCard: FunctionComponent<{
     </Grid>
   );
 };
+
+export const TwoOneCards: FunctionComponent<{
+  currentPath: ItemId[];
+  relationId: ItemId;
+  mainId: string;
+}> = ({ currentPath, relationId, mainId }) => {
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={6}>
+        <OneCard path={currentPath} relationId={relationId} mainId={mainId} />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <OneCard path={currentPath} relationId={relationId} mainId={mainId} />
+      </Grid>
+    </Grid>
+  );
+};

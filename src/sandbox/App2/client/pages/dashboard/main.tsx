@@ -5,7 +5,7 @@ import { Container } from "@material-ui/core";
 import { mainStyles } from "./dashboard.style";
 import { TwoCards } from "./two-cards";
 import { clientManager } from "../../apollo-client-manager";
-import { OneCard } from "./one-card";
+import { TwoOneCards } from "./one-card";
 
 const useStyles = makeStyles(mainStyles);
 
@@ -45,7 +45,11 @@ export const Main: FunctionComponent<{ mainId?: MainId }> = ({
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
         {(relation === "→" && (
-          <OneCard path={[1]} relationId={relationId} mainId={mainId} />
+          <TwoOneCards
+            currentPath={[1]}
+            relationId={relationId}
+            mainId={mainId}
+          />
         )) || <TwoCards relationId={relationId} mainId={mainId} />}
       </Container>
     </main>
