@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSelector, shallowEqual } from "react-redux";
 
 import { ItemId, ApolloClientManagerInterface } from "../types";
@@ -16,6 +17,42 @@ export class ReduxHooksManager {
 
   constructor(clientManager: ApolloClientManagerInterface) {
     this.clientManager = clientManager;
+  }
+
+  useOneCard(
+    path: ItemId[]
+  ): {
+    itemId: ItemId;
+    currentPath: ItemId[];
+    close: () => void;
+    open: (id: ItemId) => void;
+    moveBack: (id: ItemId) => () => void;
+  } {
+    const [currentPath, setCurrentPath] = useState(path);
+    const index = currentPath.length - 1;
+    const itemId = currentPath[index] || 1;
+
+    const moveBack = (index: number) => () => {
+      setCurrentPath(currentPath.slice(0, index + 1));
+    };
+
+    const close = () => {
+      if (index > 0) {
+        setCurrentPath(currentPath.slice(0, index));
+      }
+    };
+
+    const open = (id: ItemId) => {
+      setCurrentPath(currentPath.concat(id));
+    };
+
+    return {
+      itemId,
+      currentPath,
+      close,
+      open,
+      moveBack,
+    };
   }
 
   useTwoCards(): {
