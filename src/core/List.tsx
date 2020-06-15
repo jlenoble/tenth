@@ -47,7 +47,9 @@ export const List: FunctionComponent<FullListProps> = ({
 
             return (
               <ListItem
-                draggableProps={dnd && { draggableId: itemId, index }}
+                draggableProps={
+                  dnd && { draggableId: `${droppableId}:${itemId}`, index }
+                }
                 key={itemId}
                 itemId={itemId}
                 checkboxProps={checkboxProps}

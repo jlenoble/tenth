@@ -5,12 +5,13 @@ import { ItemId } from "../../../types";
 import { clientManager } from "../../apollo-client-manager";
 
 export const RelatedItemsCard: FunctionComponent<{
+  droppableId?: string;
   relatedToId: ItemId;
   relationId: ItemId;
   open?: (id: ItemId) => void;
   close?: () => void;
   viewKey?: string;
-}> = ({ relatedToId, relationId, open, close, viewKey }) => {
+}> = ({ droppableId, relatedToId, relationId, open, close, viewKey }) => {
   const {
     data,
     loading,
@@ -29,6 +30,7 @@ export const RelatedItemsCard: FunctionComponent<{
 
   return (
     <ListCard
+      droppableId={droppableId}
       title={title}
       addItemProps={{ add }}
       listItems={items.map(({ id, title }) => {

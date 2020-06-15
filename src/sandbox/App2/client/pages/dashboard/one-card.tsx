@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Grid } from "@material-ui/core";
 import { Breadcrumbs } from "./breadcrumbs";
 import { RelatedItemsCard } from "./related-items";
@@ -6,10 +7,11 @@ import { clientManager } from "../../apollo-client-manager";
 import { ItemId } from "../../../types";
 
 export const OneCard: FunctionComponent<{
+  droppableId?: string;
   path: ItemId[];
   relationId: ItemId;
   mainId: string;
-}> = ({ path, relationId, mainId }) => {
+}> = ({ droppableId, path, relationId, mainId }) => {
   const {
     currentPath,
     itemId,
@@ -33,6 +35,7 @@ export const OneCard: FunctionComponent<{
       </Grid>
       <Grid item xs={12}>
         <RelatedItemsCard
+          droppableId={droppableId}
           viewKey={viewKey}
           relatedToId={itemId}
           relationId={relationId}
@@ -50,13 +53,29 @@ export const TwoOneCards: FunctionComponent<{
   mainId: string;
 }> = ({ currentPath, relationId, mainId }) => {
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={6}>
-        <OneCard path={currentPath} relationId={relationId} mainId={mainId} />
+    <DragDropContext
+      onDragEnd={(dropResult: DropResult) => {
+        console.log(dropResult);
+      }}
+    >
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6}>
+          <OneCard
+            droppableId={"drop1"}
+            path={currentPath}
+            relationId={relationId}
+            mainId={mainId}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <OneCard
+            droppableId={"drop2"}
+            path={currentPath}
+            relationId={relationId}
+            mainId={mainId}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={6}>
-        <OneCard path={currentPath} relationId={relationId} mainId={mainId} />
-      </Grid>
-    </Grid>
+    </DragDropContext>
   );
 };
