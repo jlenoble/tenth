@@ -19,4 +19,5 @@ export interface Data {
   createRelatedItem: Generated.CreateRelatedItemMutation;
   destroyRelatedItem: Generated.DestroyRelatedItemMutation;
   destroyRelationships: Generated.DestroyRelationshipsMutation;
+  updateRelationship: Generated.UpdateRelationshipMutation;
 }

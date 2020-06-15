@@ -2,6 +2,7 @@ import {
   SET_RELATIONSHIPS,
   ADD_RELATIONSHIP,
   REMOVE_RELATIONSHIP,
+  UPDATE_RELATIONSHIP,
   ADD_RELATIONSHIPS,
   REMOVE_RELATIONSHIPS,
 } from "./consts";
@@ -22,6 +23,11 @@ export type RemoveRelationshipAction = {
   payload: RelationshipId;
 };
 
+export type UpdateRelationshipAction = {
+  type: typeof UPDATE_RELATIONSHIP;
+  payload: ClientRelationship;
+};
+
 export type AddRelationshipsAction = {
   type: typeof ADD_RELATIONSHIPS;
   payload: ClientRelationship[];
@@ -36,5 +42,6 @@ export type RelationshipsAction =
   | SetRelationshipsAction
   | AddRelationshipAction
   | RemoveRelationshipAction
+  | UpdateRelationshipAction
   | AddRelationshipsAction
   | RemoveRelationshipsAction;

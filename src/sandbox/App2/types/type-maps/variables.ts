@@ -19,4 +19,5 @@ export interface Variables {
   createRelatedItem: Generated.CreateRelatedItemMutationVariables;
   destroyRelatedItem: Generated.DestroyRelatedItemMutationVariables;
   destroyRelationships: Generated.DestroyRelationshipsMutationVariables;
+  updateRelationship: Generated.UpdateRelationshipMutationVariables;
 }

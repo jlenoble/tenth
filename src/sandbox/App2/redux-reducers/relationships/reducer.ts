@@ -4,6 +4,7 @@ import {
   SET_RELATIONSHIPS,
   ADD_RELATIONSHIP,
   REMOVE_RELATIONSHIP,
+  UPDATE_RELATIONSHIP,
   ADD_RELATIONSHIPS,
   REMOVE_RELATIONSHIPS,
 } from "./consts";
@@ -36,6 +37,22 @@ export const relationshipsReducer: Reducer<State> = ((
         if (state.has(action.payload)) {
           const newState = new Map(state);
           newState.delete(action.payload);
+          return newState;
+        }
+        break;
+      }
+
+      case UPDATE_RELATIONSHIP: {
+        const { id, ids } = action.payload;
+        const { ids: prevIds } = state.get(id) || {};
+        if (
+          prevIds &&
+          (prevIds[0] !== ids[0] ||
+            prevIds[1] !== ids[1] ||
+            prevIds[2] !== ids[2])
+        ) {
+          const newState = new Map(state);
+          newState.set(id, action.payload);
           return newState;
         }
         break;

@@ -2,6 +2,7 @@ import {
   SET_RELATIONSHIPS,
   ADD_RELATIONSHIP,
   REMOVE_RELATIONSHIP,
+  UPDATE_RELATIONSHIP,
   ADD_RELATIONSHIPS,
   REMOVE_RELATIONSHIPS,
 } from "./consts";
@@ -9,6 +10,7 @@ import {
   SetRelationshipsAction,
   AddRelationshipAction,
   RemoveRelationshipAction,
+  UpdateRelationshipAction,
   AddRelationshipsAction,
   RemoveRelationshipsAction,
 } from "./actions";
@@ -33,6 +35,13 @@ export const removeRelationship = (
 ): RemoveRelationshipAction => ({
   type: REMOVE_RELATIONSHIP,
   payload: relationshipId,
+});
+
+export const updateRelationship = (
+  relationship: ClientRelationship
+): UpdateRelationshipAction => ({
+  type: UPDATE_RELATIONSHIP,
+  payload: relationship,
 });
 
 export const addRelationships = (

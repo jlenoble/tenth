@@ -21,4 +21,5 @@ export const nodes = {
   createRelatedItem: Generated.CreateRelatedItem,
   destroyRelatedItem: Generated.DestroyRelatedItem,
   destroyRelationships: Generated.DestroyRelationships,
+  updateRelationship: Generated.UpdateRelationship,
 };
