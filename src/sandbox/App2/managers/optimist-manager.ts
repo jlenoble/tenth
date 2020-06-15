@@ -25,7 +25,8 @@ type Mutations =
   | "createItem"
   | "destroyItem"
   | "updateItem"
-  | "createRelatedItem";
+  | "createRelatedItem"
+  | "updateRelationship";
 
 type OptimisticInit<T extends Mutations> = {
   optimisticResponse?: Data[T];
@@ -434,6 +435,18 @@ export class OptimistManager {
           id: tmpId(),
           ids: [relatedToId, relationId, relatedId],
         },
+      },
+    });
+  }
+
+  updateRelationship(
+    relationship: Variables["updateRelationship"]
+  ): OptimisticInit<"updateRelationship"> {
+    return this.optimisticInit<"updateRelationship">(relationship, {
+      __typename: "Mutation",
+      updateRelationship: {
+        __typename: "Relationship",
+        ...relationship,
       },
     });
   }

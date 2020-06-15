@@ -11,6 +11,7 @@ import {
 import { nodes } from "../client/graphql-nodes";
 import {
   ItemId,
+  ClientRelationship,
   Data,
   Variables,
   ApolloClientManagerInterface,
@@ -19,7 +20,11 @@ import {
 import { OptimistManager } from "./optimist-manager";
 import { UpdateManager } from "./update-manager";
 import { CompletedManager } from "./completed-manager";
-import { triggerDestroyItem, triggerUpdateItem } from "../redux-reducers";
+import {
+  triggerDestroyItem,
+  triggerUpdateItem,
+  triggerUpdateRelationship,
+} from "../redux-reducers";
 
 type UseItems<Key extends keyof Data> = {
   data?: Data[Key];
@@ -224,6 +229,58 @@ export class ApolloHooksManager {
     };
 
     return makeUpdate;
+  }
+
+  useUpdateRelationship(): (value: ClientRelationship) => Promise<void> {
+    const [_updateRelationship] = useMutation<
+      Data["updateRelationship"],
+      Variables["updateRelationship"]
+    >(nodes["updateRelationship"], {
+      update: this.updateManager.updateRelationship(),
+    });
+
+    const update = async ({ id, ids }: ClientRelationship): Promise<void> => {
+      const _variables = { id, ids };
+
+      const {
+        variables,
+        optimisticResponse,
+      } = this.optimistManager.updateRelationship(_variables);
+
+      try {
+        await _updateRelationship({
+          variables,
+          optimisticResponse,
+        });
+      } catch (e) {
+        switch (e.message) {
+          case "Network error: Failed to fetch": {
+            if (optimisticResponse) {
+              const {
+                updateRelationship: relationship,
+                optimisticId,
+              } = optimisticResponse;
+              this.clientManager.dispatch(
+                triggerUpdateRelationship(
+                  relationship,
+                  typeof optimisticId === "number"
+                    ? -optimisticId
+                    : optimisticId,
+                  true
+                )
+              );
+            }
+            throw new Error(
+              `Network unavailable: Failed to update "${id}" with "${ids}"`
+            );
+          }
+          default:
+            throw e;
+        }
+      }
+    };
+
+    return update;
   }
 
   useItems(): UseItems<"items"> {

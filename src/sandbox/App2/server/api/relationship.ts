@@ -224,10 +224,12 @@ export class RelationshipAPI<
     return [];
   }
 
-  async updateRelationship(
-    args: Args["updateRelationship"]
-  ): Promise<Relationship> {
-    const { id, ids } = args;
+  async updateRelationship({
+    id,
+    ...args
+  }: Args["updateRelationship"]): Promise<Relationship> {
+    const { ids } = args;
+    const [relatedToId, relationId, relatedId] = ids;
     let relationship = await this.store.Relationship.findOne<Relationship>({
       where: { id },
     });
@@ -237,7 +239,13 @@ export class RelationshipAPI<
     });
 
     if (relationship && items.length === 3) {
-      relationship = await relationship.update(args);
+      relationship = await relationship.update({
+        ...args,
+        relatedToId,
+        relationId,
+        relatedId,
+      });
+
       return relationship;
     }
 

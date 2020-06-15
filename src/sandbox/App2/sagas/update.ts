@@ -5,8 +5,16 @@ import {
   TriggerUpdateItemAction,
   getItem,
   revertUpdateItem,
+  TRIGGER_UPDATE_RELATIONSHIP,
+  TriggerUpdateRelationshipAction,
+  getRelationship,
 } from "../redux-reducers";
-import { MetaAction, MaybePreOptimisticAction, ClientItem } from "../types";
+import {
+  MetaAction,
+  MaybePreOptimisticAction,
+  ClientItem,
+  ClientRelationship,
+} from "../types";
 
 export function* updateItemSaga(): SagaGenerator {
   const action: MaybePreOptimisticAction<MetaAction<
@@ -32,6 +40,35 @@ export function* updateItemSaga(): SagaGenerator {
           Math.abs(optimisticId),
           revertUpdateItem(item)
         );
+      }
+    }
+  }
+}
+
+export function* updateRelationshipSaga(): SagaGenerator {
+  const action: MaybePreOptimisticAction<MetaAction<
+    TriggerUpdateRelationshipAction
+  >> = yield take(TRIGGER_UPDATE_RELATIONSHIP);
+
+  const {
+    payload: { id, ids },
+    meta,
+  } = action;
+  const { manager, optimisticId } = meta;
+
+  if (manager) {
+    let relationship: ClientRelationship = yield select(getRelationship(id));
+
+    if (relationship) {
+      relationship = yield call(() =>
+        manager.reduxManager.updateRelationship({ ...relationship, ids })
+      );
+
+      if (optimisticId) {
+        // manager.optimistManager.setUndoChange(
+        //   Math.abs(optimisticId),
+        //   revertUpdateRelationship(relationship)
+        // );
       }
     }
   }

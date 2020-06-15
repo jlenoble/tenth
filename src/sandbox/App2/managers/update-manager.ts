@@ -6,6 +6,7 @@ import {
   triggerCreateRelatedItem,
   triggerDestroyItem,
   triggerUpdateItem,
+  triggerUpdateRelationship,
 } from "../redux-reducers";
 
 export class UpdateManager {
@@ -62,6 +63,21 @@ export class UpdateManager {
 
       if (item !== undefined) {
         this.clientManager.dispatch(triggerCreateRelatedItem(item));
+      }
+    };
+  }
+
+  updateRelationship() {
+    return (
+      _: DataProxy,
+      { data }: FetchResult<Data["updateRelationship"]>
+    ): void => {
+      const relationship = data?.updateRelationship;
+
+      if (relationship !== undefined) {
+        this.clientManager.dispatch(
+          triggerUpdateRelationship(relationship, data?.optimisticId)
+        );
       }
     };
   }

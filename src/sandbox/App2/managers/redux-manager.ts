@@ -31,6 +31,8 @@ import {
   ResetAllAction,
   updateItem,
   getItemByTitle,
+  getRelationship,
+  updateRelationship,
 } from "../redux-reducers";
 
 import { DataManager, Items, Relationships } from "./data-manager";
@@ -211,7 +213,17 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
   }
 
   async updateItem(item: ClientItem): Promise<ClientItem> {
-    await this.clientManager.dispatch(updateItem(item));
+    this.clientManager.dispatch(updateItem(item));
     return this.clientManager.select(getItem(item.id)) || item;
+  }
+
+  async updateRelationship(
+    relationship: ClientRelationship
+  ): Promise<ClientRelationship> {
+    this.clientManager.dispatch(updateRelationship(relationship));
+    return (
+      this.clientManager.select(getRelationship(relationship.id)) ||
+      relationship
+    );
   }
 }
