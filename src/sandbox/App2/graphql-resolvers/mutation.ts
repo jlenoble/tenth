@@ -25,4 +25,7 @@ export const mutationResolvers: Required<Omit<
 
   createRelatedItem: (_, item, { dataSources: { relationshipAPI } }) =>
     relationshipAPI.createRelatedItem(item),
+
+  updateRelationship: (_, relationship, { dataSources: { relationshipAPI } }) =>
+    relationshipAPI.updateRelationship(relationship),
 };

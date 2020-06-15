@@ -5,3 +5,11 @@ mutation UpdateItem($id: Int!, $title: String!, $optimisticId: Int) {
     title
   }
 }
+
+mutation UpdateRelationship($id: Int!, $ids: [Int!]!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
+  updateRelationship(id: $id, ids: $ids) {
+    id
+    ids
+  }
+}

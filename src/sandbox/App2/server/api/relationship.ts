@@ -223,4 +223,24 @@ export class RelationshipAPI<
 
     return [];
   }
+
+  async updateRelationship(
+    args: Args["updateRelationship"]
+  ): Promise<Relationship> {
+    const { id, ids } = args;
+    let relationship = await this.store.Relationship.findOne<Relationship>({
+      where: { id },
+    });
+
+    const items = await this.store.Item.findAll<Item>({
+      where: { id: ids, userId: this.userId },
+    });
+
+    if (relationship && items.length === 3) {
+      relationship = await relationship.update(args);
+      return relationship;
+    }
+
+    throw new ForbiddenError("failed to update");
+  }
 }
