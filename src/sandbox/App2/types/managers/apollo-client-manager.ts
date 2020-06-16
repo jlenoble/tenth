@@ -88,4 +88,9 @@ export interface ApolloClientManagerInterface {
     items: Data["itemWithRelatedItems"]["itemWithRelatedItems"]["items"],
     updateStore?: boolean
   ): void;
+  updateViewsAfterRelationshipUpdate(
+    prevRelationship: ClientRelationship,
+    newRelationship: ClientRelationship,
+    updateStore?: boolean
+  ): void;
 }

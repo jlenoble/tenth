@@ -57,10 +57,10 @@ export function* updateRelationshipSaga(): SagaGenerator {
   const { manager, optimisticId } = meta;
 
   if (manager) {
-    let relationship: ClientRelationship = yield select(getRelationship(id));
+    const relationship: ClientRelationship = yield select(getRelationship(id));
 
     if (relationship) {
-      relationship = yield call(() =>
+      const updatedRelationship = yield call(() =>
         manager.reduxManager.updateRelationship({ ...relationship, ids })
       );
 
@@ -70,6 +70,13 @@ export function* updateRelationshipSaga(): SagaGenerator {
         //   revertUpdateRelationship(relationship)
         // );
       }
+
+      yield call(() =>
+        manager.updateViewsAfterRelationshipUpdate(
+          relationship,
+          updatedRelationship
+        )
+      );
     }
   }
 }

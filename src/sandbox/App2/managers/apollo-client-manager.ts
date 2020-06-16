@@ -4,6 +4,7 @@ import { HttpLink } from "apollo-link-http";
 import { AnyAction, Store } from "redux";
 
 import {
+  ItemId,
   ViewId,
   Variables,
   Data,
@@ -28,6 +29,7 @@ import {
   removeAllViewsForSubItem,
   setCurrentPath,
   setNCards,
+  getItem,
   getItemsById,
   getRelationshipsForLeftItemAndRelation,
 } from "../redux-reducers";
@@ -292,63 +294,110 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
+  removeFromView(relatedId: ItemId, viewId: string): void {
+    const [viewName, itemId, _relationId] = viewId.split(":");
+
+    if (viewName === "ItemWithRelatedItems") {
+      const relatedToId = parseInt(itemId, 10);
+      const relationId = parseInt(_relationId, 10);
+
+      const query = this.client.readQuery<
+        Data["itemWithRelatedItems"],
+        Variables["itemWithRelatedItems"]
+      >({
+        variables: { relatedToId, relationId },
+        query: nodes["itemWithRelatedItems"],
+      });
+
+      const itemWithRelatedItems = query?.itemWithRelatedItems;
+
+      if (itemWithRelatedItems) {
+        let items = itemWithRelatedItems.items;
+        let relationshipIds = itemWithRelatedItems.relationshipIds;
+
+        const index = items.findIndex((item) => item.id === relatedId);
+
+        if (index !== -1) {
+          items = [...items.slice(0, index), ...items.slice(index + 1)];
+          relationshipIds = [
+            ...relationshipIds.slice(0, index),
+            ...relationshipIds.slice(index + 1),
+          ];
+
+          this.client.writeQuery<
+            Data["itemWithRelatedItems"],
+            Variables["itemWithRelatedItems"]
+          >({
+            variables: { relatedToId, relationId },
+            query: nodes["itemWithRelatedItems"],
+            data: {
+              itemWithRelatedItems: {
+                ...itemWithRelatedItems,
+                items,
+                relationshipIds,
+              },
+            },
+          });
+        }
+      }
+    }
+  }
+
   removeFromViews(items: ClientItem[], updateStore = true): void {
     for (const item of items) {
       const relatedId = item.id;
       const viewsForSubItem = this.select(getViewsForSubItem(relatedId));
 
       for (const viewId of viewsForSubItem) {
-        const [viewName, itemId, _relationId] = viewId.split(":");
-
-        if (viewName === "ItemWithRelatedItems") {
-          const relatedToId = parseInt(itemId, 10);
-          const relationId = parseInt(_relationId, 10);
-
-          const query = this.client.readQuery<
-            Data["itemWithRelatedItems"],
-            Variables["itemWithRelatedItems"]
-          >({
-            variables: { relatedToId, relationId },
-            query: nodes["itemWithRelatedItems"],
-          });
-
-          const itemWithRelatedItems = query?.itemWithRelatedItems;
-
-          if (itemWithRelatedItems) {
-            let items = itemWithRelatedItems.items;
-            let relationshipIds = itemWithRelatedItems.relationshipIds;
-
-            const index = items.findIndex((item) => item.id === relatedId);
-
-            if (index !== -1) {
-              items = [...items.slice(0, index), ...items.slice(index + 1)];
-              relationshipIds = [
-                ...relationshipIds.slice(0, index),
-                ...relationshipIds.slice(index + 1),
-              ];
-
-              this.client.writeQuery<
-                Data["itemWithRelatedItems"],
-                Variables["itemWithRelatedItems"]
-              >({
-                variables: { relatedToId, relationId },
-                query: nodes["itemWithRelatedItems"],
-                data: {
-                  itemWithRelatedItems: {
-                    ...itemWithRelatedItems,
-                    items,
-                    relationshipIds,
-                  },
-                },
-              });
-            }
-          }
-        }
+        this.removeFromView(relatedId, viewId);
       }
     }
 
     if (updateStore) {
       this.removeFromStore(items);
+    }
+  }
+
+  updateViewsAfterRelationshipUpdate(
+    prevRelationship: ClientRelationship,
+    newRelationship: ClientRelationship,
+    updateStore = true
+  ): void {
+    let [relatedToId, relationId, relatedId] = prevRelationship.ids;
+    let viewsForItem = this.select(getViewsForItem(relatedToId));
+    let item = this.select(getItem(relatedId));
+
+    for (const viewId of viewsForItem) {
+      const [viewName, itemId, _relationId] = viewId.split(":");
+
+      if (
+        viewName === "ItemWithRelatedItems" &&
+        relatedToId === parseInt(itemId, 10) &&
+        relationId === parseInt(_relationId, 10)
+      ) {
+        this.removeFromView(relatedId, viewId);
+
+        if (updateStore && item) {
+          this.removeFromStore([item]);
+        }
+      }
+    }
+
+    [relatedToId, relationId, relatedId] = newRelationship.ids;
+    viewsForItem = this.select(getViewsForItem(relatedToId));
+    item = this.select(getItem(relatedId));
+
+    for (const viewId of viewsForItem) {
+      const [viewName, itemId, _relationId] = viewId.split(":");
+
+      if (
+        viewName === "ItemWithRelatedItems" &&
+        relatedToId === parseInt(itemId, 10) &&
+        relationId === parseInt(_relationId, 10) &&
+        item
+      ) {
+        this.addRelatedItem(item, newRelationship, updateStore);
+      }
     }
   }
 }

@@ -79,20 +79,16 @@ const ListItem: FunctionComponent<FullListItemProps> = ({
 };
 
 const MemoizedListItem = memo(ListItem, (prevProps, nextProps) => {
+  if (prevProps.draggableProps || nextProps.draggableProps) {
+    // Don't memoize if DnD, so that indices are always up to date
+    return false;
+  }
+
   let eq =
     prevProps.itemId === nextProps.itemId &&
     prevProps.primary === nextProps.primary &&
     prevProps.checked === nextProps.checked &&
     prevProps["data-view-key"] === nextProps["data-view-key"];
-
-  const pdp = prevProps.draggableProps;
-  const ndp = nextProps.draggableProps;
-
-  if (pdp && ndp) {
-    eq = eq && pdp.draggableId === ndp.draggableId;
-  } else {
-    eq = eq && pdp === ndp;
-  }
 
   const pep = prevProps.expandButtonProps;
   const nep = nextProps.expandButtonProps;
