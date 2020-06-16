@@ -12,6 +12,14 @@ import {
   decrementNCards,
 } from "../redux-reducers";
 
+type UseOneCard = {
+  itemId: ItemId;
+  currentPath: ItemId[];
+  close: () => void;
+  open: (id: ItemId) => void;
+  moveBack: (id: ItemId) => () => void;
+};
+
 export class ReduxHooksManager {
   public readonly clientManager: ApolloClientManagerInterface;
 
@@ -19,32 +27,44 @@ export class ReduxHooksManager {
     this.clientManager = clientManager;
   }
 
-  useOneCard(
-    path: ItemId[]
-  ): {
-    itemId: ItemId;
-    currentPath: ItemId[];
-    close: () => void;
-    open: (id: ItemId) => void;
-    moveBack: (id: ItemId) => () => void;
-  } {
-    const [currentPath, setCurrentPath] = useState(path);
+  useOneCard(path: ItemId[], first: boolean): UseOneCard {
+    const [currentPath, _setCurrentPath] = useState(path);
     const index = currentPath.length - 1;
     const itemId = currentPath[index] || 1;
 
-    const moveBack = (index: number) => () => {
-      setCurrentPath(currentPath.slice(0, index + 1));
-    };
+    const moveBack = first
+      ? (index: number) => () => {
+          const newPath = currentPath.slice(0, index + 1);
+          _setCurrentPath(newPath);
+          this.clientManager.dispatch(setCurrentPath(newPath));
+        }
+      : (index: number) => () => {
+          _setCurrentPath(currentPath.slice(0, index + 1));
+        };
 
-    const close = () => {
-      if (index > 0) {
-        setCurrentPath(currentPath.slice(0, index));
-      }
-    };
+    const close = first
+      ? () => {
+          if (index > 0) {
+            const newPath = currentPath.slice(0, index);
+            _setCurrentPath(newPath);
+            this.clientManager.dispatch(setCurrentPath(newPath));
+          }
+        }
+      : () => {
+          if (index > 0) {
+            _setCurrentPath(currentPath.slice(0, index));
+          }
+        };
 
-    const open = (id: ItemId) => {
-      setCurrentPath(currentPath.concat(id));
-    };
+    const open = first
+      ? (id: ItemId) => {
+          const newPath = currentPath.concat(id);
+          _setCurrentPath(newPath);
+          this.clientManager.dispatch(setCurrentPath(newPath));
+        }
+      : (id: ItemId) => {
+          _setCurrentPath(currentPath.concat(id));
+        };
 
     return {
       itemId,
@@ -52,6 +72,21 @@ export class ReduxHooksManager {
       close,
       open,
       moveBack,
+    };
+  }
+
+  useTwoOneCards(
+    path: ItemId[]
+  ): {
+    pathProps1: UseOneCard;
+    pathProps2: UseOneCard;
+  } {
+    const pathProps1 = this.useOneCard(path, true);
+    const pathProps2 = this.useOneCard(path, false);
+
+    return {
+      pathProps1,
+      pathProps2,
     };
   }
 

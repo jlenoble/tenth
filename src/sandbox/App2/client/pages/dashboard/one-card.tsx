@@ -55,8 +55,10 @@ export const TwoOneCards: FunctionComponent<{
 }> = ({ currentPath, relationId, mainId }) => {
   const droppableId1 = "drop1";
   const droppableId2 = "drop2";
-  const pathProps1 = clientManager.reduxHooksManager.useOneCard(currentPath);
-  const pathProps2 = clientManager.reduxHooksManager.useOneCard(currentPath);
+  const {
+    pathProps1,
+    pathProps2,
+  } = clientManager.reduxHooksManager.useTwoOneCards(currentPath);
   const update = clientManager.apolloHooksManager.useUpdateRelationship();
 
   return (
