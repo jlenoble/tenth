@@ -30,7 +30,7 @@ export const nCardsReducer: Reducer<State> = ((
       }
 
       case DECREMENT_NCARDS: {
-        return state - 1;
+        return state - 1 || 1;
       }
 
       default: {
