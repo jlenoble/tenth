@@ -6,6 +6,7 @@ import { mainStyles } from "./dashboard.style";
 import { TwoCards } from "./two-cards";
 import { clientManager } from "../../apollo-client-manager";
 import { TwoOneCards } from "./one-card";
+import { SortCard } from "./sort-card";
 import { getCurrentPath } from "../../../redux-reducers";
 
 const useStyles = makeStyles(mainStyles);
@@ -13,12 +14,17 @@ const useStyles = makeStyles(mainStyles);
 export enum MainId {
   items = "items",
   categories = "categories",
+  priorities = "priorities",
 }
 
 const getRelation = (mainId: MainId): string => {
   switch (mainId) {
     case MainId.categories: {
       return "→";
+    }
+
+    case MainId.priorities: {
+      return ">";
     }
 
     case MainId.items:
@@ -41,17 +47,41 @@ export const Main: FunctionComponent<{ mainId?: MainId }> = ({
   if (loading) return <span />;
   if (error || !relationId) return <p>ERROR</p>;
 
+  let cards: JSX.Element;
+
+  switch (relation) {
+    case "→": {
+      cards = (
+        <TwoOneCards
+          currentPath={clientManager.select(getCurrentPath)}
+          relationId={relationId}
+          mainId={mainId}
+        />
+      );
+      break;
+    }
+
+    case ">": {
+      cards = (
+        <SortCard
+          currentPath={clientManager.select(getCurrentPath)}
+          relationId={relationId}
+          mainId={mainId}
+        />
+      );
+      break;
+    }
+
+    default: {
+      cards = <TwoCards relationId={relationId} mainId={mainId} />;
+    }
+  }
+
   return (
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
-        {(relation === "→" && (
-          <TwoOneCards
-            currentPath={clientManager.select(getCurrentPath)}
-            relationId={relationId}
-            mainId={mainId}
-          />
-        )) || <TwoCards relationId={relationId} mainId={mainId} />}
+        {cards}
       </Container>
     </main>
   );

@@ -12,7 +12,7 @@ import {
   Divider,
   IconButton,
 } from "@material-ui/core";
-import { ChevronLeft, Dashboard, Category } from "@material-ui/icons";
+import { ChevronLeft, Dashboard, Category, Sort } from "@material-ui/icons";
 
 import { drawerStyles } from "./dashboard.style";
 
@@ -21,6 +21,7 @@ const useStyles = makeStyles(drawerStyles);
 const icons = {
   items: Dashboard,
   categories: Category,
+  priorities: Sort,
 };
 
 export const Drawer: FunctionComponent<{

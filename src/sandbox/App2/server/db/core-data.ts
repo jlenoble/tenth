@@ -7,7 +7,7 @@ export type CoreData =
 export const coreData: CoreData = [
   {
     "Core Items": {
-      Rel: ["⊃", "→"],
+      Rel: ["⊃", "→", ">"],
     },
   },
   "Me",
