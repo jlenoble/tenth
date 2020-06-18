@@ -9,6 +9,24 @@ export class DbDataManager extends DataManager<GQLItem, GQLRelationship> {
     this.dataSources = dataSources;
   }
 
+  async findOrCreateRelatedItem(_item: {
+    relatedToId: ItemId;
+    relationId: ItemId;
+    title: string;
+  }): Promise<{
+    item: GQLItem;
+    relationship: GQLRelationship;
+  }> {
+    const {
+      item,
+      relationship,
+    } = await this.dataSources.relationshipAPI.createRelatedItem(_item);
+    return {
+      item: item.values,
+      relationship: relationship.values,
+    };
+  }
+
   async getItem(id: ItemId): Promise<GQLItem> {
     const item = await this.dataSources.itemAPI.getItemById({ id });
     if (item) {

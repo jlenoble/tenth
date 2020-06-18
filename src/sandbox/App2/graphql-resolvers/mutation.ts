@@ -23,8 +23,16 @@ export const mutationResolvers: Required<Omit<
   destroyItems: (_, items, { dataSources: { itemAPI } }) =>
     itemAPI.destroyItems(items),
 
-  createRelatedItem: (_, item, { dataSources: { relationshipAPI } }) =>
-    relationshipAPI.createRelatedItem(item),
+  createRelatedItem: async (_, _item, { dataSources: { relationshipAPI } }) => {
+    const { item, relationship } = await relationshipAPI.createRelatedItem(
+      _item
+    );
+    return { item: item.values, relationship: relationship.values };
+  },
+  createOrderedItem: (_, item, { dataSources }) => {
+    const dataManager = new DbDataManager(dataSources);
+    return dataManager.createOrderedItem(item);
+  },
 
   updateRelationship: (_, relationship, { dataSources: { relationshipAPI } }) =>
     relationshipAPI.updateRelationship(relationship),

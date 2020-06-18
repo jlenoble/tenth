@@ -9,6 +9,12 @@ type RelatedItem {
   relationship: Relationship!
 }
 
+type OrderedItem {
+  item: Item!
+  order: Item
+  relationships: [Relationship!]!
+}
+
 type ItemWithRelatedItems {
   relation: Item!
   item: Item!
@@ -36,4 +42,6 @@ extend type Mutation {
   
   createRelatedItem(relatedToId: Int!, relationId: Int!, title: String!): RelatedItem!
   destroyRelatedItem(relatedToId: Int!, relationId: Int!, related: Int!): RelatedItem!
+  
+  createOrderedItem(relatedToId: Int!, relationId: Int!, title: String!): OrderedItem!
 }

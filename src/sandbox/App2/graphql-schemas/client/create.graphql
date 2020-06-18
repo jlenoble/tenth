@@ -19,3 +19,21 @@ mutation CreateRelatedItem($relatedToId: Int!, $relationId: Int!, $title: String
     }
   }
 }
+
+mutation CreateOrderedItem($relatedToId: Int!, $relationId: Int!, $title: String!, $optimisticId: Int) {
+  optimisticId(optimisticId: $optimisticId)
+  createOrderedItem(relatedToId: $relatedToId, relationId: $relationId, title: $title) {
+    item {
+      id
+      title
+    }
+    order {
+      id
+      title
+    }
+    relationships {
+      id
+      ids
+    }
+  }
+}

@@ -121,6 +121,17 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
     });
   }
 
+  async findOrCreateRelatedItem(_item: {
+    relatedToId: ItemId;
+    relationId: ItemId;
+    title: string;
+  }): Promise<{
+    item: ClientItem;
+    relationship: ClientRelationship;
+  }> {
+    return { item: {}, relationship: {} };
+  }
+
   async getItem(id: ItemId): Promise<ClientItem> {
     const item = await this.clientManager.select(getItem(id));
     if (item) {

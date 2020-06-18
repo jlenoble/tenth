@@ -6,7 +6,7 @@ import {
 import { DataSource, DataSourceConfig } from "apollo-datasource";
 import { Op } from "sequelize";
 
-import { APIContext, UserId, Args, RelatedItem } from "../../types";
+import { APIContext, UserId, Args } from "../../types";
 import { Store, Item, Relationship } from "../db";
 
 export class RelationshipAPI<
@@ -38,7 +38,10 @@ export class RelationshipAPI<
     relatedToId,
     relationId,
     title,
-  }: Args["createRelatedItem"]): Promise<RelatedItem> {
+  }: Args["createRelatedItem"]): Promise<{
+    item: Item;
+    relationship: Relationship;
+  }> {
     const userId = this.userId;
 
     const items = await this.store.Item.findAll<Item>({
@@ -61,8 +64,8 @@ export class RelationshipAPI<
     });
 
     return {
-      item: item.values,
-      relationship: relationship.values,
+      item,
+      relationship,
     };
   }
 

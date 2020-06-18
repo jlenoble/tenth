@@ -4,6 +4,7 @@ import {
   UserId,
   ClientItem,
   ClientRelationship,
+  Args,
 } from "../types";
 import { CoreData, coreData } from "../server/db/core-data";
 
@@ -38,6 +39,15 @@ export abstract class DataManager<
   Relationship extends ClientRelationship
 > {
   protected coreData: CoreData = coreData;
+
+  abstract findOrCreateRelatedItem(item: {
+    relatedToId: ItemId;
+    relationId: ItemId;
+    title: string;
+  }): Promise<{
+    item: Item;
+    relationship: Relationship;
+  }>;
 
   abstract async getItem(id: ItemId): Promise<Item>;
   abstract async getItems(ids: ItemId[]): Promise<Item[]>;
@@ -329,6 +339,90 @@ export abstract class DataManager<
       relationships,
       items,
     };
+  }
+
+  async createOrderedItem({
+    relatedToId,
+    relationId,
+    title,
+  }: Args["createOrderedItem"]): Promise<{
+    item: Item;
+    order?: Item;
+    relationships: Relationship[];
+  }> {
+    const relatedTo = await this.getItem(relatedToId);
+    const userId = await this.getUserId(relatedTo);
+    const orderId = this.getCoreItemId(">");
+    let order: Item;
+    let orderRelationship: Relationship | undefined;
+
+    if (relationId === orderId) {
+      const rels = await this.getRelationshipsForLeftItemAndRelation(
+        relatedToId,
+        relationId
+      );
+      if (rels.length > 0) {
+        order = await this.getItem(rels[0].ids[2]);
+      } else {
+        const { item, relationship } = await this.findOrCreateRelatedItem({
+          relatedToId,
+          relationId,
+          title: ">",
+        });
+        order = item;
+        orderRelationship = relationship;
+      }
+    } else {
+      order = await this.getItem(relationId);
+    }
+
+    if (order.title !== ">" || userId !== (await this.getUserId(order))) {
+      throw new Error("failed to create");
+    }
+
+    const rels = await this.getRelationshipsForItem(order.id);
+    const sortedRels: Map<
+      ItemId,
+      { before?: ItemId; after?: ItemId }
+    > = new Map();
+
+    let firstId: ItemId | undefined = -1;
+
+    rels.forEach(({ ids: [i1, , i2] }) => {
+      const r1: { before?: ItemId; after?: ItemId } = sortedRels.get(i1) || {};
+      const r2: { before?: ItemId; after?: ItemId } = sortedRels.get(i2) || {};
+
+      sortedRels.set(i1, { ...r1, after: i2 });
+      sortedRels.set(i2, { ...r2, before: i1 });
+
+      if (!firstId || firstId === i1) {
+        firstId = i2;
+      }
+    });
+
+    let lastId = firstId;
+    do {
+      const r = sortedRels.get(firstId);
+      lastId = firstId;
+      firstId = r?.after;
+    } while (firstId);
+
+    const { item, relationship } = await this.findOrCreateRelatedItem({
+      relatedToId: lastId,
+      relationId: order.id,
+      title,
+    });
+
+    return orderRelationship
+      ? {
+          item,
+          order,
+          relationships: [orderRelationship, relationship],
+        }
+      : {
+          item,
+          relationships: [relationship],
+        };
   }
 
   async destroyItem(

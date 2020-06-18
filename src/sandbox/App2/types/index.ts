@@ -5,6 +5,7 @@ export * from "./type-maps";
 
 export type {
   RelatedItem,
+  OrderedItem,
   ItemWithRelatedItems,
   QueryResolvers,
   MutationResolvers,
