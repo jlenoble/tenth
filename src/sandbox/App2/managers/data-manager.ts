@@ -386,7 +386,7 @@ export abstract class DataManager<
       item: relatedTo,
       order,
       orderRelationship,
-      relationships,
+      relationships: relationships.filter(({ ids: [, id] }) => id === order.id),
     };
   }
 
@@ -477,7 +477,7 @@ export abstract class DataManager<
       ? {
           item,
           order,
-          relationships: [orderRelationship, relationship],
+          relationships: [relationship],
         }
       : {
           item,
