@@ -6,7 +6,7 @@ import { mainStyles } from "./dashboard.style";
 import { TwoCards } from "./two-cards";
 import { clientManager } from "../../apollo-client-manager";
 import { TwoOneCards } from "./one-card";
-import { SortCard } from "./sort-card";
+import { TwoSortCards } from "./sort-card";
 import { getCurrentPath } from "../../../redux-reducers";
 
 const useStyles = makeStyles(mainStyles);
@@ -63,7 +63,7 @@ export const Main: FunctionComponent<{ mainId?: MainId }> = ({
 
     case ">": {
       cards = (
-        <SortCard
+        <TwoSortCards
           currentPath={clientManager.select(getCurrentPath)}
           relationId={relationId}
           mainId={mainId}

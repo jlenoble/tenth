@@ -36,6 +36,26 @@ export const queryResolvers: Required<Omit<
     };
   },
 
+  itemWithOrderedItems: async (
+    _,
+    { relatedToId, relationId },
+    { dataSources }
+  ) => {
+    const dataManager = new DbDataManager(dataSources);
+    const {
+      relation,
+      item,
+      relationships,
+      items,
+    } = await dataManager.getItemWithOrderedItems(relatedToId, relationId);
+    return {
+      relation,
+      item,
+      items,
+      relationshipIds: relationships.map(({ id }) => id),
+    };
+  },
+
   relationshipsForItem: (_, item, { dataSources: { relationshipAPI } }) =>
     relationshipAPI.getRelationshipsForItem(item),
   relationshipsForItemAndRelation: (

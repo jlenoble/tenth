@@ -4,6 +4,7 @@ import { DataProxy } from "apollo-cache";
 import { Data, ApolloClientManagerInterface } from "../types";
 import {
   triggerCreateRelatedItem,
+  triggerCreateOrderedItem,
   triggerDestroyItem,
   triggerUpdateItem,
   triggerUpdateRelationship,
@@ -63,6 +64,19 @@ export class UpdateManager {
 
       if (item !== undefined) {
         this.clientManager.dispatch(triggerCreateRelatedItem(item));
+      }
+    };
+  }
+
+  createOrderedItem() {
+    return (
+      _: DataProxy,
+      { data }: FetchResult<Data["createOrderedItem"]>
+    ): void => {
+      const item = data?.createOrderedItem;
+
+      if (item !== undefined) {
+        this.clientManager.dispatch(triggerCreateOrderedItem(item));
       }
     };
   }

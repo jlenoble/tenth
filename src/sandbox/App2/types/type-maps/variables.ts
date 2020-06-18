@@ -4,8 +4,11 @@ export interface Variables {
   items: Generated.GetItemsQueryVariables;
   itemsById: Generated.GetItemsByIdQueryVariables;
   itemWithRelatedItems: Generated.GetItemWithRelatedItemsQueryVariables;
+  itemWithOrderedItems: Generated.GetItemWithOrderedItemsQueryVariables;
+
   coreItem: Generated.GetCoreItemQueryVariables;
   coreItems: Generated.GetCoreItemsQueryVariables;
+
   relationshipsForItem: Generated.GetRelationshipsForItemQueryVariables;
   relationshipsForItemAndRelation: Generated.GetRelationshipsForItemAndRelationQueryVariables;
   relationshipsForLeftItemAndRelation: Generated.GetRelationshipsForLeftItemAndRelationQueryVariables;
@@ -17,6 +20,7 @@ export interface Variables {
   updateItem: Generated.UpdateItemMutationVariables;
 
   createRelatedItem: Generated.CreateRelatedItemMutationVariables;
+  createOrderedItem: Generated.CreateOrderedItemMutationVariables;
   destroyRelatedItem: Generated.DestroyRelatedItemMutationVariables;
   destroyRelationships: Generated.DestroyRelationshipsMutationVariables;
   updateRelationship: Generated.UpdateRelationshipMutationVariables;

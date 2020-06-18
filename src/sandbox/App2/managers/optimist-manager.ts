@@ -26,6 +26,7 @@ type Mutations =
   | "destroyItem"
   | "updateItem"
   | "createRelatedItem"
+  | "createOrderedItem"
   | "updateRelationship";
 
 type OptimisticInit<T extends Mutations> = {
@@ -435,6 +436,33 @@ export class OptimistManager {
           id: tmpId(),
           ids: [relatedToId, relationId, relatedId],
         },
+      },
+    });
+  }
+
+  createOrderedItem(
+    variables: Variables["createOrderedItem"]
+  ): OptimisticInit<"createOrderedItem"> {
+    const { relatedToId, relationId, ...item } = variables;
+    const relatedId = tmpId();
+
+    return this.optimisticInit<"createOrderedItem">(variables, {
+      __typename: "Mutation",
+      createOrderedItem: {
+        __typename: "OrderedItem",
+        item: {
+          __typename: "Item",
+          id: relatedId,
+          ...item,
+        },
+        order: { __typename: "Item", id: relationId, title: ">" },
+        relationships: [
+          {
+            __typename: "Relationship",
+            id: tmpId(),
+            ids: [relatedToId, relationId, relatedId],
+          },
+        ],
       },
     });
   }

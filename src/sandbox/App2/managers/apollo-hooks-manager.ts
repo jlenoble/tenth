@@ -135,6 +135,56 @@ export class ApolloHooksManager {
     return add;
   }
 
+  useAddOrderedItem(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): (input?: string) => Promise<void> {
+    const [addItem] = useMutation<
+      Data["createOrderedItem"],
+      Variables["createOrderedItem"]
+    >(nodes["createOrderedItem"], {
+      update: this.updateManager.createOrderedItem(),
+    });
+
+    const add = async (input = ""): Promise<void> => {
+      const _variables = {
+        relatedToId,
+        relationId,
+        title: input,
+      };
+
+      const {
+        variables,
+        optimisticResponse,
+      } = this.optimistManager.createOrderedItem(_variables);
+
+      try {
+        await addItem({
+          variables,
+          optimisticResponse,
+        });
+      } catch (e) {
+        switch (e.message) {
+          case "Network error: Failed to fetch":
+            throw new Error(`Network unavailable: Failed to add "${input}"`);
+
+          default:
+            throw e;
+        }
+      } finally {
+        if (optimisticResponse) {
+          // Destroy in cascade tmp item and relationship and their refs.
+          // Apollo has already updated/reverted the UI. All tmp elements are already unmounted.
+          this.clientManager.dispatch(
+            triggerDestroyItem(optimisticResponse.createOrderedItem.item)
+          );
+        }
+      }
+    };
+
+    return add;
+  }
+
   useMakeDestroyItem(): (id: number) => () => Promise<void> {
     const [_destroyItem] = useMutation<
       Data["destroyItem"],
@@ -347,6 +397,32 @@ export class ApolloHooksManager {
     });
 
     const add = this.useAddRelatedItem(relatedToId, relationId);
+    const makeDestroy = this.useMakeDestroyItem();
+    const makeUpdate = this.useMakeUpdateItem();
+
+    return {
+      data,
+      loading,
+      error,
+      add,
+      makeDestroy,
+      makeUpdate,
+    };
+  }
+
+  useOrderedItems(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): UseItems<"itemWithOrderedItems"> {
+    const { data, loading, error } = useQuery<
+      Data["itemWithOrderedItems"],
+      Variables["itemWithOrderedItems"]
+    >(nodes["itemWithOrderedItems"], {
+      variables: { relatedToId, relationId },
+      onCompleted: this.completedManager.getItemWithOrderedItems(),
+    });
+
+    const add = this.useAddOrderedItem(relatedToId, relationId);
     const makeDestroy = this.useMakeDestroyItem();
     const makeUpdate = this.useMakeUpdateItem();
 

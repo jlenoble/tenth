@@ -341,13 +341,13 @@ export abstract class DataManager<
     };
   }
 
-  async createOrderedItem({
-    relatedToId,
-    relationId,
-    title,
-  }: Args["createOrderedItem"]): Promise<{
+  async findOrderRelationAndRelatedRelationshipsOrCreate(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): Promise<{
     item: Item;
-    order?: Item;
+    order: Item;
+    orderRelationship?: Relationship;
     relationships: Relationship[];
   }> {
     const relatedTo = await this.getItem(relatedToId);
@@ -380,7 +380,67 @@ export abstract class DataManager<
       throw new Error("failed to create");
     }
 
-    const rels = await this.getRelationshipsForItem(order.id);
+    const relationships = await this.getRelationshipsForItem(order.id);
+
+    return {
+      item: relatedTo,
+      order,
+      orderRelationship,
+      relationships,
+    };
+  }
+
+  async getItemWithOrderedItems(
+    relatedToId: ItemId,
+    relationId: ItemId
+  ): Promise<{
+    relation: Item;
+    item: Item;
+    relationships: Relationship[];
+    items: Item[];
+  }> {
+    const {
+      item,
+      order,
+      relationships,
+    } = await this.findOrderRelationAndRelatedRelationshipsOrCreate(
+      relatedToId,
+      relationId
+    );
+
+    const ids: Set<ItemId> = new Set();
+    relationships.forEach(({ ids: [id1, , id2] }) => {
+      ids.add(id1);
+      ids.add(id2);
+    });
+
+    const items: Item[] = await this.getItems(Array.from(ids));
+
+    return {
+      relation: order,
+      item,
+      relationships,
+      items,
+    };
+  }
+
+  async createOrderedItem({
+    relatedToId,
+    relationId,
+    title,
+  }: Args["createOrderedItem"]): Promise<{
+    item: Item;
+    order?: Item;
+    relationships: Relationship[];
+  }> {
+    const {
+      order,
+      orderRelationship,
+      relationships,
+    } = await this.findOrderRelationAndRelatedRelationshipsOrCreate(
+      relatedToId,
+      relationId
+    );
     const sortedRels: Map<
       ItemId,
       { before?: ItemId; after?: ItemId }
@@ -388,7 +448,7 @@ export abstract class DataManager<
 
     let firstId: ItemId | undefined = -1;
 
-    rels.forEach(({ ids: [i1, , i2] }) => {
+    relationships.forEach(({ ids: [i1, , i2] }) => {
       const r1: { before?: ItemId; after?: ItemId } = sortedRels.get(i1) || {};
       const r2: { before?: ItemId; after?: ItemId } = sortedRels.get(i2) || {};
 

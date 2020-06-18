@@ -35,6 +35,30 @@ export class CompletedManager {
     };
   }
 
+  getItemWithOrderedItems() {
+    return (data: Data["itemWithOrderedItems"]): void => {
+      const itemWithOrderedItems = data.itemWithOrderedItems;
+
+      if (itemWithOrderedItems !== undefined) {
+        const { relation, item, items, relationshipIds } = itemWithOrderedItems;
+        const { id: relatedToId } = item;
+        const { id: relationId } = relation;
+
+        const relationships = relationshipIds.map((id, i) => {
+          return { id, ids: [relatedToId, relationId, items[i].id] };
+        });
+
+        this.clientManager.addToStore({
+          item,
+          relation,
+          items,
+          relationships,
+          viewId: this.clientManager.dataIdFromObject(itemWithOrderedItems),
+        });
+      }
+    };
+  }
+
   getItemsById() {
     return (data: Data["itemsById"]): void => {
       this.clientManager.addToStore({

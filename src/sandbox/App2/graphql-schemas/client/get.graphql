@@ -51,6 +51,24 @@ query GetItemWithRelatedItems($relatedToId: Int!, $relationId: Int!) {
   }
 }
 
+query GetItemWithOrderedItems($relatedToId: Int!, $relationId: Int!) {
+  itemWithOrderedItems(relatedToId: $relatedToId, relationId: $relationId) {
+    relation {
+      id
+      title
+    }
+    item {
+      id
+      title
+    }
+    items {
+      id
+      title
+    }
+    relationshipIds
+  }
+}
+
 query GetRelationshipsForItem($id: Int!) {
   relationshipsForItem(id: $id) {
     id

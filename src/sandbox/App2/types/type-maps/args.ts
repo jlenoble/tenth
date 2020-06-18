@@ -4,7 +4,10 @@ export interface Args {
   item: Generated.QueryItemArgs;
   itemsById: Generated.QueryItemsByIdArgs;
   itemWithRelatedItems: Generated.QueryItemWithRelatedItemsArgs;
+  itemWithOrderedItems: Generated.QueryItemWithOrderedItemsArgs;
+
   coreItem: Generated.QueryCoreItemArgs;
+
   relationshipsForItem: Generated.QueryRelationshipsForItemArgs;
   relationshipsForItemAndRelation: Generated.QueryRelationshipsForItemAndRelationArgs;
   relationshipsForLeftItemAndRelation: Generated.QueryRelationshipsForLeftItemAndRelationArgs;

@@ -14,6 +14,14 @@ const dataIdFromObject: DataIdFromObject = (object): string | null => {
       return `ItemWithRelatedItems:${id}:${relationId}`;
     }
 
+    case "ItemWithOrderedItems": {
+      const {
+        item: { id },
+        relation: { id: relationId },
+      } = object as ItemWithRelatedItems;
+      return `ItemWithOrderedItems:${id}:${relationId}`;
+    }
+
     default:
       return defaultDataIdFromObject(object);
   }

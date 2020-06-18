@@ -1,11 +1,13 @@
 import { Data, MaybePreOptimisticAction } from "../../../types";
 import {
   TRIGGER_CREATE_RELATED_ITEM,
+  TRIGGER_CREATE_ORDERED_ITEM,
   TRIGGER_DESTROY_ITEM,
   TRIGGER_UPDATE_ITEM,
 } from "./consts";
 import {
   TriggerCreateRelatedItemAction,
+  TriggerCreateOrderedItemAction,
   TriggerDestroyItemAction,
   TriggerUpdateItemAction,
 } from "./actions";
@@ -16,6 +18,19 @@ export const triggerCreateRelatedItem = (
   error?: true
 ): MaybePreOptimisticAction<TriggerCreateRelatedItemAction> => ({
   type: TRIGGER_CREATE_RELATED_ITEM,
+  payload: item,
+  meta: {
+    optimisticId,
+    error,
+  },
+});
+
+export const triggerCreateOrderedItem = (
+  item: Data["createOrderedItem"]["createOrderedItem"],
+  optimisticId?: number,
+  error?: true
+): MaybePreOptimisticAction<TriggerCreateOrderedItemAction> => ({
+  type: TRIGGER_CREATE_ORDERED_ITEM,
   payload: item,
   meta: {
     optimisticId,
