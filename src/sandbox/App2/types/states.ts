@@ -4,11 +4,13 @@ import {
   ClientItem,
   ClientRelationship,
   ViewId,
+  Order,
 } from "./models";
 
 export type CurrentPathState = ItemId[];
 export type ItemsState = Map<ItemId, ClientItem>;
 export type NCardsState = number;
+export type OrdersState = Map<ItemId, Map<ItemId, Order>>;
 export type RelationshipsState = Map<ItemId, ClientRelationship>;
 export type RelationshipsForItemState = Map<
   ItemId,
@@ -21,6 +23,7 @@ export type State = {
   currentPath: CurrentPathState;
   items: ItemsState;
   nCards: NCardsState;
+  orders: OrdersState;
   relationships: RelationshipsState;
   relationshipsForItem: RelationshipsForItemState;
   viewsForItem: ViewsForItemState;

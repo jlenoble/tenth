@@ -7,41 +7,46 @@ import {
   UPDATE_ORDER,
   INSERT_ITEM_AFTER,
 } from "./consts";
-import { ItemId } from "../../types";
+import { ItemId, Order } from "../../types";
 
 export type SetOrdersAction = {
   type: typeof SET_ORDERS;
-  payload: { id: ItemId; ids: ItemId[] }[];
+  payload: Order[];
 };
 
 export type AddOrderAction = {
   type: typeof ADD_ORDER;
-  payload: { id: ItemId; ids: ItemId[] };
+  payload: Order;
 };
 
 export type RemoveOrderAction = {
   type: typeof REMOVE_ORDER;
-  payload: ItemId;
+  payload: { itemId: ItemId; orderId: ItemId };
 };
 
 export type AddOrdersAction = {
   type: typeof ADD_ORDERS;
-  payload: { id: ItemId; ids: ItemId[] }[];
+  payload: Order[];
 };
 
 export type RemoveOrdersAction = {
   type: typeof REMOVE_ORDERS;
-  payload: ItemId[];
+  payload: { itemId: ItemId; orderId: ItemId }[];
 };
 
 export type UpdateOrderAction = {
   type: typeof UPDATE_ORDER;
-  payload: { id: ItemId; ids: ItemId[] };
+  payload: Order;
 };
 
 export type InsertItemAfterAction = {
   type: typeof INSERT_ITEM_AFTER;
-  payload: { id: ItemId; beforeId: ItemId; afterId: ItemId };
+  payload: {
+    itemId: ItemId;
+    orderId: ItemId;
+    beforeId: ItemId;
+    afterId: ItemId;
+  };
 };
 
 export type OrdersAction =
