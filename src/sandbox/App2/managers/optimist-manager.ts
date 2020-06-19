@@ -19,6 +19,9 @@ import {
   resetAll,
   REVERT_DESTROY_ITEM,
   RevertDestroyItemAction,
+  getOrderRelation,
+  getOrderRelationship,
+  getLastOrderedItem,
 } from "../redux-reducers";
 
 type Mutations =
@@ -445,6 +448,18 @@ export class OptimistManager {
   ): OptimisticInit<"createOrderedItem"> {
     const { relatedToId, relationId, ...item } = variables;
     const relatedId = tmpId();
+    const order: ClientItem = this.clientManager.select(
+      getOrderRelation(relatedToId)
+    ) || {
+      id: tmpId(),
+      title: ">",
+    };
+    const orderRelationship: ClientRelationship = this.clientManager.select(
+      getOrderRelationship(relatedToId)
+    ) || { id: tmpId(), ids: [relatedToId, relationId, order.id] };
+    const lastItem: ClientItem = this.clientManager.select(
+      getLastOrderedItem(relatedToId)
+    ) || { id: tmpId(), title: "" };
 
     return this.optimisticInit<"createOrderedItem">(variables, {
       __typename: "Mutation",
@@ -455,12 +470,16 @@ export class OptimistManager {
           id: relatedId,
           ...item,
         },
-        order: { __typename: "Item", id: relationId, title: ">" },
+        order: { __typename: "Item", ...order },
+        orderRelationship: {
+          __typename: "Relationship",
+          ...orderRelationship,
+        },
         relationships: [
           {
             __typename: "Relationship",
             id: tmpId(),
-            ids: [relatedToId, relationId, relatedId],
+            ids: [lastItem.id, order.id, relatedId],
           },
         ],
       },

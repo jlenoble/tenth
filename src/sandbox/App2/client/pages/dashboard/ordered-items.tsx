@@ -26,7 +26,8 @@ export const OrderedItemsCard: FunctionComponent<{
   if (error || !data) return <p>ERROR</p>;
 
   const title = data.itemWithOrderedItems?.item.title || "ItemWithOrderedItems";
-  const items = data.itemWithOrderedItems?.items || [];
+  const { items = [], relation, relationshipIds } = data.itemWithOrderedItems;
+  console.log(items, relation, relationshipIds);
 
   return (
     <ListCard

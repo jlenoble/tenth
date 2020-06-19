@@ -76,11 +76,20 @@ export interface ApolloClientManagerInterface {
   removeFromStore(items: ClientItem[]): void;
 
   resetViews(views: Set<string>, state: State): void;
+
   addRelatedItem(
     item: ClientItem,
     relationship: ClientRelationship,
     updateStore?: boolean
   ): void;
+  addOrderedItem(
+    item: ClientItem,
+    order: ClientItem,
+    orderRelationship: ClientRelationship,
+    relationships: ClientRelationship[],
+    updateStore?: boolean
+  ): void;
+
   destroyViews(
     items: Data["itemWithRelatedItems"]["itemWithRelatedItems"]["items"]
   ): void;

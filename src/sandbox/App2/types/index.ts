@@ -7,6 +7,7 @@ export type {
   RelatedItem,
   OrderedItem,
   ItemWithRelatedItems,
+  ItemWithOrderedItems,
   QueryResolvers,
   MutationResolvers,
   ResolverFn,

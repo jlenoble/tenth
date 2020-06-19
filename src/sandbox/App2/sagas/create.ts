@@ -30,13 +30,14 @@ export function* createOrderedItemSaga(): SagaGenerator {
   );
 
   const {
-    payload: { item, order, relationships },
+    payload: { item, order, orderRelationship, relationships },
     meta,
   } = action;
   const manager = meta?.manager;
 
   if (manager) {
-    console.log(item, order, relationships);
-    // yield call(() => manager.addOrderedItem(item, relationship));
+    yield call(() =>
+      manager.addOrderedItem(item, order, orderRelationship, relationships)
+    );
   }
 }

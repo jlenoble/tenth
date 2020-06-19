@@ -2,7 +2,11 @@ import { defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 
 import { ApolloClientManager } from "../managers";
-import { ItemWithRelatedItems, DataIdFromObject } from "../types";
+import {
+  ItemWithRelatedItems,
+  ItemWithOrderedItems,
+  DataIdFromObject,
+} from "../types";
 
 const dataIdFromObject: DataIdFromObject = (object): string | null => {
   switch (object.__typename) {
@@ -18,7 +22,7 @@ const dataIdFromObject: DataIdFromObject = (object): string | null => {
       const {
         item: { id },
         relation: { id: relationId },
-      } = object as ItemWithRelatedItems;
+      } = object as ItemWithOrderedItems;
       return `ItemWithOrderedItems:${id}:${relationId}`;
     }
 

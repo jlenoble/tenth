@@ -347,7 +347,7 @@ export abstract class DataManager<
   ): Promise<{
     item: Item;
     order: Item;
-    orderRelationship?: Relationship;
+    orderRelationship: Relationship;
     relationships: Relationship[];
   }> {
     const relatedTo = await this.getItem(relatedToId);
@@ -362,7 +362,8 @@ export abstract class DataManager<
         relationId
       );
       if (rels.length > 0) {
-        order = await this.getItem(rels[0].ids[2]);
+        orderRelationship = rels[0];
+        order = await this.getItem(orderRelationship.ids[2]);
       } else {
         const { item, relationship } = await this.findOrCreateRelatedItem({
           relatedToId,
@@ -374,9 +375,20 @@ export abstract class DataManager<
       }
     } else {
       order = await this.getItem(relationId);
+      if (orderId) {
+        const rels = await this.getRelationshipsForLeftItemAndRelation(
+          relatedToId,
+          orderId
+        );
+        orderRelationship = rels[0];
+      }
     }
 
-    if (order.title !== ">" || userId !== (await this.getUserId(order))) {
+    if (
+      order.title !== ">" ||
+      userId !== (await this.getUserId(order)) ||
+      !orderRelationship
+    ) {
       throw new Error("failed to create");
     }
 
@@ -430,7 +442,8 @@ export abstract class DataManager<
     title,
   }: Args["createOrderedItem"]): Promise<{
     item: Item;
-    order?: Item;
+    order: Item;
+    orderRelationship: Relationship;
     relationships: Relationship[];
   }> {
     const {
@@ -473,16 +486,12 @@ export abstract class DataManager<
       title,
     });
 
-    return orderRelationship
-      ? {
-          item,
-          order,
-          relationships: [relationship],
-        }
-      : {
-          item,
-          relationships: [relationship],
-        };
+    return {
+      item,
+      order,
+      orderRelationship,
+      relationships: [relationship],
+    };
   }
 
   async destroyItem(

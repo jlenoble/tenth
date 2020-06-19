@@ -31,6 +31,10 @@ mutation CreateOrderedItem($relatedToId: Int!, $relationId: Int!, $title: String
       id
       title
     }
+    orderRelationship {
+      id
+      ids
+    }
     relationships {
       id
       ids

@@ -11,7 +11,8 @@ type RelatedItem {
 
 type OrderedItem {
   item: Item!
-  order: Item
+  order: Item!
+  orderRelationship: Relationship!
   relationships: [Relationship!]!
 }
 

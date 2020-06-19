@@ -287,6 +287,61 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
   }
 
+  addOrderedItem(
+    item: ClientItem,
+    order: ClientItem,
+    orderRelationship: ClientRelationship,
+    relationships: ClientRelationship[],
+    updateStore = true
+  ): void {
+    const {
+      id: relationshipId,
+      ids: [relatedToId, relationId],
+    } = orderRelationship;
+
+    const query = this.client.readQuery<
+      Data["itemWithOrderedItems"],
+      Variables["itemWithOrderedItems"]
+    >({
+      variables: { relatedToId, relationId },
+      query: nodes["itemWithOrderedItems"],
+    });
+
+    const itemWithOrderedItems = query?.itemWithOrderedItems;
+
+    if (itemWithOrderedItems) {
+      this.client.writeQuery<
+        Data["itemWithOrderedItems"],
+        Variables["itemWithOrderedItems"]
+      >({
+        variables: { relatedToId, relationId },
+        query: nodes["itemWithOrderedItems"],
+        data: {
+          itemWithOrderedItems: {
+            ...itemWithOrderedItems,
+            items: [...itemWithOrderedItems.items, item],
+            relationshipIds: [
+              ...itemWithOrderedItems.relationshipIds,
+              ...relationships.map((rel) => rel.id),
+            ],
+          },
+        },
+      });
+    }
+
+    // if (updateStore) {
+    //   this.addToStore({
+    //     items: [item],
+    //     relationships: [relationship],
+    //     viewId: this.dataIdFromObject({
+    //       __typename: "ItemWithRelatedItems",
+    //       item: { id: relatedToId },
+    //       relation: { id: relationId },
+    //     }),
+    //   });
+    // }
+  }
+
   destroyViews(items: ClientItem[]): void {
     for (const item of items) {
       const viewsForItem = this.select(getViewsForItem(item.id));
