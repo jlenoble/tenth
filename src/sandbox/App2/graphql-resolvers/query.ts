@@ -52,7 +52,7 @@ export const queryResolvers: Required<Omit<
       relation,
       item,
       items,
-      relationshipIds: relationships.map(({ id }) => id),
+      relationships,
     };
   },
 

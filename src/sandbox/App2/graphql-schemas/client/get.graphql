@@ -65,7 +65,10 @@ query GetItemWithOrderedItems($relatedToId: Int!, $relationId: Int!) {
       id
       title
     }
-    relationshipIds
+    relationships {
+      id
+      ids
+    }
   }
 }
 

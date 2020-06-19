@@ -15,6 +15,7 @@ import {
   currentPathReducer as currentPath,
   itemsReducer as items,
   nCardsReducer as nCards,
+  ordersReducer as orders,
   relationshipsReducer as relationships,
   relationshipsForItemReducer as relationshipsForItem,
   viewsForItemReducer as viewsForItem,
@@ -81,6 +82,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
       currentPath,
       items,
       nCards,
+      orders,
       relationships,
       relationshipsForItem,
       viewsForItem,
@@ -100,6 +102,7 @@ export class ReduxManager extends DataManager<ClientItem, ClientRelationship> {
           currentPath: currentPath(state.currentPath, action),
           items: items(state.items, action),
           nCards: nCards(state.nCards, action),
+          orders: orders(state.orders, action),
           relationships: relationships(state.relationships, action),
           relationshipsForItem: relationshipsForItem(
             state.relationshipsForItem,

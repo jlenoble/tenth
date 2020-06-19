@@ -296,7 +296,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
   ): void {
     const {
       id: relationshipId,
-      ids: [relatedToId, relationId],
+      ids: [relatedToId, relationId, relatedId],
     } = orderRelationship;
 
     const query = this.client.readQuery<
@@ -320,26 +320,26 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           itemWithOrderedItems: {
             ...itemWithOrderedItems,
             items: [...itemWithOrderedItems.items, item],
-            relationshipIds: [
-              ...itemWithOrderedItems.relationshipIds,
-              ...relationships.map((rel) => rel.id),
+            relationships: [
+              ...itemWithOrderedItems.relationships,
+              ...relationships,
             ],
           },
         },
       });
     }
 
-    // if (updateStore) {
-    //   this.addToStore({
-    //     items: [item],
-    //     relationships: [relationship],
-    //     viewId: this.dataIdFromObject({
-    //       __typename: "ItemWithRelatedItems",
-    //       item: { id: relatedToId },
-    //       relation: { id: relationId },
-    //     }),
-    //   });
-    // }
+    if (updateStore) {
+      this.addToStore({
+        items: [item],
+        relationships,
+        viewId: this.dataIdFromObject({
+          __typename: "ItemWithOrderedItems",
+          item: { id: relatedToId },
+          relation: { id: relationId },
+        }),
+      });
+    }
   }
 
   destroyViews(items: ClientItem[]): void {

@@ -40,13 +40,8 @@ export class CompletedManager {
       const itemWithOrderedItems = data.itemWithOrderedItems;
 
       if (itemWithOrderedItems !== undefined) {
-        const { relation, item, items, relationshipIds } = itemWithOrderedItems;
-        const { id: relatedToId } = item;
-        const { id: relationId } = relation;
-
-        const relationships = relationshipIds.map((id, i) => {
-          return { id, ids: [relatedToId, relationId, items[i].id] };
-        });
+        const { relation, item, items, relationships } = itemWithOrderedItems;
+        console.log(itemWithOrderedItems);
 
         this.clientManager.addToStore({
           item,
