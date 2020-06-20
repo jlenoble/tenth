@@ -41,7 +41,6 @@ export class CompletedManager {
 
       if (itemWithOrderedItems !== undefined) {
         const { relation, item, items, relationships } = itemWithOrderedItems;
-        console.log(itemWithOrderedItems);
 
         this.clientManager.addToStore({
           item,
@@ -49,6 +48,7 @@ export class CompletedManager {
           items,
           relationships,
           viewId: this.clientManager.dataIdFromObject(itemWithOrderedItems),
+          sort: true,
         });
       }
     };

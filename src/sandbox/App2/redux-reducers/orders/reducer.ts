@@ -1,5 +1,10 @@
 import { Reducer } from "redux";
-import { OrdersState as State, Order, ItemId } from "../../types";
+import {
+  OrdersState as State,
+  Order,
+  ItemId,
+  ClientRelationship,
+} from "../../types";
 import {
   SET_ORDERS,
   ADD_ORDER,
@@ -7,14 +12,25 @@ import {
   ADD_ORDERS,
   REMOVE_ORDERS,
   UPDATE_ORDER,
-  INSERT_ITEM_AFTER,
 } from "./consts";
 import { OrdersAction } from "./actions";
 
 const initialState: State = new Map();
 
-export const addOrderReducer = (state: State, order: Order): State => {
-  const { itemId, orderId } = order;
+export const addOrderReducer = (
+  state: State,
+  {
+    itemId,
+    orderId,
+    relationships,
+  }: {
+    itemId: ItemId;
+    orderId: ItemId;
+    relationships: ClientRelationship[];
+  }
+): State => {
+  const order = state.get(itemId)?.get(orderId);
+  /// /////////////////////
 
   if (state.get(itemId)?.has(orderId)) {
     return state;
@@ -72,6 +88,27 @@ export const updateOrderReducer = (state: State, order: Order): State => {
   return newState;
 };
 
+const insertItemAfter = (ids: ItemId[], beforeId: ItemId, afterId: ItemId) => {
+  if (ids.findIndex((_id) => afterId === _id) !== -1) {
+    return ids;
+  }
+
+  if (beforeId === -1) {
+    return [afterId].concat(ids);
+  }
+
+  const index = ids.findIndex((_id) => beforeId === _id);
+
+  if (index === -1) {
+    return ids;
+  }
+
+  return ids
+    .slice(0, index)
+    .concat(afterId)
+    .concat(ids.slice(index + 1));
+};
+
 export const ordersReducer: Reducer<State> = ((
   state = initialState,
   action: OrdersAction
@@ -109,23 +146,6 @@ export const ordersReducer: Reducer<State> = ((
 
       case UPDATE_ORDER: {
         return updateOrderReducer(state, action.payload);
-      }
-
-      case INSERT_ITEM_AFTER: {
-        const { beforeId, afterId, itemId, orderId } = action.payload;
-        const order = state.get(itemId)?.get(orderId);
-
-        if (order) {
-          const index = order.ids.findIndex((_id) => beforeId === _id);
-          const newIds = order.ids
-            .slice(0, index)
-            .concat(afterId)
-            .concat(order.ids.slice(index + 1));
-
-          return updateOrderReducer(state, { ...order, ids: newIds });
-        }
-
-        break;
       }
 
       default:

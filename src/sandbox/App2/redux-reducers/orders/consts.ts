@@ -7,4 +7,3 @@ export const ADD_ORDERS = "ADD_ORDERS";
 export const REMOVE_ORDERS = "REMOVE_ORDERS";
 
 export const UPDATE_ORDER = "UPDATE_ORDER";
-export const INSERT_ITEM_AFTER = "INSERT_ITEM_AFTER";

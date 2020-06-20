@@ -32,6 +32,7 @@ import {
   getItem,
   getItemsById,
   getRelationshipsForLeftItemAndRelation,
+  addOrder,
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
@@ -114,12 +115,14 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     items,
     relationships = [],
     viewId,
+    sort,
   }: {
     item?: ClientItem;
     relation?: ClientItem;
     items: ClientItem[];
     relationships?: ClientRelationship[];
     viewId?: ViewId | null;
+    sort?: boolean;
   }): void {
     const allItems = item
       ? relation
@@ -155,6 +158,13 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     if (relationships.length) {
       this.dispatch(addRelationships(relationships));
       this.dispatch(addRelationshipsForItem(relationships));
+    }
+
+    if (sort && item && relation) {
+      const itemId = item.id;
+      const orderId = relation.id;
+
+      this.dispatch(addOrder({ itemId, orderId, relationships }));
     }
   }
 
@@ -295,8 +305,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     updateStore = true
   ): void {
     const {
-      id: relationshipId,
-      ids: [relatedToId, relationId, relatedId],
+      ids: [relatedToId, relationId],
     } = orderRelationship;
 
     const query = this.client.readQuery<
@@ -331,6 +340,8 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
 
     if (updateStore) {
       this.addToStore({
+        item: { id: relatedToId, title: "" },
+        relation: order,
         items: [item],
         relationships,
         viewId: this.dataIdFromObject({
@@ -338,6 +349,7 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
           item: { id: relatedToId },
           relation: { id: relationId },
         }),
+        sort: true,
       });
     }
   }

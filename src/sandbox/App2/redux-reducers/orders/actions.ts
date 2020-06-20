@@ -5,9 +5,8 @@ import {
   ADD_ORDERS,
   REMOVE_ORDERS,
   UPDATE_ORDER,
-  INSERT_ITEM_AFTER,
 } from "./consts";
-import { ItemId, Order } from "../../types";
+import { ItemId, Order, ClientRelationship } from "../../types";
 
 export type SetOrdersAction = {
   type: typeof SET_ORDERS;
@@ -16,7 +15,11 @@ export type SetOrdersAction = {
 
 export type AddOrderAction = {
   type: typeof ADD_ORDER;
-  payload: Order;
+  payload: {
+    itemId: ItemId;
+    orderId: ItemId;
+    relationships: ClientRelationship[];
+  };
 };
 
 export type RemoveOrderAction = {
@@ -26,7 +29,11 @@ export type RemoveOrderAction = {
 
 export type AddOrdersAction = {
   type: typeof ADD_ORDERS;
-  payload: Order[];
+  payload: {
+    itemId: ItemId;
+    orderId: ItemId;
+    relationships: ClientRelationship[];
+  }[];
 };
 
 export type RemoveOrdersAction = {
@@ -36,16 +43,10 @@ export type RemoveOrdersAction = {
 
 export type UpdateOrderAction = {
   type: typeof UPDATE_ORDER;
-  payload: Order;
-};
-
-export type InsertItemAfterAction = {
-  type: typeof INSERT_ITEM_AFTER;
   payload: {
     itemId: ItemId;
     orderId: ItemId;
-    beforeId: ItemId;
-    afterId: ItemId;
+    relationships: ClientRelationship[];
   };
 };
 
@@ -55,5 +56,4 @@ export type OrdersAction =
   | RemoveOrderAction
   | AddOrdersAction
   | RemoveOrdersAction
-  | UpdateOrderAction
-  | InsertItemAfterAction;
+  | UpdateOrderAction;

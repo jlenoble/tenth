@@ -10,7 +10,10 @@ import {
 export type CurrentPathState = ItemId[];
 export type ItemsState = Map<ItemId, ClientItem>;
 export type NCardsState = number;
-export type OrdersState = Map<ItemId, Map<ItemId, Order>>;
+export type OrdersState = Map<
+  ItemId,
+  Map<ItemId, Map<ItemId, { starts?: Order; ends?: Order }>>
+>;
 export type RelationshipsState = Map<ItemId, ClientRelationship>;
 export type RelationshipsForItemState = Map<
   ItemId,

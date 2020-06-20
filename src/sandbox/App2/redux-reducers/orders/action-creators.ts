@@ -5,7 +5,6 @@ import {
   ADD_ORDERS,
   REMOVE_ORDERS,
   UPDATE_ORDER,
-  INSERT_ITEM_AFTER,
 } from "./consts";
 import {
   SetOrdersAction,
@@ -14,16 +13,19 @@ import {
   AddOrdersAction,
   RemoveOrdersAction,
   UpdateOrderAction,
-  InsertItemAfterAction,
 } from "./actions";
-import { ItemId, Order } from "../../types";
+import { ItemId, Order, ClientRelationship } from "../../types";
 
 export const setOrders = (payload: Order[]): SetOrdersAction => ({
   type: SET_ORDERS,
   payload,
 });
 
-export const addOrder = (payload: Order): AddOrderAction => ({
+export const addOrder = (payload: {
+  itemId: ItemId;
+  orderId: ItemId;
+  relationships: ClientRelationship[];
+}): AddOrderAction => ({
   type: ADD_ORDER,
   payload,
 });
@@ -36,7 +38,13 @@ export const removeOrder = (payload: {
   payload,
 });
 
-export const addOrders = (payload: Order[]): AddOrdersAction => ({
+export const addOrders = (
+  payload: {
+    itemId: ItemId;
+    orderId: ItemId;
+    relationships: ClientRelationship[];
+  }[]
+): AddOrdersAction => ({
   type: ADD_ORDERS,
   payload,
 });
@@ -48,17 +56,11 @@ export const removeOrders = (
   payload,
 });
 
-export const updateOrder = (payload: Order): UpdateOrderAction => ({
-  type: UPDATE_ORDER,
-  payload,
-});
-
-export const insertItemAfter = (payload: {
+export const updateOrder = (payload: {
   itemId: ItemId;
   orderId: ItemId;
-  beforeId: ItemId;
-  afterId: ItemId;
-}): InsertItemAfterAction => ({
-  type: INSERT_ITEM_AFTER,
+  relationships: ClientRelationship[];
+}): UpdateOrderAction => ({
+  type: UPDATE_ORDER,
   payload,
 });

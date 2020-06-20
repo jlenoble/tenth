@@ -66,12 +66,14 @@ export interface ApolloClientManagerInterface {
     items,
     relationships,
     viewId,
+    sort,
   }: {
     item?: ClientItem;
     relation?: ClientItem;
     items: ClientItem[];
     relationships?: ClientRelationship[];
     viewId?: ViewId | null;
+    sort?: boolean;
   }): void;
   removeFromStore(items: ClientItem[]): void;
 
