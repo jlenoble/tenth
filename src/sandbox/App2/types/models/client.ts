@@ -4,7 +4,7 @@ export type ViewId = string;
 
 export type Ids = [ItemId, ItemId, ItemId];
 export type Order = {
-  itemId: ItemId;
+  categoryId: ItemId;
   orderId: ItemId;
   ids: ItemId[];
 };

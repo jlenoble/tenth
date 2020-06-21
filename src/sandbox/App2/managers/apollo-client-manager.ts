@@ -32,7 +32,7 @@ import {
   getItem,
   getItemsById,
   getRelationshipsForLeftItemAndRelation,
-  addOrder,
+  addToOrder,
 } from "../redux-reducers";
 import { nodes } from "../client/graphql-nodes";
 import { ApolloHooksManager } from "./apollo-hooks-manager";
@@ -161,10 +161,10 @@ export class ApolloClientManager implements ApolloClientManagerInterface {
     }
 
     if (sort && item && relation) {
-      const itemId = item.id;
+      const categoryId = item.id;
       const orderId = relation.id;
 
-      this.dispatch(addOrder({ itemId, orderId, relationships }));
+      this.dispatch(addToOrder({ categoryId, orderId, relationships }));
     }
   }
 

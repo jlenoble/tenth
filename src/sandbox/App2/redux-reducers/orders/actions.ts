@@ -1,11 +1,4 @@
-import {
-  SET_ORDERS,
-  ADD_ORDER,
-  REMOVE_ORDER,
-  ADD_ORDERS,
-  REMOVE_ORDERS,
-  UPDATE_ORDER,
-} from "./consts";
+import { SET_ORDERS, ADD_TO_ORDER, REMOVE_FROM_ORDER } from "./consts";
 import { ItemId, Order, ClientRelationship } from "../../types";
 
 export type SetOrdersAction = {
@@ -13,47 +6,21 @@ export type SetOrdersAction = {
   payload: Order[];
 };
 
-export type AddOrderAction = {
-  type: typeof ADD_ORDER;
+export type AddToOrderAction = {
+  type: typeof ADD_TO_ORDER;
   payload: {
-    itemId: ItemId;
+    categoryId: ItemId;
     orderId: ItemId;
     relationships: ClientRelationship[];
   };
 };
 
-export type RemoveOrderAction = {
-  type: typeof REMOVE_ORDER;
-  payload: { itemId: ItemId; orderId: ItemId };
-};
-
-export type AddOrdersAction = {
-  type: typeof ADD_ORDERS;
-  payload: {
-    itemId: ItemId;
-    orderId: ItemId;
-    relationships: ClientRelationship[];
-  }[];
-};
-
-export type RemoveOrdersAction = {
-  type: typeof REMOVE_ORDERS;
-  payload: { itemId: ItemId; orderId: ItemId }[];
-};
-
-export type UpdateOrderAction = {
-  type: typeof UPDATE_ORDER;
-  payload: {
-    itemId: ItemId;
-    orderId: ItemId;
-    relationships: ClientRelationship[];
-  };
+export type RemoveFromOrderAction = {
+  type: typeof REMOVE_FROM_ORDER;
+  payload: { categoryId: ItemId; orderId: ItemId; itemIds: ItemId[] };
 };
 
 export type OrdersAction =
   | SetOrdersAction
-  | AddOrderAction
-  | RemoveOrderAction
-  | AddOrdersAction
-  | RemoveOrdersAction
-  | UpdateOrderAction;
+  | AddToOrderAction
+  | RemoveFromOrderAction;

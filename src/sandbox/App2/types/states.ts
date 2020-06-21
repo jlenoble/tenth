@@ -12,7 +12,10 @@ export type ItemsState = Map<ItemId, ClientItem>;
 export type NCardsState = number;
 export type OrdersState = Map<
   ItemId,
-  Map<ItemId, Map<ItemId, { starts?: Order; ends?: Order }>>
+  Map<
+    ItemId,
+    Map<ItemId, { starts?: Order; ends?: Order; strictlyIncludedIn?: Order }>
+  >
 >;
 export type RelationshipsState = Map<ItemId, ClientRelationship>;
 export type RelationshipsForItemState = Map<

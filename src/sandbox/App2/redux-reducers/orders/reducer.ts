@@ -5,51 +5,69 @@ import {
   ItemId,
   ClientRelationship,
 } from "../../types";
-import {
-  SET_ORDERS,
-  ADD_ORDER,
-  REMOVE_ORDER,
-  ADD_ORDERS,
-  REMOVE_ORDERS,
-  UPDATE_ORDER,
-} from "./consts";
+import { SET_ORDERS, ADD_TO_ORDER, REMOVE_FROM_ORDER } from "./consts";
 import { OrdersAction } from "./actions";
 
 const initialState: State = new Map();
 
-export const addOrderReducer = (
+export const addToOrderReducer = (
   state: State,
   {
-    itemId,
+    categoryId,
     orderId,
-    relationships,
+    relationship: {
+      id,
+      ids: [leftId, relId, rightId],
+    },
   }: {
-    itemId: ItemId;
+    categoryId: ItemId;
     orderId: ItemId;
-    relationships: ClientRelationship[];
+    relationship: ClientRelationship;
   }
 ): State => {
-  const order = state.get(itemId)?.get(orderId);
-  /// /////////////////////
-
-  if (state.get(itemId)?.has(orderId)) {
-    return state;
-  }
-
   const newState = new Map(state);
 
-  const orders = newState.get(itemId) || new Map();
-  orders.set(orderId, order);
-  if (!newState.has(itemId)) {
-    newState.set(itemId, orders);
+  const order = new Map(state.get(categoryId) || []);
+  newState.set(categoryId, order);
+
+  const itemIds = new Map(order.get(orderId) || []);
+  order.set(orderId, itemIds);
+
+  const left = itemIds.get(leftId) || {};
+  const right = itemIds.get(rightId) || {};
+
+  if (left.starts) {
+    if (right.starts) {
+    } else if (right.ends) {
+    } else if (right.strictlyIncludedIn) {
+    } else {
+    }
+  } else if (left.ends) {
+    if (right.starts) {
+    } else if (right.ends) {
+    } else if (right.strictlyIncludedIn) {
+    } else {
+    }
+  } else if (left.strictlyIncludedIn) {
+    if (right.starts) {
+    } else if (right.ends) {
+    } else if (right.strictlyIncludedIn) {
+    } else {
+    }
+  } else {
+    if (right.starts) {
+    } else if (right.ends) {
+    } else if (right.strictlyIncludedIn) {
+    } else {
+    }
   }
 
   return newState;
 };
 
-export const removeOrderReducer = (
+export const removeFromOrderReducer = (
   state: State,
-  order: { itemId: ItemId; orderId: ItemId }
+  order: { categoryId: ItemId; orderId: ItemId; itemIds: ItemId[] }
 ): State => {
   const { itemId, orderId } = order;
   const orders = state.get(itemId);
@@ -88,27 +106,6 @@ export const updateOrderReducer = (state: State, order: Order): State => {
   return newState;
 };
 
-const insertItemAfter = (ids: ItemId[], beforeId: ItemId, afterId: ItemId) => {
-  if (ids.findIndex((_id) => afterId === _id) !== -1) {
-    return ids;
-  }
-
-  if (beforeId === -1) {
-    return [afterId].concat(ids);
-  }
-
-  const index = ids.findIndex((_id) => beforeId === _id);
-
-  if (index === -1) {
-    return ids;
-  }
-
-  return ids
-    .slice(0, index)
-    .concat(afterId)
-    .concat(ids.slice(index + 1));
-};
-
 export const ordersReducer: Reducer<State> = ((
   state = initialState,
   action: OrdersAction
@@ -118,34 +115,22 @@ export const ordersReducer: Reducer<State> = ((
       case SET_ORDERS: {
         const newState = new Map();
         action.payload.forEach((order) => {
-          const { itemId, orderId } = order;
-          const orders = newState.get(itemId) || new Map();
+          const { categoryId, orderId, ids } = order;
+          const orders = newState.get(categoryId) || new Map();
           orders.set(orderId, order);
-          if (!newState.has(itemId)) {
-            newState.set(itemId, orders);
+          if (!newState.has(categoryId)) {
+            newState.set(categoryId, orders);
           }
         });
         return newState;
       }
 
-      case ADD_ORDER: {
-        return addOrderReducer(state, action.payload);
+      case ADD_TO_ORDER: {
+        return addToOrderReducer(state, action.payload);
       }
 
-      case REMOVE_ORDER: {
-        return removeOrderReducer(state, action.payload);
-      }
-
-      case ADD_ORDERS: {
-        return action.payload.reduce(addOrderReducer, state);
-      }
-
-      case REMOVE_ORDERS: {
-        return action.payload.reduce(removeOrderReducer, state);
-      }
-
-      case UPDATE_ORDER: {
-        return updateOrderReducer(state, action.payload);
+      case REMOVE_FROM_ORDER: {
+        return removeFromOrderReducer(state, action.payload);
       }
 
       default:
