@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test --env=jest-environment-jsdom-sixteen",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "e2e": "cypress open",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
