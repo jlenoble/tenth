@@ -1,9 +1,14 @@
-import { Item as ItemInterface, ItemCtor, Container } from "../types";
+import {
+  Item as ItemInterface,
+  ItemCtor,
+  Container as ContainerInterface,
+} from "../types";
+import { Container } from "./container";
 
 let _id = 0;
 const tmpId = () => ++_id;
 
-const items: Container<ItemInterface> = new Map();
+const items: ContainerInterface<ItemInterface> = new Container();
 
 export const Item: ItemCtor = class Item implements ItemInterface {
   static get nItems(): number {
