@@ -1,3 +1,8 @@
 import { Item } from "./item";
 
-export type Container<T extends Item> = Map<Item["id"], T>;
+export interface Container<T extends Item> {
+  readonly size: number;
+
+  set(id: Item["id"], item: T): void;
+  delete(id: Item["id"]): void;
+}
