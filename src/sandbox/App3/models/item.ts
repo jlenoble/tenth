@@ -1,19 +1,30 @@
-import {
-  Item as ItemInterface,
-  ItemCtor,
-  Container as ContainerInterface,
-} from "../types";
-import { Container } from "./container";
+import { Item as ItemInterface, ItemCtor } from "../types";
 
 let _id = 0;
 const tmpId = () => ++_id;
 
-const items: ContainerInterface<ItemInterface> = new Container();
+const items: Map<ItemInterface["id"], ItemInterface> = new Map();
 
 export const Item: ItemCtor<ItemInterface> = class Item
   implements ItemInterface {
   static get nItems(): number {
     return items.size;
+  }
+
+  static create(title: string): Item {
+    return new Item(title);
+  }
+
+  static destroy(id: ItemInterface["id"]): void {
+    items.delete(id);
+  }
+
+  static has(id: ItemInterface["id"]): boolean {
+    return items.has(id);
+  }
+
+  static get(id: ItemInterface["id"]): ItemInterface | undefined {
+    return items.get(id);
   }
 
   readonly id: number;
