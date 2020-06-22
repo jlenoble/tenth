@@ -1,8 +1,8 @@
-export interface ItemCtor {
+export interface ItemCtor<T extends Item> {
   nItems: number;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  new (...args: any[]): Item;
+  new (...args: any[]): T;
 }
 
 export interface Item {

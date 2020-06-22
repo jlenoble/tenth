@@ -10,7 +10,8 @@ const tmpId = () => ++_id;
 
 const items: ContainerInterface<ItemInterface> = new Container();
 
-export const Item: ItemCtor = class Item implements ItemInterface {
+export const Item: ItemCtor<ItemInterface> = class Item
+  implements ItemInterface {
   static get nItems(): number {
     return items.size;
   }
