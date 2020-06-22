@@ -165,4 +165,60 @@ describe("Relationships", () => {
     expect(Relationship.get(rel2.id)).toBeUndefined();
     expect(Relationship.get(rel3.id)).toBeUndefined();
   });
+
+  it("Getting related items and relation", () => {
+    const a = Item.create();
+    const r = Item.create();
+    const b = Item.create();
+
+    const rel = Relationship.create(a.id, r.id, b.id);
+
+    expect(rel.relationId).toStrictEqual(r.id);
+    expect(rel.relation).toStrictEqual(r);
+
+    expect(rel.firstId).toStrictEqual(a.id);
+    expect(rel.lastId).toStrictEqual(b.id);
+    expect(rel.first).toStrictEqual(a);
+    expect(rel.last).toStrictEqual(b);
+
+    rel.destroy();
+
+    expect(rel.relationId).toStrictEqual(r.id);
+    expect(rel.relation).toStrictEqual(r);
+
+    expect(rel.firstId).toStrictEqual(a.id);
+    expect(rel.lastId).toStrictEqual(b.id);
+    expect(rel.first).toStrictEqual(a);
+    expect(rel.last).toStrictEqual(b);
+
+    a.destroy();
+
+    expect(rel.relationId).toStrictEqual(r.id);
+    expect(rel.relation).toStrictEqual(r);
+
+    expect(rel.firstId).toStrictEqual(-1);
+    expect(rel.lastId).toStrictEqual(b.id);
+    expect(rel.first).toStrictEqual(null);
+    expect(rel.last).toStrictEqual(b);
+
+    b.destroy();
+
+    expect(rel.relationId).toStrictEqual(r.id);
+    expect(rel.relation).toStrictEqual(r);
+
+    expect(rel.firstId).toStrictEqual(-1);
+    expect(rel.lastId).toStrictEqual(-1);
+    expect(rel.first).toStrictEqual(null);
+    expect(rel.last).toStrictEqual(null);
+
+    r.destroy();
+
+    expect(rel.relationId).toStrictEqual(-1);
+    expect(rel.relation).toStrictEqual(null);
+
+    expect(rel.firstId).toStrictEqual(-1);
+    expect(rel.lastId).toStrictEqual(-1);
+    expect(rel.first).toStrictEqual(null);
+    expect(rel.last).toStrictEqual(null);
+  });
 });

@@ -1,12 +1,12 @@
 import { Item } from "./item";
 
-export interface ContainerCtor {
-  new <T extends Item>(): Container<T>;
-}
+export interface Container<
+  First extends Item = Item,
+  Last extends Item = First
+> extends Item {
+  first: First | null | undefined;
+  last: Last | null | undefined;
 
-export interface Container<T extends Item> {
-  readonly size: number;
-
-  set(id: Item["id"], item: T): void;
-  delete(id: Item["id"]): void;
+  firstId: Item["id"] | -1;
+  lastId: Item["id"] | -1;
 }
