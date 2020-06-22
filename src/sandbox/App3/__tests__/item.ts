@@ -41,6 +41,16 @@ describe("Items", () => {
     expect(Item.nItems).toStrictEqual(0);
   });
 
+  it("Clearing items statically", () => {
+    Item.create();
+    Item.create();
+    Item.create();
+    expect(Item.nItems).toStrictEqual(3);
+
+    Item.clear();
+    expect(Item.nItems).toStrictEqual(0);
+  });
+
   it("Testing items statically", () => {
     const a = Item.create();
     const b = Item.create();

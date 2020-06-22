@@ -5,7 +5,7 @@ const tmpId = () => ++_id;
 
 const items: Map<ItemInterface["id"], ItemInterface> = new Map();
 
-export const Item: ItemCtor<ItemInterface, []> = class Item
+export const Item: ItemCtor<ItemInterface> = class Item
   implements ItemInterface {
   static get nItems(): number {
     return items.size;
@@ -17,6 +17,10 @@ export const Item: ItemCtor<ItemInterface, []> = class Item
 
   static destroy(id: ItemInterface["id"]): void {
     items.delete(id);
+  }
+
+  static clear(): void {
+    items.clear();
   }
 
   static has(id: ItemInterface["id"]): boolean {
