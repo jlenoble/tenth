@@ -2,13 +2,13 @@ import { Item } from "../models";
 
 describe("Items", () => {
   it("Creating/destroying items individually", () => {
-    const a = new Item("a");
+    const a = new Item();
     expect(Item.nItems).toStrictEqual(1);
 
-    const b = new Item("b");
+    const b = new Item();
     expect(Item.nItems).toStrictEqual(2);
 
-    const c = new Item("c");
+    const c = new Item();
     expect(Item.nItems).toStrictEqual(3);
 
     a.destroy();
@@ -22,13 +22,13 @@ describe("Items", () => {
   });
 
   it("Creating/destroying items statically", () => {
-    const a = Item.create("a");
+    const a = Item.create();
     expect(Item.nItems).toStrictEqual(1);
 
-    const b = Item.create("b");
+    const b = Item.create();
     expect(Item.nItems).toStrictEqual(2);
 
-    const c = Item.create("c");
+    const c = Item.create();
     expect(Item.nItems).toStrictEqual(3);
 
     Item.destroy(a.id);
@@ -42,9 +42,9 @@ describe("Items", () => {
   });
 
   it("Testing items statically", () => {
-    const a = Item.create("a");
-    const b = Item.create("b");
-    const c = Item.create("c");
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
 
     expect(Item.has(a.id)).toStrictEqual(true);
     expect(Item.has(b.id)).toStrictEqual(true);
@@ -67,9 +67,9 @@ describe("Items", () => {
   });
 
   it("Getting items statically", () => {
-    const a = Item.create("a");
-    const b = Item.create("b");
-    const c = Item.create("c");
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
 
     expect(Item.get(a.id)).toStrictEqual(a);
     expect(Item.get(b.id)).toStrictEqual(b);

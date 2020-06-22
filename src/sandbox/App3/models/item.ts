@@ -5,14 +5,14 @@ const tmpId = () => ++_id;
 
 const items: Map<ItemInterface["id"], ItemInterface> = new Map();
 
-export const Item: ItemCtor<ItemInterface> = class Item
+export const Item: ItemCtor<ItemInterface, []> = class Item
   implements ItemInterface {
   static get nItems(): number {
     return items.size;
   }
 
-  static create(title: string): Item {
-    return new Item(title);
+  static create(): Item {
+    return new Item();
   }
 
   static destroy(id: ItemInterface["id"]): void {
@@ -23,17 +23,14 @@ export const Item: ItemCtor<ItemInterface> = class Item
     return items.has(id);
   }
 
-  static get(id: ItemInterface["id"]): ItemInterface | undefined {
+  static get(id: ItemInterface["id"]): Item | undefined {
     return items.get(id);
   }
 
-  readonly id: number;
-  readonly title: string;
+  readonly id: ItemInterface["id"];
 
-  constructor(title: string) {
+  constructor() {
     this.id = tmpId();
-    this.title = title;
-
     items.set(this.id, this);
   }
 
