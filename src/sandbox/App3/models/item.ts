@@ -20,7 +20,9 @@ export const Item: ItemCtor<ItemInterface> = class Item
   }
 
   static clear(): void {
-    items.clear();
+    for (const item of items.values()) {
+      item.destroy();
+    }
   }
 
   static has(id: ItemInterface["id"]): boolean {

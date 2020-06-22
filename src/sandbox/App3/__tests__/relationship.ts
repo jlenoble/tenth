@@ -55,6 +55,19 @@ describe("Relationships", () => {
 
     expect(Item.nItems).toStrictEqual(3);
     expect(Relationship.nItems).toStrictEqual(0);
+
+    Relationship.create(a.id, r.id, a.id);
+    Relationship.create(a.id, r.id, b.id);
+    Relationship.create(b.id, r.id, a.id);
+    Relationship.create(b.id, r.id, b.id);
+
+    expect(Item.nItems).toStrictEqual(7);
+    expect(Relationship.nItems).toStrictEqual(4);
+
+    Item.clear();
+
+    expect(Item.nItems).toStrictEqual(0);
+    expect(Relationship.nItems).toStrictEqual(0);
   });
 
   it("Testing relationships statically", () => {
