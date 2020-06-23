@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Item } from "./item";
 import { Container } from "./container";
 

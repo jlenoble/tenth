@@ -1,20 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Item } from "../item";
-import { Container } from "../container";
 
-export interface ItemCtor<
-  T extends Item,
-  Params extends any[] = any[],
-  First extends Item = Item,
-  Last extends Item = First
-> {
+export interface ItemCtor<T extends Item, Params extends any[] = any[]> {
   nItems: number;
 
   new (...args: Params): T;
-  create(...args: Params): T | Container<First, Last>;
+  create(...args: Params): T;
   destroy(id: Item["id"]): void;
   clear(): void;
 
   has(id: Item["id"]): boolean;
-  get(id: Item["id"]): T | undefined;
+  get(id: Item["id"]): Item | undefined;
 }
