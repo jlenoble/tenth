@@ -32,61 +32,41 @@ export const Relationship: RelationshipCtor<ItemInterface> = class Relationship 
   private readonly r: ItemInterface["id"];
   private readonly b: ItemInterface["id"];
 
-  get relationId(): ItemInterface["id"] | -1 {
-    if (Item.has(this.r)) {
-      return this.r;
+  private _autoCleanGetId(id: ItemInterface["id"]): ItemInterface["id"] | -1 {
+    if (Item.has(id)) {
+      return id;
     } else {
       this.destroy();
       return -1;
     }
+  }
+
+  private _autoCleanGet(id: ItemInterface["id"]): ItemInterface | null {
+    return Item.get(this._autoCleanGetId(id)) || null;
+  }
+
+  get relationId(): ItemInterface["id"] | -1 {
+    return this._autoCleanGetId(this.r);
   }
 
   get firstId(): ItemInterface["id"] | -1 {
-    if (Item.has(this.a)) {
-      return this.a;
-    } else {
-      this.destroy();
-      return -1;
-    }
+    return this._autoCleanGetId(this.a);
   }
 
   get lastId(): ItemInterface["id"] | -1 {
-    if (Item.has(this.b)) {
-      return this.b;
-    } else {
-      this.destroy();
-      return -1;
-    }
+    return this._autoCleanGetId(this.b);
   }
 
   get relation(): ItemInterface | null {
-    const item = Item.get(this.r);
-    if (item) {
-      return item;
-    } else {
-      this.destroy();
-      return null;
-    }
+    return this._autoCleanGet(this.r);
   }
 
   get first(): ItemInterface | null {
-    const item = Item.get(this.a);
-    if (item) {
-      return item;
-    } else {
-      this.destroy();
-      return null;
-    }
+    return this._autoCleanGet(this.a);
   }
 
   get last(): ItemInterface | null {
-    const item = Item.get(this.b);
-    if (item) {
-      return item;
-    } else {
-      this.destroy();
-      return null;
-    }
+    return this._autoCleanGet(this.b);
   }
 
   constructor(
