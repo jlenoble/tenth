@@ -33,7 +33,7 @@ export const Relationship: RelationshipCtor<ItemInterface> = class Relationship 
   private readonly b: ItemInterface["id"];
 
   private _autoCleanGetId(id: ItemInterface["id"]): ItemInterface["id"] | -1 {
-    if (Item.has(id)) {
+    if (relationships.has(this.id) && Item.has(id)) {
       return id;
     } else {
       this.destroy();

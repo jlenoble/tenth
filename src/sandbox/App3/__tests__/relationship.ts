@@ -183,41 +183,11 @@ describe("Relationships", () => {
 
     rel.destroy();
 
-    expect(rel.relationId).toStrictEqual(r.id);
-    expect(rel.relation).toStrictEqual(r);
-
-    expect(rel.firstId).toStrictEqual(a.id);
-    expect(rel.lastId).toStrictEqual(b.id);
-    expect(rel.first).toStrictEqual(a);
-    expect(rel.last).toStrictEqual(b);
-
-    a.destroy();
-
-    expect(rel.relationId).toStrictEqual(r.id);
-    expect(rel.relation).toStrictEqual(r);
-
-    expect(rel.firstId).toStrictEqual(-1);
-    expect(rel.lastId).toStrictEqual(b.id);
-    expect(rel.first).toStrictEqual(null);
-    expect(rel.last).toStrictEqual(b);
-
-    b.destroy();
-
-    expect(rel.relationId).toStrictEqual(r.id);
-    expect(rel.relation).toStrictEqual(r);
-
-    expect(rel.firstId).toStrictEqual(-1);
-    expect(rel.lastId).toStrictEqual(-1);
-    expect(rel.first).toStrictEqual(null);
-    expect(rel.last).toStrictEqual(null);
-
-    r.destroy();
-
     expect(rel.relationId).toStrictEqual(-1);
-    expect(rel.relation).toStrictEqual(null);
-
     expect(rel.firstId).toStrictEqual(-1);
     expect(rel.lastId).toStrictEqual(-1);
+
+    expect(rel.relation).toStrictEqual(null);
     expect(rel.first).toStrictEqual(null);
     expect(rel.last).toStrictEqual(null);
   });
