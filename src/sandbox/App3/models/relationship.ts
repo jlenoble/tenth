@@ -33,27 +33,60 @@ export const Relationship: RelationshipCtor<ItemInterface> = class Relationship 
   private readonly b: ItemInterface["id"];
 
   get relationId(): ItemInterface["id"] | -1 {
-    return Item.has(this.r) ? this.r : -1;
+    if (Item.has(this.r)) {
+      return this.r;
+    } else {
+      this.destroy();
+      return -1;
+    }
   }
 
   get firstId(): ItemInterface["id"] | -1 {
-    return Item.has(this.a) ? this.a : -1;
+    if (Item.has(this.a)) {
+      return this.a;
+    } else {
+      this.destroy();
+      return -1;
+    }
   }
 
   get lastId(): ItemInterface["id"] | -1 {
-    return Item.has(this.b) ? this.b : -1;
+    if (Item.has(this.b)) {
+      return this.b;
+    } else {
+      this.destroy();
+      return -1;
+    }
   }
 
   get relation(): ItemInterface | null {
-    return Item.get(this.r) || null;
+    const item = Item.get(this.r);
+    if (item) {
+      return item;
+    } else {
+      this.destroy();
+      return null;
+    }
   }
 
   get first(): ItemInterface | null {
-    return Item.get(this.a) || null;
+    const item = Item.get(this.a);
+    if (item) {
+      return item;
+    } else {
+      this.destroy();
+      return null;
+    }
   }
 
   get last(): ItemInterface | null {
-    return Item.get(this.b) || null;
+    const item = Item.get(this.b);
+    if (item) {
+      return item;
+    } else {
+      this.destroy();
+      return null;
+    }
   }
 
   constructor(

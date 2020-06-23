@@ -221,4 +221,43 @@ describe("Relationships", () => {
     expect(rel.first).toStrictEqual(null);
     expect(rel.last).toStrictEqual(null);
   });
+
+  it("Disabling a relationship on item destroy", () => {
+    const a = Item.create();
+    const r = Item.create();
+    const b = Item.create();
+
+    const rel = Relationship.create(a.id, r.id, b.id);
+
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    a.destroy();
+
+    expect(Item.get(a.id)).toBeUndefined();
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    expect(rel.last).toStrictEqual(b);
+    expect(rel.relation).toStrictEqual(r);
+
+    expect(Item.get(a.id)).toBeUndefined();
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    expect(rel.first).toBeNull();
+
+    expect(Item.get(a.id)).toBeUndefined();
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toBeUndefined();
+    expect(Relationship.get(rel.id)).toBeUndefined();
+  });
 });
