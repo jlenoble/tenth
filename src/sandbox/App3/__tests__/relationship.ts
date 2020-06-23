@@ -223,11 +223,11 @@ describe("Relationships", () => {
   });
 
   it("Disabling a relationship on item destroy", () => {
-    const a = Item.create();
-    const r = Item.create();
+    let a = Item.create();
+    let r = Item.create();
     const b = Item.create();
 
-    const rel = Relationship.create(a.id, r.id, b.id);
+    let rel = Relationship.create(a.id, r.id, b.id);
 
     expect(Item.get(a.id)).toStrictEqual(a);
     expect(Item.get(b.id)).toStrictEqual(b);
@@ -257,6 +257,76 @@ describe("Relationships", () => {
     expect(Item.get(a.id)).toBeUndefined();
     expect(Item.get(b.id)).toStrictEqual(b);
     expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toBeUndefined();
+    expect(Relationship.get(rel.id)).toBeUndefined();
+
+    a = Item.create();
+
+    rel = Relationship.create(a.id, r.id, b.id);
+
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    r.destroy();
+
+    expect(Item.get(r.id)).toBeUndefined();
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    expect(rel.last).toStrictEqual(b);
+    expect(rel.first).toStrictEqual(a);
+
+    expect(Item.get(r.id)).toBeUndefined();
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    expect(rel.relation).toBeNull();
+
+    expect(Item.get(r.id)).toBeUndefined();
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(rel.id)).toBeUndefined();
+    expect(Relationship.get(rel.id)).toBeUndefined();
+
+    r = Item.create();
+
+    rel = Relationship.create(a.id, r.id, b.id);
+
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(b.id)).toStrictEqual(b);
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    b.destroy();
+
+    expect(Item.get(b.id)).toBeUndefined();
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    expect(rel.relation).toStrictEqual(r);
+    expect(rel.first).toStrictEqual(a);
+
+    expect(Item.get(b.id)).toBeUndefined();
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(a.id)).toStrictEqual(a);
+    expect(Item.get(rel.id)).toStrictEqual(rel);
+    expect(Relationship.get(rel.id)).toStrictEqual(rel);
+
+    expect(rel.last).toBeNull();
+
+    expect(Item.get(b.id)).toBeUndefined();
+    expect(Item.get(r.id)).toStrictEqual(r);
+    expect(Item.get(a.id)).toStrictEqual(a);
     expect(Item.get(rel.id)).toBeUndefined();
     expect(Relationship.get(rel.id)).toBeUndefined();
   });
