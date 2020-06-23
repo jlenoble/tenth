@@ -8,3 +8,8 @@ export type ContainerCtor<
   First extends Item = Item,
   Last extends Item = First
 > = ItemCtor<Container<First, Last>, Params>;
+
+export type MapContainerCtor<
+  Params extends any[] = any[],
+  T extends Item = Item
+> = ContainerCtor<Params, T>;
