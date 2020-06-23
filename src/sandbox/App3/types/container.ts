@@ -13,6 +13,8 @@ export interface Container<
 }
 
 export interface MapContainer<T extends Item = Item> extends Container<T> {
+  size: number;
+
   keys(): IterableIterator<Item["id"]>;
   values(): IterableIterator<T>;
 

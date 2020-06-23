@@ -15,6 +15,22 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
 
   private relationships: Map<string, ItemInterface["id"]>;
 
+  get size(): number {
+    const cleanup: string[] = [];
+
+    for (const [key, id] of this.relationships.entries()) {
+      if (!Item.has(id)) {
+        cleanup.push(key);
+      }
+    }
+
+    for (const key of cleanup) {
+      this.relationships.delete(key);
+    }
+
+    return this.relationships.size;
+  }
+
   constructor() {
     super();
 
