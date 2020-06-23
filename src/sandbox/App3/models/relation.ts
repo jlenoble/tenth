@@ -13,12 +13,12 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return relations.size;
   }
 
-  private relationships: Set<ItemInterface["id"]>;
+  private relationships: Map<string, ItemInterface["id"]>;
 
   constructor() {
     super();
 
-    this.relationships = new Set();
+    this.relationships = new Map();
 
     relations.add(this.id);
   }
@@ -33,26 +33,37 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     for (const relationship of this.values()) {
       relationship.destroy();
     }
+    this.relationships.clear();
   }
 
   add(a: ItemInterface, b: ItemInterface): void {
     const relationship = new Relationship(a.id, this.id, b.id);
-    this.relationships.add(relationship.id);
+    this.relationships.set(`${a.id}:${b.id}`, relationship.id);
+  }
+
+  remove(a: ItemInterface, b: ItemInterface): void {
+    const key = `${a.id}:${b.id}`;
+    const relationship = Item.get(this.relationships.get(key) || -1);
+
+    if (relationship) {
+      relationship.destroy();
+      this.relationships.delete(key);
+    }
   }
 
   *keys(): Generator<ItemInterface["id"], void, unknown> {
-    const cleanup: ItemInterface["id"][] = [];
+    const cleanup: string[] = [];
 
-    for (const id of this.relationships.values()) {
+    for (const [key, id] of this.relationships.entries()) {
       if (Item.has(id)) {
         yield id;
       } else {
-        cleanup.push(id);
+        cleanup.push(key);
       }
     }
 
-    for (const id of cleanup) {
-      this.relationships.delete(id);
+    for (const key of cleanup) {
+      this.relationships.delete(key);
     }
   }
 
