@@ -5,8 +5,8 @@ import { Relationship } from "../relationship";
 
 export interface RelationshipCtor<
   Relation extends Item,
-  First extends Relation = Relation,
-  Last extends First = First
+  First extends Item = Item,
+  Last extends Item = First
 >
   extends ContainerCtor<
     Relation,

@@ -6,9 +6,9 @@ import { Container } from "../container";
 export interface ContainerCtor<
   T extends Item,
   Params extends any[] = any[],
-  First extends T = T,
-  Last extends First = First
-> extends ItemCtor<T, Params> {
+  First extends Item = Item,
+  Last extends Item = First
+> extends ItemCtor<T, Params, First, Last> {
   new (...args: Params): Container<First, Last>;
   create(...args: Params): Container<First, Last>;
 }

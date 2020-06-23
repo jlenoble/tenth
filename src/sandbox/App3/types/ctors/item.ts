@@ -5,8 +5,8 @@ import { Container } from "../container";
 export interface ItemCtor<
   T extends Item,
   Params extends any[] = any[],
-  First extends T = T,
-  Last extends First = First
+  First extends Item = Item,
+  Last extends Item = First
 > {
   nItems: number;
 
