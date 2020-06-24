@@ -13,22 +13,43 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return relations.size;
   }
 
+  static create(): Relation {
+    return new Relation();
+  }
+
+  static destroy(id: ItemInterface["id"]): void {
+    relations.delete(id);
+    super.destroy(id);
+  }
+
+  static clear(): void {
+    for (const id of relations) {
+      super.destroy(id);
+    }
+    relations.clear();
+  }
+
   private relationships: Map<string, ItemInterface["id"]>;
 
   get size(): number {
-    const cleanup: string[] = [];
+    if (Item.has(this.id)) {
+      const cleanup: string[] = [];
 
-    for (const [key, id] of this.relationships.entries()) {
-      if (!Item.has(id)) {
-        cleanup.push(key);
+      for (const [key, id] of this.relationships.entries()) {
+        if (!Item.has(id)) {
+          cleanup.push(key);
+        }
       }
-    }
 
-    for (const key of cleanup) {
-      this.relationships.delete(key);
-    }
+      for (const key of cleanup) {
+        this.relationships.delete(key);
+      }
 
-    return this.relationships.size;
+      return this.relationships.size;
+    } else {
+      this.clear();
+      return 0;
+    }
   }
 
   constructor() {

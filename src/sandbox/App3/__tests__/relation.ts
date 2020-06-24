@@ -6,7 +6,7 @@ describe("Relations", () => {
     Item.clear();
   });
 
-  it("Creating relations and adding relationships", () => {
+  it("Creating/destroying relations individually", () => {
     const rel1 = new Relation();
     const rel2 = new Relation();
 
@@ -23,9 +23,60 @@ describe("Relations", () => {
     expect(Relation.nItems).toStrictEqual(2);
     expect(rel1.size).toStrictEqual(2);
     expect(rel2.size).toStrictEqual(1);
+
+    rel1.destroy();
+
+    expect(Item.nItems).toStrictEqual(5);
+    expect(Relationship.nItems).toStrictEqual(1);
+    expect(Relation.nItems).toStrictEqual(1);
+    expect(rel1.size).toStrictEqual(0);
+    expect(rel2.size).toStrictEqual(1);
+
+    rel2.destroy();
+
+    expect(Item.nItems).toStrictEqual(3);
+    expect(Relationship.nItems).toStrictEqual(0);
+    expect(Relation.nItems).toStrictEqual(0);
+    expect(rel1.size).toStrictEqual(0);
+    expect(rel2.size).toStrictEqual(0);
   });
 
-  it("removing relationships", () => {
+  it("Creating/destroying relations statically", () => {
+    const rel1 = Relation.create();
+    const rel2 = Relation.create();
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    rel1.add(a, b);
+    rel2.add(a, c);
+    rel1.add(b, c);
+
+    expect(Item.nItems).toStrictEqual(8);
+    expect(Relationship.nItems).toStrictEqual(3);
+    expect(Relation.nItems).toStrictEqual(2);
+    expect(rel1.size).toStrictEqual(2);
+    expect(rel2.size).toStrictEqual(1);
+
+    Relation.destroy(rel1.id);
+
+    expect(Item.nItems).toStrictEqual(5);
+    expect(Relationship.nItems).toStrictEqual(1);
+    expect(Relation.nItems).toStrictEqual(1);
+    expect(rel1.size).toStrictEqual(0);
+    expect(rel2.size).toStrictEqual(1);
+
+    Item.destroy(rel2.id);
+
+    expect(Item.nItems).toStrictEqual(3);
+    expect(Relationship.nItems).toStrictEqual(0);
+    expect(Relation.nItems).toStrictEqual(0);
+    expect(rel1.size).toStrictEqual(0);
+    expect(rel2.size).toStrictEqual(0);
+  });
+
+  it("Removing relationships", () => {
     const rel1 = new Relation();
     const rel2 = new Relation();
 
