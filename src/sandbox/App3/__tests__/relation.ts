@@ -231,5 +231,6 @@ describe("Relations", () => {
     const rc = rel.add(b, c);
 
     expect(Array.from(rel.keys())).toEqual([ra.id, rb.id, rc.id]);
+    expect(Array.from(rel.values())).toEqual([ra, rb, rc]);
   });
 });
