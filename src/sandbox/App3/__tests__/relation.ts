@@ -232,5 +232,15 @@ describe("Relations", () => {
 
     expect(Array.from(rel.keys())).toEqual([ra.id, rb.id, rc.id]);
     expect(Array.from(rel.values())).toEqual([ra, rb, rc]);
+
+    rb.destroy();
+
+    expect(Array.from(rel.keys())).toEqual([ra.id, rc.id]);
+    expect(Array.from(rel.values())).toEqual([ra, rc]);
+
+    a.destroy();
+
+    expect(Array.from(rel.keys())).toEqual([rc.id]);
+    expect(Array.from(rel.values())).toEqual([rc]);
   });
 });

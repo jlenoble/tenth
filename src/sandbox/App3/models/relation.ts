@@ -114,7 +114,9 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     const cleanup: string[] = [];
 
     for (const [key, id] of this.relationships.entries()) {
-      if (Item.has(id)) {
+      const relationship = Item.get(id) as RelationshipInterface | undefined;
+
+      if (relationship?.valid) {
         yield id;
       } else {
         cleanup.push(key);
