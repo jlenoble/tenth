@@ -215,7 +215,7 @@ describe("Relations", () => {
     b.destroy();
 
     expect(rel.get(a.id, b.id)).toBeUndefined();
-    expect(rel.get(a.id, c.id)).toStrictEqual(rc);
+    expect(rel.get(a.id, c.id)).toStrictEqual(rb);
     expect(rel.get(b.id, c.id)).toBeUndefined();
   });
 
