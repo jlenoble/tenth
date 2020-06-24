@@ -17,16 +17,10 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return new Relation();
   }
 
-  static destroy(id: ItemInterface["id"]): void {
-    relations.delete(id);
-    super.destroy(id);
-  }
-
   static clear(): void {
     for (const id of relations) {
       super.destroy(id);
     }
-    relations.clear();
   }
 
   private relationships: Map<string, ItemInterface["id"]>;

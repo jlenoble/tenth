@@ -16,16 +16,10 @@ export const Relationship: RelationshipCtor<ItemInterface> = class Relationship 
     return new Relationship(a, r, b);
   }
 
-  static destroy(id: ItemInterface["id"]): void {
-    relationships.delete(id);
-    super.destroy(id);
-  }
-
   static clear(): void {
     for (const id of relationships) {
       super.destroy(id);
     }
-    relationships.clear();
   }
 
   private readonly a: ItemInterface["id"];

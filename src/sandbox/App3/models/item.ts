@@ -16,7 +16,11 @@ export const Item: ItemCtor<ItemInterface> = class Item
   }
 
   static destroy(id: ItemInterface["id"]): void {
-    items.delete(id);
+    const item = items.get(id);
+
+    if (item) {
+      item.destroy();
+    }
   }
 
   static clear(): void {
