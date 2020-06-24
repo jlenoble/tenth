@@ -162,4 +162,32 @@ describe("Relations", () => {
     expect(rel.has(a.id, c.id)).toStrictEqual(true);
     expect(rel.has(b.id, c.id)).toStrictEqual(false);
   });
+
+  it("Testing relationships (destroying items)", () => {
+    const rel = new Relation();
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    rel.add(a, b);
+    rel.add(a, c);
+    rel.add(b, c);
+
+    expect(rel.has(a.id, b.id)).toStrictEqual(true);
+    expect(rel.has(a.id, c.id)).toStrictEqual(true);
+    expect(rel.has(b.id, c.id)).toStrictEqual(true);
+
+    a.destroy();
+
+    expect(rel.has(a.id, b.id)).toStrictEqual(false);
+    expect(rel.has(a.id, c.id)).toStrictEqual(false);
+    expect(rel.has(b.id, c.id)).toStrictEqual(true);
+
+    c.destroy();
+
+    expect(rel.has(a.id, b.id)).toStrictEqual(false);
+    expect(rel.has(a.id, c.id)).toStrictEqual(false);
+    expect(rel.has(b.id, c.id)).toStrictEqual(false);
+  });
 });

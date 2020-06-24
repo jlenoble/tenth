@@ -39,6 +39,10 @@ export const Item: ItemCtor<ItemInterface> = class Item
 
   readonly id: ItemInterface["id"];
 
+  get valid(): boolean {
+    return true;
+  }
+
   constructor() {
     this.id = tmpId();
     items.set(this.id, this);

@@ -83,7 +83,27 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
   }
 
   has(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): boolean {
-    return this.relationships.has(`${leftId}:${rightId}`);
+    return Boolean(this.get(leftId, rightId));
+  }
+
+  get(
+    leftId: ItemInterface["id"],
+    rightId: ItemInterface["id"]
+  ): RelationshipInterface | undefined {
+    const key = `${leftId}:${rightId}`;
+    const id = this.relationships.get(key);
+
+    if (id === undefined) {
+      return;
+    }
+
+    const relationship = Item.get(id) as RelationshipInterface | undefined;
+
+    if (relationship?.valid) {
+      return relationship;
+    } else {
+      this.relationships.delete(key);
+    }
   }
 
   *keys(): Generator<ItemInterface["id"], void, unknown> {
