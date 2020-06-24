@@ -157,4 +157,28 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
       yield Item.get(id) as ItemInterface;
     }
   }
+
+  *lastKeys(): Generator<ItemInterface["id"], void, unknown> {
+    const cleanup: string[] = [];
+
+    for (const [key, id] of this.relationships.entries()) {
+      const relationship = Item.get(id) as RelationshipInterface | undefined;
+
+      if (relationship?.valid) {
+        yield relationship.lastId;
+      } else {
+        cleanup.push(key);
+      }
+    }
+
+    for (const key of cleanup) {
+      this.relationships.delete(key);
+    }
+  }
+
+  *lastValues(): Generator<ItemInterface, void, unknown> {
+    for (const id of this.lastKeys()) {
+      yield Item.get(id) as ItemInterface;
+    }
+  }
 };
