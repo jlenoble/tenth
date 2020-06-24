@@ -2,6 +2,7 @@ import { Item } from "./item";
 import {
   Item as ItemInterface,
   Relationship as RelationshipInterface,
+  Relation as RelationInterface,
   RelationCtor,
 } from "../types";
 import { Relationship } from "./relationship";
@@ -23,7 +24,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     }
   }
 
-  private relationships: Map<string, RelationshipInterface>;
+  private relationships: Map<string, RelationshipInterface<RelationInterface>>;
   private firstKey: string;
   private lastKey: string;
 
@@ -51,7 +52,9 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     const cleanup: string[] = [];
 
     for (const [key, { id }] of this.relationships.entries()) {
-      const relationship = Item.get(id) as RelationshipInterface | undefined;
+      const relationship = Item.get(id) as
+        | RelationshipInterface<RelationInterface>
+        | undefined;
 
       if (relationship?.valid) {
         yield relationship[idKey];
@@ -65,11 +68,11 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
 
   private _autoCleanupGet(
     key: string
-  ): RelationshipInterface | null | undefined {
+  ): RelationshipInterface<RelationInterface> | null | undefined {
     const relationship = this.relationships.get(key);
 
     if (relationship?.valid) {
-      return relationship as RelationshipInterface;
+      return relationship as RelationshipInterface<RelationInterface>;
     } else {
       const keys: string[] = [key];
 
@@ -94,7 +97,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return this.last?.id || -1;
   }
 
-  get first(): RelationshipInterface | undefined {
+  get first(): RelationshipInterface<RelationInterface> | undefined {
     const relationship = this._autoCleanupGet(this.firstKey);
     if (relationship === null) {
       return this.relationships.get(this.firstKey);
@@ -102,7 +105,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return relationship;
   }
 
-  get last(): RelationshipInterface | undefined {
+  get last(): RelationshipInterface<RelationInterface> | undefined {
     const relationship = this._autoCleanupGet(this.lastKey);
     if (relationship === null) {
       return this.relationships.get(this.lastKey);
@@ -154,7 +157,10 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     this.lastKey = "";
   }
 
-  add(left: ItemInterface, right: ItemInterface): RelationshipInterface {
+  add(
+    left: ItemInterface,
+    right: ItemInterface
+  ): RelationshipInterface<RelationInterface> {
     const key = `${left.id}:${right.id}`;
     const relationship = new Relationship(left.id, this.id, right.id);
 
@@ -186,7 +192,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
   get(
     leftId: ItemInterface["id"],
     rightId: ItemInterface["id"]
-  ): RelationshipInterface | undefined {
+  ): RelationshipInterface<RelationInterface> | undefined {
     const relationship = this._autoCleanupGet(`${leftId}:${rightId}`);
     if (relationship) {
       return relationship;
@@ -197,9 +203,13 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     yield* this._autoCleanupCollect("id");
   }
 
-  *values(): Generator<RelationshipInterface, void, unknown> {
+  *values(): Generator<
+    RelationshipInterface<RelationInterface>,
+    void,
+    unknown
+  > {
     for (const id of this.keys()) {
-      yield Item.get(id) as RelationshipInterface;
+      yield Item.get(id) as RelationshipInterface<RelationInterface>;
     }
   }
 

@@ -1,9 +1,9 @@
 import { Item } from "./item";
-import { Item as ItemInterface, RelationshipCtor } from "../types";
+import { Item as ItemInterface, RelationshipCtor, Relation } from "../types";
 
 const relationships: Set<ItemInterface["id"]> = new Set();
 
-export const Relationship: RelationshipCtor<ItemInterface> = class Relationship extends Item {
+export const Relationship: RelationshipCtor<Relation> = class Relationship extends Item {
   static get nItems(): number {
     return relationships.size;
   }
@@ -60,8 +60,8 @@ export const Relationship: RelationshipCtor<ItemInterface> = class Relationship 
     return this._autoCleanGetId(this.b);
   }
 
-  get relation(): ItemInterface | null {
-    return this._autoCleanGet(this.r);
+  get relation(): Relation | null {
+    return this._autoCleanGet(this.r) as Relation;
   }
 
   get first(): ItemInterface | null {
