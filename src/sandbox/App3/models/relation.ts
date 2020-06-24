@@ -67,9 +67,10 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     this.relationships.clear();
   }
 
-  add(left: ItemInterface, right: ItemInterface): void {
+  add(left: ItemInterface, right: ItemInterface): RelationshipInterface {
     const relationship = new Relationship(left.id, this.id, right.id);
     this.relationships.set(`${left.id}:${right.id}`, relationship.id);
+    return relationship;
   }
 
   remove(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): void {
@@ -99,11 +100,14 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
 
     const relationship = Item.get(id) as RelationshipInterface | undefined;
 
-    if (relationship?.valid) {
-      return relationship;
-    } else {
-      this.relationships.delete(key);
+    if (relationship) {
+      if (relationship.valid) {
+        return relationship;
+      }
+      relationship.destroy();
     }
+
+    this.relationships.delete(key);
   }
 
   *keys(): Generator<ItemInterface["id"], void, unknown> {
