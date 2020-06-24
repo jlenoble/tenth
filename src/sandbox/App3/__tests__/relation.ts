@@ -94,7 +94,7 @@ describe("Relations", () => {
     expect(rel1.size).toStrictEqual(2);
     expect(rel2.size).toStrictEqual(1);
 
-    rel2.remove(a, b);
+    rel2.remove(a.id, b.id);
 
     expect(Item.nItems).toStrictEqual(8);
     expect(Relationship.nItems).toStrictEqual(3);
@@ -102,7 +102,7 @@ describe("Relations", () => {
     expect(rel1.size).toStrictEqual(2);
     expect(rel2.size).toStrictEqual(1);
 
-    rel1.remove(a, b);
+    rel1.remove(a.id, b.id);
 
     expect(Item.nItems).toStrictEqual(7);
     expect(Relationship.nItems).toStrictEqual(2);
@@ -110,7 +110,7 @@ describe("Relations", () => {
     expect(rel1.size).toStrictEqual(1);
     expect(rel2.size).toStrictEqual(1);
 
-    rel1.remove(a, c);
+    rel1.remove(a.id, c.id);
 
     expect(Item.nItems).toStrictEqual(7);
     expect(Relationship.nItems).toStrictEqual(2);
@@ -118,7 +118,7 @@ describe("Relations", () => {
     expect(rel1.size).toStrictEqual(1);
     expect(rel2.size).toStrictEqual(1);
 
-    rel2.remove(a, c);
+    rel2.remove(a.id, c.id);
 
     expect(Item.nItems).toStrictEqual(6);
     expect(Relationship.nItems).toStrictEqual(1);
@@ -126,7 +126,7 @@ describe("Relations", () => {
     expect(rel1.size).toStrictEqual(1);
     expect(rel2.size).toStrictEqual(0);
 
-    rel1.remove(b, c);
+    rel1.remove(b.id, c.id);
 
     expect(Item.nItems).toStrictEqual(5);
     expect(Relationship.nItems).toStrictEqual(0);

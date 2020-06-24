@@ -67,13 +67,13 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     this.relationships.clear();
   }
 
-  add(a: ItemInterface, b: ItemInterface): void {
-    const relationship = new Relationship(a.id, this.id, b.id);
-    this.relationships.set(`${a.id}:${b.id}`, relationship.id);
+  add(left: ItemInterface, right: ItemInterface): void {
+    const relationship = new Relationship(left.id, this.id, right.id);
+    this.relationships.set(`${left.id}:${right.id}`, relationship.id);
   }
 
-  remove(a: ItemInterface, b: ItemInterface): void {
-    const key = `${a.id}:${b.id}`;
+  remove(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): void {
+    const key = `${leftId}:${rightId}`;
     const relationship = Item.get(this.relationships.get(key) || -1);
 
     if (relationship) {
