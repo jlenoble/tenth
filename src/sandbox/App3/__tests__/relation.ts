@@ -218,4 +218,18 @@ describe("Relations", () => {
     expect(rel.get(a.id, c.id)).toStrictEqual(rc);
     expect(rel.get(b.id, c.id)).toBeUndefined();
   });
+
+  it("Looping on relationships", () => {
+    const rel = new Relation();
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    const ra = rel.add(a, b);
+    const rb = rel.add(a, c);
+    const rc = rel.add(b, c);
+
+    expect(Array.from(rel.keys())).toEqual([ra.id, rb.id, rc.id]);
+  });
 });
