@@ -133,4 +133,28 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
       yield Item.get(id) as RelationshipInterface;
     }
   }
+
+  *firstKeys(): Generator<ItemInterface["id"], void, unknown> {
+    const cleanup: string[] = [];
+
+    for (const [key, id] of this.relationships.entries()) {
+      const relationship = Item.get(id) as RelationshipInterface | undefined;
+
+      if (relationship?.valid) {
+        yield relationship.firstId;
+      } else {
+        cleanup.push(key);
+      }
+    }
+
+    for (const key of cleanup) {
+      this.relationships.delete(key);
+    }
+  }
+
+  *firstValues(): Generator<ItemInterface, void, unknown> {
+    for (const id of this.firstKeys()) {
+      yield Item.get(id) as ItemInterface;
+    }
+  }
 };

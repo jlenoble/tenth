@@ -243,4 +243,29 @@ describe("Relations", () => {
     expect(Array.from(rel.keys())).toEqual([rc.id]);
     expect(Array.from(rel.values())).toEqual([rc]);
   });
+
+  it("Looping on first item", () => {
+    const rel = new Relation();
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    rel.add(a, b);
+    const rb = rel.add(a, c);
+    rel.add(b, c);
+
+    expect(Array.from(rel.firstKeys())).toEqual([a.id, a.id, b.id]);
+    expect(Array.from(rel.firstValues())).toEqual([a, a, b]);
+
+    rb.destroy();
+
+    expect(Array.from(rel.firstKeys())).toEqual([a.id, b.id]);
+    expect(Array.from(rel.firstValues())).toEqual([a, b]);
+
+    a.destroy();
+
+    expect(Array.from(rel.firstKeys())).toEqual([b.id]);
+    expect(Array.from(rel.firstValues())).toEqual([b]);
+  });
 });
