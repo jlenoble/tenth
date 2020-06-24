@@ -23,21 +23,104 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     }
   }
 
-  private relationships: Map<string, ItemInterface["id"]>;
+  private relationships: Map<string, RelationshipInterface>;
+  private firstKey: string;
+  private lastKey: string;
+
+  private _doCleanup(keys: string[] = []): void {
+    for (const key of keys) {
+      this.relationships.delete(key);
+    }
+
+    if (this.relationships.size) {
+      const iterator = this.relationships.keys();
+      this.firstKey = iterator.next().value;
+
+      for (const key of iterator) {
+        this.lastKey = key;
+      }
+    } else {
+      this.firstKey = "";
+      this.lastKey = "";
+    }
+  }
+
+  private *_autoCleanupCollect(
+    idKey: "id" | "firstId" | "lastId"
+  ): Generator<ItemInterface["id"], void, unknown> {
+    const cleanup: string[] = [];
+
+    for (const [key, { id }] of this.relationships.entries()) {
+      const relationship = Item.get(id) as RelationshipInterface | undefined;
+
+      if (relationship?.valid) {
+        yield relationship[idKey];
+      } else {
+        cleanup.push(key);
+      }
+    }
+
+    this._doCleanup(cleanup);
+  }
+
+  private _autoCleanupGet(
+    key: string
+  ): RelationshipInterface | null | undefined {
+    const relationship = this.relationships.get(key);
+
+    if (relationship?.valid) {
+      return relationship as RelationshipInterface;
+    } else {
+      const keys: string[] = [key];
+
+      for (const [key, relationship] of this.relationships) {
+        if (relationship?.valid) {
+          break;
+        }
+        keys.push(key);
+      }
+
+      this._doCleanup(keys);
+
+      return null;
+    }
+  }
+
+  get firstId(): ItemInterface["id"] | -1 {
+    return this.first?.id || -1;
+  }
+
+  get lastId(): ItemInterface["id"] | -1 {
+    return this.last?.id || -1;
+  }
+
+  get first(): RelationshipInterface | undefined {
+    const relationship = this._autoCleanupGet(this.firstKey);
+    if (relationship === null) {
+      return this.relationships.get(this.firstKey);
+    }
+    return relationship;
+  }
+
+  get last(): RelationshipInterface | undefined {
+    const relationship = this._autoCleanupGet(this.lastKey);
+    if (relationship === null) {
+      return this.relationships.get(this.lastKey);
+    }
+    return relationship;
+  }
 
   get size(): number {
     if (Item.has(this.id)) {
       const cleanup: string[] = [];
 
-      for (const [key, id] of this.relationships.entries()) {
-        if (!Item.has(id)) {
+      for (const [key, relationship] of this.relationships.entries()) {
+        if (!relationship?.valid) {
           cleanup.push(key);
         }
       }
 
-      for (const key of cleanup) {
-        this.relationships.delete(key);
-      }
+      this._doCleanup(cleanup);
 
       return this.relationships.size;
     } else {
@@ -50,6 +133,8 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     super();
 
     this.relationships = new Map();
+    this.firstKey = "";
+    this.lastKey = "";
 
     relations.add(this.id);
   }
@@ -65,21 +150,32 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
       relationship.destroy();
     }
     this.relationships.clear();
+    this.firstKey = "";
+    this.lastKey = "";
   }
 
   add(left: ItemInterface, right: ItemInterface): RelationshipInterface {
+    const key = `${left.id}:${right.id}`;
     const relationship = new Relationship(left.id, this.id, right.id);
-    this.relationships.set(`${left.id}:${right.id}`, relationship.id);
+
+    this.relationships.set(key, relationship);
+
+    if (!this.firstKey) {
+      this.firstKey = key;
+    }
+
+    this.lastKey = key;
+
     return relationship;
   }
 
   remove(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): void {
     const key = `${leftId}:${rightId}`;
-    const relationship = Item.get(this.relationships.get(key) || -1);
+    const relationship = this.relationships.get(key);
 
     if (relationship) {
       relationship.destroy();
-      this.relationships.delete(key);
+      this._doCleanup([`${leftId}:${rightId}`]);
     }
   }
 
@@ -91,41 +187,14 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     leftId: ItemInterface["id"],
     rightId: ItemInterface["id"]
   ): RelationshipInterface | undefined {
-    const key = `${leftId}:${rightId}`;
-    const id = this.relationships.get(key);
-
-    if (id === undefined) {
-      return;
-    }
-
-    const relationship = Item.get(id) as RelationshipInterface | undefined;
-
+    const relationship = this._autoCleanupGet(`${leftId}:${rightId}`);
     if (relationship) {
-      if (relationship.valid) {
-        return relationship;
-      }
-      relationship.destroy();
+      return relationship;
     }
-
-    this.relationships.delete(key);
   }
 
   *keys(): Generator<ItemInterface["id"], void, unknown> {
-    const cleanup: string[] = [];
-
-    for (const [key, id] of this.relationships.entries()) {
-      const relationship = Item.get(id) as RelationshipInterface | undefined;
-
-      if (relationship?.valid) {
-        yield id;
-      } else {
-        cleanup.push(key);
-      }
-    }
-
-    for (const key of cleanup) {
-      this.relationships.delete(key);
-    }
+    yield* this._autoCleanupCollect("id");
   }
 
   *values(): Generator<RelationshipInterface, void, unknown> {
@@ -135,21 +204,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
   }
 
   *firstKeys(): Generator<ItemInterface["id"], void, unknown> {
-    const cleanup: string[] = [];
-
-    for (const [key, id] of this.relationships.entries()) {
-      const relationship = Item.get(id) as RelationshipInterface | undefined;
-
-      if (relationship?.valid) {
-        yield relationship.firstId;
-      } else {
-        cleanup.push(key);
-      }
-    }
-
-    for (const key of cleanup) {
-      this.relationships.delete(key);
-    }
+    yield* this._autoCleanupCollect("firstId");
   }
 
   *firstValues(): Generator<ItemInterface, void, unknown> {
@@ -159,21 +214,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
   }
 
   *lastKeys(): Generator<ItemInterface["id"], void, unknown> {
-    const cleanup: string[] = [];
-
-    for (const [key, id] of this.relationships.entries()) {
-      const relationship = Item.get(id) as RelationshipInterface | undefined;
-
-      if (relationship?.valid) {
-        yield relationship.lastId;
-      } else {
-        cleanup.push(key);
-      }
-    }
-
-    for (const key of cleanup) {
-      this.relationships.delete(key);
-    }
+    yield* this._autoCleanupCollect("lastId");
   }
 
   *lastValues(): Generator<ItemInterface, void, unknown> {

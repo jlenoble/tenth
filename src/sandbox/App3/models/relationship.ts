@@ -40,7 +40,12 @@ export const Relationship: RelationshipCtor<ItemInterface> = class Relationship 
   }
 
   get valid(): boolean {
-    return Item.has(this.a) && Item.has(this.r) && Item.has(this.b);
+    return (
+      Item.has(this.id) &&
+      Item.has(this.a) &&
+      Item.has(this.r) &&
+      Item.has(this.b)
+    );
   }
 
   get relationId(): ItemInterface["id"] | -1 {

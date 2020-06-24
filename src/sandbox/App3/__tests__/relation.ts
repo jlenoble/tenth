@@ -156,6 +156,8 @@ describe("Relations", () => {
     expect(rel.has(a.id, c.id)).toStrictEqual(true);
     expect(rel.has(b.id, c.id)).toStrictEqual(true);
 
+    expect(rel.size).toStrictEqual(2);
+
     rel.remove(b.id, c.id);
 
     expect(rel.has(a.id, b.id)).toStrictEqual(false);
@@ -178,17 +180,23 @@ describe("Relations", () => {
     expect(rel.has(a.id, c.id)).toStrictEqual(true);
     expect(rel.has(b.id, c.id)).toStrictEqual(true);
 
+    expect(rel.size).toStrictEqual(3);
+
     a.destroy();
 
     expect(rel.has(a.id, b.id)).toStrictEqual(false);
     expect(rel.has(a.id, c.id)).toStrictEqual(false);
     expect(rel.has(b.id, c.id)).toStrictEqual(true);
 
+    expect(rel.size).toStrictEqual(1);
+
     c.destroy();
 
     expect(rel.has(a.id, b.id)).toStrictEqual(false);
     expect(rel.has(a.id, c.id)).toStrictEqual(false);
     expect(rel.has(b.id, c.id)).toStrictEqual(false);
+
+    expect(rel.size).toStrictEqual(0);
   });
 
   it("Getting relationships", () => {
@@ -206,17 +214,23 @@ describe("Relations", () => {
     expect(rel.get(a.id, c.id)).toStrictEqual(rb);
     expect(rel.get(b.id, c.id)).toStrictEqual(rc);
 
+    expect(rel.size).toStrictEqual(3);
+
     rel.remove(a.id, b.id);
 
     expect(rel.get(a.id, b.id)).toBeUndefined();
     expect(rel.get(a.id, c.id)).toStrictEqual(rb);
     expect(rel.get(b.id, c.id)).toStrictEqual(rc);
 
+    expect(rel.size).toStrictEqual(2);
+
     b.destroy();
 
     expect(rel.get(a.id, b.id)).toBeUndefined();
     expect(rel.get(a.id, c.id)).toStrictEqual(rb);
     expect(rel.get(b.id, c.id)).toBeUndefined();
+
+    expect(rel.size).toStrictEqual(1);
   });
 
   it("Looping on relationships", () => {
@@ -238,7 +252,11 @@ describe("Relations", () => {
     expect(Array.from(rel.keys())).toEqual([ra.id, rc.id]);
     expect(Array.from(rel.values())).toEqual([ra, rc]);
 
+    expect(rel.size).toStrictEqual(2);
+
     a.destroy();
+
+    expect(rel.size).toStrictEqual(1);
 
     expect(Array.from(rel.keys())).toEqual([rc.id]);
     expect(Array.from(rel.values())).toEqual([rc]);
@@ -267,6 +285,8 @@ describe("Relations", () => {
 
     expect(Array.from(rel.firstKeys())).toEqual([b.id]);
     expect(Array.from(rel.firstValues())).toEqual([b]);
+
+    expect(rel.size).toStrictEqual(1);
   });
 
   it("Looping on last item", () => {
@@ -290,7 +310,53 @@ describe("Relations", () => {
 
     a.destroy();
 
+    expect(rel.size).toStrictEqual(1);
+
     expect(Array.from(rel.lastKeys())).toEqual([c.id]);
     expect(Array.from(rel.lastValues())).toEqual([c]);
+  });
+
+  it("Accessing boundaries", () => {
+    const rel = new Relation();
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    const ra = rel.add(a, b);
+    const rb = rel.add(a, c);
+    const rc = rel.add(b, c);
+
+    expect(rel.firstId).toStrictEqual(ra.id);
+    expect(rel.lastId).toStrictEqual(rc.id);
+
+    expect(rel.first).toStrictEqual(ra);
+    expect(rel.last).toStrictEqual(rc);
+
+    rb.destroy();
+
+    expect(rel.firstId).toStrictEqual(ra.id);
+    expect(rel.lastId).toStrictEqual(rc.id);
+
+    expect(rel.first).toStrictEqual(ra);
+    expect(rel.last).toStrictEqual(rc);
+
+    ra.destroy();
+
+    expect(rel.firstId).toStrictEqual(rc.id);
+    expect(rel.lastId).toStrictEqual(rc.id);
+
+    expect(rel.first).toStrictEqual(rc);
+    expect(rel.last).toStrictEqual(rc);
+
+    rc.destroy();
+
+    expect(rel.firstId).toStrictEqual(-1);
+    expect(rel.lastId).toStrictEqual(-1);
+
+    expect(rel.first).toBeUndefined();
+    expect(rel.last).toBeUndefined();
+
+    expect(rel.size).toStrictEqual(0);
   });
 });
