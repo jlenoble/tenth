@@ -134,4 +134,32 @@ describe("Relations", () => {
     expect(rel1.size).toStrictEqual(0);
     expect(rel2.size).toStrictEqual(0);
   });
+
+  it("Testing relationships", () => {
+    const rel = new Relation();
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    rel.add(a, b);
+    rel.add(a, c);
+    rel.add(b, c);
+
+    expect(rel.has(a.id, b.id)).toStrictEqual(true);
+    expect(rel.has(a.id, c.id)).toStrictEqual(true);
+    expect(rel.has(b.id, c.id)).toStrictEqual(true);
+
+    rel.remove(a.id, b.id);
+
+    expect(rel.has(a.id, b.id)).toStrictEqual(false);
+    expect(rel.has(a.id, c.id)).toStrictEqual(true);
+    expect(rel.has(b.id, c.id)).toStrictEqual(true);
+
+    rel.remove(b.id, c.id);
+
+    expect(rel.has(a.id, b.id)).toStrictEqual(false);
+    expect(rel.has(a.id, c.id)).toStrictEqual(true);
+    expect(rel.has(b.id, c.id)).toStrictEqual(false);
+  });
 });

@@ -82,6 +82,10 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     }
   }
 
+  has(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): boolean {
+    return this.relationships.has(`${leftId}:${rightId}`);
+  }
+
   *keys(): Generator<ItemInterface["id"], void, unknown> {
     const cleanup: string[] = [];
 

@@ -21,5 +21,8 @@ export interface MapContainer<T extends Item = Item> extends Container<T> {
   clear(): void;
 
   add(...args: any[]): void;
-  remove(...args: any[]): void;
+  remove(...args: Item["id"][]): void;
+
+  has(...args: Item["id"][]): void;
+  get(...args: Item["id"][]): T;
 }
