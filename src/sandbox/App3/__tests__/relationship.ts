@@ -32,6 +32,13 @@ describe("Relationships", () => {
     expect(Item.nItems).toStrictEqual(4);
     expect(Relationship.nItems).toStrictEqual(1);
 
+    Relationship.destroy(a.id);
+    Relationship.destroy(r.id);
+    Relationship.destroy(b.id);
+
+    expect(Item.nItems).toStrictEqual(4);
+    expect(Relationship.nItems).toStrictEqual(1);
+
     Relationship.destroy(rel.id);
 
     expect(Item.nItems).toStrictEqual(3);
@@ -74,6 +81,14 @@ describe("Relationships", () => {
     const a = Item.create();
     const r = Item.create();
     const b = Item.create();
+
+    expect(Item.has(a.id)).toStrictEqual(true);
+    expect(Item.has(b.id)).toStrictEqual(true);
+    expect(Item.has(r.id)).toStrictEqual(true);
+
+    expect(Relationship.has(a.id)).toStrictEqual(false);
+    expect(Relationship.has(b.id)).toStrictEqual(false);
+    expect(Relationship.has(r.id)).toStrictEqual(false);
 
     const rel1 = Relationship.create(a.id, r.id, a.id);
     const rel2 = Relationship.create(a.id, r.id, b.id);

@@ -18,6 +18,16 @@ export class Relationship extends Item implements RelationshipInterface {
     }
   }
 
+  static has(id: Item["id"]): boolean {
+    return relationships.has(id);
+  }
+
+  static get(id: Item["id"]): Item | undefined {
+    if (relationships.has(id)) {
+      return Item.get(id);
+    }
+  }
+
   private readonly a: Item["id"];
   private readonly r: Item["id"];
   private readonly b: Item["id"];

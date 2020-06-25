@@ -16,7 +16,7 @@ export class Item implements ItemInterface {
   }
 
   static destroy(id: ItemInterface["id"]): void {
-    const item = items.get(id);
+    const item = this.get(id);
 
     if (item) {
       item.destroy();

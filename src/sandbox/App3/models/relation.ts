@@ -20,6 +20,16 @@ export class Relation extends Item implements RelationInterface {
     }
   }
 
+  static has(id: Item["id"]): boolean {
+    return relations.has(id);
+  }
+
+  static get(id: Item["id"]): Item | undefined {
+    if (relations.has(id)) {
+      return Item.get(id);
+    }
+  }
+
   private relationships: Map<string, Relationship>;
   private firstKey: string;
   private lastKey: string;

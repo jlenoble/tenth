@@ -51,10 +51,24 @@ describe("Categories", () => {
     const a = Item.create();
     const b = Item.create();
 
-    rel1.add(a);
-    rel1.add(a);
-    rel2.add(a);
-    rel1.add(b);
+    const r1 = rel1.add(a);
+    const r2 = rel1.add(a);
+    const r3 = rel2.add(a);
+    const r4 = rel1.add(b);
+
+    expect(Item.nItems).toStrictEqual(7);
+    expect(Relationship.nItems).toStrictEqual(3);
+    expect(Relation.nItems).toStrictEqual(2);
+    expect(Category.nItems).toStrictEqual(2);
+    expect(rel1.size).toStrictEqual(2);
+    expect(rel2.size).toStrictEqual(1);
+
+    Relation.destroy(a.id);
+    Relation.destroy(b.id);
+    Relation.destroy(r1.id);
+    Relation.destroy(r2.id);
+    Relation.destroy(r3.id);
+    Relation.destroy(r4.id);
 
     expect(Item.nItems).toStrictEqual(7);
     expect(Relationship.nItems).toStrictEqual(3);
@@ -163,9 +177,25 @@ describe("Categories", () => {
     const b = Item.create();
     const c = Item.create();
 
-    rel.add(a);
-    rel.add(a);
-    rel.add(c);
+    expect(Item.has(a.id)).toStrictEqual(true);
+    expect(Item.has(b.id)).toStrictEqual(true);
+    expect(Item.has(c.id)).toStrictEqual(true);
+
+    expect(Category.has(a.id)).toStrictEqual(false);
+    expect(Category.has(b.id)).toStrictEqual(false);
+    expect(Category.has(c.id)).toStrictEqual(false);
+
+    const r1 = rel.add(a);
+    const r2 = rel.add(a);
+    const r3 = rel.add(c);
+
+    expect(Item.has(r1.id)).toStrictEqual(true);
+    expect(Item.has(r2.id)).toStrictEqual(true);
+    expect(Item.has(r3.id)).toStrictEqual(true);
+
+    expect(Category.has(r1.id)).toStrictEqual(false);
+    expect(Category.has(r2.id)).toStrictEqual(false);
+    expect(Category.has(r3.id)).toStrictEqual(false);
 
     expect(rel.has(a.id)).toStrictEqual(true);
     expect(rel.has(b.id)).toStrictEqual(false);

@@ -49,9 +49,22 @@ describe("Relations", () => {
     const b = Item.create();
     const c = Item.create();
 
-    rel1.add(a, b);
-    rel2.add(a, c);
-    rel1.add(b, c);
+    const r1 = rel1.add(a, b);
+    const r2 = rel2.add(a, c);
+    const r3 = rel1.add(b, c);
+
+    expect(Item.nItems).toStrictEqual(8);
+    expect(Relationship.nItems).toStrictEqual(3);
+    expect(Relation.nItems).toStrictEqual(2);
+    expect(rel1.size).toStrictEqual(2);
+    expect(rel2.size).toStrictEqual(1);
+
+    Relation.destroy(a.id);
+    Relation.destroy(b.id);
+    Relation.destroy(c.id);
+    Relation.destroy(r1.id);
+    Relation.destroy(r2.id);
+    Relation.destroy(r3.id);
 
     expect(Item.nItems).toStrictEqual(8);
     expect(Relationship.nItems).toStrictEqual(3);
@@ -142,9 +155,25 @@ describe("Relations", () => {
     const b = Item.create();
     const c = Item.create();
 
-    rel.add(a, b);
-    rel.add(a, c);
-    rel.add(b, c);
+    expect(Item.has(a.id)).toStrictEqual(true);
+    expect(Item.has(b.id)).toStrictEqual(true);
+    expect(Item.has(c.id)).toStrictEqual(true);
+
+    expect(Relation.has(a.id)).toStrictEqual(false);
+    expect(Relation.has(b.id)).toStrictEqual(false);
+    expect(Relation.has(c.id)).toStrictEqual(false);
+
+    const r1 = rel.add(a, b);
+    const r2 = rel.add(a, c);
+    const r3 = rel.add(b, c);
+
+    expect(Item.has(r1.id)).toStrictEqual(true);
+    expect(Item.has(r2.id)).toStrictEqual(true);
+    expect(Item.has(r3.id)).toStrictEqual(true);
+
+    expect(Relation.has(r1.id)).toStrictEqual(false);
+    expect(Relation.has(r2.id)).toStrictEqual(false);
+    expect(Relation.has(r3.id)).toStrictEqual(false);
 
     expect(rel.has(a.id, b.id)).toStrictEqual(true);
     expect(rel.has(a.id, c.id)).toStrictEqual(true);

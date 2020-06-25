@@ -20,6 +20,16 @@ export class Category extends Relation implements CategoryInterface {
     }
   }
 
+  static has(id: Item["id"]): boolean {
+    return categories.has(id);
+  }
+
+  static get(id: Item["id"]): Item | undefined {
+    if (categories.has(id)) {
+      return Item.get(id);
+    }
+  }
+
   title: string;
 
   constructor(title: string) {
