@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Item } from "../item";
 import { MapContainerCtor } from "./container";
 import { Relationship } from "../relationship";
