@@ -138,6 +138,24 @@ describe("Categories", () => {
     expect(rel2.size).toStrictEqual(0);
   });
 
+  it("Getting/mutating title", () => {
+    const rel = new Category("foo");
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    rel.add(a);
+    rel.add(b);
+    rel.add(c);
+
+    expect(rel.title).toStrictEqual("foo");
+    expect(() => {
+      rel.title = "bar";
+    }).not.toThrow();
+    expect(rel.title).toStrictEqual("bar");
+  });
+
   it("Testing items", () => {
     const rel = new Category("foo");
 
