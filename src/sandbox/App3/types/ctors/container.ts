@@ -9,7 +9,7 @@ export type ContainerCtor<
   Last extends Item = First
 > = ItemCtor<Container<First, Last>, Params>;
 
-export type MapContainerCtor<
+export type ContainerContainerCtor<
   Params extends any[] = any[],
   T extends Item = Item
 > = ContainerCtor<Params, T>;
