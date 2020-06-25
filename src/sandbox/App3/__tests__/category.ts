@@ -208,51 +208,51 @@ describe("Categories", () => {
     expect(rel.size).toStrictEqual(1);
   });
 
-  // it("Getting items", () => {
-  //   const rel = new Category("foo");
+  it("Getting items or relationships", () => {
+    const rel = new Category("foo");
 
-  //   const a = Item.create();
-  //   const b = Item.create();
-  //   const c = Item.create();
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
 
-  //   const ra = rel.add(a);
-  //   const rb = rel.add(b);
-  //   const rc = rel.add(c);
+    const ra = rel.add(a);
+    const rb = rel.add(b);
+    const rc = rel.add(c);
 
-  //   expect(rel.getRelationship(a.id)).toStrictEqual(ra);
-  //   expect(rel.getRelationship(b.id)).toStrictEqual(rb);
-  //   expect(rel.getRelationship(c.id)).toStrictEqual(rc);
+    expect(rel.getRelationship(a.id)).toStrictEqual(ra);
+    expect(rel.getRelationship(b.id)).toStrictEqual(rb);
+    expect(rel.getRelationship(c.id)).toStrictEqual(rc);
 
-  //   expect(rel.get(a.id)).toStrictEqual(a);
-  //   expect(rel.get(b.id)).toStrictEqual(b);
-  //   expect(rel.get(c.id)).toStrictEqual(c);
+    expect(rel.getItem(a.id)).toStrictEqual(a);
+    expect(rel.getItem(b.id)).toStrictEqual(b);
+    expect(rel.getItem(c.id)).toStrictEqual(c);
 
-  //   expect(rel.size).toStrictEqual(3);
+    expect(rel.size).toStrictEqual(3);
 
-  //   rel.remove(a.id);
+    rel.remove(a.id);
 
-  //   expect(rel.getRelationship(a.id)).toBeUndefined();
-  //   expect(rel.getRelationship(b.id)).toStrictEqual(rb);
-  //   expect(rel.getRelationship(c.id)).toStrictEqual(rc);
+    expect(rel.getRelationship(a.id)).toBeUndefined();
+    expect(rel.getRelationship(b.id)).toStrictEqual(rb);
+    expect(rel.getRelationship(c.id)).toStrictEqual(rc);
 
-  //   expect(rel.get(a.id)).toBeUndefined();
-  //   expect(rel.get(b.id)).toStrictEqual(b);
-  //   expect(rel.get(c.id)).toStrictEqual(c);
+    expect(rel.getItem(a.id)).toBeUndefined();
+    expect(rel.getItem(b.id)).toStrictEqual(b);
+    expect(rel.getItem(c.id)).toStrictEqual(c);
 
-  //   expect(rel.size).toStrictEqual(2);
+    expect(rel.size).toStrictEqual(2);
 
-  //   b.destroy();
+    b.destroy();
 
-  //   expect(rel.getRelationship(a.id)).toBeUndefined();
-  //   expect(rel.getRelationship(b.id)).toBeUndefined();
-  //   expect(rel.getRelationship(c.id)).toStrictEqual(rc);
+    expect(rel.getRelationship(a.id)).toBeUndefined();
+    expect(rel.getRelationship(b.id)).toBeUndefined();
+    expect(rel.getRelationship(c.id)).toStrictEqual(rc);
 
-  //   expect(rel.get(a.id)).toBeUndefined();
-  //   expect(rel.get(b.id)).toBeUndefined();
-  //   expect(rel.get(c.id)).toStrictEqual(c);
+    expect(rel.getItem(a.id)).toBeUndefined();
+    expect(rel.getItem(b.id)).toBeUndefined();
+    expect(rel.getItem(c.id)).toStrictEqual(c);
 
-  //   expect(rel.size).toStrictEqual(1);
-  // });
+    expect(rel.size).toStrictEqual(1);
+  });
 
   it("Looping on items", () => {
     const rel = new Category("foo");

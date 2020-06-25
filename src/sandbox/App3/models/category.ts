@@ -51,6 +51,15 @@ export class Category extends Relation implements CategoryInterface {
     return super.get(id, this.id);
   }
 
+  getItem(id: Item["id"]): Item | undefined {
+    const relationship = super.get(id, this.id);
+    return relationship?.first || undefined;
+  }
+
+  getRelationship(id: Item["id"]): Relationship | undefined {
+    return super.get(id, this.id);
+  }
+
   *itemKeys(): Generator<Item["id"], void, undefined> {
     yield* super.firstKeys();
   }
