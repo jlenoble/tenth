@@ -1,17 +1,17 @@
-import { Item as ItemInterface, ItemCtor } from "../types";
+import { Item as ItemInterface } from "../types";
 
 let _id = 0;
 const tmpId = () => ++_id;
 
 const items: Map<ItemInterface["id"], ItemInterface> = new Map();
 
-export const Item: ItemCtor<ItemInterface> = class Item
-  implements ItemInterface {
+export class Item implements ItemInterface {
   static get nItems(): number {
     return items.size;
   }
 
-  static create(): Item {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  static create(...args: any[]): Item {
     return new Item();
   }
 
@@ -51,4 +51,4 @@ export const Item: ItemCtor<ItemInterface> = class Item
   destroy(): void {
     items.delete(this.id);
   }
-};
+}

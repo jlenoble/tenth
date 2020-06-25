@@ -1,18 +1,14 @@
 import { Item } from "./item";
-import { Item as ItemInterface, RelationshipCtor, Relation } from "../types";
+import { Relationship as RelationshipInterface, Relation } from "../types";
 
-const relationships: Set<ItemInterface["id"]> = new Set();
+const relationships: Set<Item["id"]> = new Set();
 
-export const Relationship: RelationshipCtor<Relation> = class Relationship extends Item {
+export class Relationship extends Item implements RelationshipInterface {
   static get nItems(): number {
     return relationships.size;
   }
 
-  static create(
-    a: ItemInterface["id"],
-    r: ItemInterface["id"],
-    b: ItemInterface["id"]
-  ): Relationship {
+  static create(a: Item["id"], r: Item["id"], b: Item["id"]): Relationship {
     return new Relationship(a, r, b);
   }
 
@@ -22,11 +18,11 @@ export const Relationship: RelationshipCtor<Relation> = class Relationship exten
     }
   }
 
-  private readonly a: ItemInterface["id"];
-  private readonly r: ItemInterface["id"];
-  private readonly b: ItemInterface["id"];
+  private readonly a: Item["id"];
+  private readonly r: Item["id"];
+  private readonly b: Item["id"];
 
-  private _autoCleanGetId(id: ItemInterface["id"]): ItemInterface["id"] | -1 {
+  private _autoCleanGetId(id: Item["id"]): Item["id"] | -1 {
     if (relationships.has(this.id) && Item.has(id)) {
       return id;
     } else {
@@ -35,7 +31,7 @@ export const Relationship: RelationshipCtor<Relation> = class Relationship exten
     }
   }
 
-  private _autoCleanGet(id: ItemInterface["id"]): ItemInterface | null {
+  private _autoCleanGet(id: Item["id"]): Item | null {
     return Item.get(this._autoCleanGetId(id)) || null;
   }
 
@@ -48,15 +44,15 @@ export const Relationship: RelationshipCtor<Relation> = class Relationship exten
     );
   }
 
-  get relationId(): ItemInterface["id"] | -1 {
+  get relationId(): Item["id"] | -1 {
     return this._autoCleanGetId(this.r);
   }
 
-  get firstId(): ItemInterface["id"] | -1 {
+  get firstId(): Item["id"] | -1 {
     return this._autoCleanGetId(this.a);
   }
 
-  get lastId(): ItemInterface["id"] | -1 {
+  get lastId(): Item["id"] | -1 {
     return this._autoCleanGetId(this.b);
   }
 
@@ -64,19 +60,15 @@ export const Relationship: RelationshipCtor<Relation> = class Relationship exten
     return this._autoCleanGet(this.r) as Relation;
   }
 
-  get first(): ItemInterface | null {
+  get first(): Item | null {
     return this._autoCleanGet(this.a);
   }
 
-  get last(): ItemInterface | null {
+  get last(): Item | null {
     return this._autoCleanGet(this.b);
   }
 
-  constructor(
-    a: ItemInterface["id"],
-    r: ItemInterface["id"],
-    b: ItemInterface["id"]
-  ) {
+  constructor(a: Item["id"], r: Item["id"], b: Item["id"]) {
     super();
 
     this.a = a;
@@ -90,4 +82,4 @@ export const Relationship: RelationshipCtor<Relation> = class Relationship exten
     relationships.delete(this.id);
     super.destroy();
   }
-};
+}

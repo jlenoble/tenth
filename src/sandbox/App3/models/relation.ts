@@ -1,20 +1,16 @@
 import { Item } from "./item";
-import {
-  Item as ItemInterface,
-  Relationship as RelationshipInterface,
-  Relation as RelationInterface,
-  RelationCtor,
-} from "../types";
 import { Relationship } from "./relationship";
+import { Relation as RelationInterface } from "../types";
 
-const relations: Set<ItemInterface["id"]> = new Set();
+const relations: Set<Item["id"]> = new Set();
 
-export const Relation: RelationCtor<ItemInterface> = class Relation extends Item {
+export class Relation extends Item implements RelationInterface {
   static get nItems(): number {
     return relations.size;
   }
 
-  static create(): Relation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  static create(...args: any[]): Relation {
     return new Relation();
   }
 
@@ -24,7 +20,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     }
   }
 
-  private relationships: Map<string, RelationshipInterface<RelationInterface>>;
+  private relationships: Map<string, Relationship>;
   private firstKey: string;
   private lastKey: string;
 
@@ -48,13 +44,11 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
 
   private *_autoCleanupCollect(
     idKey: "id" | "firstId" | "lastId"
-  ): Generator<ItemInterface["id"], void, unknown> {
+  ): Generator<Item["id"], void, unknown> {
     const cleanup: string[] = [];
 
     for (const [key, { id }] of this.relationships.entries()) {
-      const relationship = Item.get(id) as
-        | RelationshipInterface<RelationInterface>
-        | undefined;
+      const relationship = Item.get(id) as Relationship | undefined;
 
       if (relationship?.valid) {
         yield relationship[idKey];
@@ -66,13 +60,11 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     this._doCleanup(cleanup);
   }
 
-  private _autoCleanupGet(
-    key: string
-  ): RelationshipInterface<RelationInterface> | null | undefined {
+  private _autoCleanupGet(key: string): Relationship | null | undefined {
     const relationship = this.relationships.get(key);
 
     if (relationship?.valid) {
-      return relationship as RelationshipInterface<RelationInterface>;
+      return relationship as Relationship;
     } else {
       const keys: string[] = [key];
 
@@ -89,15 +81,15 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     }
   }
 
-  get firstId(): ItemInterface["id"] | -1 {
+  get firstId(): Item["id"] | -1 {
     return this.first?.id || -1;
   }
 
-  get lastId(): ItemInterface["id"] | -1 {
+  get lastId(): Item["id"] | -1 {
     return this.last?.id || -1;
   }
 
-  get first(): RelationshipInterface<RelationInterface> | undefined {
+  get first(): Relationship | undefined {
     const relationship = this._autoCleanupGet(this.firstKey);
     if (relationship === null) {
       return this.relationships.get(this.firstKey);
@@ -105,7 +97,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return relationship;
   }
 
-  get last(): RelationshipInterface<RelationInterface> | undefined {
+  get last(): Relationship | undefined {
     const relationship = this._autoCleanupGet(this.lastKey);
     if (relationship === null) {
       return this.relationships.get(this.lastKey);
@@ -157,10 +149,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     this.lastKey = "";
   }
 
-  add(
-    left: ItemInterface,
-    right: ItemInterface
-  ): RelationshipInterface<RelationInterface> {
+  add(left: Item, right: Item): Relationship {
     const key = `${left.id}:${right.id}`;
     const relationship = new Relationship(left.id, this.id, right.id);
 
@@ -175,7 +164,7 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     return relationship;
   }
 
-  remove(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): void {
+  remove(leftId: Item["id"], rightId: Item["id"]): void {
     const key = `${leftId}:${rightId}`;
     const relationship = this.relationships.get(key);
 
@@ -185,51 +174,44 @@ export const Relation: RelationCtor<ItemInterface> = class Relation extends Item
     }
   }
 
-  has(leftId: ItemInterface["id"], rightId: ItemInterface["id"]): boolean {
+  has(leftId: Item["id"], rightId: Item["id"]): boolean {
     return Boolean(this.get(leftId, rightId));
   }
 
-  get(
-    leftId: ItemInterface["id"],
-    rightId: ItemInterface["id"]
-  ): RelationshipInterface<RelationInterface> | undefined {
+  get(leftId: Item["id"], rightId: Item["id"]): Relationship | undefined {
     const relationship = this._autoCleanupGet(`${leftId}:${rightId}`);
     if (relationship) {
       return relationship;
     }
   }
 
-  *keys(): Generator<ItemInterface["id"], void, unknown> {
+  *keys(): Generator<Item["id"], void, unknown> {
     yield* this._autoCleanupCollect("id");
   }
 
-  *values(): Generator<
-    RelationshipInterface<RelationInterface>,
-    void,
-    unknown
-  > {
+  *values(): Generator<Relationship, void, unknown> {
     for (const id of this.keys()) {
-      yield Item.get(id) as RelationshipInterface<RelationInterface>;
+      yield Item.get(id) as Relationship;
     }
   }
 
-  *firstKeys(): Generator<ItemInterface["id"], void, unknown> {
+  *firstKeys(): Generator<Item["id"], void, unknown> {
     yield* this._autoCleanupCollect("firstId");
   }
 
-  *firstValues(): Generator<ItemInterface, void, unknown> {
+  *firstValues(): Generator<Item, void, unknown> {
     for (const id of this.firstKeys()) {
-      yield Item.get(id) as ItemInterface;
+      yield Item.get(id) as Item;
     }
   }
 
-  *lastKeys(): Generator<ItemInterface["id"], void, unknown> {
+  *lastKeys(): Generator<Item["id"], void, unknown> {
     yield* this._autoCleanupCollect("lastId");
   }
 
-  *lastValues(): Generator<ItemInterface, void, unknown> {
+  *lastValues(): Generator<Item, void, unknown> {
     for (const id of this.lastKeys()) {
-      yield Item.get(id) as ItemInterface;
+      yield Item.get(id) as Item;
     }
   }
-};
+}
