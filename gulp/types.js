@@ -5,7 +5,7 @@ import fse from "fs-extra";
 
 const srcDir = "src";
 const libDir = "dev-build/src";
-const libGlob = ["src/sandbox/App2/**/*.ts", "src/sandbox/App2/**/*.tsx"];
+const libGlob = ["src/sandbox/App3/**/*.ts", "src/sandbox/App3/**/*.tsx"];
 const tsProject = ts.createProject("tsconfig-emit.json");
 
 function reporter() {
