@@ -26,6 +26,6 @@ export interface ContainerContainer<
   add(first: First, last?: Last): InnerContainer;
   remove(firstId: Item["id"], lastID?: Item["id"]): void;
 
-  has(firstId: Item["id"], lastID?: Item["id"]): void;
+  has(firstId: Item["id"], lastID?: Item["id"]): boolean;
   get(firstId: Item["id"], lastID?: Item["id"]): InnerContainer | undefined;
 }
