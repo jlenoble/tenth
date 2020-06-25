@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Item } from "./item";
 
 export interface Container<
@@ -12,17 +11,21 @@ export interface Container<
   lastId: Item["id"] | -1;
 }
 
-export interface MapContainer<T extends Item = Item> extends Container<T> {
+export interface ContainerContainer<
+  First extends Item = Item,
+  Last extends Item = First,
+  InnerContainer extends Container<First, Last> = Container<First, Last>
+> extends Container<InnerContainer> {
   size: number;
 
   keys(): IterableIterator<Item["id"]>;
-  values(): IterableIterator<T>;
+  values(): IterableIterator<InnerContainer>;
 
   clear(): void;
 
-  add(...args: any[]): T;
-  remove(...args: Item["id"][]): void;
+  add(first: First, last?: Last): InnerContainer;
+  remove(firstId: Item["id"], lastID?: Item["id"]): void;
 
-  has(...args: Item["id"][]): void;
-  get(...args: Item["id"][]): T | undefined;
+  has(firstId: Item["id"], lastID?: Item["id"]): void;
+  get(firstId: Item["id"], lastID?: Item["id"]): InnerContainer | undefined;
 }
