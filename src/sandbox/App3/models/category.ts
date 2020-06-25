@@ -58,4 +58,12 @@ export class Category extends Relation implements CategoryInterface {
   *itemValues(): Generator<Item, void, undefined> {
     yield* super.firstValues();
   }
+
+  *relationshipKeys(): Generator<Item["id"], void, undefined> {
+    yield* super.keys();
+  }
+
+  *relationshipValues(): Generator<Relationship, void, undefined> {
+    yield* super.values();
+  }
 }

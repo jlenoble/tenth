@@ -1,4 +1,5 @@
 import { Item } from "./item";
+import { Relationship } from "./relationship";
 import { Relation } from "./relation";
 
 export interface Category extends Relation {
@@ -6,4 +7,7 @@ export interface Category extends Relation {
 
   itemKeys(): IterableIterator<Item["id"]>;
   itemValues(): IterableIterator<Item>;
+
+  relationshipKeys(): IterableIterator<Item["id"]>;
+  relationshipValues(): IterableIterator<Relationship>;
 }

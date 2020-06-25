@@ -281,6 +281,33 @@ describe("Categories", () => {
     expect(rel.size).toStrictEqual(1);
   });
 
+  it("Looping on relationships", () => {
+    const rel = new Category("foo");
+
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
+
+    const ra = rel.add(a);
+    const rb = rel.add(b);
+    const rc = rel.add(c);
+
+    expect(Array.from(rel.relationshipKeys())).toEqual([ra.id, rb.id, rc.id]);
+    expect(Array.from(rel.relationshipValues())).toEqual([ra, rb, rc]);
+
+    rb.destroy();
+
+    expect(Array.from(rel.relationshipKeys())).toEqual([ra.id, rc.id]);
+    expect(Array.from(rel.relationshipValues())).toEqual([ra, rc]);
+
+    a.destroy();
+
+    expect(Array.from(rel.relationshipKeys())).toEqual([rc.id]);
+    expect(Array.from(rel.relationshipValues())).toEqual([rc]);
+
+    expect(rel.size).toStrictEqual(1);
+  });
+
   // it("Accessing item boundaries", () => {
   //   const rel = new Category("foo");
 
