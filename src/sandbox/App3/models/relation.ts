@@ -151,15 +151,19 @@ export class Relation extends Item implements RelationInterface {
 
   add(left: Item, right: Item): Relationship {
     const key = `${left.id}:${right.id}`;
-    const relationship = new Relationship(left.id, this.id, right.id);
+    let relationship = this.relationships.get(key);
 
-    this.relationships.set(key, relationship);
+    if (!relationship) {
+      relationship = new Relationship(left.id, this.id, right.id);
 
-    if (!this.firstKey) {
-      this.firstKey = key;
+      this.relationships.set(key, relationship);
+
+      if (!this.firstKey) {
+        this.firstKey = key;
+      }
+
+      this.lastKey = key;
     }
-
-    this.lastKey = key;
 
     return relationship;
   }
