@@ -308,47 +308,47 @@ describe("Categories", () => {
     expect(rel.size).toStrictEqual(1);
   });
 
-  // it("Accessing item boundaries", () => {
-  //   const rel = new Category("foo");
+  it("Accessing item boundaries", () => {
+    const rel = new Category("foo");
 
-  //   const a = Item.create();
-  //   const b = Item.create();
-  //   const c = Item.create();
+    const a = Item.create();
+    const b = Item.create();
+    const c = Item.create();
 
-  //   const ra = rel.add(a);
-  //   const rb = rel.add(b);
-  //   const rc = rel.add(c);
+    const ra = rel.add(a);
+    const rb = rel.add(b);
+    const rc = rel.add(c);
 
-  //   expect(rel.firstId).toStrictEqual(ra.id);
-  //   expect(rel.lastId).toStrictEqual(rc.id);
+    expect(rel.firstId).toStrictEqual(ra.id);
+    expect(rel.lastId).toStrictEqual(rc.id);
 
-  //   expect(rel.first).toStrictEqual(ra);
-  //   expect(rel.last).toStrictEqual(rc);
+    expect(rel.first).toStrictEqual(ra);
+    expect(rel.last).toStrictEqual(rc);
 
-  //   rb.destroy();
+    rb.destroy();
 
-  //   expect(rel.firstId).toStrictEqual(ra.id);
-  //   expect(rel.lastId).toStrictEqual(rc.id);
+    expect(rel.firstId).toStrictEqual(ra.id);
+    expect(rel.lastId).toStrictEqual(rc.id);
 
-  //   expect(rel.first).toStrictEqual(ra);
-  //   expect(rel.last).toStrictEqual(rc);
+    expect(rel.first).toStrictEqual(ra);
+    expect(rel.last).toStrictEqual(rc);
 
-  //   ra.destroy();
+    ra.destroy();
 
-  //   expect(rel.firstId).toStrictEqual(rc.id);
-  //   expect(rel.lastId).toStrictEqual(rc.id);
+    expect(rel.firstId).toStrictEqual(rc.id);
+    expect(rel.lastId).toStrictEqual(rc.id);
 
-  //   expect(rel.first).toStrictEqual(rc);
-  //   expect(rel.last).toStrictEqual(rc);
+    expect(rel.first).toStrictEqual(rc);
+    expect(rel.last).toStrictEqual(rc);
 
-  //   rc.destroy();
+    rc.destroy();
 
-  //   expect(rel.firstId).toStrictEqual(-1);
-  //   expect(rel.lastId).toStrictEqual(-1);
+    expect(rel.firstId).toStrictEqual(-1);
+    expect(rel.lastId).toStrictEqual(-1);
 
-  //   expect(rel.first).toBeUndefined();
-  //   expect(rel.last).toBeUndefined();
+    expect(rel.first).toBeUndefined();
+    expect(rel.last).toBeUndefined();
 
-  //   expect(rel.size).toStrictEqual(0);
-  // });
+    expect(rel.size).toStrictEqual(0);
+  });
 });
