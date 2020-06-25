@@ -1,10 +1,11 @@
 import { Item } from "./item";
 import { Relationship } from "./relationship";
 import { Relation } from "./relation";
+import { Category as CategoryInterface } from "../types";
 
 const categories: Set<Item["id"]> = new Set();
 
-export class Category extends Relation {
+export class Category extends Relation implements CategoryInterface {
   static get nItems(): number {
     return categories.size;
   }
@@ -54,7 +55,7 @@ export class Category extends Relation {
     yield* super.firstKeys();
   }
 
-  *items(): Generator<Item, void, undefined> {
+  *itemValues(): Generator<Item, void, undefined> {
     yield* super.firstValues();
   }
 }
