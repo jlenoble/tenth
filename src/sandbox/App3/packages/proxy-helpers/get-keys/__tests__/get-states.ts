@@ -1,15 +1,15 @@
 import { AnyObject } from "../types";
-import { getAttributes } from "../get-attributes";
+import { getStates } from "../get-states";
 
-describe("Get attributes of object", () => {
-  describe("getAttributes", () => {
+describe("Get states of object", () => {
+  describe("getStates", () => {
     it("Using a literal object", () => {
       const obj = {
         a: 1,
         b: "foo",
       };
 
-      expect(getAttributes(obj)).toEqual(["a", "b"]);
+      expect(getStates(obj)).toEqual([]);
     });
 
     it("Using an instantiated object", () => {
@@ -32,7 +32,7 @@ describe("Get attributes of object", () => {
 
       const obj = new Foo();
 
-      expect(getAttributes(obj as AnyObject)).toEqual(["a", "b"]);
+      expect(getStates(obj as AnyObject)).toEqual(["c", "d"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {
@@ -74,7 +74,7 @@ describe("Get attributes of object", () => {
 
       const obj = new Bar();
 
-      expect(getAttributes(obj as AnyObject)).toEqual(["a", "b", "e", "f"]);
+      expect(getStates(obj as AnyObject)).toEqual(["c", "d", "g", "h"]);
     });
   });
 });
