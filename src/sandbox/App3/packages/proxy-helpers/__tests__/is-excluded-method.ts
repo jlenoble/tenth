@@ -1,15 +1,15 @@
 import { isExcludedMethod } from "../is-excluded-method";
 
-describe("isExcludedMethod(method)", () => {
-  ["constructor", "call", "apply", "bind"].forEach((method) => {
-    it(`returns true on ${method}`, () => {
-      expect(isExcludedMethod(method)).toBe(true);
+describe("isExcludedMethod(methodName)", () => {
+  ["constructor", "call", "apply", "bind"].forEach((methodName) => {
+    it(`returns true on ${methodName}`, () => {
+      expect(isExcludedMethod(methodName)).toBe(true);
     });
   });
 
   it(`returns false except on "constructor/call/apply/bind"`, () => {
-    ["a", "foo", ""].forEach((method) => {
-      expect(isExcludedMethod(method)).toBe(false);
+    ["a", "foo", ""].forEach((methodName) => {
+      expect(isExcludedMethod(methodName)).toBe(false);
     });
   });
 });

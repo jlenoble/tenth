@@ -1,5 +1,9 @@
-export const isExcludedMethod = (method: string): boolean => {
-  switch (method) {
+type ExcludedMethodName = "constructor" | "call" | "apply" | "bind";
+
+export const isExcludedMethod = (
+  methodName: string
+): methodName is ExcludedMethodName => {
+  switch (methodName) {
     case "constructor":
     case "call":
     case "apply":
