@@ -20,6 +20,16 @@ export class Order extends Relation implements OrderInterface {
     }
   }
 
+  static has(id: Item["id"]): boolean {
+    return orders.has(id);
+  }
+
+  static get(id: Item["id"]): Item | undefined {
+    if (orders.has(id)) {
+      return Item.get(id);
+    }
+  }
+
   private readonly category: Category;
 
   title: string;
