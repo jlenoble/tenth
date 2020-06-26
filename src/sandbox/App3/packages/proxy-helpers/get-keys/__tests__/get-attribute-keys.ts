@@ -1,15 +1,15 @@
 import { AnyObject } from "../types";
-import { getAttributes } from "../get-attributes";
+import { getAttributeKeys } from "../get-attribute-keys";
 
-describe("Get attributes of object", () => {
-  describe("getAttributes", () => {
+describe("Get attribute keys of object", () => {
+  describe("getAttributeKeys", () => {
     it("Using a literal object", () => {
       const obj = {
         a: 1,
         b: "foo",
       };
 
-      expect(getAttributes(obj)).toEqual(["a", "b"]);
+      expect(getAttributeKeys(obj)).toEqual(["a", "b"]);
     });
 
     it("Using an instantiated object", () => {
@@ -32,7 +32,7 @@ describe("Get attributes of object", () => {
 
       const obj = new Foo();
 
-      expect(getAttributes(obj as AnyObject)).toEqual(["a", "b"]);
+      expect(getAttributeKeys(obj as AnyObject)).toEqual(["a", "b"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {
@@ -74,7 +74,7 @@ describe("Get attributes of object", () => {
 
       const obj = new Bar();
 
-      expect(getAttributes(obj as AnyObject)).toEqual(["a", "b", "e", "f"]);
+      expect(getAttributeKeys(obj as AnyObject)).toEqual(["a", "b", "e", "f"]);
     });
   });
 });

@@ -1,4 +1,4 @@
-export const getAttributes = <T extends Record<string, unknown>>(
+export const getAttributeKeys = <T extends Record<string, unknown>>(
   obj: T
 ): string[] => {
   return Object.keys(obj).filter((key) => {

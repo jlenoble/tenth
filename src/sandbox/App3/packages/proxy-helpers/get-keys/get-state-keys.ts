@@ -1,4 +1,4 @@
-export const getStates = <T extends Record<string, unknown>>(
+export const getStateKeys = <T extends Record<string, unknown>>(
   obj: T
 ): string[] => {
   return Object.entries(Object.getOwnPropertyDescriptors(obj))
