@@ -25,6 +25,10 @@ describe("Get keys of object", () => {
       expect(getKeys(obj, "allMethods")).toEqual(
         ["m"].concat(baseObjectMethodKeys)
       );
+      expect(getKeys(obj, "properties")).toEqual(["a", "b", "m"]);
+      expect(getKeys(obj, "all")).toEqual(
+        ["a", "b", "m"].concat(baseObjectMethodKeys)
+      );
       expect(getKeys(obj, "getOwnPropertyNames")).toEqual(["a", "b", "m"]);
     });
 
@@ -58,6 +62,18 @@ describe("Get keys of object", () => {
       expect(getKeys(obj as AnyObject, "methods")).toEqual(["m1", "m2", "m3"]);
       expect(getKeys(obj as AnyObject, "allMethods")).toEqual(
         ["m1", "m2", "m3"].concat(baseObjectMethodKeys)
+      );
+      expect(getKeys(obj as AnyObject, "properties")).toEqual([
+        "a",
+        "b",
+        "c",
+        "d",
+        "m1",
+        "m2",
+        "m3",
+      ]);
+      expect(getKeys(obj as AnyObject, "all")).toEqual(
+        ["a", "b", "c", "d", "m1", "m2", "m3"].concat(baseObjectMethodKeys)
       );
       expect(getKeys(obj as AnyObject, "getOwnPropertyNames")).toEqual([
         "a",
@@ -138,6 +154,42 @@ describe("Get keys of object", () => {
       ]);
       expect(getKeys(obj as AnyObject, "allMethods")).toEqual(
         ["m1", "m2", "m4", "m5", "m6", "m7", "m3"].concat(baseObjectMethodKeys)
+      );
+      expect(getKeys(obj as AnyObject, "properties")).toEqual([
+        "a",
+        "b",
+        "e",
+        "f",
+        "c",
+        "d",
+        "g",
+        "h",
+        "m1",
+        "m2",
+        "m4",
+        "m5",
+        "m6",
+        "m7",
+        "m3",
+      ]);
+      expect(getKeys(obj as AnyObject, "all")).toEqual(
+        [
+          "a",
+          "b",
+          "e",
+          "f",
+          "c",
+          "d",
+          "g",
+          "h",
+          "m1",
+          "m2",
+          "m4",
+          "m5",
+          "m6",
+          "m7",
+          "m3",
+        ].concat(baseObjectMethodKeys)
       );
       expect(getKeys(obj as AnyObject, "getOwnPropertyNames")).toEqual([
         "a",
