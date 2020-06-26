@@ -1,8 +1,8 @@
 import { AnyObject } from "../types";
-import { getAttributeKeys } from "../get-attribute-keys";
+import { getMethodKeys } from "../get-method-keys";
 
-describe("Get attribute keys of object", () => {
-  describe("getAttributeKeys", () => {
+describe("Get method keys of object", () => {
+  describe("getMethodKeys", () => {
     it("Using a literal object", () => {
       const obj = {
         a: 1,
@@ -13,7 +13,7 @@ describe("Get attribute keys of object", () => {
         },
       };
 
-      expect(getAttributeKeys(obj)).toEqual(["a", "b"]);
+      expect(getMethodKeys(obj)).toEqual(["m"]);
     });
 
     it("Using an instantiated object", () => {
@@ -41,7 +41,7 @@ describe("Get attribute keys of object", () => {
 
       const obj = new Foo();
 
-      expect(getAttributeKeys(obj as AnyObject)).toEqual(["a", "b"]);
+      expect(getMethodKeys(obj as AnyObject)).toEqual(["m1", "m2", "m3"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {
@@ -95,7 +95,15 @@ describe("Get attribute keys of object", () => {
 
       const obj = new Bar();
 
-      expect(getAttributeKeys(obj as AnyObject)).toEqual(["a", "b", "e", "f"]);
+      expect(getMethodKeys(obj as AnyObject)).toEqual([
+        "m1",
+        "m2",
+        "m4",
+        "m5",
+        "m6",
+        "m7",
+        "m3",
+      ]);
     });
   });
 });

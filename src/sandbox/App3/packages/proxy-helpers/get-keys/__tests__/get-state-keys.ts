@@ -7,6 +7,10 @@ describe("Get state keys of object", () => {
       const obj = {
         a: 1,
         b: "foo",
+
+        m(): number {
+          return 1;
+        },
       };
 
       expect(getStateKeys(obj)).toEqual([]);
@@ -16,17 +20,22 @@ describe("Get state keys of object", () => {
       class Foo {
         a = 1;
         b = "foo";
-        private c: number;
-        private d: string;
+        m1 = (): number => 1;
+
+        private c = 2;
+        private d = "bar";
+        private m2 = (): number => 2;
 
         constructor() {
-          this.c = 2;
-          this.d = "bar";
-
           Object.defineProperties(this, {
             c: { enumerable: false },
             d: { enumerable: false },
+            m2: { enumerable: false },
           });
+        }
+
+        m3(): number {
+          return 3;
         }
       }
 
@@ -39,36 +48,48 @@ describe("Get state keys of object", () => {
       class Foo {
         a = 1;
         b = "foo";
-        private c: number;
-        private d: string;
+        m1 = (): number => 1;
+
+        private c = 2;
+        private d = "bar";
+        private m2 = (): number => 2;
 
         constructor() {
-          this.c = 2;
-          this.d = "bar";
-
           Object.defineProperties(this, {
             c: { enumerable: false },
             d: { enumerable: false },
+            m2: { enumerable: false },
           });
+        }
+
+        m3(): number {
+          return 3;
         }
       }
 
       class Bar extends Foo {
         e = 3;
         f = "baz";
-        private g: number;
-        protected h: string;
+        m4 = (): number => 4;
+
+        private g = 4;
+        protected h = "qux";
+        private m5 = (): number => 5;
+        protected m6 = (): number => 6;
 
         constructor() {
           super();
 
-          this.g = 4;
-          this.h = "qux";
-
           Object.defineProperties(this, {
             g: { enumerable: false },
             h: { enumerable: false },
+            m5: { enumerable: false },
+            m6: { enumerable: false },
           });
+        }
+
+        m7(): number {
+          return 7;
         }
       }
 
