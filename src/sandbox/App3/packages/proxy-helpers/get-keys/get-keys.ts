@@ -20,6 +20,18 @@ export const getKeys = <T extends Record<string, unknown>>(
     case "allMethods":
       return getMethodKeys(obj, true);
 
+    case "properties":
+      return getAttributeKeys(obj).concat(
+        getStateKeys(obj),
+        getMethodKeys(obj)
+      );
+
+    case "all":
+      return getAttributeKeys(obj).concat(
+        getStateKeys(obj),
+        getMethodKeys(obj, true)
+      );
+
     default:
       return Object[keyType](obj);
   }
