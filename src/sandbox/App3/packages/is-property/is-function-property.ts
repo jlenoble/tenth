@@ -74,14 +74,10 @@ export const isObsoletePrimitiveFunctionOwnProperty = (
 export const isObsoletePrimitiveFunctionProperty = (
   propName: string
 ): propName is ObsoletePrimitiveFunctionProperty => {
-  switch (propName) {
-    case "arguments":
-    case "caller":
-      return true;
-
-    default:
-      return isObsoletePrimitiveObjectProperty(propName);
-  }
+  return (
+    isObsoletePrimitiveFunctionOwnProperty(propName) ||
+    isObsoletePrimitiveObjectProperty(propName)
+  );
 };
 
 export const isCurrentPrimitiveFunctionOwnProperty = (
@@ -103,51 +99,26 @@ export const isCurrentPrimitiveFunctionOwnProperty = (
 export const isCurrentPrimitiveFunctionProperty = (
   propName: string
 ): propName is CurrentPrimitiveFunctionProperty => {
-  switch (propName) {
-    case "length":
-    case "name":
-    case "apply":
-    case "bind":
-    case "call":
-      return true;
-
-    default:
-      return isCurrentPrimitiveObjectProperty(propName);
-  }
+  return (
+    isCurrentPrimitiveFunctionOwnProperty(propName) ||
+    isCurrentPrimitiveObjectProperty(propName)
+  );
 };
 
 export const isPrimitiveFunctionOwnProperty = (
   propName: string
 ): propName is PrimitiveFunctionOwnProperty => {
-  switch (propName) {
-    case "length":
-    case "name":
-    case "apply":
-    case "bind":
-    case "call":
-    case "arguments":
-    case "caller":
-      return true;
-
-    default:
-      return false;
-  }
+  return (
+    isCurrentPrimitiveFunctionOwnProperty(propName) ||
+    isObsoletePrimitiveFunctionOwnProperty(propName)
+  );
 };
 
 export const isPrimitiveFunctionProperty = (
   propName: string
 ): propName is PrimitiveFunctionProperty => {
-  switch (propName) {
-    case "length":
-    case "name":
-    case "apply":
-    case "bind":
-    case "call":
-    case "arguments":
-    case "caller":
-      return true;
-
-    default:
-      return isPrimitiveObjectProperty(propName);
-  }
+  return (
+    isPrimitiveFunctionOwnProperty(propName) ||
+    isPrimitiveObjectProperty(propName)
+  );
 };

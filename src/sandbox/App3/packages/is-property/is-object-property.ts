@@ -77,22 +77,8 @@ export const isCurrentPrimitiveObjectProperty = (
 export const isPrimitiveObjectProperty = (
   propName: string
 ): propName is PrimitiveObjectProperty => {
-  switch (propName) {
-    case "constructor":
-    case "hasOwnProperty":
-    case "isPrototypeOf":
-    case "propertyIsEnumerable":
-    case "toString":
-    case "valueOf":
-    case "toLocaleString":
-    case "__proto__":
-    case "__defineGetter__":
-    case "__defineSetter__":
-    case "__lookupGetter__":
-    case "__lookupSetter__":
-      return true;
-
-    default:
-      return false;
-  }
+  return (
+    isCurrentPrimitiveObjectProperty(propName) ||
+    isObsoletePrimitiveObjectProperty(propName)
+  );
 };
