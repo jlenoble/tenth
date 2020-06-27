@@ -1,4 +1,4 @@
-import { isExcludedMethod } from "../is-excluded-method";
+import { isExcludedProperty } from "../is-excluded-property";
 
 export const getMethodKeys = <T extends Record<string, unknown>>(
   obj: T,
@@ -8,7 +8,7 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
 
   Object.getOwnPropertyNames(obj)
     .filter((key) => {
-      return !isExcludedMethod(key) && typeof obj[key] === "function";
+      return !isExcludedProperty(key) && typeof obj[key] === "function";
     })
     .forEach((key) => {
       instanceMethods.add(key);
@@ -37,7 +37,7 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
     } else {
       Object.getOwnPropertyNames(proto)
         .filter((key) => {
-          return !isExcludedMethod(key) && typeof obj[key] === "function";
+          return !isExcludedProperty(key) && typeof obj[key] === "function";
         })
         .forEach((key) => {
           instanceMethods.add(key);

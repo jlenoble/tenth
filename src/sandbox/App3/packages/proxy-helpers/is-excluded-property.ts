@@ -6,7 +6,7 @@ type ExcludedName =
   | "caller"
   | "arguments";
 
-export const isExcludedMethod = (
+export const isExcludedProperty = (
   methodName: string
 ): methodName is ExcludedName => {
   switch (methodName) {
