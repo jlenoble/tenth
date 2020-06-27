@@ -1,21 +1,23 @@
-type ExcludedName =
+export type ExcludedProperty =
   | "constructor"
   | "call"
   | "apply"
   | "bind"
+  | "arguments"
   | "caller"
-  | "arguments";
+  | "callee";
 
 export const isExcludedProperty = (
-  methodName: string
-): methodName is ExcludedName => {
-  switch (methodName) {
+  propName: string
+): propName is ExcludedProperty => {
+  switch (propName) {
     case "constructor":
     case "call":
     case "apply":
     case "bind":
-    case "caller":
     case "arguments":
+    case "caller":
+    case "callee":
       return true;
 
     default:

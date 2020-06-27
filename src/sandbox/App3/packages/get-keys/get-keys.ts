@@ -18,7 +18,7 @@ export const getKeys = <T extends Record<string, unknown>>(
       return getMethodKeys(obj);
 
     case "allMethods":
-      return getMethodKeys(obj, true);
+      return getMethodKeys(obj, { includeLastPrototype: true });
 
     case "properties":
       return getAttributeKeys(obj).concat(
@@ -29,7 +29,7 @@ export const getKeys = <T extends Record<string, unknown>>(
     case "all":
       return getAttributeKeys(obj).concat(
         getStateKeys(obj),
-        getMethodKeys(obj, true)
+        getMethodKeys(obj, { includeLastPrototype: true })
       );
 
     default:
