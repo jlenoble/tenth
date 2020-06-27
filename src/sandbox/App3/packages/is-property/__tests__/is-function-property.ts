@@ -58,6 +58,12 @@ describe("Primitive object properties", () => {
     ).toEqual(primitiveFunctionProperties);
   });
 
+  Object.getOwnPropertyNames(Function.prototype).forEach((name) => {
+    it(`Sanity check: "${name}" in Object.getOwnPropertyNames(Function.prototype)`, () => {
+      expect(isPrimitiveFunctionProperty(name)).toBe(true);
+    });
+  });
+
   obsoleteProperties.forEach((name) => {
     it(`is(Obsolete/Current)PrimitiveFunction(Own)Property on "${name}"`, () => {
       expect(isObsoletePrimitiveFunctionOwnProperty(name)).toBe(true);
