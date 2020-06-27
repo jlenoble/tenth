@@ -5,7 +5,19 @@ import { getMethodKeys } from "./get-method-keys";
 
 export const getKeys = <T extends Record<string, unknown>>(
   obj: T,
-  keyType: KeyType
+  keyType: KeyType,
+  {
+    lastPrototype,
+    includeLastPrototype,
+    excludeKeys,
+    isExcludedKey,
+  }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    lastPrototype?: any;
+    includeLastPrototype?: boolean;
+    excludeKeys?: string[];
+    isExcludedKey?: (key: string) => boolean;
+  } = {}
 ): string[] => {
   switch (keyType) {
     case "attributes":
@@ -15,10 +27,19 @@ export const getKeys = <T extends Record<string, unknown>>(
       return getStateKeys(obj);
 
     case "methods":
-      return getMethodKeys(obj);
+      return getMethodKeys(obj, {
+        excludeKeys,
+        isExcludedKey,
+        lastPrototype,
+        includeLastPrototype,
+      });
 
     case "allMethods":
-      return getMethodKeys(obj, { includeLastPrototype: true });
+      return getMethodKeys(obj, {
+        excludeKeys,
+        isExcludedKey,
+        includeLastPrototype: true,
+      });
 
     case "properties":
       return getAttributeKeys(obj).concat(
@@ -29,7 +50,11 @@ export const getKeys = <T extends Record<string, unknown>>(
     case "all":
       return getAttributeKeys(obj).concat(
         getStateKeys(obj),
-        getMethodKeys(obj, { includeLastPrototype: true })
+        getMethodKeys(obj, {
+          excludeKeys,
+          isExcludedKey,
+          includeLastPrototype: true,
+        })
       );
 
     default:
