@@ -4,6 +4,7 @@ import {
   PrimitiveObjectProperty,
   obsoletePrimitiveObjectProperties,
   currentPrimitiveObjectProperties,
+  primitiveObjectProperties,
   isObsoletePrimitiveObjectProperty,
   isCurrentPrimitiveObjectProperty,
   isPrimitiveObjectProperty,
@@ -54,8 +55,7 @@ export const primitiveFunctionOwnProperties: PrimitiveFunctionOwnProperty[] = (c
   obsoletePrimitiveFunctionOwnProperties
 );
 export const primitiveFunctionProperties: PrimitiveFunctionProperty[] = (primitiveFunctionOwnProperties as PrimitiveFunctionProperty[]).concat(
-  currentPrimitiveObjectProperties,
-  obsoletePrimitiveObjectProperties
+  primitiveObjectProperties
 );
 
 export const isObsoletePrimitiveFunctionOwnProperty = (
