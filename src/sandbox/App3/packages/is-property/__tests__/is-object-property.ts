@@ -48,6 +48,18 @@ describe("Primitive object properties", () => {
     expect(properties).toEqual(currentProperties.concat(obsoleteProperties));
   });
 
+  Object.getOwnPropertyNames(Object.prototype).forEach((name) => {
+    it(`Sanity check: "${name}" in Object.getOwnPropertyNames({})`, () => {
+      expect(isPrimitiveObjectProperty(name)).toBe(true);
+    });
+  });
+
+  it(`Sanity check: Same length as Object.getOwnPropertyNames({})`, () => {
+    expect(primitiveObjectProperties.length).toEqual(
+      Object.getOwnPropertyNames(Object.prototype).length
+    );
+  });
+
   obsoleteProperties.forEach((name) => {
     it(`isObsoletePrimitiveObjectProperty returns true on "${name}"`, () => {
       expect(isObsoletePrimitiveObjectProperty(name)).toBe(true);
