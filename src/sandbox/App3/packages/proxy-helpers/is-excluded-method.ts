@@ -1,13 +1,21 @@
-type ExcludedMethodName = "constructor" | "call" | "apply" | "bind";
+type ExcludedName =
+  | "constructor"
+  | "call"
+  | "apply"
+  | "bind"
+  | "caller"
+  | "arguments";
 
 export const isExcludedMethod = (
   methodName: string
-): methodName is ExcludedMethodName => {
+): methodName is ExcludedName => {
   switch (methodName) {
     case "constructor":
     case "call":
     case "apply":
     case "bind":
+    case "caller":
+    case "arguments":
       return true;
 
     default:
