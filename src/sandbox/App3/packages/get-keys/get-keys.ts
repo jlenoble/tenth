@@ -1,4 +1,4 @@
-import { KeyType } from "./types";
+import { KeyType, AnyObject } from "./types";
 import { getAttributeKeys } from "./get-attribute-keys";
 import { getStateKeys } from "./get-state-keys";
 import { getMethodKeys } from "./get-method-keys";
@@ -7,14 +7,14 @@ export const getKeys = <T extends Record<string, unknown>>(
   obj: T,
   keyType: KeyType,
   {
-    lastPrototype,
-    includeLastPrototype,
+    lastConstructor,
+    includeLastConstructor,
     excludeKeys,
     isExcludedKey,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    lastPrototype?: any;
-    includeLastPrototype?: boolean;
+    lastConstructor?: (...args: any[]) => AnyObject;
+    includeLastConstructor?: boolean;
     excludeKeys?: string[];
     isExcludedKey?: (key: string) => boolean;
   } = {}
@@ -30,21 +30,26 @@ export const getKeys = <T extends Record<string, unknown>>(
       return getMethodKeys(obj, {
         excludeKeys,
         isExcludedKey,
-        lastPrototype,
-        includeLastPrototype,
+        lastConstructor,
+        includeLastConstructor,
       });
 
     case "allMethods":
       return getMethodKeys(obj, {
         excludeKeys,
         isExcludedKey,
-        includeLastPrototype: true,
+        includeLastConstructor: true,
       });
 
     case "properties":
       return getAttributeKeys(obj).concat(
         getStateKeys(obj),
-        getMethodKeys(obj)
+        getMethodKeys(obj, {
+          excludeKeys,
+          isExcludedKey,
+          lastConstructor,
+          includeLastConstructor,
+        })
       );
 
     case "all":
@@ -53,7 +58,7 @@ export const getKeys = <T extends Record<string, unknown>>(
         getMethodKeys(obj, {
           excludeKeys,
           isExcludedKey,
-          includeLastPrototype: true,
+          includeLastConstructor: true,
         })
       );
 

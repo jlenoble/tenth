@@ -3,14 +3,14 @@ import { isExcludedProperty } from "./is-excluded-property";
 export const getMethodKeys = <T extends Record<string, unknown>>(
   obj: T,
   {
-    lastPrototype = Object.prototype,
-    includeLastPrototype = false,
+    lastConstructor = Object,
+    includeLastConstructor = false,
     excludeKeys = [],
     isExcludedKey = isExcludedProperty,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    lastPrototype?: any;
-    includeLastPrototype?: boolean;
+    lastConstructor?: any;
+    includeLastConstructor?: boolean;
     excludeKeys?: string[];
     isExcludedKey?: (key: string) => boolean;
   } = {}
@@ -45,8 +45,8 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
       break;
     }
 
-    if (proto === lastPrototype) {
-      if (includeLastPrototype) {
+    if (proto.constructor === lastConstructor) {
+      if (includeLastConstructor) {
         Object.getOwnPropertyNames(proto)
           .filter((key) => {
             return typeof obj[key] === "function";
