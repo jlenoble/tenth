@@ -1,12 +1,5 @@
 import { getKeys, AnyObject } from "../get-keys";
-
-type Defaults = {
-  title: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  it: (fn: (...args: any[]) => any) => void;
-};
-
-type Test = (defaults: Defaults) => void;
+import { Test, DefaultTestOptions } from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const makeTestSuite = <Ctor extends { new (...args: any[]): AnyObject }>(
@@ -30,7 +23,7 @@ export const makeTestSuite = <Ctor extends { new (...args: any[]): AnyObject }>(
 
           (
             (set.has(name) && TestSuite[name]) ||
-            (({ title }: Defaults) => {
+            (({ title }: DefaultTestOptions) => {
               it.todo(`> Write a test for ${title}`);
             })
           )({
@@ -56,7 +49,7 @@ export const makeTestSuite = <Ctor extends { new (...args: any[]): AnyObject }>(
 
           (
             (set.has(name) && testSuite[name]) ||
-            (({ title }: Defaults) => {
+            (({ title }: DefaultTestOptions) => {
               it.todo(`> Write a test for ${title}`);
             })
           )({
