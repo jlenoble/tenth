@@ -19,4 +19,4 @@ export interface AnyClass {
   new (...args: any[]): AnyObject;
 }
 
-export type TestSuiteArg = Record<string, Test>;
+export type TestSuite = Record<string, Test>;

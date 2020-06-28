@@ -1,4 +1,4 @@
-import { Test, TestSuiteArg, DefaultTestOptions } from "./types";
+import { Test, TestSuite, DefaultTestOptions } from "./types";
 
 export const execIt = ({
   testSuite,
@@ -6,7 +6,7 @@ export const execIt = ({
   title,
   set,
 }: {
-  testSuite: TestSuiteArg;
+  testSuite: TestSuite;
   name: string;
   title: string;
   set: Set<string>;
@@ -29,7 +29,7 @@ export const execIts = ({
   title,
   remainingNames,
 }: {
-  testSuite: TestSuiteArg;
+  testSuite: TestSuite;
   names: string[];
   title: (name: string) => string;
   remainingNames: Set<string>;

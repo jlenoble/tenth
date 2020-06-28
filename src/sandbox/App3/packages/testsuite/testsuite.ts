@@ -1,16 +1,16 @@
 import { getKeys } from "../get-keys";
-import { TestSuiteArg, AnyObject, AnyClass, AnyArgs } from "./types";
+import { TestSuite, AnyObject, AnyClass, AnyArgs } from "./types";
 import { execIts } from "./it";
 
 export const makeTestSuite = <Ctor extends AnyClass>(
   Class: Ctor,
-  testSuite: TestSuiteArg,
-  TestSuite: TestSuiteArg,
+  testSuite: TestSuite,
+  staticTestSuite: TestSuite,
   initArgs: AnyArgs = []
 ): void => {
   const _describe = () => {
     describe(`Test suite for ${Class.name}`, () => {
-      let remainingNames = new Set(Object.getOwnPropertyNames(TestSuite));
+      let remainingNames = new Set(Object.getOwnPropertyNames(staticTestSuite));
 
       {
         const names = getKeys(Class as AnyObject, "properties", {
@@ -19,7 +19,7 @@ export const makeTestSuite = <Ctor extends AnyClass>(
         });
 
         execIts({
-          testSuite: TestSuite,
+          testSuite: staticTestSuite,
           names,
           title: (name: string) => `${Class.name}.${name}`,
           remainingNames,
