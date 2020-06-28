@@ -27,23 +27,15 @@ export const execIts = ({
   testSuite,
   names,
   title,
+  remainingNames,
 }: {
   testSuite: TestSuiteArg;
   names: string[];
   title: (name: string) => string;
+  remainingNames: Set<string>;
 }): void => {
-  const set = new Set(Object.getOwnPropertyNames(testSuite));
-
   for (const name of names) {
-    execIt({ testSuite, name, title: title(name), set });
-    set.delete(name);
-  }
-
-  for (const name of set) {
-    it.todo(
-      `Either add/implement "${title(
-        name
-      )}" or remove/spread "${name}" from/into test suite `
-    );
+    execIt({ testSuite, name, title: title(name), set: remainingNames });
+    remainingNames.delete(name);
   }
 };
