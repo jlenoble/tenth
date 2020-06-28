@@ -1,36 +1,27 @@
-import { isExcludedProperty } from "./is-excluded-property";
+import {
+  isExcludedProperty,
+  extendIsExcludedProperty,
+} from "./is-excluded-property";
 
 export const getMethodKeys = <T extends Record<string, unknown>>(
   obj: T,
   {
     lastConstructor = Object,
     includeLastConstructor = false,
-    excludeKeys = [],
     isExcludedKey = isExcludedProperty,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lastConstructor?: any;
     includeLastConstructor?: boolean;
-    excludeKeys?: string[];
     isExcludedKey?: (key: string) => boolean;
   } = {}
 ): string[] => {
   const instanceMethods = new Set<string>();
-  const _excludeKeys: Set<string> = new Set(excludeKeys);
-
-  const _isExcludedKey = isExcludedKey
-    ? excludeKeys.length
-      ? (key: string) => {
-          return _excludeKeys.has(key) || isExcludedKey(key);
-        }
-      : isExcludedKey
-    : excludeKeys.length
-    ? (key: string) => _excludeKeys.has(key)
-    : () => false;
+  isExcludedKey = extendIsExcludedProperty(isExcludedKey);
 
   Object.getOwnPropertyNames(obj)
     .filter((key) => {
-      return !_isExcludedKey(key) && typeof obj[key] === "function";
+      return !isExcludedKey(key) && typeof obj[key] === "function";
     })
     .forEach((key) => {
       instanceMethods.add(key);
@@ -59,7 +50,7 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
     } else {
       Object.getOwnPropertyNames(proto)
         .filter((key) => {
-          return !_isExcludedKey(key) && typeof obj[key] === "function";
+          return !isExcludedKey(key) && typeof obj[key] === "function";
         })
         .forEach((key) => {
           instanceMethods.add(key);

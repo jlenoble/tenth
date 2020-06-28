@@ -42,6 +42,9 @@ describe("Get state keys of object", () => {
       const obj = new Foo();
 
       expect(getStateKeys(obj as AnyObject)).toEqual(["c", "d"]);
+      expect(
+        getStateKeys(obj as AnyObject, (key: string) => key === "d")
+      ).toEqual(["c"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {
@@ -96,6 +99,12 @@ describe("Get state keys of object", () => {
       const obj = new Bar();
 
       expect(getStateKeys(obj as AnyObject)).toEqual(["c", "d", "g", "h"]);
+      expect(
+        getStateKeys(
+          obj as AnyObject,
+          (key: string) => key === "c" || key === "h"
+        )
+      ).toEqual(["d", "g"]);
     });
   });
 });

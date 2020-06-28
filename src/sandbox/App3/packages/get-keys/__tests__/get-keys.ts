@@ -8,6 +8,14 @@ describe("Get keys of object", () => {
     return typeof (Object.prototype as AnyObject)[key] === "function";
   });
 
+  const isExcludedKey = (key: string) =>
+    key === "a" ||
+    key === "d" ||
+    key === "m2" ||
+    key === "m4" ||
+    key === "m6" ||
+    key === "h";
+
   describe("getKeys", () => {
     it("Using a literal object", () => {
       const obj = {
@@ -30,6 +38,25 @@ describe("Get keys of object", () => {
         ["a", "b", "m"].concat(baseObjectMethodKeys)
       );
       expect(getKeys(obj, "getOwnPropertyNames")).toEqual(["a", "b", "m"]);
+
+      expect(
+        getKeys(obj as AnyObject, "attributes", { isExcludedKey })
+      ).toEqual(["b"]);
+      expect(getKeys(obj as AnyObject, "states", { isExcludedKey })).toEqual(
+        []
+      );
+      expect(getKeys(obj, "methods", { isExcludedKey })).toEqual(["m"]);
+      expect(getKeys(obj, "allMethods", { isExcludedKey })).toEqual(
+        ["m"].concat(baseObjectMethodKeys)
+      );
+      expect(getKeys(obj, "properties", { isExcludedKey })).toEqual(["b", "m"]);
+      expect(getKeys(obj, "all", { isExcludedKey })).toEqual(
+        ["b", "m"].concat(baseObjectMethodKeys)
+      );
+      expect(getKeys(obj, "getOwnPropertyNames", { isExcludedKey })).toEqual([
+        "b",
+        "m",
+      ]);
     });
 
     it("Using an instantiated object", () => {
@@ -83,6 +110,29 @@ describe("Get keys of object", () => {
         "d",
         "m2",
       ]);
+
+      expect(
+        getKeys(obj as AnyObject, "attributes", { isExcludedKey })
+      ).toEqual(["b"]);
+      expect(getKeys(obj as AnyObject, "states", { isExcludedKey })).toEqual([
+        "c",
+      ]);
+      expect(getKeys(obj as AnyObject, "methods", { isExcludedKey })).toEqual([
+        "m1",
+        "m3",
+      ]);
+      expect(
+        getKeys(obj as AnyObject, "allMethods", { isExcludedKey })
+      ).toEqual(["m1", "m3"].concat(baseObjectMethodKeys));
+      expect(
+        getKeys(obj as AnyObject, "properties", { isExcludedKey })
+      ).toEqual(["b", "c", "m1", "m3"]);
+      expect(getKeys(obj as AnyObject, "all", { isExcludedKey })).toEqual(
+        ["b", "c", "m1", "m3"].concat(baseObjectMethodKeys)
+      );
+      expect(
+        getKeys(obj as AnyObject, "getOwnPropertyNames", { isExcludedKey })
+      ).toEqual(["b", "m1", "c"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {
@@ -206,6 +256,34 @@ describe("Get keys of object", () => {
         "m5",
         "m6",
       ]);
+
+      expect(
+        getKeys(obj as AnyObject, "attributes", { isExcludedKey })
+      ).toEqual(["b", "e", "f"]);
+      expect(getKeys(obj as AnyObject, "states", { isExcludedKey })).toEqual([
+        "c",
+        "g",
+      ]);
+      expect(getKeys(obj as AnyObject, "methods", { isExcludedKey })).toEqual([
+        "m1",
+        "m5",
+        "m7",
+        "m3",
+      ]);
+      expect(
+        getKeys(obj as AnyObject, "allMethods", { isExcludedKey })
+      ).toEqual(["m1", "m5", "m7", "m3"].concat(baseObjectMethodKeys));
+      expect(
+        getKeys(obj as AnyObject, "properties", { isExcludedKey })
+      ).toEqual(["b", "e", "f", "c", "g", "m1", "m5", "m7", "m3"]);
+      expect(getKeys(obj as AnyObject, "all", { isExcludedKey })).toEqual(
+        ["b", "e", "f", "c", "g", "m1", "m5", "m7", "m3"].concat(
+          baseObjectMethodKeys
+        )
+      );
+      expect(
+        getKeys(obj as AnyObject, "getOwnPropertyNames", { isExcludedKey })
+      ).toEqual(["b", "m1", "c", "e", "f", "g", "m5"]);
     });
   });
 });

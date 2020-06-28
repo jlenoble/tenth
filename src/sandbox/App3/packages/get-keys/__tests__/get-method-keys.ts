@@ -14,6 +14,11 @@ describe("Get method keys of object", () => {
       };
 
       expect(getMethodKeys(obj)).toEqual(["m"]);
+      expect(
+        getMethodKeys(obj as AnyObject, {
+          isExcludedKey: (key: string) => key === "m",
+        })
+      ).toEqual([]);
     });
 
     it("Using an instantiated object", () => {
@@ -42,6 +47,11 @@ describe("Get method keys of object", () => {
       const obj = new Foo();
 
       expect(getMethodKeys(obj as AnyObject)).toEqual(["m1", "m2", "m3"]);
+      expect(
+        getMethodKeys(obj as AnyObject, {
+          isExcludedKey: (key: string) => key === "m2" || key === "m1",
+        })
+      ).toEqual(["m3"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {

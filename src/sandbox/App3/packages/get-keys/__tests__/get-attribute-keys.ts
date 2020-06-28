@@ -14,6 +14,9 @@ describe("Get attribute keys of object", () => {
       };
 
       expect(getAttributeKeys(obj)).toEqual(["a", "b"]);
+      expect(getAttributeKeys(obj, (key: string) => key === "a")).toEqual([
+        "b",
+      ]);
     });
 
     it("Using an instantiated object", () => {
@@ -42,6 +45,9 @@ describe("Get attribute keys of object", () => {
       const obj = new Foo();
 
       expect(getAttributeKeys(obj as AnyObject)).toEqual(["a", "b"]);
+      expect(
+        getAttributeKeys(obj as AnyObject, (key: string) => key === "a")
+      ).toEqual(["b"]);
     });
 
     it("Using an instantiated object inheriting attributes from a parent", () => {
@@ -96,6 +102,12 @@ describe("Get attribute keys of object", () => {
       const obj = new Bar();
 
       expect(getAttributeKeys(obj as AnyObject)).toEqual(["a", "b", "e", "f"]);
+      expect(
+        getAttributeKeys(
+          obj as AnyObject,
+          (key: string) => key === "a" || key === "f"
+        )
+      ).toEqual(["b", "e"]);
     });
   });
 });

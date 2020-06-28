@@ -2,6 +2,10 @@ import { KeyType, AnyObject } from "./types";
 import { getAttributeKeys } from "./get-attribute-keys";
 import { getStateKeys } from "./get-state-keys";
 import { getMethodKeys } from "./get-method-keys";
+import {
+  isExcludedProperty,
+  extendIsExcludedProperty,
+} from "./is-excluded-property";
 
 export const getKeys = <T extends Record<string, unknown>>(
   obj: T,
@@ -9,8 +13,8 @@ export const getKeys = <T extends Record<string, unknown>>(
   {
     lastConstructor,
     includeLastConstructor,
-    excludeKeys,
-    isExcludedKey,
+    excludeKeys = [],
+    isExcludedKey: _isExcludedKey = isExcludedProperty,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lastConstructor?: (...args: any[]) => AnyObject;
@@ -19,16 +23,24 @@ export const getKeys = <T extends Record<string, unknown>>(
     isExcludedKey?: (key: string) => boolean;
   } = {}
 ): string[] => {
+  const _excludeKeys: Set<string> = new Set(excludeKeys);
+  _isExcludedKey = extendIsExcludedProperty(_isExcludedKey);
+
+  const isExcludedKey = excludeKeys.length
+    ? (key: string) => {
+        return _excludeKeys.has(key) || _isExcludedKey(key);
+      }
+    : _isExcludedKey;
+
   switch (keyType) {
     case "attributes":
-      return getAttributeKeys(obj);
+      return getAttributeKeys(obj, isExcludedKey);
 
     case "states":
-      return getStateKeys(obj);
+      return getStateKeys(obj, isExcludedKey);
 
     case "methods":
       return getMethodKeys(obj, {
-        excludeKeys,
         isExcludedKey,
         lastConstructor,
         includeLastConstructor,
@@ -36,16 +48,14 @@ export const getKeys = <T extends Record<string, unknown>>(
 
     case "allMethods":
       return getMethodKeys(obj, {
-        excludeKeys,
         isExcludedKey,
         includeLastConstructor: true,
       });
 
     case "properties":
-      return getAttributeKeys(obj).concat(
-        getStateKeys(obj),
+      return getAttributeKeys(obj, isExcludedKey).concat(
+        getStateKeys(obj, isExcludedKey),
         getMethodKeys(obj, {
-          excludeKeys,
           isExcludedKey,
           lastConstructor,
           includeLastConstructor,
@@ -53,16 +63,15 @@ export const getKeys = <T extends Record<string, unknown>>(
       );
 
     case "all":
-      return getAttributeKeys(obj).concat(
-        getStateKeys(obj),
+      return getAttributeKeys(obj, isExcludedKey).concat(
+        getStateKeys(obj, isExcludedKey),
         getMethodKeys(obj, {
-          excludeKeys,
           isExcludedKey,
           includeLastConstructor: true,
         })
       );
 
     default:
-      return Object[keyType](obj);
+      return Object[keyType](obj).filter((key) => !isExcludedKey(key));
   }
 };

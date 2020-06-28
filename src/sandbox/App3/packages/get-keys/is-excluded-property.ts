@@ -24,3 +24,13 @@ export const isExcludedProperty = (
       return false;
   }
 };
+
+export const extendIsExcludedProperty = (
+  isProperty: (propName: string) => boolean
+): ((propName: string) => boolean) => {
+  if (isProperty === isExcludedProperty) {
+    return isExcludedProperty;
+  }
+  return (propName: string) =>
+    isProperty(propName) || isExcludedProperty(propName);
+};
