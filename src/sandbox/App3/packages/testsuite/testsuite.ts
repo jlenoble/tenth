@@ -1,13 +1,17 @@
-import { getKeys, AnyObject } from "../get-keys";
-import { Test, DefaultTestOptions } from "./types";
+import { getKeys } from "../get-keys";
+import {
+  TestSuiteArg,
+  DefaultTestOptions,
+  AnyObject,
+  AnyClass,
+  AnyArgs,
+} from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const makeTestSuite = <Ctor extends { new (...args: any[]): AnyObject }>(
+export const makeTestSuite = <Ctor extends AnyClass>(
   Class: Ctor,
-  testSuite: Record<string, Test>,
-  TestSuite: Record<string, Test>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initArgs: any[] = []
+  testSuite: TestSuiteArg,
+  TestSuite: TestSuiteArg,
+  initArgs: AnyArgs = []
 ): void => {
   const _describe = () => {
     describe(`Test suite for ${Class.name}`, () => {
