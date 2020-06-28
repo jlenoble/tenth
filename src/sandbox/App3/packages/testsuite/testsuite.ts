@@ -37,6 +37,12 @@ export const makeTestSuite = <Ctor extends { new (...args: any[]): AnyObject }>(
             title,
             it: (fn) => it(title, fn),
           });
+
+          set.delete(name);
+        }
+
+        for (const name of set) {
+          it.todo(`Remove Testsuite.${name} or add ${Class.name}.${name}`);
         }
       }
 
@@ -57,6 +63,14 @@ export const makeTestSuite = <Ctor extends { new (...args: any[]): AnyObject }>(
             title,
             it: (fn) => it(title, fn),
           });
+
+          set.delete(name);
+        }
+
+        for (const name of set) {
+          it.todo(
+            `Remove testsuite.${name} or add ${Class.name}.prototype.${name}`
+          );
         }
       }
     });

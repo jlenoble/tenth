@@ -3,7 +3,7 @@ import { makeTestSuite } from "../testsuite";
 describe("Testing TestSuite", () => {
   class Foo {
     toString() {
-      return "bobo";
+      return "foo";
     }
 
     a = 3;
@@ -12,7 +12,7 @@ describe("Testing TestSuite", () => {
       // no-op
     }
 
-    static bar(): void {
+    static foofoo(): void {
       // no-op
     }
   }
@@ -20,6 +20,22 @@ describe("Testing TestSuite", () => {
   const done = () => {
     // Done !
   };
+
+  class Bar {
+    toString() {
+      return "bar";
+    }
+
+    b = 8;
+
+    bar(): void {
+      // no-op
+    }
+
+    static barbar(): void {
+      // no-op
+    }
+  }
 
   makeTestSuite(
     Foo,
@@ -41,7 +57,33 @@ describe("Testing TestSuite", () => {
       name({ it }): void {
         it(done);
       },
-      bar({ it }): void {
+      foofoo({ it }): void {
+        it(done);
+      },
+    }
+  );
+
+  makeTestSuite(
+    Bar,
+    {
+      toString({ it }): void {
+        it(done);
+      },
+      a({ it }): void {
+        it(done);
+      },
+      foo({ it }): void {
+        it(done);
+      },
+    },
+    {
+      length({ it }): void {
+        it(done);
+      },
+      name({ it }): void {
+        it(done);
+      },
+      foofoo({ it }): void {
         it(done);
       },
     }
