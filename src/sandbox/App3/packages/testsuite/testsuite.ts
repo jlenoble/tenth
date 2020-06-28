@@ -6,6 +6,7 @@ import {
   AnyClass,
   AnyArgs,
 } from "./types";
+import { execIt } from "./it";
 
 export const makeTestSuite = <Ctor extends AnyClass>(
   Class: Ctor,
@@ -24,17 +25,7 @@ export const makeTestSuite = <Ctor extends AnyClass>(
 
         for (const name of names) {
           const title = `${Class.name}.${name}`;
-
-          (
-            (set.has(name) && TestSuite[name]) ||
-            (({ title }: DefaultTestOptions) => {
-              it.todo(`> Write a test for ${title}`);
-            })
-          )({
-            title,
-            it: (fn) => it(title, fn),
-          });
-
+          execIt({ testSuite: TestSuite, name, title, set });
           set.delete(name);
         }
 
@@ -50,17 +41,7 @@ export const makeTestSuite = <Ctor extends AnyClass>(
 
         for (const name of names) {
           const title = `${Class.name}.prototype.${name}`;
-
-          (
-            (set.has(name) && testSuite[name]) ||
-            (({ title }: DefaultTestOptions) => {
-              it.todo(`> Write a test for ${title}`);
-            })
-          )({
-            title,
-            it: (fn) => it(title, fn),
-          });
-
+          execIt({ testSuite, name, title, set });
           set.delete(name);
         }
 
