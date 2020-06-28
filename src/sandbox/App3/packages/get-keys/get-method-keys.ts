@@ -36,7 +36,7 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
       break;
     }
 
-    if (proto.constructor === lastConstructor) {
+    if (proto === lastConstructor.prototype) {
       if (includeLastConstructor) {
         Object.getOwnPropertyNames(proto)
           .filter((key) => {
