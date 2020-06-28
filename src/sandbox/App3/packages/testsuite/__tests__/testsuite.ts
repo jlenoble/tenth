@@ -48,6 +48,8 @@ describe("Testing TestSuite", () => {
   }
 
   const fooTestSuite: TestSuite = {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore "it" provides a specific warning for primitive object props
     toString({ it }): void {
       it(done);
     },

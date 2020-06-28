@@ -1,4 +1,5 @@
 import { Test, TestSuite, DefaultTestOptions } from "./types";
+import { isPrimitiveObjectProperty } from "../is-property";
 
 export const execIt = ({
   testSuite,
@@ -11,6 +12,13 @@ export const execIt = ({
   title: string;
   set: Set<string>;
 }): void => {
+  if (isPrimitiveObjectProperty(name)) {
+    it.todo(
+      `Write a test for overridden primitive property "${title}" with consistent signature`
+    );
+    return;
+  }
+
   const test: Test =
     (set.has(name) && testSuite[name]) ||
     (({ title }: DefaultTestOptions) => {
