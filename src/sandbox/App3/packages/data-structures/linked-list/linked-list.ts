@@ -1,4 +1,4 @@
-import { LinkedList as LinkedListInterface } from "../types";
+import { LinkedList as LinkedListInterface } from "./types";
 import { LinkedListNode } from "./linked-list-node";
 
 export class LinkedList<T> implements LinkedListInterface<T> {

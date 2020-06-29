@@ -3,6 +3,10 @@ export interface LinkedListNode<T> {
   next: LinkedListNode<T> | null;
 }
 
+export interface LinkedListConstructor<T> {
+  new (): LinkedList<T>;
+}
+
 export interface LinkedList<T> extends Iterable<T> {
   size: number;
   head: LinkedListNode<T> | null;
