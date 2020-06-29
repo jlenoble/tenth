@@ -114,6 +114,11 @@ describe("Get method keys of object", () => {
         "m7",
         "m3",
       ]);
+      expect(
+        getMethodKeys(obj as AnyObject, {
+          isExcludedKey: (key: string) => key === "m2" || key === "m7",
+        })
+      ).toEqual(["m1", "m4", "m5", "m6", "m3"]);
     });
   });
 });
