@@ -50,6 +50,20 @@ export const makeTestSuite = <Ctor extends AnyClass>(
       }
 
       {
+        const names = getKeys(obj, "accessors");
+
+        execIts({
+          testSuite,
+          names,
+          title: (name: string) =>
+            `${
+              Class.name[0].toLowerCase() + Class.name.slice(1)
+            }Instance.${name}`,
+          remainingNames,
+        });
+      }
+
+      {
         const names = getKeys(obj, "methods");
 
         execIts({
