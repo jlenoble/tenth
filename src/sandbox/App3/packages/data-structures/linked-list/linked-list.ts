@@ -15,7 +15,7 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   append(value: T): this {
     const node = new LinkedListNode(value);
 
-    if (!this.tail) {
+    if (this.tail === null) {
       this.head = node;
       this.tail = node;
       this.size = 1;
@@ -33,7 +33,7 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   prepend(value: T): this {
     const node = new LinkedListNode(value, this.head);
 
-    if (!this.head) {
+    if (this.head === null) {
       this.head = node;
       this.tail = node;
       this.size = 1;
@@ -48,7 +48,7 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   deleteHead(): LinkedListNode<T> | null {
-    if (!this.head) {
+    if (this.head === null) {
       return null;
     }
 
@@ -57,5 +57,27 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     this.size--;
 
     return head;
+  }
+
+  deleteTail(): LinkedListNode<T> | null {
+    if (this.head === null) {
+      return null;
+    }
+
+    const tail = this.tail;
+    let pretail: LinkedListNode<T> = this.head;
+
+    while (pretail.next !== null) {
+      if (pretail.next === tail) {
+        break;
+      }
+      pretail = pretail.next;
+    }
+
+    this.tail = pretail;
+    pretail.next = null;
+    this.size--;
+
+    return tail;
   }
 }
