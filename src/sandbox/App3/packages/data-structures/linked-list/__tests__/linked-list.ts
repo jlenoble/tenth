@@ -1,8 +1,9 @@
-import { makeTestSuite } from "../../../testsuite";
+import { makeTestSuite, TestSuite } from "../../../testsuite";
 import { LinkedList } from "../linked-list";
+import { SizedLinkedList } from "../sized-linked-list";
 import { LinkedListConstructor } from "../types";
 
-const testSuite = (LinkedList: LinkedListConstructor<number>) => ({
+const tests = (LinkedList: LinkedListConstructor<number>): TestSuite => ({
   append(): void {
     it("appending", () => {
       const l = new LinkedList();
@@ -106,14 +107,27 @@ const testSuite = (LinkedList: LinkedListConstructor<number>) => ({
   },
 });
 
-makeTestSuite(LinkedList, testSuite(LinkedList));
+const staticTests = (LinkedList: LinkedListConstructor<number>): TestSuite => ({
+  length({ it }) {
+    it(() => {
+      expect(LinkedList.length).toBe(0);
+    });
+  },
 
-describe("LinkedList", () => {
-  it("empty on creation", () => {
-    const l = new LinkedList();
-
-    expect(l.head).toBeNull();
-    expect(l.tail).toBeNull();
-    expect(l.size).toBe(0);
-  });
+  name({ it }) {
+    it(() => {
+      if (LinkedList.name.includes("Sized")) {
+        expect(LinkedList.name).toBe("SizedLinkedList");
+      } else {
+        expect(LinkedList.name).toBe("LinkedList");
+      }
+    });
+  },
 });
+
+makeTestSuite(LinkedList, tests(LinkedList), staticTests(LinkedList));
+makeTestSuite(
+  SizedLinkedList,
+  tests(SizedLinkedList),
+  staticTests(SizedLinkedList)
+);
