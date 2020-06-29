@@ -12,9 +12,9 @@ export interface LinkedList<T> extends Iterable<T> {
   head: LinkedListNode<T> | null;
   tail: LinkedListNode<T> | null;
 
-  append(value: T): void;
-  prepend(value: T): void;
+  append(value: T): this;
+  prepend(value: T): this;
 
-  deleteHead(): void;
-  deleteTail(): void;
+  deleteHead(): LinkedListNode<T> | null;
+  deleteTail(): LinkedListNode<T> | null;
 }
