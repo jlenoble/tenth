@@ -12,15 +12,14 @@ export const execIt = ({
   title: string;
   set: Set<string>;
 }): void => {
-  if (isPrimitiveObjectProperty(name)) {
-    it.todo(
-      `Write a test for overridden primitive property "${title}" with consistent signature`
-    );
-    return;
-  }
-
   const test: Test =
     (set.has(name) && testSuite[name]) ||
+    (isPrimitiveObjectProperty(name) &&
+      (({ title }: DefaultTestOptions) => {
+        it.todo(
+          `Write a test for overridden primitive property "${title}" with consistent signature`
+        );
+      })) ||
     (({ title }: DefaultTestOptions) => {
       it.todo(`Write a test for "${title}"`);
     });
