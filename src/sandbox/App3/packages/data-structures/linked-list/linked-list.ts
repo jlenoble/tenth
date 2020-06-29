@@ -46,4 +46,16 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
     return this;
   }
+
+  deleteHead(): LinkedListNode<T> | null {
+    if (!this.head) {
+      return null;
+    }
+
+    const head = this.head;
+    this.head = head.next;
+    this.size--;
+
+    return head;
+  }
 }

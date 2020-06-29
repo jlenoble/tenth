@@ -37,6 +37,24 @@ makeTestSuite(LinkedList, {
       expect(l.size).toBe(6);
     });
   },
+
+  deleteHead(): void {
+    it("deleting head", () => {
+      const l = new LinkedList();
+      l.append(1).append(2).append(3);
+
+      expect(l.size).toBe(3);
+
+      l.deleteHead();
+
+      expect(l.size).toBe(2);
+
+      l.deleteHead();
+      l.deleteHead();
+
+      expect(l.size).toBe(0);
+    });
+  },
 });
 
 describe("LinkedList", () => {
