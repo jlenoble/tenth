@@ -50,20 +50,6 @@ export const makeTestSuite = <Ctor extends AnyClass>(
       }
 
       {
-        const names = getKeys(obj, "states");
-
-        execIts({
-          testSuite,
-          names,
-          title: (name: string) =>
-            `non enumerable ${
-              Class.name[0].toLowerCase() + Class.name.slice(1)
-            }Instance.${name}`,
-          remainingNames,
-        });
-      }
-
-      {
         const names = getKeys(obj, "methods");
 
         execIts({
