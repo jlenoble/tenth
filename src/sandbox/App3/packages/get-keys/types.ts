@@ -1,6 +1,7 @@
 export type KeyType =
   | "attributes"
   | "states"
+  | "accessors"
   | "methods"
   | "allMethods"
   | "properties"
