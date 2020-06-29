@@ -4,8 +4,17 @@ import { SizedLinkedList } from "../sized-linked-list";
 import { LinkedListConstructor } from "../types";
 
 const tests = (LinkedList: LinkedListConstructor<number>): TestSuite => ({
+  size(): void {
+    it("reading size", () => {
+      const l = new LinkedList();
+      l.append(1).append(2).append(3);
+
+      expect(l.size).toBe(3);
+    });
+  },
+
   head(): void {
-    it("readind head", () => {
+    it("reading head", () => {
       const l = new LinkedList();
       l.append(1).append(2).append(3);
 
@@ -14,7 +23,7 @@ const tests = (LinkedList: LinkedListConstructor<number>): TestSuite => ({
   },
 
   tail(): void {
-    it("readind head", () => {
+    it("reading head", () => {
       const l = new LinkedList();
       l.append(1).append(2).append(3);
 
