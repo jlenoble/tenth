@@ -9,8 +9,8 @@ export interface LinkedListConstructor<T> {
 
 export interface LinkedList<T> extends Iterable<T> {
   size: number;
-  head: LinkedListNode<T> | null;
-  tail: LinkedListNode<T> | null;
+  head: T | null;
+  tail: T | null;
 
   append(value: T): this;
   prepend(value: T): this;
