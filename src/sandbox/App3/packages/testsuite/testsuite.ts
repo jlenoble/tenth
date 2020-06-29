@@ -4,8 +4,8 @@ import { execIts } from "./it";
 
 export const makeTestSuite = <Ctor extends AnyClass>(
   Class: Ctor,
-  testSuite: TestSuite,
-  staticTestSuite: TestSuite,
+  testSuite: TestSuite = {},
+  staticTestSuite: TestSuite = {},
   initArgs: AnyArgs = []
 ): void => {
   const _describe = () => {
