@@ -2,9 +2,21 @@ import { LinkedList as LinkedListInterface } from "./types";
 import { LinkedListNode } from "./linked-list-node";
 
 export class LinkedList<T> implements LinkedListInterface<T> {
-  size: number;
   head: LinkedListNode<T> | null;
   tail: LinkedListNode<T> | null;
+
+  get size(): number {
+    // Inefficient. If called often, use SizedLinkedList instead
+    let n = 0;
+    let node = this.head;
+
+    while (node !== null) {
+      node = node.next;
+      n++;
+    }
+
+    return n++;
+  }
 
   *[Symbol.iterator](): IterableIterator<T> {
     let node = this.head;
@@ -16,7 +28,6 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   constructor() {
-    this.size = 0;
     this.head = null;
     this.tail = null;
   }
@@ -27,14 +38,12 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     if (this.tail === null) {
       this.head = node;
       this.tail = node;
-      this.size = 1;
 
       return this;
     }
 
     this.tail.next = node;
     this.tail = node;
-    this.size++;
 
     return this;
   }
@@ -45,13 +54,11 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     if (this.head === null) {
       this.head = node;
       this.tail = node;
-      this.size = 1;
 
       return this;
     }
 
     this.head = node;
-    this.size++;
 
     return this;
   }
@@ -63,7 +70,6 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
     const head = this.head;
     this.head = head.next;
-    this.size--;
 
     return head;
   }
@@ -78,7 +84,6 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     if (this.head === tail) {
       this.head = null;
       this.tail = null;
-      this.size = 0;
       return tail;
     }
 
@@ -93,7 +98,6 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
     this.tail = pretail;
     pretail.next = null;
-    this.size--;
 
     return tail;
   }
