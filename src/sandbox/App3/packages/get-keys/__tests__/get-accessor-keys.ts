@@ -16,7 +16,7 @@ describe("Get accessor keys of object", () => {
         },
       };
 
-      expect(getAccessorKeys(obj)).toEqual(["m1"]);
+      expect(getAccessorKeys(obj)).toEqual([]);
       expect(
         getAccessorKeys(obj as AnyObject, {
           isExcludedKey: (key: string) => key === "m1",

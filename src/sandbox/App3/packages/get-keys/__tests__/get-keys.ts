@@ -14,7 +14,9 @@ describe("Get keys of object", () => {
     key === "m2" ||
     key === "m4" ||
     key === "m6" ||
-    key === "h";
+    key === "h" ||
+    key === "m11" ||
+    key === "m8";
 
   describe("getKeys", () => {
     it("Using a literal object", () => {
@@ -25,23 +27,32 @@ describe("Get keys of object", () => {
         m(): number {
           return 1;
         },
+        get m1(): number {
+          return 1;
+        },
       };
 
-      expect(getKeys(obj as AnyObject, "attributes")).toEqual(["a", "b"]);
+      expect(getKeys(obj as AnyObject, "attributes")).toEqual(["a", "b", "m1"]);
       expect(getKeys(obj as AnyObject, "states")).toEqual([]);
+      expect(getKeys(obj, "accessors")).toEqual([]);
       expect(getKeys(obj, "methods")).toEqual(["m"]);
       expect(getKeys(obj, "allMethods")).toEqual(
         ["m"].concat(baseObjectMethodKeys)
       );
-      expect(getKeys(obj, "properties")).toEqual(["a", "b", "m"]);
+      expect(getKeys(obj, "properties")).toEqual(["a", "b", "m1", "m"]);
       expect(getKeys(obj, "all")).toEqual(
-        ["a", "b", "m"].concat(baseObjectMethodKeys)
+        ["a", "b", "m1", "__proto__", "m"].concat(baseObjectMethodKeys)
       );
-      expect(getKeys(obj, "getOwnPropertyNames")).toEqual(["a", "b", "m"]);
+      expect(getKeys(obj, "getOwnPropertyNames")).toEqual([
+        "a",
+        "b",
+        "m",
+        "m1",
+      ]);
 
       expect(
         getKeys(obj as AnyObject, "attributes", { isExcludedKey })
-      ).toEqual(["b"]);
+      ).toEqual(["b", "m1"]);
       expect(getKeys(obj as AnyObject, "states", { isExcludedKey })).toEqual(
         []
       );
@@ -49,13 +60,18 @@ describe("Get keys of object", () => {
       expect(getKeys(obj, "allMethods", { isExcludedKey })).toEqual(
         ["m"].concat(baseObjectMethodKeys)
       );
-      expect(getKeys(obj, "properties", { isExcludedKey })).toEqual(["b", "m"]);
+      expect(getKeys(obj, "properties", { isExcludedKey })).toEqual([
+        "b",
+        "m1",
+        "m",
+      ]);
       expect(getKeys(obj, "all", { isExcludedKey })).toEqual(
-        ["b", "m"].concat(baseObjectMethodKeys)
+        ["b", "m1", "__proto__", "m"].concat(baseObjectMethodKeys)
       );
       expect(getKeys(obj, "getOwnPropertyNames", { isExcludedKey })).toEqual([
         "b",
         "m",
+        "m1",
       ]);
     });
 
@@ -64,6 +80,9 @@ describe("Get keys of object", () => {
         a = 1;
         b = "foo";
         m1 = (): number => 1;
+        get m4(): number {
+          return 4;
+        }
 
         private c = 2;
         private d = "bar";
@@ -86,6 +105,7 @@ describe("Get keys of object", () => {
 
       expect(getKeys(obj as AnyObject, "attributes")).toEqual(["a", "b"]);
       expect(getKeys(obj as AnyObject, "states")).toEqual(["c", "d"]);
+      expect(getKeys(obj as AnyObject, "accessors")).toEqual(["m4"]);
       expect(getKeys(obj as AnyObject, "methods")).toEqual(["m1", "m2", "m3"]);
       expect(getKeys(obj as AnyObject, "allMethods")).toEqual(
         ["m1", "m2", "m3"].concat(baseObjectMethodKeys)
@@ -95,12 +115,15 @@ describe("Get keys of object", () => {
         "b",
         "c",
         "d",
+        "m4",
         "m1",
         "m2",
         "m3",
       ]);
       expect(getKeys(obj as AnyObject, "all")).toEqual(
-        ["a", "b", "c", "d", "m1", "m2", "m3"].concat(baseObjectMethodKeys)
+        ["a", "b", "c", "d", "m4", "__proto__", "m1", "m2", "m3"].concat(
+          baseObjectMethodKeys
+        )
       );
       expect(getKeys(obj as AnyObject, "getOwnPropertyNames")).toEqual([
         "a",
@@ -128,7 +151,7 @@ describe("Get keys of object", () => {
         getKeys(obj as AnyObject, "properties", { isExcludedKey })
       ).toEqual(["b", "c", "m1", "m3"]);
       expect(getKeys(obj as AnyObject, "all", { isExcludedKey })).toEqual(
-        ["b", "c", "m1", "m3"].concat(baseObjectMethodKeys)
+        ["b", "c", "__proto__", "m1", "m3"].concat(baseObjectMethodKeys)
       );
       expect(
         getKeys(obj as AnyObject, "getOwnPropertyNames", { isExcludedKey })
@@ -140,6 +163,14 @@ describe("Get keys of object", () => {
         a = 1;
         b = "foo";
         m1 = (): number => 1;
+
+        get m8(): number {
+          return 4;
+        }
+
+        set m9(n: number) {
+          this.a = n;
+        }
 
         private c = 2;
         private d = "bar";
@@ -162,6 +193,14 @@ describe("Get keys of object", () => {
         e = 3;
         f = "baz";
         m4 = (): number => 4;
+
+        get m10(): number {
+          return 4;
+        }
+
+        set m11(n: number) {
+          this.a = n;
+        }
 
         private g = 4;
         protected h = "qux";
@@ -214,6 +253,10 @@ describe("Get keys of object", () => {
         "d",
         "g",
         "h",
+        "m10",
+        "m11",
+        "m8",
+        "m9",
         "m1",
         "m2",
         "m4",
@@ -232,6 +275,11 @@ describe("Get keys of object", () => {
           "d",
           "g",
           "h",
+          "m10",
+          "m11",
+          "m8",
+          "m9",
+          "__proto__",
           "m1",
           "m2",
           "m4",
@@ -275,11 +323,22 @@ describe("Get keys of object", () => {
       ).toEqual(["m1", "m5", "m7", "m3"].concat(baseObjectMethodKeys));
       expect(
         getKeys(obj as AnyObject, "properties", { isExcludedKey })
-      ).toEqual(["b", "e", "f", "c", "g", "m1", "m5", "m7", "m3"]);
+      ).toEqual(["b", "e", "f", "c", "g", "m10", "m9", "m1", "m5", "m7", "m3"]);
       expect(getKeys(obj as AnyObject, "all", { isExcludedKey })).toEqual(
-        ["b", "e", "f", "c", "g", "m1", "m5", "m7", "m3"].concat(
-          baseObjectMethodKeys
-        )
+        [
+          "b",
+          "e",
+          "f",
+          "c",
+          "g",
+          "m10",
+          "m9",
+          "__proto__",
+          "m1",
+          "m5",
+          "m7",
+          "m3",
+        ].concat(baseObjectMethodKeys)
       );
       expect(
         getKeys(obj as AnyObject, "getOwnPropertyNames", { isExcludedKey })

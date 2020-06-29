@@ -31,14 +31,6 @@ export const getAccessorKeys = <T extends Record<string, unknown>>(
   const instanceAccessors = new Set<string>();
   isExcludedKey = extendIsExcludedProperty(isExcludedKey);
 
-  Object.getOwnPropertyNames(obj)
-    .filter((key) => {
-      return !isExcludedKey(key) && isAccessor(obj, key);
-    })
-    .forEach((key) => {
-      instanceAccessors.add(key);
-    });
-
   let proto = obj;
 
   while (proto) {

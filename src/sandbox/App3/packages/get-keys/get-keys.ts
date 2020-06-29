@@ -1,6 +1,7 @@
 import { KeyType, AnyObject } from "./types";
 import { getAttributeKeys } from "./get-attribute-keys";
 import { getStateKeys } from "./get-state-keys";
+import { getAccessorKeys } from "./get-accessor-keys";
 import { getMethodKeys } from "./get-method-keys";
 import {
   isExcludedProperty,
@@ -39,6 +40,13 @@ export const getKeys = <T extends Record<string, unknown>>(
     case "states":
       return getStateKeys(obj, isExcludedKey);
 
+    case "accessors":
+      return getAccessorKeys(obj, {
+        isExcludedKey,
+        lastConstructor,
+        includeLastConstructor,
+      });
+
     case "methods":
       return getMethodKeys(obj, {
         isExcludedKey,
@@ -55,6 +63,11 @@ export const getKeys = <T extends Record<string, unknown>>(
     case "properties":
       return getAttributeKeys(obj, isExcludedKey).concat(
         getStateKeys(obj, isExcludedKey),
+        getAccessorKeys(obj, {
+          isExcludedKey,
+          lastConstructor,
+          includeLastConstructor,
+        }),
         getMethodKeys(obj, {
           isExcludedKey,
           lastConstructor,
@@ -65,6 +78,10 @@ export const getKeys = <T extends Record<string, unknown>>(
     case "all":
       return getAttributeKeys(obj, isExcludedKey).concat(
         getStateKeys(obj, isExcludedKey),
+        getAccessorKeys(obj, {
+          isExcludedKey,
+          includeLastConstructor: true,
+        }),
         getMethodKeys(obj, {
           isExcludedKey,
           includeLastConstructor: true,
