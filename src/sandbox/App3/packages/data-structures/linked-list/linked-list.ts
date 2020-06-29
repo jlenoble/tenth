@@ -6,6 +6,15 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   head: LinkedListNode<T> | null;
   tail: LinkedListNode<T> | null;
 
+  *[Symbol.iterator](): IterableIterator<T> {
+    let node = this.head;
+
+    while (node !== null) {
+      yield node.value;
+      node = node.next;
+    }
+  }
+
   constructor() {
     this.size = 0;
     this.head = null;
@@ -61,6 +70,13 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
   deleteTail(): LinkedListNode<T> | null {
     if (this.head === null) {
+      return null;
+    }
+
+    if (this.head === this.tail) {
+      this.head = null;
+      this.tail = null;
+      this.size = 0;
       return null;
     }
 

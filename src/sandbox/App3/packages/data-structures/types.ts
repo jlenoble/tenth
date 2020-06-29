@@ -3,7 +3,7 @@ export interface LinkedListNode<T> {
   next: LinkedListNode<T> | null;
 }
 
-export interface LinkedList<T> {
+export interface LinkedList<T> extends Iterable<T> {
   size: number;
   head: LinkedListNode<T> | null;
   tail: LinkedListNode<T> | null;
