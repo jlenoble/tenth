@@ -73,14 +73,15 @@ export class LinkedList<T> implements LinkedListInterface<T> {
       return null;
     }
 
-    if (this.head === this.tail) {
+    const tail = this.tail;
+
+    if (this.head === tail) {
       this.head = null;
       this.tail = null;
       this.size = 0;
-      return null;
+      return tail;
     }
 
-    const tail = this.tail;
     let pretail: LinkedListNode<T> = this.head;
 
     while (pretail.next !== null) {

@@ -1,7 +1,8 @@
 import { makeTestSuite } from "../../../testsuite";
 import { LinkedList } from "../linked-list";
+import { LinkedListConstructor } from "../types";
 
-makeTestSuite(LinkedList, {
+const testSuite = (LinkedList: LinkedListConstructor<number>) => ({
   append(): void {
     it("appending", () => {
       const l = new LinkedList();
@@ -52,21 +53,25 @@ makeTestSuite(LinkedList, {
       expect(l.size).toBe(3);
       expect(Array.from(l)).toEqual([1, 2, 3]);
 
-      l.deleteHead();
+      const n1 = l.deleteHead();
 
       expect(l.size).toBe(2);
       expect(Array.from(l)).toEqual([2, 3]);
+      expect(n1?.value).toBe(1);
 
-      l.deleteHead();
-      l.deleteHead();
-
-      expect(l.size).toBe(0);
-      expect(Array.from(l)).toEqual([]);
-
-      l.deleteHead();
+      const n2 = l.deleteHead();
+      const n3 = l.deleteHead();
 
       expect(l.size).toBe(0);
       expect(Array.from(l)).toEqual([]);
+      expect(n2?.value).toBe(2);
+      expect(n3?.value).toBe(3);
+
+      const n4 = l.deleteHead();
+
+      expect(l.size).toBe(0);
+      expect(Array.from(l)).toEqual([]);
+      expect(n4).toBeNull();
     });
   },
 
@@ -78,24 +83,30 @@ makeTestSuite(LinkedList, {
       expect(l.size).toBe(3);
       expect(Array.from(l)).toEqual([1, 2, 3]);
 
-      l.deleteTail();
+      const n1 = l.deleteTail();
 
       expect(l.size).toBe(2);
       expect(Array.from(l)).toEqual([1, 2]);
+      expect(n1?.value).toBe(3);
 
-      l.deleteTail();
-      l.deleteTail();
-
-      expect(l.size).toBe(0);
-      expect(Array.from(l)).toEqual([]);
-
-      l.deleteTail();
+      const n2 = l.deleteTail();
+      const n3 = l.deleteTail();
 
       expect(l.size).toBe(0);
       expect(Array.from(l)).toEqual([]);
+      expect(n2?.value).toBe(2);
+      expect(n3?.value).toBe(1);
+
+      const n4 = l.deleteTail();
+
+      expect(l.size).toBe(0);
+      expect(Array.from(l)).toEqual([]);
+      expect(n4).toBeNull();
     });
   },
 });
+
+makeTestSuite(LinkedList, testSuite(LinkedList));
 
 describe("LinkedList", () => {
   it("empty on creation", () => {
