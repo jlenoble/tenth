@@ -29,4 +29,21 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
     return this;
   }
+
+  prepend(value: T): this {
+    const node = new LinkedListNode(value, this.head);
+
+    if (!this.head) {
+      this.head = node;
+      this.tail = node;
+      this.size = 1;
+
+      return this;
+    }
+
+    this.head = node;
+    this.size++;
+
+    return this;
+  }
 }

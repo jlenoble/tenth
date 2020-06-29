@@ -19,6 +19,24 @@ makeTestSuite(LinkedList, {
       expect(l.size).toBe(6);
     });
   },
+
+  prepend(): void {
+    it("prepending", () => {
+      const l = new LinkedList();
+
+      l.prepend(1);
+
+      expect(l.size).toBe(1);
+
+      l.prepend(2).prepend(3);
+
+      expect(l.size).toBe(3);
+
+      l.prepend(2).prepend(1).prepend(0);
+
+      expect(l.size).toBe(6);
+    });
+  },
 });
 
 describe("LinkedList", () => {
