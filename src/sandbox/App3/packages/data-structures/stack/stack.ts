@@ -1,38 +1,44 @@
 import { Node, DataStructure } from "../types";
 
-export class Stack<T> extends Array<T> implements DataStructure<T, Node<T>> {
+export class Stack<T> implements DataStructure<T, Node<T>> {
+  #elements: T[] = [];
+
   get size(): number {
-    return this.length;
+    return this.#elements.length;
   }
 
   get head(): T | undefined {
-    return this[0];
+    return this.#elements[0];
   }
 
   get tail(): T | undefined {
-    return this[this.length - 1];
+    return this.#elements[this.#elements.length - 1];
+  }
+
+  [Symbol.iterator](): IterableIterator<T> {
+    return this.#elements[Symbol.iterator]();
   }
 
   append(value: T): this {
-    this.push(value);
+    this.#elements.push(value);
     return this;
   }
 
   prepend(value: T): this {
-    this.unshift(value);
+    this.#elements.unshift(value);
     return this;
   }
 
   deleteHead(): Node<T> | null {
-    if (this.length > 0) {
-      const value = this.shift() as T;
+    if (this.#elements.length > 0) {
+      const value = this.#elements.shift() as T;
       return { value };
     }
     return null;
   }
 
   deleteTail(): Node<T> | null {
-    if (this.length > 0) {
+    if (this.#elements.length > 0) {
       const value = this.pop() as T;
       return { value };
     }
@@ -40,10 +46,18 @@ export class Stack<T> extends Array<T> implements DataStructure<T, Node<T>> {
   }
 
   isEmpty(): boolean {
-    return this.length === 0;
+    return this.#elements.length === 0;
+  }
+
+  push(...values: T[]): number {
+    return this.#elements.push(...values);
+  }
+
+  pop(): T | undefined {
+    return this.#elements.pop();
   }
 
   peek(): T | undefined {
-    return this[this.length - 1];
+    return this.#elements[this.#elements.length - 1];
   }
 }
