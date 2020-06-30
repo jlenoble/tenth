@@ -16,7 +16,7 @@ export const tests = <T, N extends Node<T>>(
     },
 
     tail(): void {
-      it("reading head", () => {
+      it("reading tail", () => {
         const l = new Structure();
         initArgs.forEach((arg) => l.append(arg));
 
