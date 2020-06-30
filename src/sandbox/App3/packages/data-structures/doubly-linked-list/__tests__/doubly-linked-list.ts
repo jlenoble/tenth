@@ -1,5 +1,6 @@
 import { makeTestSuite, TestSuite } from "../../../testsuite";
 import { DoublyLinkedList } from "../doubly-linked-list";
+import { SizedDoublyLinkedList } from "../sized-doubly-linked-list";
 import { DoublyLinkedListConstructor } from "../types";
 
 const tests = (
@@ -159,4 +160,9 @@ makeTestSuite(
   DoublyLinkedList,
   tests(DoublyLinkedList),
   staticTests(DoublyLinkedList)
+);
+makeTestSuite(
+  SizedDoublyLinkedList,
+  tests(SizedDoublyLinkedList),
+  staticTests(SizedDoublyLinkedList)
 );
