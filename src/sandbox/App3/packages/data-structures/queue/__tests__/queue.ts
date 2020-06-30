@@ -6,6 +6,6 @@ const initArgs = [1, 2, 3, 2, 1, 5, 4];
 
 makeTestSuite(
   Queue,
-  tests(Queue, initArgs),
+  tests(Queue, initArgs, { fifo: true }),
   staticTests({ length: 0, name: "Queue", Structure: Queue })
 );
