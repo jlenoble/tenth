@@ -1,27 +1,12 @@
 import { TestSuite } from "../../testsuite";
 import { DataStructure, Constructor, Node } from "../types";
-
-const length = 6;
-
-const fill = <T extends unknown>(initArgs: T[]): T[] => {
-  if (initArgs.length >= length) {
-    return initArgs;
-  }
-
-  const args = Array.from(initArgs);
-
-  for (let n = initArgs.length; n < length; n++) {
-    args.push(initArgs[0]);
-  }
-
-  return args;
-};
+import { fillInitArgs } from "./fill-init-args";
 
 export const tests = <T, N extends Node<T>>(
   Structure: Constructor<DataStructure<T, N>>,
   initArgs: T[]
 ): TestSuite => {
-  initArgs = fill(initArgs);
+  initArgs = fillInitArgs(initArgs);
 
   return {
     size(): void {
