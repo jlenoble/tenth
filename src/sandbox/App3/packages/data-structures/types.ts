@@ -13,7 +13,11 @@ export interface DataStructure<T, N extends Node<T>> extends Iterable<T> {
 
   append(value: T): this;
   prepend(value: T): this;
-
   deleteHead(): N | null;
   deleteTail(): N | null;
+
+  isEmpty(): boolean;
+  push(...values: T[]): number;
+  pop(): T | undefined;
+  peek(): T | undefined;
 }
