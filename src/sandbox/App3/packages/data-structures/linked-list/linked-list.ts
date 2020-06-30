@@ -114,4 +114,29 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
     return tail;
   }
+
+  isEmpty(): boolean {
+    return this.#head === null;
+  }
+
+  push(...values: T[]): number {
+    // Inefficient. If called often, use SizedDoublyLinkedList or Stack instead
+    for (const value of values) {
+      this.append(value);
+    }
+    return this.size;
+  }
+
+  pop(): T | undefined {
+    // Inefficient. If called often, use SizedDoublyLinkedList or Stack instead
+    const tail = this.deleteTail();
+    if (tail) {
+      return tail.value;
+    }
+  }
+
+  peek(): T | undefined {
+    // Inefficient. If called often, use SizedDoublyLinkedList or Stack instead
+    return this.tail;
+  }
 }
