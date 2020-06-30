@@ -12,7 +12,7 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   get tail(): T | undefined {
-    // Inefficient. If called often, use DoublyLinkedList instead
+    // Inefficient. If called often, use LinkedList instead
     if (this.#head === null) {
       return;
     }
@@ -53,7 +53,7 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   append(value: T): this {
-    // Inefficient. If called often, use DoublyLinkedList instead
+    // Inefficient. If called often, use LinkedList instead
     const node = new LinkedListNode(value);
 
     if (this.#head === null) {
@@ -92,7 +92,7 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   deleteTail(): LinkedListNode<T> | null {
-    // Inefficient. If called often, use DoublyLinkedList instead
+    // Inefficient. If called often, use LinkedList instead
     if (this.#head === null) {
       return null;
     }
@@ -120,23 +120,22 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   push(...values: T[]): number {
-    // Inefficient. If called often, use SizedDoublyLinkedList or Stack instead
+    // Inefficient. If called often, use SizedLinkedList
     for (const value of values) {
-      this.append(value);
+      this.prepend(value);
     }
     return this.size;
   }
 
   pop(): T | undefined {
-    // Inefficient. If called often, use SizedDoublyLinkedList or Stack instead
-    const tail = this.deleteTail();
-    if (tail) {
-      return tail.value;
+    // Inefficient. If called often, use SizedLinkedList
+    const head = this.deleteHead();
+    if (head) {
+      return head.value;
     }
   }
 
   peek(): T | undefined {
-    // Inefficient. If called often, use SizedDoublyLinkedList or Stack instead
-    return this.tail;
+    return this.head;
   }
 }

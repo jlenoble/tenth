@@ -130,19 +130,19 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
 
   push(...values: T[]): number {
     for (const value of values) {
-      this.append(value);
+      this.prepend(value);
     }
     return this.size;
   }
 
   pop(): T | undefined {
-    const tail = this.deleteTail();
-    if (tail) {
-      return tail.value;
+    const head = this.deleteHead();
+    if (head) {
+      return head.value;
     }
   }
 
   peek(): T | undefined {
-    return this.tail;
+    return this.head;
   }
 }
