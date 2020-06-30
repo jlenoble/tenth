@@ -3,7 +3,6 @@ import { LinkedListNode } from "./linked-list-node";
 
 export class LinkedList<T> implements LinkedListInterface<T> {
   #head: LinkedListNode<T> | null;
-  #tail: LinkedListNode<T> | null;
 
   get head(): T | null {
     if (this.#head === null) {
@@ -13,10 +12,18 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   get tail(): T | null {
-    if (this.#tail === null) {
+    // Inefficient. If called often, use DoublyLinkedList instead
+    if (this.#head === null) {
       return null;
     }
-    return this.#tail.value;
+
+    let tail = this.#head;
+
+    while (tail.next !== null) {
+      tail = tail.next;
+    }
+
+    return tail.value;
   }
 
   get size(): number {
@@ -43,34 +50,30 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
   constructor() {
     this.#head = null;
-    this.#tail = null;
   }
 
   append(value: T): this {
+    // Inefficient. If called often, use DoublyLinkedList instead
     const node = new LinkedListNode(value);
 
-    if (this.#tail === null) {
+    if (this.#head === null) {
       this.#head = node;
-      this.#tail = node;
-
       return this;
     }
 
-    this.#tail.next = node;
-    this.#tail = node;
+    let tail: LinkedListNode<T> = this.#head;
+
+    while (tail.next !== null) {
+      tail = tail.next;
+    }
+
+    tail.next = node;
 
     return this;
   }
 
   prepend(value: T): this {
     const node = new LinkedListNode(value, this.#head);
-
-    if (this.#head === null) {
-      this.#head = node;
-      this.#tail = node;
-
-      return this;
-    }
 
     this.#head = node;
 
@@ -89,28 +92,24 @@ export class LinkedList<T> implements LinkedListInterface<T> {
   }
 
   deleteTail(): LinkedListNode<T> | null {
+    // Inefficient. If called often, use DoublyLinkedList instead
     if (this.#head === null) {
       return null;
     }
 
-    const tail = this.#tail;
-
-    if (this.#head === tail) {
-      this.#head = null;
-      this.#tail = null;
-      return tail;
-    }
-
     let pretail: LinkedListNode<T> = this.#head;
+    let tail: LinkedListNode<T> | null = pretail.next;
 
-    while (pretail.next !== null) {
-      if (pretail.next === tail) {
-        break;
-      }
-      pretail = pretail.next;
+    if (pretail.next === null) {
+      this.#head = null;
+      return pretail;
     }
 
-    this.#tail = pretail;
+    while (tail !== null && tail.next !== null) {
+      pretail = tail;
+      tail = tail.next;
+    }
+
     pretail.next = null;
 
     return tail;
