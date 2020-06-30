@@ -5,16 +5,16 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
   #head: DoublyLinkedListNode<T> | null;
   #tail: DoublyLinkedListNode<T> | null;
 
-  get head(): T | null {
+  get head(): T | undefined {
     if (this.#head === null) {
-      return null;
+      return;
     }
     return this.#head.value;
   }
 
-  get tail(): T | null {
+  get tail(): T | undefined {
     if (this.#tail === null) {
-      return null;
+      return;
     }
     return this.#tail.value;
   }

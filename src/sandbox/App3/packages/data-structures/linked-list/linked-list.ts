@@ -4,17 +4,17 @@ import { LinkedListNode } from "./linked-list-node";
 export class LinkedList<T> implements LinkedListInterface<T> {
   #head: LinkedListNode<T> | null;
 
-  get head(): T | null {
+  get head(): T | undefined {
     if (this.#head === null) {
-      return null;
+      return;
     }
     return this.#head.value;
   }
 
-  get tail(): T | null {
+  get tail(): T | undefined {
     // Inefficient. If called often, use DoublyLinkedList instead
     if (this.#head === null) {
-      return null;
+      return;
     }
 
     let tail = this.#head;

@@ -8,8 +8,8 @@ export interface Constructor<T> {
 
 export interface DataStructure<T, N extends Node<T>> extends Iterable<T> {
   size: number;
-  head: T | null;
-  tail: T | null;
+  head: T | undefined;
+  tail: T | undefined;
 
   append(value: T): this;
   prepend(value: T): this;
