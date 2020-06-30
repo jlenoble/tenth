@@ -2,7 +2,7 @@ import { makeTestSuite } from "../../../testsuite";
 import { Stack } from "../stack";
 import { tests, staticTests } from "../../__testHelpers__/testsuites";
 
-const initArgs = [1, 2, 3, 2, 1, 5, 4];
+const initArgs = [1, 2, 3, 4, 5, 6, 7];
 
 makeTestSuite(
   Stack,
