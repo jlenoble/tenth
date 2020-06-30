@@ -119,6 +119,10 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     return this.#head === null;
   }
 
+  peek(): T | undefined {
+    return this.head;
+  }
+
   push(...values: T[]): number {
     // Inefficient. If called often, use SizedLinkedList
     for (const value of values) {
@@ -135,7 +139,19 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     }
   }
 
-  peek(): T | undefined {
-    return this.head;
+  enqueue(...values: T[]): number {
+    // Inefficient. If called often, use SizedDoublyLinkedList or Queue
+    for (const value of values) {
+      this.append(value);
+    }
+    return this.size;
+  }
+
+  dequeue(): T | undefined {
+    // Inefficient. If called often, use SizedLinkedList or Queue
+    const head = this.deleteHead();
+    if (head) {
+      return head.value;
+    }
   }
 }

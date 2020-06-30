@@ -128,6 +128,10 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
     return this.#head === null;
   }
 
+  peek(): T | undefined {
+    return this.head;
+  }
+
   push(...values: T[]): number {
     for (const value of values) {
       this.prepend(value);
@@ -142,7 +146,17 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
     }
   }
 
-  peek(): T | undefined {
-    return this.head;
+  enqueue(...values: T[]): number {
+    for (const value of values) {
+      this.append(value);
+    }
+    return this.size;
+  }
+
+  dequeue(): T | undefined {
+    const head = this.deleteHead();
+    if (head) {
+      return head.value;
+    }
   }
 }
