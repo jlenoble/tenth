@@ -6,6 +6,7 @@ import {
   staticTests as commonStaticTests,
 } from "./common";
 import { tests as linkedListTests } from "./linked-list";
+import { tests as stackTests } from "./stack";
 
 export const tests = <T, N extends Node<T>>(
   Structure: Constructor<DataStructure<T, N>>,
@@ -16,6 +17,7 @@ export const tests = <T, N extends Node<T>>(
   return {
     ...commonTests(Structure, initArgs),
     ...linkedListTests(Structure, initArgs),
+    ...stackTests(Structure, initArgs),
   };
 };
 
