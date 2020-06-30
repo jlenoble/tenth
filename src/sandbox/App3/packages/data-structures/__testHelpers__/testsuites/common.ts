@@ -14,6 +14,15 @@ export const tests = <T, N extends Node<T>>(
         expect(l.size).toBe(initArgs.length);
       });
     },
+
+    isEmpty(): void {
+      it("checking if empty", () => {
+        const l = new Structure();
+        expect(l.isEmpty()).toBe(true);
+        initArgs.forEach((arg) => l.push(arg));
+        expect(l.isEmpty()).toBe(false);
+      });
+    },
   };
 };
 

@@ -6,15 +6,6 @@ export const tests = <T, N extends Node<T>>(
   initArgs: T[]
 ): TestSuite => {
   return {
-    isEmpty(): void {
-      it("checking if empty", () => {
-        const l = new Structure();
-        expect(l.isEmpty()).toBe(true);
-        initArgs.forEach((arg) => l.push(arg));
-        expect(l.isEmpty()).toBe(false);
-      });
-    },
-
     push(): void {
       it("pushing", () => {
         const l = new Structure();
