@@ -54,11 +54,14 @@ export class Queue<T> implements DataStructure<T, Node<T>> {
   }
 
   push(...values: T[]): number {
-    return this.#elements.push(...values);
+    for (let i = 0; i < values.length; i++) {
+      this.#elements.unshift(values[i]);
+    }
+    return this.#elements.length;
   }
 
   pop(): T | undefined {
-    return this.#elements.pop();
+    return this.#elements.shift();
   }
 
   enqueue(...values: T[]): number {

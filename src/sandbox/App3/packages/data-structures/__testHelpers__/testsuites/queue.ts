@@ -33,7 +33,7 @@ export const tests = <T, N extends Node<T>>(
     dequeue(): void {
       it("dequeueing", () => {
         const l = new Structure();
-        initArgs.forEach((arg) => l.push(arg));
+        initArgs.forEach((arg) => l.enqueue(arg));
 
         expect(l.size).toBe(initArgs.length);
         expect(Array.from(l)).toEqual(initArgs);

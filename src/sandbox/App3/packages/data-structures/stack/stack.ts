@@ -62,4 +62,15 @@ export class Stack<T> implements DataStructure<T, Node<T>> {
   pop(): T | undefined {
     return this.#elements.pop();
   }
+
+  enqueue(...values: T[]): number {
+    for (let i = 0; i < values.length; i++) {
+      this.#elements.unshift(values[i]);
+    }
+    return this.#elements.length;
+  }
+
+  dequeue(): T | undefined {
+    return this.#elements.pop();
+  }
 }
