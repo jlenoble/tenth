@@ -58,6 +58,7 @@ export const getKeys = <T extends Record<string, unknown>>(
       return getMethodKeys(obj, {
         isExcludedKey,
         includeLastConstructor: true,
+        includeNonEnumerable: true,
       });
 
     case "properties":
@@ -72,6 +73,7 @@ export const getKeys = <T extends Record<string, unknown>>(
           isExcludedKey,
           lastConstructor,
           includeLastConstructor,
+          includeNonEnumerable: true,
         })
       );
 
@@ -85,6 +87,7 @@ export const getKeys = <T extends Record<string, unknown>>(
         getMethodKeys(obj, {
           isExcludedKey,
           includeLastConstructor: true,
+          includeNonEnumerable: true,
         })
       );
 

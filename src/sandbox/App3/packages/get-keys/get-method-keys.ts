@@ -8,22 +8,27 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
   {
     lastConstructor = Object,
     includeLastConstructor = false,
+    includeNonEnumerable = false,
     isExcludedKey = isExcludedProperty,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lastConstructor?: any;
     includeLastConstructor?: boolean;
+    includeNonEnumerable?: boolean;
     isExcludedKey?: (key: string) => boolean;
   } = {}
 ): string[] => {
   const instanceMethods = new Set<string>();
   isExcludedKey = extendIsExcludedProperty(isExcludedKey);
 
-  Object.getOwnPropertyNames(obj)
-    .filter((key) => {
+  Object.entries(Object.getOwnPropertyDescriptors(obj))
+    .filter(([key, descriptor]) => {
+      if (!descriptor.enumerable && !includeNonEnumerable) {
+        return false;
+      }
       return !isExcludedKey(key) && typeof obj[key] === "function";
     })
-    .forEach((key) => {
+    .forEach(([key]) => {
       instanceMethods.add(key);
     });
 
