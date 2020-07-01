@@ -1,8 +1,8 @@
 import { TestSuite } from "../../../testsuite";
-import { DataStructure, Constructor, Node } from "../../types";
+import { LinkedListConstructor, LinkedListNode } from "../../linked-list/types";
 
-export const tests = <T, N extends Node<T>>(
-  Structure: Constructor<DataStructure<T, N>>,
+export const tests = <T, N extends LinkedListNode<T>>(
+  Structure: LinkedListConstructor<T, N>,
   initArgs: T[]
 ): TestSuite => {
   return {
