@@ -11,15 +11,15 @@ import { tests as queueTests } from "./queue";
 
 export const tests = <T, N extends Node<T>>(
   Structure: Constructor<DataStructure<T, N>>,
-  initArgs: T[],
-  { fifo = false }: { fifo?: boolean } = {}
+  initArgs: T[]
 ): TestSuite => {
   initArgs = fillInitArgs(initArgs);
 
   return {
     ...commonTests(Structure, initArgs),
     ...linkedListTests(Structure, initArgs),
-    ...(fifo ? queueTests : stackTests)(Structure, initArgs),
+    ...stackTests(Structure, initArgs),
+    ...queueTests(Structure, initArgs),
   };
 };
 
