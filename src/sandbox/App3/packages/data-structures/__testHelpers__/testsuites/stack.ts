@@ -1,8 +1,8 @@
 import { TestSuite } from "../../../testsuite";
-import { DataStructure, Constructor, Node } from "../../types";
+import { StackConstructor } from "../../stack";
 
-export const tests = <T, N extends Node<T>>(
-  Structure: Constructor<DataStructure<T, N>>,
+export const tests = <T>(
+  Structure: StackConstructor<T>,
   initArgs: T[]
 ): TestSuite => {
   return {
@@ -75,8 +75,7 @@ export const tests = <T, N extends Node<T>>(
 
     peek(): void {
       it("peeking", () => {
-        const l = new Structure();
-        initArgs.forEach((arg) => l.push(arg));
+        const l = new Structure(initArgs);
 
         expect(l.peek()).toBe(initArgs[initArgs.length - 1]);
 

@@ -6,6 +6,6 @@ const initArgs = [1, 2, 3, 4, 5, 6, 7];
 
 makeTestSuite(
   Stack,
-  tests(Stack, initArgs),
-  staticTests({ length: 0, name: "Stack", Structure: Stack })
+  tests(Stack, initArgs, { stack: true }),
+  staticTests({ length: 1, name: "Stack", Structure: Stack })
 );
