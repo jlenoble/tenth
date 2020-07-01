@@ -1,11 +1,17 @@
 import { TestSuite } from "../../../testsuite";
 import { LinkedListConstructor, LinkedListNode } from "../../linked-list/types";
+import { fillInitArgs } from "../fill-init-args";
+import { tests as commonTests } from "./common";
 
 export const tests = <T, N extends LinkedListNode<T>>(
   Structure: LinkedListConstructor<T, N>,
   initArgs: T[]
 ): TestSuite => {
+  initArgs = fillInitArgs(initArgs);
+
   return {
+    ...commonTests(Structure, initArgs),
+
     head(): void {
       it("reading head", () => {
         const l = new Structure();

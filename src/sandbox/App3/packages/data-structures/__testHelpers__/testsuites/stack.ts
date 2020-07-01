@@ -1,11 +1,17 @@
 import { TestSuite } from "../../../testsuite";
 import { StackConstructor } from "../../stack";
+import { fillInitArgs } from "../fill-init-args";
+import { tests as commonTests } from "./common";
 
 export const tests = <T>(
   Structure: StackConstructor<T>,
   initArgs: T[]
 ): TestSuite => {
+  initArgs = fillInitArgs(initArgs);
+
   return {
+    ...commonTests(Structure, initArgs),
+
     push(): void {
       it("pushing", () => {
         const l = new Structure();

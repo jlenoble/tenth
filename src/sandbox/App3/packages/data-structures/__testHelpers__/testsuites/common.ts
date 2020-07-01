@@ -1,10 +1,13 @@
 import { TestSuite } from "../../../testsuite";
 import { DataStructure, Constructor } from "../../types";
+import { fillInitArgs } from "../fill-init-args";
 
 export const tests = <T>(
   Structure: Constructor<DataStructure<T>>,
   initArgs: T[]
 ): TestSuite => {
+  initArgs = fillInitArgs(initArgs);
+
   return {
     size(): void {
       it("reading size", () => {
