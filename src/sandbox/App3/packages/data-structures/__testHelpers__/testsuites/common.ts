@@ -1,7 +1,7 @@
 import { TestSuite } from "../../../testsuite";
-import { DataStructure, Constructor, Node } from "../../types";
+import { DataStructure, Constructor } from "../../types";
 
-export const tests = <T, N extends Node<T>>(
+export const tests = <T>(
   Structure: Constructor<DataStructure<T>>,
   initArgs: T[]
 ): TestSuite => {
@@ -24,7 +24,7 @@ export const tests = <T, N extends Node<T>>(
   };
 };
 
-export const staticTests = <T, N extends Node<T>>({
+export const staticTests = <T>({
   length,
   name,
   Structure,
