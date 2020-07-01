@@ -7,4 +7,12 @@ export interface DoublyLinkedListNode<T> extends Node<T> {
 
 export type DoublyLinkedListConstructor<T> = Constructor<DoublyLinkedList<T>>;
 
-export type DoublyLinkedList<T> = DataStructure<T, DoublyLinkedListNode<T>>;
+export interface DoublyLinkedList<T> extends DataStructure<T> {
+  head: T | undefined;
+  tail: T | undefined;
+
+  append(value: T): this;
+  prepend(value: T): this;
+  deleteHead(): DoublyLinkedListNode<T> | null;
+  deleteTail(): DoublyLinkedListNode<T> | null;
+}

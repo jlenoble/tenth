@@ -1,7 +1,8 @@
 import { LinkedList as LinkedListInterface } from "./types";
 import { LinkedListNode } from "./linked-list-node";
 
-export class LinkedList<T> implements LinkedListInterface<T> {
+export class LinkedList<T>
+  implements LinkedListInterface<T, LinkedListNode<T>> {
   #head: LinkedListNode<T> | null;
 
   get head(): T | undefined {
@@ -48,8 +49,14 @@ export class LinkedList<T> implements LinkedListInterface<T> {
     }
   }
 
-  constructor() {
+  constructor(values?: IterableIterator<T>) {
     this.#head = null;
+
+    if (values) {
+      for (const value of values) {
+        this.append(value);
+      }
+    }
   }
 
   append(value: T): this {
@@ -117,41 +124,5 @@ export class LinkedList<T> implements LinkedListInterface<T> {
 
   isEmpty(): boolean {
     return this.#head === null;
-  }
-
-  peek(): T | undefined {
-    return this.head;
-  }
-
-  push(...values: T[]): number {
-    // Inefficient. If called often, use SizedLinkedList
-    for (const value of values) {
-      this.prepend(value);
-    }
-    return this.size;
-  }
-
-  pop(): T | undefined {
-    // Inefficient. If called often, use SizedLinkedList
-    const head = this.deleteHead();
-    if (head) {
-      return head.value;
-    }
-  }
-
-  enqueue(...values: T[]): number {
-    // Inefficient. If called often, use SizedDoublyLinkedList or Queue
-    for (const value of values) {
-      this.append(value);
-    }
-    return this.size;
-  }
-
-  dequeue(): T | undefined {
-    // Inefficient. If called often, use SizedLinkedList or Queue
-    const head = this.deleteHead();
-    if (head) {
-      return head.value;
-    }
   }
 }

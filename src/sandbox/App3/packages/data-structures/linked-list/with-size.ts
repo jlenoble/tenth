@@ -1,8 +1,8 @@
-import { Node, Constructor, DataStructure } from "./types";
+import { LinkedListNode, LinkedListConstructor } from "./types";
 
-export const withSize = <T, N extends Node<T>>(
-  Structure: Constructor<DataStructure<T, N>>
-): Constructor<DataStructure<T, N>> => {
+export const withSize = <T, N extends LinkedListNode<T>>(
+  Structure: LinkedListConstructor<T, N>
+): LinkedListConstructor<T, N> => {
   class SizedStructure extends Structure {
     #size: number;
 
@@ -10,9 +10,15 @@ export const withSize = <T, N extends Node<T>>(
       return this.#size;
     }
 
-    constructor() {
+    constructor(values?: IterableIterator<T>) {
       super();
       this.#size = 0;
+
+      if (values) {
+        for (const value of values) {
+          this.append(value);
+        }
+      }
     }
 
     append(value: T): this {

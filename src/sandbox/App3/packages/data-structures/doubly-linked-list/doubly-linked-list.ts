@@ -41,9 +41,15 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
     }
   }
 
-  constructor() {
+  constructor(values?: IterableIterator<T>) {
     this.#head = null;
     this.#tail = null;
+
+    if (values) {
+      for (const value of values) {
+        this.append(value);
+      }
+    }
   }
 
   append(value: T): this {
@@ -126,37 +132,5 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
 
   isEmpty(): boolean {
     return this.#head === null;
-  }
-
-  peek(): T | undefined {
-    return this.head;
-  }
-
-  push(...values: T[]): number {
-    for (const value of values) {
-      this.prepend(value);
-    }
-    return this.size;
-  }
-
-  pop(): T | undefined {
-    const head = this.deleteHead();
-    if (head) {
-      return head.value;
-    }
-  }
-
-  enqueue(...values: T[]): number {
-    for (const value of values) {
-      this.append(value);
-    }
-    return this.size;
-  }
-
-  dequeue(): T | undefined {
-    const head = this.deleteHead();
-    if (head) {
-      return head.value;
-    }
   }
 }

@@ -1,5 +1,5 @@
 import { TestSuite } from "../../../testsuite";
-import { DataStructure, Constructor, Node } from "../../types";
+import { DataStructure, Constructor } from "../../types";
 import { fillInitArgs } from "../fill-init-args";
 import {
   tests as commonTests,
@@ -9,22 +9,44 @@ import { tests as linkedListTests } from "./linked-list";
 import { tests as stackTests } from "./stack";
 import { tests as queueTests } from "./queue";
 
-export const tests = <T, N extends Node<T>>(
-  Structure: Constructor<DataStructure<T, N>>,
-  initArgs: T[]
+export const tests = <T>(
+  Structure: Constructor<DataStructure<T>>,
+  initArgs: T[],
+  {
+    linkedList = false,
+    stack = false,
+    queue = false,
+  }: { linkedList?: boolean; stack?: boolean; queue?: boolean } = {}
 ): TestSuite => {
   initArgs = fillInitArgs(initArgs);
 
-  return {
-    ...commonTests(Structure, initArgs),
-    ...linkedListTests(Structure, initArgs),
-    ...stackTests(Structure, initArgs),
-    ...queueTests(Structure, initArgs),
-  };
+  const allTests = [commonTests];
+  if (linkedList) {
+    allTests.push(linkedListTests);
+  }
+  if (stack) {
+    allTests.push(stackTests);
+  }
+  if (queue) {
+    allTests.push(queueTests);
+  }
+
+  return allTests.reduce(
+    (
+      testSuite: TestSuite,
+      tests: (
+        Structure: Constructor<DataStructure<T>>,
+        initArgs: T[]
+      ) => TestSuite
+    ) => {
+      return { ...testSuite, ...tests(Structure, initArgs) };
+    },
+    {}
+  );
 };
 
-export const staticTests = <T, N extends Node<T>>(options: {
+export const staticTests = <T>(options: {
   length: number;
   name: string;
-  Structure: Constructor<DataStructure<T, N>>;
+  Structure: Constructor<DataStructure<T>>;
 }): TestSuite => ({ ...commonStaticTests(options) });
