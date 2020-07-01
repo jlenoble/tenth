@@ -1,48 +1,26 @@
-import { Node, DataStructure } from "../types";
+import { DataStructure, Constructor } from "../types";
 
-export class Queue<T> implements DataStructure<T, Node<T>> {
+export type QueueConstructor<T> = Constructor<Queue<T>>;
+
+export class Queue<T> implements DataStructure<T> {
   #elements: T[] = [];
 
   get size(): number {
     return this.#elements.length;
   }
 
-  get head(): T | undefined {
-    return this.#elements[0];
-  }
-
-  get tail(): T | undefined {
-    return this.#elements[this.#elements.length - 1];
-  }
-
   [Symbol.iterator](): IterableIterator<T> {
     return this.#elements[Symbol.iterator]();
   }
 
-  append(value: T): this {
-    this.#elements.push(value);
-    return this;
-  }
+  constructor(values?: IterableIterator<T>) {
+    this.#elements = [];
 
-  prepend(value: T): this {
-    this.#elements.unshift(value);
-    return this;
-  }
-
-  deleteHead(): Node<T> | null {
-    if (this.#elements.length > 0) {
-      const value = this.#elements.shift() as T;
-      return { value };
+    if (values) {
+      this.#elements = Array.from(values);
+    } else {
+      this.#elements = [];
     }
-    return null;
-  }
-
-  deleteTail(): Node<T> | null {
-    if (this.#elements.length > 0) {
-      const value = this.#elements.pop() as T;
-      return { value };
-    }
-    return null;
   }
 
   isEmpty(): boolean {
@@ -51,17 +29,6 @@ export class Queue<T> implements DataStructure<T, Node<T>> {
 
   peek(): T | undefined {
     return this.#elements[0];
-  }
-
-  push(...values: T[]): number {
-    for (let i = 0; i < values.length; i++) {
-      this.#elements.unshift(values[i]);
-    }
-    return this.#elements.length;
-  }
-
-  pop(): T | undefined {
-    return this.#elements.shift();
   }
 
   enqueue(...values: T[]): number {

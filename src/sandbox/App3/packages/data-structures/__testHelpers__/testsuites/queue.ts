@@ -1,8 +1,8 @@
 import { TestSuite } from "../../../testsuite";
-import { DataStructure, Constructor, Node } from "../../types";
+import { QueueConstructor } from "../../queue";
 
-export const tests = <T, N extends Node<T>>(
-  Structure: Constructor<DataStructure<T, N>>,
+export const tests = <T>(
+  Structure: QueueConstructor<T>,
   initArgs: T[]
 ): TestSuite => {
   return {
@@ -66,6 +66,18 @@ export const tests = <T, N extends Node<T>>(
         expect(l.size).toBe(0);
         expect(Array.from(l)).toEqual([]);
         expect(n4).toBeUndefined();
+      });
+    },
+
+    peek(): void {
+      it("peeking", () => {
+        const l = new Structure(initArgs);
+
+        expect(l.peek()).toBe(initArgs[0]);
+
+        l.dequeue();
+
+        expect(l.peek()).toBe(initArgs[1]);
       });
     },
   };
