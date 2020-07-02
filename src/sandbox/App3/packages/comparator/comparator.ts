@@ -34,4 +34,8 @@ export class Comparator<T> {
   greaterThanOrEqual(a: T, b: T): boolean {
     return this.#compare(a, b) !== -1;
   }
+
+  resetCompare(compareFunction: ComparatorFunction<T>): void {
+    this.#compare = compareFunction;
+  }
 }

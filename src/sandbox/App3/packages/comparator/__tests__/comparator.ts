@@ -16,6 +16,19 @@ makeTestSuite(
         expect(d.compare).toBe(compare);
       });
     },
+    resetCompare({ it }) {
+      it(() => {
+        const c = new Comparator<number>();
+        expect(c.compare).toBe(defaultCompare);
+
+        const compare = (a: number, b: number) => {
+          return a === b ? 0 : a > b ? -1 : 1;
+        };
+
+        c.resetCompare(compare);
+        expect(c.compare).toBe(compare);
+      });
+    },
     equal({ it }) {
       it(() => {
         const c = new Comparator<number>();
