@@ -2,6 +2,7 @@ import {
   isExcludedProperty,
   extendIsExcludedProperty,
 } from "./is-excluded-property";
+import { isAccessor } from "./is-accessor";
 
 export const getMethodKeys = <T extends Record<string, unknown>>(
   obj: T,
@@ -26,7 +27,11 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
       if (!descriptor.enumerable && !includeNonEnumerable) {
         return false;
       }
-      return !isExcludedKey(key) && typeof obj[key] === "function";
+      return (
+        !isExcludedKey(key) &&
+        typeof obj[key] === "function" &&
+        !isAccessor(obj, key)
+      );
     })
     .forEach(([key]) => {
       instanceMethods.add(key);
@@ -45,7 +50,7 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
       if (includeLastConstructor) {
         Object.getOwnPropertyNames(proto)
           .filter((key) => {
-            return typeof obj[key] === "function";
+            return typeof obj[key] === "function" && !isAccessor(proto, key);
           })
           .forEach((key) => {
             instanceMethods.add(key);
@@ -55,7 +60,11 @@ export const getMethodKeys = <T extends Record<string, unknown>>(
     } else {
       Object.getOwnPropertyNames(proto)
         .filter((key) => {
-          return !isExcludedKey(key) && typeof obj[key] === "function";
+          return (
+            !isExcludedKey(key) &&
+            typeof obj[key] === "function" &&
+            !isAccessor(proto, key)
+          );
         })
         .forEach((key) => {
           instanceMethods.add(key);
