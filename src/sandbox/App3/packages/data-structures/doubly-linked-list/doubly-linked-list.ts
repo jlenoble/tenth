@@ -41,7 +41,7 @@ export class DoublyLinkedList<T> implements DoublyLinkedListInterface<T> {
     }
   }
 
-  constructor(values?: IterableIterator<T>) {
+  constructor(values?: Iterable<T>) {
     this.#head = null;
     this.#tail = null;
 

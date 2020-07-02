@@ -49,7 +49,7 @@ export class LinkedList<T>
     }
   }
 
-  constructor(values?: IterableIterator<T>) {
+  constructor(values?: Iterable<T>) {
     this.#head = null;
 
     if (values) {

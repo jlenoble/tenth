@@ -10,7 +10,7 @@ export const withSize = <T, N extends LinkedListNode<T>>(
       return this.#size;
     }
 
-    constructor(values?: IterableIterator<T>) {
+    constructor(values?: Iterable<T>) {
       super();
       this.#size = 0;
 

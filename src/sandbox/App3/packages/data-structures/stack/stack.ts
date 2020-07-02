@@ -15,7 +15,7 @@ export class Stack<T> implements DataStructure<T> {
     }
   }
 
-  constructor(values?: IterableIterator<T>) {
+  constructor(values?: Iterable<T>) {
     this.#elements = [];
 
     if (values) {

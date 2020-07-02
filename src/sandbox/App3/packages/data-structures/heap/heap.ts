@@ -24,7 +24,7 @@ export abstract class Heap<T> implements DataStructure<T> {
   }
 
   constructor(
-    values?: IterableIterator<T>,
+    values?: Iterable<T>,
     compare: ComparatorFunction<T> = defaultCompare
   ) {
     this.#heap = [];

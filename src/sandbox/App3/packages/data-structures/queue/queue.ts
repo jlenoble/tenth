@@ -13,7 +13,7 @@ export class Queue<T> implements DataStructure<T> {
     return this.#elements[Symbol.iterator]();
   }
 
-  constructor(values?: IterableIterator<T>) {
+  constructor(values?: Iterable<T>) {
     this.#elements = [];
 
     if (values) {
