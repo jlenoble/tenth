@@ -112,24 +112,89 @@ export const tests = <T>(
       });
     },
 
-    swap() {
-      it("swapping", () => {
-        const h = new Structure(initArgs);
-        const items0 = Array.from(h);
-        const items = Array.from(h);
+    add() {
+      it("adding", () => {
+        const h = new Structure();
+        const items: T[] = [];
 
-        for (let i = 1; i < initArgs.length; i++) {
-          h.swap(i - 1, i);
-          const tmp = items[i - 1];
-          items[i - 1] = items[i];
-          items[i] = tmp;
-          expect(Array.from(h)).toEqual(items);
+        h.add(initArgs[0]);
+        expect(Array.from(h)).toEqual([initArgs[0]]);
+
+        h.add(initArgs[1]).add(initArgs[2]);
+
+        for (let i = 0; i < 3; i++) {
+          const b = h.poll();
+          if (b === undefined) {
+            break;
+          }
+          items.push(b);
         }
 
-        expect(Array.from(h)).not.toEqual(items0);
-        expect(Array.from(h)[initArgs.length - 1]).toEqual(items0[0]);
-        expect(Array.from(h)[0]).toEqual(items0[1]);
+        expect(items).toEqual(
+          initArgs
+            .slice(0, 3)
+            .sort(
+              isMinHeap
+                ? h.comparator.compare
+                : (a: T, b: T) => h.comparator.compare(b, a)
+            )
+        );
+
+        items.length = 0;
+        let args: T[] = initArgs.slice();
+
+        for (const a of args) {
+          h.add(a);
+        }
+
+        for (let i = 0; i < initArgs.length; i++) {
+          const b = h.poll();
+          if (b === undefined) {
+            break;
+          }
+          items.push(b);
+        }
+
+        expect(items).toEqual(
+          initArgs
+            .slice()
+            .sort(
+              isMinHeap
+                ? h.comparator.compare
+                : (a: T, b: T) => h.comparator.compare(b, a)
+            )
+        );
+
+        items.length = 0;
+        args = initArgs.slice().reverse();
+
+        for (const a of args) {
+          h.add(a);
+        }
+
+        for (let i = 0; i < initArgs.length; i++) {
+          const b = h.poll();
+          if (b === undefined) {
+            break;
+          }
+          items.push(b);
+        }
+
+        expect(items).toEqual(
+          initArgs
+            .slice()
+            .sort(
+              isMinHeap
+                ? h.comparator.compare
+                : (a: T, b: T) => h.comparator.compare(b, a)
+            )
+        );
       });
     },
+
+    // private methods
+    swap: false,
+    heapifyUp: false,
+    heapifyDown: false,
   };
 };
