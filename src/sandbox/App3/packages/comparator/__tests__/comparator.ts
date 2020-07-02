@@ -1,5 +1,5 @@
 import { makeTestSuite } from "../../testsuite";
-import { Comparator } from "../comparator";
+import { Comparator, defaultCompare } from "../comparator";
 
 type Obj = { value: number };
 const compare = (a: Obj, b: Obj) =>
@@ -8,6 +8,14 @@ const compare = (a: Obj, b: Obj) =>
 makeTestSuite(
   Comparator,
   {
+    compare({ it }) {
+      it(() => {
+        const c = new Comparator<number>();
+        expect(c.compare).toBe(defaultCompare);
+        const d = new Comparator<Obj>(compare);
+        expect(d.compare).toBe(compare);
+      });
+    },
     equal({ it }) {
       it(() => {
         const c = new Comparator<number>();
