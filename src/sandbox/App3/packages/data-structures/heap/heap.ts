@@ -49,7 +49,7 @@ export abstract class Heap<T> implements DataStructure<T> {
     return Math.floor((childIndex - 1) / 2);
   }
 
-  swap(idx1: number, idx2: number): void {
+  private swap(idx1: number, idx2: number): void {
     const tmp = this.#heap[idx2];
     this.#heap[idx2] = this.#heap[idx1];
     this.#heap[idx1] = tmp;
@@ -137,7 +137,7 @@ export abstract class Heap<T> implements DataStructure<T> {
     return this;
   }
 
-  heapifyUp(currentIndex: number): void {
+  private heapifyUp(currentIndex: number): void {
     let parentIndex = this.getParentIndex(currentIndex);
 
     while (
@@ -153,7 +153,7 @@ export abstract class Heap<T> implements DataStructure<T> {
     }
   }
 
-  heapifyDown(currentIndex: number): void {
+  private heapifyDown(currentIndex: number): void {
     let nextIndex = null;
     let leftIndex = this.getLeftChildIndex(currentIndex);
     let rightIndex = this.getRightChildIndex(currentIndex);
