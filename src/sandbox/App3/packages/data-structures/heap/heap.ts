@@ -25,10 +25,10 @@ export abstract class Heap<T> implements DataStructure<T> {
 
   constructor(
     values?: IterableIterator<T>,
-    comparatorFunction: ComparatorFunction<T> = defaultCompare
+    compare: ComparatorFunction<T> = defaultCompare
   ) {
     this.#heap = [];
-    this.#comparator = new Comparator(comparatorFunction);
+    this.#comparator = new Comparator(compare);
 
     if (values) {
       for (const value of values) {
