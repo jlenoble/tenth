@@ -192,6 +192,58 @@ export const tests = <T>(
       });
     },
 
+    remove() {
+      let h = new Structure(initArgs);
+      const items: T[] = [];
+
+      expect(h.size).toBe(initArgs.length);
+      h.remove(initArgs[0]);
+      expect(h.size).toBeLessThan(initArgs.length);
+
+      for (let i = 0; i < initArgs.length - h.size; i++) {
+        const b = h.poll();
+        if (b === undefined) {
+          break;
+        }
+        items.push(b);
+      }
+
+      expect(items).toEqual(
+        initArgs
+          .filter((value) => value !== initArgs[0])
+          .sort(
+            isMinHeap
+              ? h.comparator.compare
+              : (a: T, b: T) => h.comparator.compare(b, a)
+          )
+      );
+
+      h = new Structure(initArgs);
+      items.length = 0;
+
+      expect(h.size).toBe(initArgs.length);
+      h.remove(initArgs[2]).remove(initArgs[3]);
+      expect(h.size).toBeLessThan(initArgs.length);
+
+      for (let i = 0; i < initArgs.length - h.size; i++) {
+        const b = h.poll();
+        if (b === undefined) {
+          break;
+        }
+        items.push(b);
+      }
+
+      expect(items).toEqual(
+        initArgs
+          .filter((value) => value !== initArgs[2] && value !== initArgs[3])
+          .sort(
+            isMinHeap
+              ? h.comparator.compare
+              : (a: T, b: T) => h.comparator.compare(b, a)
+          )
+      );
+    },
+
     // private methods
     swap: false,
     heapifyUp: false,
