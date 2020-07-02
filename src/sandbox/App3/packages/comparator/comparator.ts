@@ -7,6 +7,10 @@ export const defaultCompare = <T extends unknown>(a: T, b: T): -1 | 0 | 1 => {
 export class Comparator<T> {
   #compare: ComparatorFunction<T>;
 
+  get compare(): ComparatorFunction<T> {
+    return this.#compare;
+  }
+
   constructor(compareFunction: ComparatorFunction<T> = defaultCompare) {
     this.#compare = compareFunction;
   }
