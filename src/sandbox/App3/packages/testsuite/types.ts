@@ -4,7 +4,7 @@ export type DefaultTestOptions = {
   it: (fn: (...args: any[]) => any) => void;
 };
 
-export type Test = (options: DefaultTestOptions) => void;
+export type Test = ((options: DefaultTestOptions) => void) | false;
 
 export interface AnyObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

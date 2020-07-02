@@ -14,6 +14,10 @@ export const execIt = ({
 }): void => {
   const test: Test =
     (set.has(name) && testSuite[name]) ||
+    (testSuite[name] === false &&
+      (() => {
+        // no-op
+      })) ||
     (isPrimitiveObjectProperty(name) &&
       (({ title }: DefaultTestOptions) => {
         it.todo(
