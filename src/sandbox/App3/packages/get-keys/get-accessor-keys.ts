@@ -2,18 +2,7 @@ import {
   isExcludedProperty,
   extendIsExcludedProperty,
 } from "./is-excluded-property";
-
-const isAccessor = <T extends Record<string, unknown>>(
-  obj: T,
-  key: string
-): boolean => {
-  const descriptor = Object.getOwnPropertyDescriptor(obj, key);
-  return (
-    descriptor !== undefined &&
-    (typeof descriptor.get === "function" ||
-      typeof descriptor.set === "function")
-  );
-};
+import { isAccessor } from "./is-accessor";
 
 export const getAccessorKeys = <T extends Record<string, unknown>>(
   obj: T,
