@@ -86,12 +86,15 @@ export abstract class Heap<T> implements DataStructure<T> {
     return this;
   }
 
-  remove(item: T): this {
+  remove(
+    item: T,
+    equal: (a: T, b: T) => boolean = this.#comparator.equal
+  ): this {
     let nItems = 0;
     let l = this.#heap.length;
 
     for (let i = 0; i < l; i++) {
-      if (this.#comparator.equal(item, this.#heap[i])) {
+      if (equal(item, this.#heap[i])) {
         nItems++;
       }
     }
@@ -101,7 +104,7 @@ export abstract class Heap<T> implements DataStructure<T> {
       l = this.#heap.length;
 
       for (; iRemove < l; iRemove++) {
-        if (this.#comparator.equal(item, this.#heap[iRemove])) {
+        if (equal(item, this.#heap[iRemove])) {
           break;
         }
       }
