@@ -6,6 +6,7 @@ export const defaultCompare = <T extends unknown>(a: T, b: T): -1 | 0 | 1 => {
 
 export class Comparator<T> {
   #compare: ComparatorFunction<T>;
+  equal: (a: T, b: T) => boolean;
 
   get compare(): ComparatorFunction<T> {
     return this.#compare;
@@ -13,10 +14,13 @@ export class Comparator<T> {
 
   constructor(compareFunction: ComparatorFunction<T> = defaultCompare) {
     this.#compare = compareFunction;
-  }
+    this.equal = (a: T, b: T) => this.#compare(a, b) === 0;
 
-  equal(a: T, b: T): boolean {
-    return this.#compare(a, b) === 0;
+    Object.defineProperty(this, "equal", {
+      writable: false,
+      enumerable: false,
+      configurable: false,
+    });
   }
 
   lessThan(a: T, b: T): boolean {
