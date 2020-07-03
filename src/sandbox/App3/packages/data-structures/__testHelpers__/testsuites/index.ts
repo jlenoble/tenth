@@ -6,6 +6,7 @@ export { tests as linkedListTests } from "./linked-list";
 export { tests as stackTests } from "./stack";
 export { tests as queueTests } from "./queue";
 export { tests as heapTests } from "./heap";
+export { tests as priorityQueueTests } from "./priority-queue";
 
 export const staticTests = <T>(options: {
   length: number;

@@ -2,8 +2,8 @@ import { TestSuite } from "../../../testsuite";
 import { DataStructure, Constructor } from "../../types";
 import { fillInitArgs } from "../fill-init-args";
 
-export const tests = <T>(
-  Structure: Constructor<DataStructure<T>>,
+export const tests = <T, V = T>(
+  Structure: Constructor<DataStructure<T | V>>,
   initArgs: T[]
 ): TestSuite => {
   initArgs = fillInitArgs(initArgs);
