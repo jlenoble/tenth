@@ -49,6 +49,9 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   get value(): T {
     return this.#value;
   }
+  protected setValue(value: T): void {
+    this.#value = value;
+  }
 
   get comparator(): Comparator<T> {
     return this.#comparator;
@@ -73,5 +76,40 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     this.#parent = null;
     this.#left = null;
     this.#right = null;
+  }
+
+  removeChild(node: BinaryTreeNode<T>): boolean {
+    if (this.#left === node) {
+      this.left = null;
+      return true;
+    }
+
+    if (this.#right === node) {
+      this.right = null;
+      return true;
+    }
+
+    return false;
+  }
+
+  replaceChild(
+    node: BinaryTreeNode<T>,
+    replacementNode: BinaryTreeNode<T>
+  ): boolean {
+    if (node === null || replacementNode === null) {
+      return false;
+    }
+
+    if (this.#left === node) {
+      this.left = replacementNode;
+      return true;
+    }
+
+    if (this.#right === node) {
+      this.right = replacementNode;
+      return true;
+    }
+
+    return false;
   }
 }

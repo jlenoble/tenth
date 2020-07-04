@@ -19,7 +19,15 @@ class RootBinarySearchTreeNode<T>
     return true;
   }
 
+  remove(): boolean {
+    return false;
+  }
+
   has(): boolean {
+    return false;
+  }
+
+  equalValue(): boolean {
     return false;
   }
 }
@@ -62,29 +70,84 @@ class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
     return false;
   }
 
+  remove(value: T): boolean {
+    const node = this.find(value);
+
+    if (node === null) {
+      return false;
+    }
+
+    const { parent, left, right } = node;
+
+    if (left === null && right === null) {
+      if (parent !== null) {
+        parent.removeChild(node);
+      } else {
+        return false;
+      }
+    } else if (right !== null) {
+      const nextNode = right.findMin();
+
+      if (nextNode !== right) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        nextNode.parent!.removeChild(nextNode);
+        node.setValue(nextNode.value);
+      } else {
+        node.setValue(right.value);
+        node.right = right.right;
+      }
+    } else if (parent !== null) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      parent.replaceChild(node, left!);
+    } else {
+      // BinaryTreeNode.copyNode(childNode, node);
+    }
+
+    // Clear the parent of removed node.
+    // node.parent = null;
+
+    return true;
+  }
+
   has(value: T): boolean {
+    return Boolean(this.find(value));
+  }
+
+  find(value: T): BinarySearchTreeNode<T> | null {
     if (this.comparator.equal(this.value, value)) {
-      return true;
+      return this;
     }
 
     if (this.comparator.lessThan(value, this.value) && this.left !== null) {
-      return this.left.has(value);
+      return this.left.find(value);
     }
 
     if (this.comparator.greaterThan(value, this.value) && this.right !== null) {
-      return this.right.has(value);
+      return this.right.find(value);
     }
 
-    return false;
+    return null;
+  }
+
+  findMin(): BinarySearchTreeNode<T> {
+    if (this.left === null) {
+      return this;
+    }
+
+    return this.left.findMin();
+  }
+
+  equalValue(value: T): boolean {
+    return this.comparator.equal(this.value, value);
   }
 }
 
-export class BinarySearchTree<T>
-  implements BinarySearchTreeInterface<T, BinarySearchTreeNodeInterface<T>> {
+export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
+  #emptyRoot: RootBinarySearchTreeNodeInterface<T>;
   #root: RootBinarySearchTreeNodeInterface<T>;
   #comparator: Comparator<T>;
 
-  get root(): BinarySearchTreeNodeInterface<T> | null {
+  protected get root(): BinarySearchTreeNodeInterface<T> | null {
     if (this.#root instanceof BinarySearchTreeNode) {
       return this.#root;
     }
@@ -103,15 +166,27 @@ export class BinarySearchTree<T>
   }
 
   constructor(comparator: Comparator<T>) {
-    this.#root = new RootBinarySearchTreeNode<T>((value: T) => {
+    this.#emptyRoot = new RootBinarySearchTreeNode<T>((value: T) => {
       this.#root = new BinarySearchTreeNode(value, comparator);
     });
 
+    this.#root = this.#emptyRoot;
     this.#comparator = comparator;
   }
 
   insert(value: T): boolean {
     return this.#root.insert(value);
+  }
+
+  remove(value: T): boolean {
+    const removed = this.#root.remove(value);
+
+    if (!removed && this.#root.equalValue(value)) {
+      this.#root = this.#emptyRoot;
+      return true;
+    }
+
+    return removed;
   }
 
   has(value: T): boolean {
