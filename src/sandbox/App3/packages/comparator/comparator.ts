@@ -18,9 +18,13 @@ export class Comparator<T> {
 
     Object.defineProperty(this, "equal", {
       writable: false,
-      enumerable: false,
+      enumerable: true,
       configurable: false,
     });
+  }
+
+  unequal(a: T, b: T): boolean {
+    return this.#compare(a, b) !== 0;
   }
 
   lessThan(a: T, b: T): boolean {

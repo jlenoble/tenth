@@ -45,6 +45,22 @@ makeTestSuite(
         expect(d.equal(o2, o1)).toBe(false);
       });
     },
+    unequal({ it }) {
+      it(() => {
+        const c = new Comparator<number>();
+        expect(c.unequal(0, 10)).toBe(true);
+        expect(c.unequal(10, 10)).toBe(false);
+        expect(c.unequal(10, 0)).toBe(true);
+
+        const o1 = { value: 5 };
+        const o2 = { value: 0 };
+
+        const d = new Comparator<Obj>(compare);
+        expect(d.unequal(o1, o2)).toBe(true);
+        expect(d.unequal(o1, o1)).toBe(false);
+        expect(d.unequal(o2, o1)).toBe(true);
+      });
+    },
     lessThan({ it }) {
       it(() => {
         const c = new Comparator<number>();
