@@ -1,6 +1,7 @@
 import { Comparator } from "../../comparator";
+import { BinaryTreeNode as BinaryTreeNodeInterface } from "./types";
 
-export class BinaryTreeNode<T> {
+export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   #left: BinaryTreeNode<T> | null;
   #right: BinaryTreeNode<T> | null;
   #parent: BinaryTreeNode<T> | null;
@@ -39,6 +40,10 @@ export class BinaryTreeNode<T> {
 
   get parent(): BinaryTreeNode<T> | null {
     return this.#parent;
+  }
+
+  get root(): BinaryTreeNode<T> {
+    return this.#parent === null ? this : this.#parent.root;
   }
 
   get value(): T {
