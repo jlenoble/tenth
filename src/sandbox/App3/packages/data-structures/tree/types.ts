@@ -7,11 +7,17 @@ export interface BinaryTreeNode<T> extends Node<T> {
   right: BinaryTreeNode<T> | null;
   parent: BinaryTreeNode<T> | null;
   root: BinaryTreeNode<T>;
+
+  [Symbol.iterator](): IterableIterator<T>;
 }
 
-export type BinaryTreeConstructor<T> = Constructor<BinaryTree<T>>;
+export type BinaryTreeConstructor<T, N extends BinaryTreeNode<T>> = Constructor<
+  BinaryTree<T, N>
+>;
 
-export interface BinaryTree<T> {
-  root: BinaryTreeNode<T> | null;
+export interface BinaryTree<T, N extends BinaryTreeNode<T>> {
+  root: N | null;
   comparator: Comparator<T>;
+
+  [Symbol.iterator](): IterableIterator<T>;
 }
