@@ -18,6 +18,10 @@ class RootBinarySearchTreeNode<T>
     this.#initializeTree(value);
     return true;
   }
+
+  has(): boolean {
+    return false;
+  }
 }
 
 class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
@@ -57,6 +61,22 @@ class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
 
     return false;
   }
+
+  has(value: T): boolean {
+    if (this.comparator.equal(this.value, value)) {
+      return true;
+    }
+
+    if (this.comparator.lessThan(value, this.value) && this.left !== null) {
+      return this.left.has(value);
+    }
+
+    if (this.comparator.greaterThan(value, this.value) && this.right !== null) {
+      return this.right.has(value);
+    }
+
+    return false;
+  }
 }
 
 export class BinarySearchTree<T>
@@ -92,5 +112,9 @@ export class BinarySearchTree<T>
 
   insert(value: T): boolean {
     return this.#root.insert(value);
+  }
+
+  has(value: T): boolean {
+    return this.#root.has(value);
   }
 }

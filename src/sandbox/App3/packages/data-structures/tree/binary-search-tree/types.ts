@@ -3,6 +3,7 @@ import { BinaryTreeNode, BinaryTree } from "../types";
 
 export interface RootBinarySearchTreeNode<T> {
   insert(value: T): boolean;
+  has(value: T): boolean;
 }
 
 export interface BinarySearchTreeNode<T>
@@ -21,4 +22,5 @@ export type BinarySearchTreeConstructor<
 export interface BinarySearchTree<T, N extends BinarySearchTreeNode<T>>
   extends BinaryTree<T, N> {
   insert(value: T): boolean;
+  has(value: T): boolean;
 }
