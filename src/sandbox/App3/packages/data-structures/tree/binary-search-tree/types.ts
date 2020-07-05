@@ -1,19 +1,16 @@
 import { Constructor } from "../../types";
 import { BinaryTreeNode, BinaryTree } from "../types";
 
-export interface RootBinarySearchTreeNode<T> {
+export type BinarySearchTreeNodeConstructor<T> = Constructor<
+  BinarySearchTreeNode<T>
+>;
+
+export interface BinarySearchTreeNode<T> extends BinaryTreeNode<T> {
   insert(value: T): boolean;
   remove(value: T): boolean;
   has(value: T): boolean;
   equalValue(value: T): boolean;
-}
-
-export interface BinarySearchTreeNode<T>
-  extends BinaryTreeNode<T>,
-    RootBinarySearchTreeNode<T> {
-  left: BinarySearchTreeNode<T> | null;
-  right: BinarySearchTreeNode<T> | null;
-  parent: BinarySearchTreeNode<T> | null;
+  find(value: T): BinarySearchTreeNode<T> | null;
 }
 
 export type BinarySearchTreeConstructor<T> = Constructor<BinarySearchTree<T>>;

@@ -5,17 +5,45 @@ import {
 } from "../../../comparator";
 import { BinaryTreeNode } from "../binary-tree-node";
 import {
-  RootBinarySearchTreeNode as RootBinarySearchTreeNodeInterface,
   BinarySearchTreeNode as BinarySearchTreeNodeInterface,
+  BinarySearchTreeNodeConstructor,
   BinarySearchTree as BinarySearchTreeInterface,
 } from "./types";
 
-class RootBinarySearchTreeNode<T>
-  implements RootBinarySearchTreeNodeInterface<T> {
+class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
   #initializeTree: (value: T) => void;
+  #comparator: Comparator<T>;
 
-  constructor(initializeTree: (value: T) => void) {
+  get left(): BinarySearchTreeNodeInterface<T> | null {
+    return null;
+  }
+
+  get right(): BinarySearchTreeNodeInterface<T> | null {
+    return null;
+  }
+
+  get parent(): BinarySearchTreeNodeInterface<T> | null {
+    return null;
+  }
+
+  get root(): BinarySearchTreeNodeInterface<T> {
+    return this;
+  }
+
+  get value(): T {
+    throw new Error("EmptyBinarySearchTreeNode cannot hold any value");
+  }
+
+  get comparator(): Comparator<T> {
+    return this.#comparator;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  *[Symbol.iterator](): IterableIterator<T> {}
+
+  constructor(initializeTree: (value: T) => void, comparator: Comparator<T>) {
     this.#initializeTree = initializeTree;
+    this.#comparator = comparator;
   }
 
   insert(value: T): boolean {
@@ -34,9 +62,13 @@ class RootBinarySearchTreeNode<T>
   equalValue(): boolean {
     return false;
   }
+
+  find(): BinarySearchTreeNode<T> | null {
+    return null;
+  }
 }
 
-class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
+export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
   implements BinarySearchTreeNodeInterface<T> {
   get left(): BinarySearchTreeNode<T> | null {
     return super.left as BinarySearchTreeNode<T> | null;
@@ -62,14 +94,20 @@ class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
         return this.left.insert(value);
       }
 
-      this.left = new BinarySearchTreeNode(value, this.comparator);
+      this.left = new (this.constructor as typeof BinarySearchTreeNode)(
+        value,
+        this.comparator
+      );
       return true;
     } else if (this.comparator.greaterThan(value, this.value)) {
       if (this.right !== null) {
         return this.right.insert(value);
       }
 
-      this.right = new BinarySearchTreeNode(value, this.comparator);
+      this.right = new (this.constructor as typeof BinarySearchTreeNode)(
+        value,
+        this.comparator
+      );
       return true;
     }
 
@@ -144,16 +182,16 @@ class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
 }
 
 export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
-  #emptyRoot: RootBinarySearchTreeNodeInterface<T>;
-  #root: RootBinarySearchTreeNodeInterface<T>;
+  #emptyRoot: BinarySearchTreeNodeInterface<T>;
+  #root: BinarySearchTreeNodeInterface<T>;
   #comparator: Comparator<T>;
   #size: number;
 
-  protected get root(): BinarySearchTreeNodeInterface<T> | null {
-    if (this.#root instanceof BinarySearchTreeNode) {
-      return this.#root;
-    }
-    return null;
+  protected get root(): BinarySearchTreeNodeInterface<T> {
+    return this.#root;
+  }
+  protected setRoot(node: BinarySearchTreeNodeInterface<T>): void {
+    this.#root = node;
   }
 
   get comparator(): Comparator<T> {
@@ -165,22 +203,20 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
   }
 
   *[Symbol.iterator](): IterableIterator<T> {
-    const root = this.root;
-    if (root !== null) {
-      yield* root;
-    }
+    yield* this.#root;
   }
 
   constructor(
     values?: Iterable<T>,
-    compare: ComparatorFunction<T> = defaultCompare
+    compare: ComparatorFunction<T> = defaultCompare,
+    Node: BinarySearchTreeNodeConstructor<T> = BinarySearchTreeNode
   ) {
     this.#comparator = new Comparator(compare);
     this.#size = 0;
 
-    this.#emptyRoot = new RootBinarySearchTreeNode<T>((value: T) => {
-      this.#root = new BinarySearchTreeNode(value, this.#comparator);
-    });
+    this.#emptyRoot = new EmptyBinarySearchTreeNode<T>((value: T) => {
+      this.#root = new Node(value, this.#comparator);
+    }, this.#comparator);
 
     this.#root = this.#emptyRoot;
 
