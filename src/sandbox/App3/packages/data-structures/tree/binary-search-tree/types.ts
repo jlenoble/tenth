@@ -20,5 +20,6 @@ export type BinarySearchTreeConstructor<T> = Constructor<BinarySearchTree<T>>;
 
 export interface BinarySearchTree<T> extends BinaryTree<T> {
   insert(value: T): boolean;
+  remove(value: T): boolean;
   has(value: T): boolean;
 }
