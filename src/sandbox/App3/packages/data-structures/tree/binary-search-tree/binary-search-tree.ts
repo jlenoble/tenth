@@ -99,12 +99,7 @@ class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
     } else if (parent !== null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       parent.replaceChild(node, left!);
-    } else {
-      // BinaryTreeNode.copyNode(childNode, node);
     }
-
-    // Clear the parent of removed node.
-    // node.parent = null;
 
     return true;
   }
