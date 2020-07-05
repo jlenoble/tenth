@@ -1,4 +1,4 @@
-import { Node, Constructor } from "../types";
+import { Node, Constructor, DataStructure } from "../types";
 import { Comparator } from "../../comparator";
 
 export interface BinaryTreeNode<T> extends Node<T> {
@@ -13,7 +13,7 @@ export interface BinaryTreeNode<T> extends Node<T> {
 
 export type BinaryTreeConstructor<T> = Constructor<BinaryTree<T>>;
 
-export interface BinaryTree<T> {
+export interface BinaryTree<T> extends DataStructure<T> {
   comparator: Comparator<T>;
 
   [Symbol.iterator](): IterableIterator<T>;
