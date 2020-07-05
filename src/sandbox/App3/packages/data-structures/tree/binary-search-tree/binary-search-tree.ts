@@ -1,4 +1,8 @@
-import { Comparator } from "../../../comparator";
+import {
+  Comparator,
+  defaultCompare,
+  ComparatorFunction,
+} from "../../../comparator";
 import { BinaryTreeNode } from "../binary-tree-node";
 import {
   RootBinarySearchTreeNode as RootBinarySearchTreeNodeInterface,
@@ -59,12 +63,14 @@ class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
       }
 
       this.left = new BinarySearchTreeNode(value, this.comparator);
+      return true;
     } else if (this.comparator.greaterThan(value, this.value)) {
       if (this.right !== null) {
         return this.right.insert(value);
       }
 
       this.right = new BinarySearchTreeNode(value, this.comparator);
+      return true;
     }
 
     return false;
@@ -141,6 +147,7 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
   #emptyRoot: RootBinarySearchTreeNodeInterface<T>;
   #root: RootBinarySearchTreeNodeInterface<T>;
   #comparator: Comparator<T>;
+  #size: number;
 
   protected get root(): BinarySearchTreeNodeInterface<T> | null {
     if (this.#root instanceof BinarySearchTreeNode) {
@@ -153,6 +160,10 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
     return this.#comparator;
   }
 
+  get size(): number {
+    return this.#size;
+  }
+
   *[Symbol.iterator](): IterableIterator<T> {
     const root = this.root;
     if (root !== null) {
@@ -160,25 +171,48 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
     }
   }
 
-  constructor(comparator: Comparator<T>) {
+  constructor(
+    values?: Iterable<T>,
+    compare: ComparatorFunction<T> = defaultCompare
+  ) {
+    this.#comparator = new Comparator(compare);
+    this.#size = 0;
+
     this.#emptyRoot = new RootBinarySearchTreeNode<T>((value: T) => {
-      this.#root = new BinarySearchTreeNode(value, comparator);
+      this.#root = new BinarySearchTreeNode(value, this.#comparator);
     });
 
     this.#root = this.#emptyRoot;
-    this.#comparator = comparator;
+
+    if (values !== undefined) {
+      for (const value of values) {
+        this.insert(value);
+      }
+    }
+  }
+
+  isEmpty(): boolean {
+    return this.#size === 0;
   }
 
   insert(value: T): boolean {
-    return this.#root.insert(value);
+    if (this.#root.insert(value)) {
+      this.#size++;
+      return true;
+    }
+    return false;
   }
 
   remove(value: T): boolean {
-    const removed = this.#root.remove(value);
+    let removed = this.#root.remove(value);
 
     if (!removed && this.#root.equalValue(value)) {
       this.#root = this.#emptyRoot;
-      return true;
+      removed = true;
+    }
+
+    if (removed) {
+      this.#size--;
     }
 
     return removed;
