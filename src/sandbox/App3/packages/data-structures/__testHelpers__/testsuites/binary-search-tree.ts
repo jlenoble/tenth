@@ -1,101 +1,95 @@
 import { TestSuite } from "../../../testsuite";
 import { BinarySearchTreeConstructor } from "../../tree/binary-search-tree/types";
-import { BinarySearchTree } from "../../tree/binary-search-tree";
-import { Comparator } from "../../../comparator";
+import { defaultCompare } from "../../../comparator";
 import { tests as commonTests } from "./common";
 
 export const tests = <T>(
-  Structure: BinarySearchTreeConstructor<T>
+  Structure: BinarySearchTreeConstructor<T>,
+  initArgs: T[]
 ): TestSuite => {
+  const sortedArgs = Array.from(new Set(initArgs)).sort(defaultCompare);
+
   return {
-    ...commonTests(Structure, []),
+    ...commonTests(Structure, sortedArgs),
 
     comparator({ it }): void {
       it(() => {
-        const comparator = new Comparator<number>();
-        const tree = new Structure(comparator);
-        expect(tree.comparator).toBe(comparator);
+        const tree1 = new Structure();
+        expect(tree1.comparator).toBeDefined();
+        expect(tree1.comparator.compare).toBe(defaultCompare);
+
+        const compare = (a: T, b: T) => (a === b ? 0 : a < b ? -1 : 1);
+        const tree2 = new Structure(undefined, compare);
+        expect(tree2.comparator.compare).toBe(compare);
       });
     },
 
     insert(): void {
       it("inserting", () => {
-        const comparator = new Comparator<number>();
-        const tree = new Structure(comparator);
-
-        tree.insert(1);
-        tree.insert(10);
-        tree.insert(12);
-        tree.insert(5);
-        tree.insert(12);
-        tree.insert(12);
-        tree.insert(33);
-        tree.insert(21);
-
-        expect(Array.from(tree)).toEqual([1, 5, 10, 12, 21, 33]);
+        const compare = (a: T, b: T) => (a === b ? 0 : a > b ? -1 : 1);
+        const tree = new Structure(undefined, compare);
+        initArgs.forEach((arg) => tree.insert(arg));
+        expect(Array.from(tree)).toEqual([...sortedArgs].reverse());
       });
     },
 
     remove(): void {
       it("removing", () => {
-        const comparator = new Comparator<number>();
-        const tree = new Structure(comparator);
+        const tree = new Structure(initArgs);
 
-        tree.insert(1);
-        tree.insert(10);
-        tree.insert(12);
-        tree.insert(5);
-        tree.insert(33);
-        tree.insert(21);
+        expect(Array.from(tree)).toEqual(sortedArgs);
 
-        expect(Array.from(tree)).toEqual([1, 5, 10, 12, 21, 33]);
+        function shuffle(a: T[]): T[] {
+          let j;
+          let x;
+          let i;
+          for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+          }
+          return a;
+        }
 
-        expect(tree.remove(10)).toBe(true);
-        expect(Array.from(tree)).toEqual([1, 5, 12, 21, 33]);
+        const values = new Set(sortedArgs);
+        const args = shuffle(initArgs.slice());
 
-        expect(tree.remove(1)).toBe(true);
-        expect(Array.from(tree)).toEqual([5, 12, 21, 33]);
+        for (const value of args) {
+          if (values.has(value)) {
+            expect(tree.remove(value)).toBe(true);
+            values.delete(value);
+          } else {
+            expect(tree.remove(value)).toBe(false);
+          }
 
-        expect(tree.remove(14)).toBe(false);
-        expect(Array.from(tree)).toEqual([5, 12, 21, 33]);
+          expect(Array.from(tree)).toEqual([...values].sort(defaultCompare));
+        }
 
-        expect(tree.remove(33)).toBe(true);
-        expect(Array.from(tree)).toEqual([5, 12, 21]);
-
-        expect(tree.remove(8)).toBe(false);
-        expect(Array.from(tree)).toEqual([5, 12, 21]);
-
-        expect(tree.remove(12)).toBe(true);
-        expect(Array.from(tree)).toEqual([5, 21]);
-
-        expect(tree.remove(21)).toBe(true);
-        expect(Array.from(tree)).toEqual([5]);
-
-        expect(tree.remove(5)).toBe(true);
-        expect(Array.from(tree)).toEqual([]);
-
-        expect(tree.remove(5)).toBe(false);
         expect(Array.from(tree)).toEqual([]);
       });
     },
 
     has(): void {
       it("testing", () => {
-        const comparator = new Comparator<number>();
-        const tree = new Structure(comparator);
+        const tree = new Structure(initArgs);
+        initArgs.forEach((arg) => {
+          expect(tree.has(arg)).toBe(true);
+        });
 
-        tree.insert(1);
-        tree.insert(10);
-        tree.insert(12);
-        tree.insert(5);
-        tree.insert(33);
-        tree.insert(21);
+        if (typeof initArgs[0] === "number") {
+          const max = initArgs.reduce((n: number, a: T) => {
+            if (typeof a === "number") {
+              return n > Math.abs(a) ? n : Math.abs(a);
+            }
+            return n;
+          }, 0);
 
-        expect(tree.has(10)).toBe(true);
-        expect(tree.has(33)).toBe(true);
-        expect(tree.has(4)).toBe(false);
-        expect(tree.has(1)).toBe(true);
-        expect(tree.has(17)).toBe(false);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          expect((tree as any).has(max + 1)).toBe(false);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          expect((tree as any).has(-max - 1)).toBe(false);
+        }
       });
     },
 

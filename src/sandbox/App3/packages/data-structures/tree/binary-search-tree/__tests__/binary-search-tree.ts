@@ -5,9 +5,11 @@ import {
   staticTests,
 } from "../../../__testHelpers__/testsuites";
 
+const initArgs = [1, 10, 12, 5, 12, 12, 33, 21];
+
 makeTestSuite(
   BinarySearchTree,
-  binarySearchTreeTests(BinarySearchTree),
+  binarySearchTreeTests(BinarySearchTree, initArgs),
   staticTests({
     length: 1,
     name: "BinarySearchTree",
