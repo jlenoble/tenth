@@ -68,6 +68,18 @@ export const tests = <T>(
 
         expect(Array.from(tree)).toEqual([]);
       });
+
+      it("removing (unbalancing)", () => {
+        const tree = new Structure(initArgs);
+
+        expect(Array.from(tree)).toEqual(sortedArgs);
+
+        tree.remove(sortedArgs[0]);
+        tree.remove(sortedArgs[1]);
+        tree.remove(sortedArgs[2]);
+
+        expect(Array.from(tree)).toEqual(sortedArgs.slice(3));
+      });
     },
 
     has(): void {
