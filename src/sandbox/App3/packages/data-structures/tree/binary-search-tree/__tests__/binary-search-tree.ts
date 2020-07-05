@@ -22,6 +22,8 @@ makeTestSuite(
         tree.insert(10);
         tree.insert(12);
         tree.insert(5);
+        tree.insert(12);
+        tree.insert(12);
         tree.insert(33);
         tree.insert(21);
 
