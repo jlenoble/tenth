@@ -9,7 +9,6 @@ export interface BinarySearchTreeNode<T> extends BinaryTreeNode<T> {
   insert(value: T): boolean;
   remove(value: T): boolean;
   has(value: T): boolean;
-  equalValue(value: T): boolean;
 
   _insert(value: T): BinarySearchTreeNode<T> | null;
   _remove(value: T): BinarySearchTreeNode<T> | null;

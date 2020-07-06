@@ -62,10 +62,6 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
     return false;
   }
 
-  equalValue(): boolean {
-    return false;
-  }
-
   _insert(value: T): BinarySearchTreeNodeInterface<T> | null {
     return this.#initializeTree(value);
   }
@@ -151,8 +147,6 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
     if (left === null && right === null) {
       if (parent !== null) {
         parent.removeChild(node);
-      } else {
-        return null;
       }
     } else if (right !== null) {
       const nextNode = right._findMin();
@@ -195,10 +189,6 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
     }
 
     return this.left._findMin();
-  }
-
-  equalValue(value: T): boolean {
-    return this.comparator.equal(this.value, value);
   }
 }
 
@@ -254,29 +244,38 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
   }
 
   insert(value: T): boolean {
-    if (this.#root.insert(value)) {
-      this.#size++;
-      return true;
-    }
-    return false;
+    return Boolean(this._insert(value));
   }
 
   remove(value: T): boolean {
-    let removed = this.#root.remove(value);
-
-    if (!removed && this.#root.equalValue(value)) {
-      this.#root = this.#emptyRoot;
-      removed = true;
-    }
-
-    if (removed) {
-      this.#size--;
-    }
-
-    return removed;
+    return Boolean(this._remove(value));
   }
 
   has(value: T): boolean {
     return this.#root.has(value);
+  }
+
+  _insert(value: T): BinarySearchTreeNodeInterface<T> | null {
+    const node = this.#root._insert(value);
+
+    if (node !== null) {
+      this.#size++;
+    }
+
+    return node;
+  }
+
+  _remove(value: T): BinarySearchTreeNodeInterface<T> | null {
+    const node = this.#root._remove(value);
+
+    if (node === this.#root && this.#size === 1) {
+      this.#root = this.#emptyRoot;
+    }
+
+    if (node !== null) {
+      this.#size--;
+    }
+
+    return node;
   }
 }
