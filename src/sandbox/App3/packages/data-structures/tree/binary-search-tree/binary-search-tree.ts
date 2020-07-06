@@ -214,7 +214,7 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
   protected get root(): BinarySearchTreeNodeInterface<T> {
     return this.#root;
   }
-  protected setRoot(node: BinarySearchTreeNodeInterface<T>): void {
+  protected set root(node: BinarySearchTreeNodeInterface<T>) {
     this.#root = node;
   }
 
