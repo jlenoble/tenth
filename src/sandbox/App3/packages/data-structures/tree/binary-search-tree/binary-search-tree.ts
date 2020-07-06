@@ -11,7 +11,7 @@ import {
 } from "./types";
 
 class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
-  #initializeTree: (value: T) => void;
+  #initializeTree: (value: T) => BinarySearchTreeNodeInterface<T>;
   #comparator: Comparator<T>;
 
   get left(): BinarySearchTreeNodeInterface<T> | null {
@@ -41,7 +41,10 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   *[Symbol.iterator](): IterableIterator<T> {}
 
-  constructor(initializeTree: (value: T) => void, comparator: Comparator<T>) {
+  constructor(
+    initializeTree: (value: T) => BinarySearchTreeNodeInterface<T>,
+    comparator: Comparator<T>
+  ) {
     this.#initializeTree = initializeTree;
     this.#comparator = comparator;
   }
@@ -63,7 +66,15 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
     return false;
   }
 
-  find(): BinarySearchTreeNode<T> | null {
+  _insert(value: T): BinarySearchTreeNodeInterface<T> | null {
+    return this.#initializeTree(value);
+  }
+
+  _remove(): BinarySearchTreeNodeInterface<T> | null {
+    return null;
+  }
+
+  _find(): BinarySearchTreeNodeInterface<T> | null {
     return null;
   }
 }
@@ -89,36 +100,50 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
   }
 
   insert(value: T): boolean {
+    return Boolean(this._insert(value));
+  }
+
+  remove(value: T): boolean {
+    return Boolean(this._remove(value));
+  }
+
+  has(value: T): boolean {
+    return Boolean(this._find(value));
+  }
+
+  _insert(value: T): BinarySearchTreeNode<T> | null {
     if (this.comparator.lessThan(value, this.value)) {
       if (this.left !== null) {
-        return this.left.insert(value);
+        return this.left._insert(value);
       }
 
       this.left = new (this.constructor as typeof BinarySearchTreeNode)(
         value,
         this.comparator
       );
-      return true;
+
+      return this.left;
     } else if (this.comparator.greaterThan(value, this.value)) {
       if (this.right !== null) {
-        return this.right.insert(value);
+        return this.right._insert(value);
       }
 
       this.right = new (this.constructor as typeof BinarySearchTreeNode)(
         value,
         this.comparator
       );
-      return true;
+
+      return this.right;
     }
 
-    return false;
+    return null;
   }
 
-  remove(value: T): boolean {
-    const node = this.find(value);
+  _remove(value: T): BinarySearchTreeNode<T> | null {
+    const node = this._find(value);
 
     if (node === null) {
-      return false;
+      return null;
     }
 
     const { parent, left, right } = node;
@@ -127,10 +152,10 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
       if (parent !== null) {
         parent.removeChild(node);
       } else {
-        return false;
+        return null;
       }
     } else if (right !== null) {
-      const nextNode = right.findMin();
+      const nextNode = right._findMin();
 
       if (nextNode !== right) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -145,35 +170,31 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
       parent.replaceChild(node, left!);
     }
 
-    return true;
+    return node;
   }
 
-  has(value: T): boolean {
-    return Boolean(this.find(value));
-  }
-
-  find(value: T): BinarySearchTreeNode<T> | null {
+  _find(value: T): BinarySearchTreeNode<T> | null {
     if (this.comparator.equal(this.value, value)) {
       return this;
     }
 
     if (this.comparator.lessThan(value, this.value) && this.left !== null) {
-      return this.left.find(value);
+      return this.left._find(value);
     }
 
     if (this.comparator.greaterThan(value, this.value) && this.right !== null) {
-      return this.right.find(value);
+      return this.right._find(value);
     }
 
     return null;
   }
 
-  findMin(): BinarySearchTreeNode<T> {
+  _findMin(): BinarySearchTreeNode<T> {
     if (this.left === null) {
       return this;
     }
 
-    return this.left.findMin();
+    return this.left._findMin();
   }
 
   equalValue(value: T): boolean {
@@ -216,6 +237,7 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
 
     this.#emptyRoot = new EmptyBinarySearchTreeNode<T>((value: T) => {
       this.#root = new Node(value, this.#comparator);
+      return this.#root;
     }, this.#comparator);
 
     this.#root = this.#emptyRoot;

@@ -10,7 +10,10 @@ export interface BinarySearchTreeNode<T> extends BinaryTreeNode<T> {
   remove(value: T): boolean;
   has(value: T): boolean;
   equalValue(value: T): boolean;
-  find(value: T): BinarySearchTreeNode<T> | null;
+
+  _insert(value: T): BinarySearchTreeNode<T> | null;
+  _remove(value: T): BinarySearchTreeNode<T> | null;
+  _find(value: T): BinarySearchTreeNode<T> | null;
 }
 
 export type BinarySearchTreeConstructor<T> = Constructor<BinarySearchTree<T>>;
