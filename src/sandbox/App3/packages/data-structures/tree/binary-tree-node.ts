@@ -49,7 +49,7 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   get value(): T {
     return this.#value;
   }
-  protected setValue(value: T): void {
+  set value(value: T) {
     this.#value = value;
   }
 
