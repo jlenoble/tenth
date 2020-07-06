@@ -279,16 +279,20 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
   }
 
   _remove(value: T): BinarySearchTreeNodeInterface<T> | null {
-    const node = this.#root._remove(value);
+    if (this.#size > 0) {
+      const node = this.#root._remove(value);
 
-    if (node === this.#root && this.#size === 1) {
-      this.#root = this.#emptyRoot;
+      if (node === this.#root && this.#size === 1) {
+        this.#root = this.#emptyRoot;
+      }
+
+      if (node !== null) {
+        this.#size--;
+      }
+
+      return node;
     }
 
-    if (node !== null) {
-      this.#size--;
-    }
-
-    return node;
+    return null;
   }
 }
