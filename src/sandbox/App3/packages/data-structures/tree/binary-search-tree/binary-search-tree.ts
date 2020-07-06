@@ -15,19 +15,27 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
   #comparator: Comparator<T>;
 
   get left(): BinarySearchTreeNodeInterface<T> | null {
-    return null;
+    throw new Error(
+      "EmptyBinarySearchTreeNode getters should not be ever called"
+    );
   }
 
   get right(): BinarySearchTreeNodeInterface<T> | null {
-    return null;
+    throw new Error(
+      "EmptyBinarySearchTreeNode getters should not be ever called"
+    );
   }
 
   get parent(): BinarySearchTreeNodeInterface<T> | null {
-    return null;
+    throw new Error(
+      "EmptyBinarySearchTreeNode getters should not be ever called"
+    );
   }
 
   get root(): BinarySearchTreeNodeInterface<T> {
-    return this;
+    throw new Error(
+      "EmptyBinarySearchTreeNode getters should not be ever called"
+    );
   }
 
   get value(): T {
@@ -35,11 +43,14 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
   }
 
   get comparator(): Comparator<T> {
-    return this.#comparator;
+    throw new Error(
+      "EmptyBinarySearchTreeNode getters should not be ever called"
+    );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  *[Symbol.iterator](): IterableIterator<T> {}
+  *[Symbol.iterator](): IterableIterator<T> {
+    // Empty trees call this method, don't throw
+  }
 
   constructor(
     initializeTree: (value: T) => BinarySearchTreeNodeInterface<T>,
@@ -54,24 +65,26 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
     return true;
   }
 
-  remove(): boolean {
-    return false;
-  }
-
-  has(): boolean {
-    return false;
-  }
-
   _insert(value: T): BinarySearchTreeNodeInterface<T> | null {
     return this.#initializeTree(value);
   }
 
+  remove(): boolean {
+    throw new Error("EmptyBinarySearchTreeNode cannot remove anything");
+  }
+
+  has(): boolean {
+    throw new Error(
+      "EmptyBinarySearchTreeNode 'has' method should not be called"
+    );
+  }
+
   _remove(): BinarySearchTreeNodeInterface<T> | null {
-    return null;
+    throw new Error("EmptyBinarySearchTreeNode cannot remove anything");
   }
 
   _find(): BinarySearchTreeNodeInterface<T> | null {
-    return null;
+    throw new Error("EmptyBinarySearchTreeNode cannot find anything");
   }
 }
 
