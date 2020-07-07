@@ -22,4 +22,7 @@ export interface BinarySearchTree<T> extends BinaryTree<T> {
   insert(value: T): boolean;
   remove(value: T): boolean;
   has(value: T): boolean;
+
+  _insert(value: T): BinarySearchTreeNode<T> | null;
+  _remove(value: T): BinarySearchTreeNode<T> | null;
 }
