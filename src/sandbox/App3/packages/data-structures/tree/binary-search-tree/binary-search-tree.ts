@@ -60,6 +60,20 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
     // Empty trees call this method, don't throw
   }
 
+  *dftNodeIterateWithDepth(): IterableIterator<{
+    node: BinarySearchTreeNodeInterface<T>;
+    depth: number;
+  }> {
+    // Empty trees call this method, don't throw
+  }
+
+  *bftNodeIterateWithDepth(): IterableIterator<{
+    node: BinarySearchTreeNodeInterface<T>;
+    depth: number;
+  }> {
+    // Empty trees call this method, don't throw
+  }
+
   constructor(
     initializeTree: (value: T) => BinarySearchTreeNodeInterface<T>,
     comparator: Comparator<T>
