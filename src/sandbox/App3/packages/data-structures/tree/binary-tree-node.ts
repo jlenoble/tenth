@@ -84,6 +84,20 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     }
   }
 
+  *dftNodeIterateWithDepth(
+    depth = 0
+  ): IterableIterator<{ node: BinaryTreeNode<T>; depth: number }> {
+    if (this.#left !== null) {
+      yield* this.#left.dftNodeIterateWithDepth(depth + 1);
+    }
+
+    yield { node: this, depth };
+
+    if (this.#right !== null) {
+      yield* this.#right.dftNodeIterateWithDepth(depth + 1);
+    }
+  }
+
   *bftNodeIterate(): IterableIterator<BinaryTreeNode<T>> {
     const queue: BinaryTreeNode<T>[] = [this];
 
@@ -99,6 +113,30 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
 
       if (node.#right !== null) {
         queue.push(node.#right);
+      }
+    }
+  }
+
+  *bftNodeIterateWithDepth(
+    depth = 0
+  ): IterableIterator<{ node: BinaryTreeNode<T>; depth: number }> {
+    const queue: { node: BinaryTreeNode<T>; depth: number }[] = [
+      { node: this, depth },
+    ];
+
+    while (queue.length !== 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const res = queue.shift()!;
+      const { node, depth } = res;
+
+      yield res;
+
+      if (node.#left !== null) {
+        queue.push({ node: node.#left, depth: depth + 1 });
+      }
+
+      if (node.#right !== null) {
+        queue.push({ node: node.#right, depth: depth + 1 });
       }
     }
   }
