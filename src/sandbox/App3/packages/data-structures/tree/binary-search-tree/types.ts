@@ -13,6 +13,7 @@ export interface BinarySearchTreeNode<T> extends BinaryTreeNode<T> {
   _insert(value: T): BinarySearchTreeNode<T> | null;
   _remove(value: T): BinarySearchTreeNode<T> | null;
   _find(value: T): BinarySearchTreeNode<T> | null;
+  _findMin(): BinarySearchTreeNode<T>;
 }
 
 export type BinarySearchTreeConstructor<T> = Constructor<BinarySearchTree<T>>;
