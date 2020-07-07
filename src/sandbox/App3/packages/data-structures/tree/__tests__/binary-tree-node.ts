@@ -213,7 +213,6 @@ makeTestSuite(
     right: false, // see left
     parent: false, // see left
     root: false, // see left
-    setValue: false, // protected
   },
   {
     length({ it }): void {
