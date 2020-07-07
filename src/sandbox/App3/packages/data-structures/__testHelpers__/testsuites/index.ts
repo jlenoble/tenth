@@ -9,6 +9,8 @@ export { tests as heapTests } from "./heap";
 export { tests as priorityQueueTests } from "./priority-queue";
 export { tests as binarySearchTreeTests } from "./binary-search-tree";
 
+export { tests as binaryTreeNodeTests } from "./binary-tree-node";
+
 export const staticTests = <T>(options: {
   length: number;
   name: string;

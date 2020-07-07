@@ -1,6 +1,8 @@
 import { Node, Constructor, DataStructure } from "../types";
 import { Comparator } from "../../comparator";
 
+export type BinaryTreeNodeConstructor<T> = Constructor<BinaryTreeNode<T>>;
+
 export interface BinaryTreeNode<T> extends Node<T> {
   comparator: Comparator<T>;
   left: BinaryTreeNode<T> | null;
