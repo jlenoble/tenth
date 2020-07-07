@@ -113,4 +113,8 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
 
     return null;
   }
+
+  toString(): string {
+    return this.#root.toString();
+  }
 }

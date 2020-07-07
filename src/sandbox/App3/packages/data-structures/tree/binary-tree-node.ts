@@ -1,4 +1,10 @@
 import { BinaryTreeNode as BinaryTreeNodeInterface } from "./types";
+import treeify from "treeify";
+
+interface AnyObject {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k: string]: any;
+}
 
 export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   #left: BinaryTreeNode<T> | null;
@@ -175,5 +181,38 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     }
 
     return false;
+  }
+
+  toString(): string {
+    const objs: Map<BinaryTreeNode<T>, AnyObject> = new Map();
+    const treeObj: AnyObject = {};
+
+    for (const node of this.bftNodeIterate()) {
+      const { parent, value } = node;
+      const str = JSON.stringify(value).replace(/"(\w+)":/g, "$1:");
+
+      if (parent === null) {
+        treeObj[str] = {};
+        objs.set(node, treeObj[str]);
+        continue;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const obj = objs.get(parent)!;
+
+      if (parent.left === node && parent.right === null) {
+        obj[str] = {};
+        obj["null"] = {};
+      } else if (parent.right === node && parent.left === null) {
+        obj["null"] = {};
+        obj[str] = {};
+      } else {
+        obj[str] = {};
+      }
+
+      objs.set(node, obj[str]);
+    }
+
+    return treeify.asTree(treeObj, true, true);
   }
 }
