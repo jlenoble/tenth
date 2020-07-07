@@ -275,6 +275,42 @@ export const tests = (
       expect(Array.from(node2)).toEqual([o2]);
     });
   },
+
+  _remove({ it }): void {
+    it(() => {
+      const o1 = { a: 1, b: "foo" };
+      const o2 = { a: 2, b: "bar" };
+      const o3 = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      let node1 = new Structure(o1, comparator);
+      let node2 = node1._insert(o2);
+      let node3 = node1._insert(o3);
+
+      expect(node1._remove(o3)).toBe(node3);
+      expect(node1._remove(o2)).toBe(node2);
+      expect(node1._remove(o1)).toBe(node1);
+
+      node1 = new Structure(o1, comparator);
+      node2 = node1._insert(o2);
+      node3 = node1._insert(o3);
+
+      expect(node1._remove(o2)).toBe(node2);
+      expect(node1._remove(o3)).toBe(node2);
+      expect(node1._remove(o1)).toBe(node1);
+
+      node1 = new Structure(o1, comparator);
+      node2 = node1._insert(o2);
+      node3 = node1._insert(o3);
+
+      expect(node1._remove(o1)).toBe(node1);
+      expect(node1._remove(o2)).toBe(node1);
+      expect(node1._remove(o3)).toBe(node1);
+    });
+  },
 });
 
 export { staticTests } from "./binary-tree-node";
