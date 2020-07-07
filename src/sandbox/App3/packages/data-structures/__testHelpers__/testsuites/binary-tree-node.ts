@@ -214,3 +214,25 @@ export const tests = <T>(
   parent: false, // see left
   root: false, // see left
 });
+
+export const staticTests = <T>({
+  length,
+  name,
+  Structure,
+}: {
+  length: number;
+  name: string;
+  Structure: BinaryTreeNodeConstructor<T>;
+}): TestSuite => ({
+  length({ it }) {
+    it(() => {
+      expect(Structure.length).toBe(length);
+    });
+  },
+
+  name({ it }) {
+    it(() => {
+      expect(Structure.name).toBe(name);
+    });
+  },
+});
