@@ -107,6 +107,9 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
   get parent(): BinarySearchTreeNode<T> | null {
     return super.parent as BinarySearchTreeNode<T> | null;
   }
+  set parent(node: BinarySearchTreeNode<T> | null) {
+    super.parent = node;
+  }
 
   insert(value: T): boolean {
     return Boolean(this._insert(value));

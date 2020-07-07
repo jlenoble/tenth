@@ -41,6 +41,9 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   get parent(): BinaryTreeNode<T> | null {
     return this.#parent;
   }
+  set parent(node: BinaryTreeNode<T> | null) {
+    this.#parent = node;
+  }
 
   get root(): BinaryTreeNode<T> {
     return this.#parent === null ? this : this.#parent.root;
