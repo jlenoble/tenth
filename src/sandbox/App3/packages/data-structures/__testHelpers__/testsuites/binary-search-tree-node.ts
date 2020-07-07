@@ -182,6 +182,99 @@ export const tests = (
       expect(node3._findMin()).toBe(node3);
     });
   },
+
+  _insert({ it }): void {
+    it(() => {
+      const o1 = { a: 1, b: "foo" };
+      const o2 = { a: 2, b: "bar" };
+      const o3 = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node1 = new Structure(o1, comparator);
+      const node2 = node1._insert(o2);
+      const node3 = node1._insert(o3);
+
+      expect(node2).not.toBeNull();
+      expect(node3).not.toBeNull();
+
+      if (node2 !== null && node3 !== null) {
+        expect(node1.left).toBeNull();
+        expect(node1.parent).toBeNull();
+        expect(node1.right).toBe(node2);
+
+        expect(node2.left).toBeNull();
+        expect(node2.parent).toBe(node1);
+        expect(node2.right).toBe(node3);
+
+        expect(node3.left).toBeNull();
+        expect(node3.parent).toBe(node2);
+        expect(node3.right).toBeNull();
+      }
+    });
+  },
+
+  insert({ it }): void {
+    it(() => {
+      const o1 = { a: 1, b: "foo" };
+      const o2 = { a: 2, b: "bar" };
+      const o3 = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      let node = new Structure(o1, comparator);
+      node.insert(o2);
+      node.insert(o3);
+
+      expect(Array.from(node)).toEqual([o1, o2, o3]);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      let node2 = node._find(o2)!;
+
+      expect(Array.from(node2)).toEqual([o2, o3]);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      node2 = node._find(o3)!;
+
+      expect(Array.from(node2)).toEqual([o3]);
+
+      node = new Structure(o2, comparator);
+      node.insert(o1);
+      node.insert(o3);
+
+      expect(Array.from(node)).toEqual([o1, o2, o3]);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      node2 = node._find(o1)!;
+
+      expect(Array.from(node2)).toEqual([o1]);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      node2 = node._find(o3)!;
+
+      expect(Array.from(node2)).toEqual([o3]);
+
+      node = new Structure(o3, comparator);
+      node.insert(o1);
+      node.insert(o2);
+
+      expect(Array.from(node)).toEqual([o1, o2, o3]);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      node2 = node._find(o1)!;
+
+      expect(Array.from(node2)).toEqual([o1, o2]);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      node2 = node._find(o2)!;
+
+      expect(Array.from(node2)).toEqual([o2]);
+    });
+  },
 });
 
 export { staticTests } from "./binary-tree-node";
