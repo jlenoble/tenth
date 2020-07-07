@@ -139,6 +139,49 @@ export const tests = (
       expect(node3._find(o3)).toBe(node3);
     });
   },
+
+  _findMin({ it }): void {
+    it(() => {
+      const o1 = { a: 1, b: "foo" };
+      const o2 = { a: 2, b: "bar" };
+      const o3 = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node1 = new Structure(o1, comparator);
+      const node2 = new Structure(o2, comparator);
+      const node3 = new Structure(o3, comparator);
+
+      node3.left = node2;
+      node2.left = node1;
+
+      expect(node1._findMin()).toBe(node1);
+      expect(node2._findMin()).toBe(node1);
+      expect(node3._findMin()).toBe(node1);
+
+      node3.left = null;
+      node2.left = null;
+
+      node2.left = node1;
+      node2.right = node3;
+
+      expect(node1._findMin()).toBe(node1);
+      expect(node2._findMin()).toBe(node1);
+      expect(node3._findMin()).toBe(node3);
+
+      node3.left = null;
+      node2.left = null;
+
+      node1.right = node2;
+      node2.right = node3;
+
+      expect(node1._findMin()).toBe(node1);
+      expect(node2._findMin()).toBe(node2);
+      expect(node3._findMin()).toBe(node3);
+    });
+  },
 });
 
 export { staticTests } from "./binary-tree-node";
