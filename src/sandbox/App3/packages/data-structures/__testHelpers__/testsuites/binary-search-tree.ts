@@ -105,6 +105,54 @@ export const tests = <T>(
       });
     },
 
+    _insert({ it }): void {
+      it(() => {
+        const compare = (a: T, b: T) => (a === b ? 0 : a > b ? -1 : 1);
+        const tree = new Structure(undefined, compare);
+        const nodes = initArgs.map((arg) => tree._insert(arg));
+        expect(Array.from(tree)).toEqual([...sortedArgs].reverse());
+
+        const values = new Set(initArgs);
+        nodes.forEach((node, i) => {
+          const value = initArgs[i];
+          if (node === null) {
+            expect(values.has(value)).toBe(false);
+          } else {
+            expect(node.value).toBe(value);
+          }
+          values.delete(value);
+        });
+      });
+    },
+
+    _remove({ it }): void {
+      it(() => {
+        const compare = (a: T, b: T) => (a === b ? 0 : a < b ? -1 : 1);
+        const tree = new Structure(undefined, compare);
+        const nodes = initArgs.map((arg) => tree._insert(arg));
+        expect(Array.from(tree)).toEqual(sortedArgs);
+
+        const values = new Set(initArgs);
+
+        initArgs.forEach((value, i) => {
+          const node = nodes[i];
+
+          if (node === null) {
+            expect(tree._remove(value)).toBe(null);
+          } else {
+            const node2 = tree._remove(value);
+            expect(node2).not.toBeNull();
+
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            expect(tree.comparator.lessThanOrEqual(value, node2!.value)).toBe(
+              true
+            );
+          }
+          values.delete(value);
+        });
+      });
+    },
+
     root: false, // protected
   };
 };
