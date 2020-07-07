@@ -1,7 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { StackConstructor } from "../../stack";
 import { fillInitArgs } from "../fill-init-args";
-import { tests as commonTests } from "./common";
+import { tests as dataStructureTests } from "./data-structure";
 
 export const tests = <T>(
   Structure: StackConstructor<T>,
@@ -10,7 +10,7 @@ export const tests = <T>(
   initArgs = fillInitArgs(initArgs);
 
   return {
-    ...commonTests(Structure, initArgs),
+    ...dataStructureTests(Structure, initArgs),
 
     push(): void {
       it("pushing", () => {

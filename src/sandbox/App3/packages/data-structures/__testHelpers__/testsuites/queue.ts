@@ -1,7 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { QueueConstructor } from "../../queue";
 import { fillInitArgs } from "../fill-init-args";
-import { tests as commonTests } from "./common";
+import { tests as dataStructureTests } from "./data-structure";
 
 export const tests = <T>(
   Structure: QueueConstructor<T>,
@@ -10,7 +10,7 @@ export const tests = <T>(
   initArgs = fillInitArgs(initArgs);
 
   return {
-    ...commonTests(Structure, initArgs),
+    ...dataStructureTests(Structure, initArgs),
 
     enqueue(): void {
       it("enqueueing", () => {

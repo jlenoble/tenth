@@ -1,7 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { LinkedListConstructor, LinkedListNode } from "../../linked-list/types";
 import { fillInitArgs } from "../fill-init-args";
-import { tests as commonTests } from "./common";
+import { tests as dataStructureTests } from "./data-structure";
 
 export const tests = <T, N extends LinkedListNode<T>>(
   Structure: LinkedListConstructor<T, N>,
@@ -10,7 +10,7 @@ export const tests = <T, N extends LinkedListNode<T>>(
   initArgs = fillInitArgs(initArgs);
 
   return {
-    ...commonTests(Structure, initArgs),
+    ...dataStructureTests(Structure, initArgs),
 
     head(): void {
       it("reading head", () => {

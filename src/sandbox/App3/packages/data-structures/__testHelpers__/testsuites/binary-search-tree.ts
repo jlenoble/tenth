@@ -1,7 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { BinarySearchTreeConstructor } from "../../tree/binary-search-tree/types";
 import { defaultCompare } from "../../../comparator";
-import { tests as commonTests } from "./common";
+import { tests as dataStructureTests } from "./data-structure";
 
 export const tests = <T>(
   Structure: BinarySearchTreeConstructor<T>,
@@ -10,7 +10,7 @@ export const tests = <T>(
   const sortedArgs = Array.from(new Set(initArgs)).sort(defaultCompare);
 
   return {
-    ...commonTests(Structure, sortedArgs),
+    ...dataStructureTests(Structure, sortedArgs),
 
     comparator({ it }): void {
       it(() => {

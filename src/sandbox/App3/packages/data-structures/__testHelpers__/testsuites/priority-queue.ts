@@ -2,7 +2,7 @@ import { TestSuite } from "../../../testsuite";
 import { MinHeap } from "../../heap";
 import { PriorityQueueConstructor } from "../../priority-queue";
 import { fillInitArgs } from "../fill-init-args";
-import { tests as commonTests } from "./common";
+import { tests as dataStructureTests } from "./data-structure";
 import { Comparator } from "../../../comparator";
 
 export const tests = <T, V>(
@@ -38,7 +38,7 @@ export const tests = <T, V>(
   };
 
   return {
-    ...commonTests(Structure, initArgs),
+    ...dataStructureTests(Structure, initArgs),
 
     comparator({ it }) {
       it(() => {

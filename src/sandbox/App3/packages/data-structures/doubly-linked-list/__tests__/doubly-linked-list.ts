@@ -1,13 +1,14 @@
 import { makeTestSuite } from "../../../testsuite";
 import { DoublyLinkedList } from "../doubly-linked-list";
-import { linkedListTests, staticTests } from "../../__testHelpers__/testsuites";
+import { staticTests } from "../../__testHelpers__/testsuites/data-structure";
+import { tests } from "../../__testHelpers__/testsuites/linked-list";
 import { withSize } from "../../linked-list/with-size";
 
 const initArgs = [1, 2, 3, 4, 5, 6, 7];
 
 makeTestSuite(
   DoublyLinkedList,
-  linkedListTests(DoublyLinkedList, initArgs),
+  tests(DoublyLinkedList, initArgs),
   staticTests({
     length: 1,
     name: "DoublyLinkedList",
@@ -19,7 +20,7 @@ const SizedDoublyLinkedList = withSize(DoublyLinkedList);
 
 makeTestSuite(
   SizedDoublyLinkedList,
-  linkedListTests(SizedDoublyLinkedList, initArgs),
+  tests(SizedDoublyLinkedList, initArgs),
   staticTests({
     length: 1,
     name: "SizedDoublyLinkedList",

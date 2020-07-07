@@ -1,7 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { HeapConstructor, MinHeap } from "../../heap";
 import { fillInitArgs } from "../fill-init-args";
-import { tests as commonTests } from "./common";
+import { tests as dataStructureTests } from "./data-structure";
 import { Comparator } from "../../../comparator";
 
 export const tests = <T>(
@@ -14,7 +14,7 @@ export const tests = <T>(
   const rightOrder = (a: T, b: T): boolean => h0.pairIsInCorrectOrder(a, b);
 
   return {
-    ...commonTests(Structure, initArgs),
+    ...dataStructureTests(Structure, initArgs),
 
     comparator({ it }) {
       it(() => {

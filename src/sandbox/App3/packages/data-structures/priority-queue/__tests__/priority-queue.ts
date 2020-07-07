@@ -1,9 +1,7 @@
 import { makeTestSuite } from "../../../testsuite";
 import { PriorityQueue } from "../priority-queue";
-import {
-  priorityQueueTests,
-  staticTests,
-} from "../../__testHelpers__/testsuites";
+import { staticTests } from "../../__testHelpers__/testsuites/data-structure";
+import { tests } from "../../__testHelpers__/testsuites/priority-queue";
 
 const initArgs: [{ a: number }, number][] = [
   [{ a: 1 }, 0],
@@ -18,7 +16,7 @@ const initArgs: [{ a: number }, number][] = [
 
 makeTestSuite(
   PriorityQueue,
-  priorityQueueTests(PriorityQueue, initArgs, {
+  tests(PriorityQueue, initArgs, {
     getValue: ([value]: [{ a: number }, number]) => value,
     getPriority: ([, priority]: [{ a: number }, number]) => priority,
   }),
