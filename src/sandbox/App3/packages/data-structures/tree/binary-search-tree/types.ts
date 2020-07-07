@@ -27,4 +27,5 @@ export interface BinarySearchTree<T> extends BinaryTree<T> {
   _remove(value: T): BinarySearchTreeNode<T> | null;
 
   dftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
+  bftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
 }

@@ -194,6 +194,80 @@ export const tests = <T>(
       });
     },
 
+    bftNodeIterate(): void {
+      it("Breadth first traversal", () => {
+        let tree = new Structure(sortedArgs);
+        let parent: BinarySearchTreeNode<T> | null = null;
+
+        Array.from(tree.bftNodeIterate()).forEach((node, i) => {
+          expect(node.parent).toBe(parent);
+          expect(node.left).toBeNull();
+          if (i < sortedArgs.length - 1) {
+            expect(node.right).not.toBeNull();
+          } else {
+            expect(node.right).toBeNull();
+          }
+          parent = node;
+        });
+
+        expect(Array.from(tree)).toEqual(sortedArgs);
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual(sortedArgs);
+
+        tree = new Structure([...sortedArgs].reverse());
+        parent = null;
+
+        Array.from(tree.bftNodeIterate()).forEach((node, i) => {
+          expect(node.parent).toBe(parent);
+          expect(node.right).toBeNull();
+          if (i < sortedArgs.length - 1) {
+            expect(node.left).not.toBeNull();
+          } else {
+            expect(node.left).toBeNull();
+          }
+          parent = node;
+        });
+
+        expect(Array.from(tree)).toEqual(sortedArgs);
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual([...sortedArgs].reverse());
+
+        expect(sortedArgs.length).toBeGreaterThanOrEqual(6);
+
+        const args = sortedArgs.slice(0, 6);
+
+        tree = new Structure();
+
+        tree.insert(args[3]);
+        tree.insert(args[1]);
+        tree.insert(args[4]);
+        tree.insert(args[0]);
+        tree.insert(args[2]);
+        tree.insert(args[5]);
+
+        expect(Array.from(tree)).toEqual(args);
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual([args[3], args[1], args[4], args[0], args[2], args[5]]);
+
+        tree = new Structure();
+
+        tree.insert(args[2]);
+        tree.insert(args[3]);
+        tree.insert(args[1]);
+        tree.insert(args[5]);
+        tree.insert(args[0]);
+        tree.insert(args[4]);
+
+        expect(Array.from(tree)).toEqual(args);
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual([args[2], args[1], args[3], args[0], args[5], args[4]]);
+      });
+    },
+
     root: false, // protected
   };
 };

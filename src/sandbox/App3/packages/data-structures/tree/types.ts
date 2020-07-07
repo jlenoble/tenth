@@ -12,6 +12,7 @@ export interface BinaryTreeNode<T> extends Node<T> {
 
   [Symbol.iterator](): IterableIterator<T>;
   dftNodeIterate(): IterableIterator<BinaryTreeNode<T>>;
+  bftNodeIterate(): IterableIterator<BinaryTreeNode<T>>;
 
   removeChild(node: BinaryTreeNode<T>): boolean;
   replaceChild(

@@ -56,6 +56,10 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
     // Empty trees call this method, don't throw
   }
 
+  *bftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
+    // Empty trees call this method, don't throw
+  }
+
   constructor(
     initializeTree: (value: T) => BinarySearchTreeNodeInterface<T>,
     comparator: Comparator<T>
@@ -169,6 +173,12 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
 
   *dftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
     yield* this.#root.dftNodeIterate() as IterableIterator<
+      BinarySearchTreeNodeInterface<T>
+    >;
+  }
+
+  *bftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
+    yield* this.#root.bftNodeIterate() as IterableIterator<
       BinarySearchTreeNodeInterface<T>
     >;
   }

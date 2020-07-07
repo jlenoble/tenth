@@ -84,6 +84,25 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     }
   }
 
+  *bftNodeIterate(): IterableIterator<BinaryTreeNode<T>> {
+    const queue: BinaryTreeNode<T>[] = [this];
+
+    while (queue.length !== 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const node = queue.shift()!;
+
+      yield node;
+
+      if (node.#left !== null) {
+        queue.push(node.#left);
+      }
+
+      if (node.#right !== null) {
+        queue.push(node.#right);
+      }
+    }
+  }
+
   constructor(value: T, comparator: Comparator<T>) {
     this.#value = value;
     this.#comparator = comparator;
