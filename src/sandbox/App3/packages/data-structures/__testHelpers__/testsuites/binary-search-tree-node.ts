@@ -311,6 +311,37 @@ export const tests = (
       expect(node1._remove(o3)).toBe(node1);
     });
   },
+
+  remove({ it }): void {
+    it(() => {
+      const o1 = { a: 1, b: "foo" };
+      const o2 = { a: 2, b: "bar" };
+      const o3 = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node = new Structure(o1, comparator);
+      node.insert(o2);
+      node.insert(o3);
+
+      expect(Array.from(node)).toEqual([o1, o2, o3]);
+
+      node.remove(o2);
+
+      expect(Array.from(node)).toEqual([o1, o3]);
+
+      node.remove(o1);
+
+      expect(Array.from(node)).toEqual([o3]);
+
+      node.remove(o3);
+
+      // Cannot remove self
+      expect(Array.from(node)).toEqual([o3]);
+    });
+  },
 });
 
 export { staticTests } from "./binary-tree-node";
