@@ -4029,6 +4029,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/treeify@^1.0.0":
+  version "1.0.0"
+  resolved "http://localhost:4873/@types%2ftreeify/-/treeify-1.0.0.tgz#f04743cb91fc38254e8585d692bd92503782011c"
+  integrity sha512-ONpcZAEYlbPx4EtJwfTyCDQJGUpKf4sEcuySdCVjK5Fj/3vHp5HII1fqa1/+qrsLnpYELCQTfVW/awsGJePoIg==
+
 "@types/undertaker-registry@*":
   version "1.0.1"
   resolved "http://localhost:4873/@types%2fundertaker-registry/-/undertaker-registry-1.0.1.tgz#4306d4a03d7acedb974b66530832b90729e1d1da"
@@ -17715,6 +17720,11 @@ tr46@^2.0.0:
   integrity sha512-3n1qG+/5kg+jrbTzwAykB5yRYtQCTqOGKq5U5PE3b0a1/mzo6snDhjGS0zJVJunO0NrT3Dg1MLy5TjWP/UJppg==
   dependencies:
     punycode "^2.1.1"
+
+treeify@^1.1.0:
+  version "1.1.0"
+  resolved "http://localhost:4873/treeify/-/treeify-1.1.0.tgz#4e31c6a463accd0943879f30667c4fdaff411bb8"
+  integrity sha512-1m4RA7xVAJrSGrrXGs0L3YTwyvBs2S8PbRHaLZAkFw7JR8oIFwYtysxlBZhYIa7xSyiYJKZ3iGrrk55cGA3i9A==
 
 trim-repeated@^1.0.0:
   version "1.0.0"
