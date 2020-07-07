@@ -94,6 +94,10 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
   _find(): BinarySearchTreeNodeInterface<T> | null {
     throw new Error("EmptyBinarySearchTreeNode cannot find anything");
   }
+
+  _findMin(): BinarySearchTreeNodeInterface<T> {
+    throw new Error("EmptyBinarySearchTreeNode cannot find anything");
+  }
 }
 
 export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
