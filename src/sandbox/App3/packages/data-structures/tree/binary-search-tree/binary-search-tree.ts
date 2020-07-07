@@ -73,14 +73,22 @@ class EmptyBinarySearchTreeNode<T> implements BinarySearchTreeNodeInterface<T> {
     throw new Error("EmptyBinarySearchTreeNode cannot remove anything");
   }
 
+  _remove(): BinarySearchTreeNodeInterface<T> | null {
+    throw new Error("EmptyBinarySearchTreeNode cannot remove anything");
+  }
+
+  removeChild(): boolean {
+    throw new Error("EmptyBinarySearchTreeNode cannot remove anything");
+  }
+
+  replaceChild(): boolean {
+    throw new Error("EmptyBinarySearchTreeNode cannot replace anything");
+  }
+
   has(): boolean {
     throw new Error(
       "EmptyBinarySearchTreeNode 'has' method should not be called"
     );
-  }
-
-  _remove(): BinarySearchTreeNodeInterface<T> | null {
-    throw new Error("EmptyBinarySearchTreeNode cannot remove anything");
   }
 
   _find(): BinarySearchTreeNodeInterface<T> | null {
