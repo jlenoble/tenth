@@ -1,5 +1,8 @@
 import { TestSuite } from "../../../testsuite";
-import { BinarySearchTreeConstructor } from "../../tree/binary-search-tree/types";
+import {
+  BinarySearchTreeConstructor,
+  BinarySearchTreeNode,
+} from "../../tree/binary-search-tree/types";
 import { defaultCompare } from "../../../comparator";
 import { tests as dataStructureTests } from "./data-structure";
 
@@ -149,6 +152,44 @@ export const tests = <T>(
             );
           }
           values.delete(value);
+        });
+      });
+    },
+
+    dftNodeIterate(): void {
+      it("Depth first traversal", () => {
+        let tree = new Structure(initArgs);
+
+        expect(
+          Array.from(tree.dftNodeIterate()).map((node) => node.value)
+        ).toEqual(sortedArgs);
+
+        tree = new Structure(sortedArgs);
+        let parent: BinarySearchTreeNode<T> | null = null;
+
+        Array.from(tree.dftNodeIterate()).forEach((node, i) => {
+          expect(node.parent).toBe(parent);
+          expect(node.left).toBeNull();
+          if (i < sortedArgs.length - 1) {
+            expect(node.right).not.toBeNull();
+          } else {
+            expect(node.right).toBeNull();
+          }
+          parent = node;
+        });
+
+        tree = new Structure([...sortedArgs].reverse());
+        let left: BinarySearchTreeNode<T> | null = null;
+
+        Array.from(tree.dftNodeIterate()).forEach((node, i) => {
+          expect(node.left).toBe(left);
+          expect(node.right).toBeNull();
+          if (i < sortedArgs.length - 1) {
+            expect(node.parent).not.toBeNull();
+          } else {
+            expect(node.parent).toBeNull();
+          }
+          left = node;
         });
       });
     },

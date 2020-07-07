@@ -72,6 +72,18 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     }
   }
 
+  *dftNodeIterate(): IterableIterator<BinaryTreeNode<T>> {
+    if (this.#left !== null) {
+      yield* this.#left.dftNodeIterate();
+    }
+
+    yield this;
+
+    if (this.#right !== null) {
+      yield* this.#right.dftNodeIterate();
+    }
+  }
+
   constructor(value: T, comparator: Comparator<T>) {
     this.#value = value;
     this.#comparator = comparator;

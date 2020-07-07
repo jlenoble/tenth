@@ -25,4 +25,6 @@ export interface BinarySearchTree<T> extends BinaryTree<T> {
 
   _insert(value: T): BinarySearchTreeNode<T> | null;
   _remove(value: T): BinarySearchTreeNode<T> | null;
+
+  dftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
 }
