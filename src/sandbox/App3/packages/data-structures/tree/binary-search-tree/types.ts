@@ -1,11 +1,14 @@
 import { Constructor } from "../../types";
 import { BinaryTreeNode, BinaryTree } from "../types";
+import { Comparator } from "../../../comparator";
 
 export type BinarySearchTreeNodeConstructor<T> = Constructor<
   BinarySearchTreeNode<T>
 >;
 
 export interface BinarySearchTreeNode<T> extends BinaryTreeNode<T> {
+  comparator: Comparator<T>;
+
   insert(value: T): boolean;
   remove(value: T): boolean;
   has(value: T): boolean;
@@ -19,6 +22,8 @@ export interface BinarySearchTreeNode<T> extends BinaryTreeNode<T> {
 export type BinarySearchTreeConstructor<T> = Constructor<BinarySearchTree<T>>;
 
 export interface BinarySearchTree<T> extends BinaryTree<T> {
+  comparator: Comparator<T>;
+
   insert(value: T): boolean;
   remove(value: T): boolean;
   has(value: T): boolean;

@@ -8,5 +8,5 @@ import {
 makeTestSuite(
   BinaryTreeNode,
   tests(BinaryTreeNode),
-  staticTests({ length: 2, name: "BinaryTreeNode", Structure: BinaryTreeNode })
+  staticTests({ length: 1, name: "BinaryTreeNode", Structure: BinaryTreeNode })
 );

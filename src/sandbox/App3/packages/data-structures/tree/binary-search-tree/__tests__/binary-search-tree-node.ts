@@ -9,7 +9,7 @@ makeTestSuite(
   BinarySearchTreeNode,
   tests(BinarySearchTreeNode),
   staticTests({
-    length: 0,
+    length: 2,
     name: "BinarySearchTreeNode",
     Structure: BinarySearchTreeNode,
   })

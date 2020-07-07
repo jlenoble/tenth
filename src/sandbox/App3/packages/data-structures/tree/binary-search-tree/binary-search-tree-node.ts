@@ -1,8 +1,11 @@
+import { Comparator } from "../../../comparator";
 import { BinaryTreeNode } from "../binary-tree-node";
 import { BinarySearchTreeNode as BinarySearchTreeNodeInterface } from "./types";
 
 export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
   implements BinarySearchTreeNodeInterface<T> {
+  #comparator: Comparator<T>;
+
   get left(): BinarySearchTreeNode<T> | null {
     return super.left as BinarySearchTreeNode<T> | null;
   }
@@ -22,6 +25,15 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
   }
   set parent(node: BinarySearchTreeNode<T> | null) {
     super.parent = node;
+  }
+
+  get comparator(): Comparator<T> {
+    return this.#comparator;
+  }
+
+  constructor(value: T, comparator: Comparator<T>) {
+    super(value);
+    this.#comparator = comparator;
   }
 
   insert(value: T): boolean {

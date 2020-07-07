@@ -50,18 +50,6 @@ export const tests = <T>(
     });
   },
 
-  comparator({ it }): void {
-    it(() => {
-      const comparator = new Comparator<number>();
-
-      const node1 = new Structure(1, comparator);
-      const node2 = new Structure(2, comparator);
-
-      expect(node1.comparator).toBe(comparator);
-      expect(node2.comparator).toBe(comparator);
-    });
-  },
-
   left(): void {
     it("linking", () => {
       const o1 = { a: 1, b: "foo" };

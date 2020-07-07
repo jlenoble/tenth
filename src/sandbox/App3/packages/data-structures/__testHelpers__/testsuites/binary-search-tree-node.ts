@@ -10,6 +10,18 @@ export const tests = (
 ): TestSuite => ({
   ...parentTests(Structure),
 
+  comparator({ it }): void {
+    it(() => {
+      const comparator = new Comparator<number>();
+
+      const node1 = new Structure(1, comparator);
+      const node2 = new Structure(2, comparator);
+
+      expect(node1.comparator).toBe(comparator);
+      expect(node2.comparator).toBe(comparator);
+    });
+  },
+
   has({ it }): void {
     it(() => {
       const o1 = { a: 1, b: "foo" };

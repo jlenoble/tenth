@@ -1,4 +1,3 @@
-import { Comparator } from "../../comparator";
 import { BinaryTreeNode as BinaryTreeNodeInterface } from "./types";
 
 export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
@@ -6,7 +5,6 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   #right: BinaryTreeNode<T> | null;
   #parent: BinaryTreeNode<T> | null;
   #value: T;
-  #comparator: Comparator<T>;
 
   get left(): BinaryTreeNode<T> | null {
     return this.#left;
@@ -54,10 +52,6 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
   }
   set value(value: T) {
     this.#value = value;
-  }
-
-  get comparator(): Comparator<T> {
-    return this.#comparator;
   }
 
   *[Symbol.iterator](): IterableIterator<T> {
@@ -141,10 +135,8 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     }
   }
 
-  constructor(value: T, comparator: Comparator<T>) {
+  constructor(value: T) {
     this.#value = value;
-    this.#comparator = comparator;
-
     this.#parent = null;
     this.#left = null;
     this.#right = null;
