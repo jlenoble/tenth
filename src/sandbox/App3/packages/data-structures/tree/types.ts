@@ -11,6 +11,12 @@ export interface BinaryTreeNode<T> extends Node<T> {
   root: BinaryTreeNode<T>;
 
   [Symbol.iterator](): IterableIterator<T>;
+
+  removeChild(node: BinaryTreeNode<T>): boolean;
+  replaceChild(
+    node: BinaryTreeNode<T>,
+    replacementNode: BinaryTreeNode<T>
+  ): boolean;
 }
 
 export type BinaryTreeConstructor<T> = Constructor<BinaryTree<T>>;
