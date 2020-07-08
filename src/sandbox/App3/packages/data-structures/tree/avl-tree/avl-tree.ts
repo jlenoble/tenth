@@ -196,7 +196,7 @@ export class AvlTree<T> extends BinarySearchTree<T>
       return;
     }
 
-    node.left === null;
+    node.left = null;
 
     const { parent } = node;
 
@@ -224,7 +224,7 @@ export class AvlTree<T> extends BinarySearchTree<T>
       return;
     }
 
-    node.left === null;
+    node.left = null;
 
     const leftRight = left.right;
     left.right = null;
