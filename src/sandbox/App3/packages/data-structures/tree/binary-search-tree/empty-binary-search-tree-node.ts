@@ -112,4 +112,8 @@ export class EmptyBinarySearchTreeNode<T>
   _findMin(): BinarySearchTreeNodeInterface<T> {
     throw new Error("EmptyBinarySearchTreeNode cannot find anything");
   }
+
+  toString(): string {
+    return "└─ null";
+  }
 }
