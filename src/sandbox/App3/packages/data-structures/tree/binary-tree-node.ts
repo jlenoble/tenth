@@ -20,11 +20,21 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
       this.#left.#parent = null;
     }
 
-    this.#left = node;
+    if (node !== null) {
+      const parent = node.#parent;
 
-    if (this.#left !== null) {
-      this.#left.#parent = this;
+      if (parent !== null) {
+        if (parent.#left === node) {
+          parent.#left = null;
+        } else {
+          parent.#right = null;
+        }
+      }
+
+      node.#parent = this;
     }
+
+    this.#left = node;
   }
 
   get right(): BinaryTreeNode<T> | null {
@@ -35,11 +45,21 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
       this.#right.#parent = null;
     }
 
-    this.#right = node;
+    if (node !== null) {
+      const parent = node.#parent;
 
-    if (this.#right !== null) {
-      this.#right.#parent = this;
+      if (parent !== null) {
+        if (parent.#left === node) {
+          parent.#left = null;
+        } else {
+          parent.#right = null;
+        }
+      }
+
+      node.#parent = this;
     }
+
+    this.#right = node;
   }
 
   get parent(): BinaryTreeNode<T> | null {
