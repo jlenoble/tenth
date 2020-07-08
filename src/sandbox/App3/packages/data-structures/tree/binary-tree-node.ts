@@ -209,7 +209,7 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
 
     for (const node of this.bftNodeIterate()) {
       const { parent, value } = node;
-      const str = JSON.stringify(value).replace(/"(\w+)":/g, "$1:");
+      let str = JSON.stringify(value).replace(/"(\w+)":/g, "$1:");
 
       if (parent === null) {
         treeObj[str] = {};
@@ -220,13 +220,17 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const obj = objs.get(parent)!;
 
-      if (parent.left === node && parent.right === null) {
+      if (parent.left === node) {
+        str = "L:" + str;
         obj[str] = {};
-        obj["null"] = {};
-      } else if (parent.right === node && parent.left === null) {
-        obj["null"] = {};
-        obj[str] = {};
-      } else {
+        if (parent.right === null) {
+          obj["R:null"] = {};
+        }
+      } else if (parent.right === node) {
+        str = "R:" + str;
+        if (parent.left === null) {
+          obj["L:null"] = {};
+        }
         obj[str] = {};
       }
 
