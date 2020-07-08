@@ -12,6 +12,28 @@ export const tests = <T>(
   return {
     ...binarySearchTreeTests(Structure, sortedArgs),
 
+    dftNodeIterate(): void {
+      it("Depth first traversal", () => {
+        let tree = new Structure(initArgs);
+
+        expect(
+          Array.from(tree.dftNodeIterate()).map((node) => node.value)
+        ).toEqual(sortedArgs);
+
+        tree = new Structure(sortedArgs);
+
+        expect(
+          Array.from(tree.dftNodeIterate()).map((node) => node.value)
+        ).toEqual(sortedArgs);
+
+        tree = new Structure([...sortedArgs].reverse());
+
+        expect(
+          Array.from(tree.dftNodeIterate()).map((node) => node.value)
+        ).toEqual(sortedArgs);
+      });
+    },
+
     rotateRightRight(): void {
       it("Balanced insert", () => {
         const tree = new Structure();
@@ -42,8 +64,6 @@ export const tests = <T>(
         tree.insert(args[0]);
         tree.insert(args[1]);
 
-        console.log(tree.toString());
-
         expect(
           Array.from(tree.bftNodeIterate()).map(({ value }) => value)
         ).toEqual([args[0], args[1]]);
@@ -55,8 +75,6 @@ export const tests = <T>(
         expect(Array.from(tree)).toEqual(args.slice(0, 2));
 
         tree.insert(args[2]);
-
-        console.log(tree.toString());
 
         expect(
           Array.from(tree.bftNodeIterate()).map(({ value }) => value)
@@ -70,8 +88,6 @@ export const tests = <T>(
 
         tree.insert(args[3]);
 
-        console.log(tree.toString());
-
         expect(
           Array.from(tree.bftNodeIterate()).map(({ value }) => value)
         ).toEqual([args[1], args[0], args[2], args[3]]);
@@ -83,8 +99,6 @@ export const tests = <T>(
         expect(Array.from(tree)).toEqual(args.slice(0, 4));
 
         tree.insert(args[4]);
-
-        console.log(tree.toString());
 
         expect(
           Array.from(tree.bftNodeIterate()).map(({ value }) => value)
@@ -98,8 +112,6 @@ export const tests = <T>(
 
         tree.insert(args[5]);
 
-        console.log(tree.toString());
-
         expect(
           Array.from(tree.bftNodeIterate()).map(({ value }) => value)
         ).toEqual([args[3], args[1], args[4], args[0], args[2], args[5]]);
@@ -111,8 +123,6 @@ export const tests = <T>(
         expect(Array.from(tree)).toEqual(args.slice(0, 6));
 
         tree.insert(args[6]);
-
-        console.log(tree.toString());
 
         expect(
           Array.from(tree.bftNodeIterate()).map(({ value }) => value)
@@ -131,6 +141,97 @@ export const tests = <T>(
           )
         ).toEqual([2, 1, 1, 0, 0, 0, 0]);
         expect(Array.from(tree)).toEqual(args);
+      });
+    },
+
+    rotateLeftLeft(): void {
+      it("Left only insert", () => {
+        const tree = new Structure();
+
+        expect(sortedArgs.length).toBeGreaterThanOrEqual(7);
+
+        const args = sortedArgs.slice(0, 7).reverse();
+
+        tree.insert(args[0]);
+        tree.insert(args[1]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[0], args[1]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([1, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 2).reverse());
+
+        tree.insert(args[2]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[1], args[2], args[0]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([1, 0, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 3).reverse());
+
+        tree.insert(args[3]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[1], args[2], args[0], args[3]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([2, 1, 0, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 4).reverse());
+
+        tree.insert(args[4]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[1], args[3], args[0], args[4], args[2]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([2, 1, 0, 0, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 5).reverse());
+
+        tree.insert(args[5]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[3], args[4], args[1], args[5], args[2], args[0]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([2, 1, 1, 0, 0, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 6).reverse());
+
+        tree.insert(args[6]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([
+          args[3],
+          args[5],
+          args[1],
+          args[6],
+          args[4],
+          args[2],
+          args[0],
+        ]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([2, 1, 1, 0, 0, 0, 0]);
+        expect(Array.from(tree)).toEqual(args.reverse());
       });
     },
   };

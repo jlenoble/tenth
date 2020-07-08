@@ -189,7 +189,6 @@ export class AvlTree<T> extends BinarySearchTree<T>
   }
 
   protected rotateLeftLeft(node: AvlTreeNode<T>): void {
-    console.log(">>LL", node.value, node.height);
     const { left } = node;
 
     if (left === null) {
@@ -201,7 +200,11 @@ export class AvlTree<T> extends BinarySearchTree<T>
     const { parent } = node;
 
     if (parent !== null) {
-      parent.left = left;
+      if (parent.left === node) {
+        parent.left = left;
+      } else {
+        parent.right = left;
+      }
     } else if (node === this.root) {
       this.root = left;
     }
@@ -213,11 +216,9 @@ export class AvlTree<T> extends BinarySearchTree<T>
     }
 
     left.right = node;
-    console.log("<<LL", node.value, node.height);
   }
 
   protected rotateLeftRight(node: AvlTreeNode<T>): void {
-    console.log(">>LR", node.value, node.height);
     const { left } = node;
 
     if (left === null) {
@@ -235,16 +236,14 @@ export class AvlTree<T> extends BinarySearchTree<T>
         leftRight.left = null;
       }
 
-      node.left = leftRight;
       leftRight.left = left;
+      node.left = leftRight;
 
       this.rotateLeftLeft(node);
     }
-    console.log("<<LR", node.value, node.height);
   }
 
   protected rotateRightLeft(node: AvlTreeNode<T>): void {
-    console.log(">>RL", node.value, node.height);
     const { right } = node;
 
     if (right === null) {
@@ -262,16 +261,14 @@ export class AvlTree<T> extends BinarySearchTree<T>
         rightLeft.right = null;
       }
 
-      node.right = rightLeft;
       rightLeft.right = right;
+      node.right = rightLeft;
 
       this.rotateRightRight(node);
     }
-    console.log("<<RL", node.value, node.height);
   }
 
   protected rotateRightRight(node: AvlTreeNode<T>): void {
-    console.log(">>RR", node.value, node.height);
     const { right } = node;
 
     if (right === null) {
@@ -283,7 +280,11 @@ export class AvlTree<T> extends BinarySearchTree<T>
     const { parent } = node;
 
     if (parent !== null) {
-      parent.right = right;
+      if (parent.left === node) {
+        parent.left = right;
+      } else {
+        parent.right = right;
+      }
     } else if (node === this.root) {
       this.root = right;
     }
@@ -295,6 +296,5 @@ export class AvlTree<T> extends BinarySearchTree<T>
     }
 
     right.left = node;
-    console.log("<<RR", node.value, node.height);
   }
 }
