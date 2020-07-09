@@ -1,9 +1,11 @@
 import { TestSuite } from "../../../testsuite";
-import { BinaryTreeNodeConstructor } from "../../tree/types";
+import { BinaryTreeNodeConstructor, BinaryTreeNode } from "../../tree/types";
 import { Comparator } from "../../../comparator";
 
-export const tests = <T>(
-  Structure: BinaryTreeNodeConstructor<T>
+type Obj = { a: number; b: string };
+
+export const tests = (
+  Structure: BinaryTreeNodeConstructor<Obj | number>
 ): TestSuite => ({
   value(): void {
     it("initializing with integers", () => {
@@ -602,6 +604,58 @@ export const tests = <T>(
         }))
       ).toEqual([d7]);
     });
+  },
+
+  // return type is an artefact to please typescript
+  toString(): string {
+    it("testing toString", () => {
+      const o1: Obj = { a: 1, b: "foo" };
+      const o2: Obj = { a: 2, b: "bar" };
+      const o3: Obj = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<Obj>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node1 = new Structure(o1, comparator);
+      const node2 = new Structure(o2, comparator);
+      const node3 = new Structure(o3, comparator);
+
+      node1.right = node2;
+      node2.right = node3;
+
+      expect(node1.toString()).toBe(
+        [
+          '└─ {a:1,b:"foo"}',
+          "   ├─ L:null",
+          '   └─ R:{a:2,b:"bar"}',
+          "      ├─ L:null",
+          '      └─ R:{a:3,b:"qux"}\n',
+        ].join("\n")
+      );
+
+      expect(node1.toString((node: BinaryTreeNode<Obj>) => node.value.a)).toBe(
+        [
+          "└─ 1",
+          "   ├─ L:null",
+          "   └─ R:2",
+          "      ├─ L:null",
+          "      └─ R:3\n",
+        ].join("\n")
+      );
+
+      expect(node1.toString((node: BinaryTreeNode<Obj>) => node.value.b)).toBe(
+        [
+          '└─ "foo"',
+          "   ├─ L:null",
+          '   └─ R:"bar"',
+          "      ├─ L:null",
+          '      └─ R:"qux"\n',
+        ].join("\n")
+      );
+    });
+
+    return "";
   },
 
   right: false, // see left
