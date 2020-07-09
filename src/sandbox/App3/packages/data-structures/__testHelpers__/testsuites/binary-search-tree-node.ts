@@ -1,5 +1,8 @@
 import { TestSuite } from "../../../testsuite";
-import { BinarySearchTreeNodeConstructor } from "../../tree/binary-search-tree/types";
+import {
+  BinarySearchTreeNodeConstructor,
+  BinarySearchTreeNode,
+} from "../../tree/binary-search-tree/types";
 import { tests as parentTests } from "./binary-tree-node";
 import { Comparator } from "../../../comparator";
 
@@ -353,6 +356,59 @@ export const tests = (
       // Cannot remove self
       expect(Array.from(node)).toEqual([o3]);
     });
+  },
+
+  // return type is an artefact to please typescript
+  toString(): string {
+    it("testing toString", () => {
+      const o1 = { a: 1, b: "foo" };
+      const o2 = { a: 2, b: "bar" };
+      const o3 = { a: 3, b: "qux" };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node = new Structure(o1, comparator);
+      node.insert(o2);
+      node.insert(o3);
+
+      expect(node.toString()).toBe(
+        [
+          '└─ {a:1,b:"foo"}',
+          "   ├─ L:null",
+          '   └─ R:{a:2,b:"bar"}',
+          "      ├─ L:null",
+          '      └─ R:{a:3,b:"qux"}\n',
+        ].join("\n")
+      );
+
+      expect(
+        node.toString((node: BinarySearchTreeNode<Obj>) => node.value.a)
+      ).toBe(
+        [
+          "└─ 1",
+          "   ├─ L:null",
+          "   └─ R:2",
+          "      ├─ L:null",
+          "      └─ R:3\n",
+        ].join("\n")
+      );
+
+      expect(
+        node.toString((node: BinarySearchTreeNode<Obj>) => node.value.b)
+      ).toBe(
+        [
+          '└─ "foo"',
+          "   ├─ L:null",
+          '   └─ R:"bar"',
+          "      ├─ L:null",
+          '      └─ R:"qux"\n',
+        ].join("\n")
+      );
+    });
+
+    return "";
   },
 });
 
