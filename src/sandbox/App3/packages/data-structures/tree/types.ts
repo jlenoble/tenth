@@ -23,6 +23,8 @@ export interface BinaryTreeNode<T> extends Node<T> {
     node: BinaryTreeNode<T>,
     replacementNode: BinaryTreeNode<T>
   ): boolean;
+
+  toString<N extends BinaryTreeNode<T>, V>(fn?: (node: N) => V): string;
 }
 
 export type BinaryTreeConstructor<T> = Constructor<BinaryTree<T>>;

@@ -203,13 +203,20 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     return false;
   }
 
-  toString(): string {
-    const objs: Map<BinaryTreeNode<T>, AnyObject> = new Map();
+  toString<N extends BinaryTreeNodeInterface<T>, V>(
+    fn?: (node: N) => V
+  ): string {
+    const objs: Map<N, AnyObject> = new Map();
     const treeObj: AnyObject = {};
 
-    for (const node of this.bftNodeIterate()) {
+    for (const node of (this.bftNodeIterate() as unknown) as IterableIterator<
+      N
+    >) {
       const { parent, value } = node;
-      let str = JSON.stringify(value).replace(/"(\w+)":/g, "$1:");
+      let str = JSON.stringify(fn ? fn(node) : value).replace(
+        /"(\w+)":/g,
+        "$1:"
+      );
 
       if (parent === null) {
         treeObj[str] = {};
@@ -218,7 +225,7 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const obj = objs.get(parent)!;
+      const obj = objs.get(parent as N)!;
 
       if (parent.left === node) {
         str = "L:" + str;

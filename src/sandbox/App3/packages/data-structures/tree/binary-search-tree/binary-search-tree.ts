@@ -114,7 +114,9 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
     return null;
   }
 
-  toString(): string {
-    return this.#root.toString();
+  toString<N extends BinarySearchTreeNodeInterface<T>, V>(
+    fn?: (node: N) => V
+  ): string {
+    return this.#root.toString(fn);
   }
 }
