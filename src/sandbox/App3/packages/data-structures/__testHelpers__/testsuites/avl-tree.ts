@@ -234,5 +234,7 @@ export const tests = <T>(
         expect(Array.from(tree)).toEqual(args.reverse());
       });
     },
+
+    bftNodeIterate: false, // cf. rotateRightRight "Balanced insert"
   };
 };
