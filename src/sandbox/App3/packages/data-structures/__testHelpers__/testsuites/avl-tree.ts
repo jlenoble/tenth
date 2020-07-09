@@ -65,7 +65,7 @@ export const tests = <T>(
             (node) => (node as AvlTreeNode<T>).height
           )
         ).toEqual([1, 0, 0]);
-        expect(Array.from(tree)).toEqual(args.slice(0, 3));
+        expect(Array.from(tree)).toEqual(args);
       });
 
       it("Balanced insert", () => {
@@ -178,6 +178,39 @@ export const tests = <T>(
     },
 
     rotateLeftLeft(): void {
+      it("atomic LL", () => {
+        const tree = new Structure();
+
+        expect(sortedArgs.length).toBeGreaterThanOrEqual(3);
+
+        const args = sortedArgs.slice(0, 3);
+
+        tree.insert(args[2]);
+        tree.insert(args[1]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[2], args[1]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([1, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(1, 3));
+
+        tree.insert(args[0]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[1], args[0], args[2]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([1, 0, 0]);
+        expect(Array.from(tree)).toEqual(args);
+      });
+
       it("Left only insert", () => {
         const tree = new Structure();
 
