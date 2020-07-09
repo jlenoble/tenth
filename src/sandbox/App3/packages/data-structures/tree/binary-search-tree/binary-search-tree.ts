@@ -80,8 +80,20 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
     >;
   }
 
+  *rdftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
+    yield* this.#root.rdftNodeIterate() as IterableIterator<
+      BinarySearchTreeNodeInterface<T>
+    >;
+  }
+
   *bftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
     yield* this.#root.bftNodeIterate() as IterableIterator<
+      BinarySearchTreeNodeInterface<T>
+    >;
+  }
+
+  *rbftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
+    yield* this.#root.rbftNodeIterate() as IterableIterator<
       BinarySearchTreeNodeInterface<T>
     >;
   }

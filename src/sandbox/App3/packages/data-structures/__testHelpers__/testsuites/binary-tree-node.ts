@@ -264,6 +264,44 @@ export const tests = <T>(
     });
   },
 
+  rdftNodeIterate({ it }): void {
+    it(() => {
+      const o1 = { a: 1 };
+      const o2 = { a: 2 };
+      const o3 = { a: 3 };
+      const o4 = { a: 4 };
+      const o5 = { a: 5 };
+      const o6 = { a: 6 };
+      const o7 = { a: 7 };
+      const o8 = { a: 8 };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node1 = new Structure(o1, comparator);
+      const node2 = new Structure(o2, comparator);
+      const node3 = new Structure(o3, comparator);
+      const node4 = new Structure(o4, comparator);
+      const node5 = new Structure(o5, comparator);
+      const node6 = new Structure(o6, comparator);
+      const node7 = new Structure(o7, comparator);
+      const node8 = new Structure(o8, comparator);
+
+      node3.left = node1;
+      node1.right = node2;
+      node3.right = node4;
+      node4.right = node6;
+      node6.left = node5;
+      node6.right = node8;
+      node8.left = node7;
+
+      expect(
+        Array.from(node3.rdftNodeIterate()).map((node) => node.value)
+      ).toEqual([o1, o2, o3, o4, o5, o6, o7, o8].reverse());
+    });
+  },
+
   dftNodeIterateWithDepth({ it }): void {
     it(() => {
       const o1 = { a: 1 };
@@ -426,6 +464,44 @@ export const tests = <T>(
       expect(
         Array.from(node7.bftNodeIterate()).map((node) => node.value)
       ).toEqual([o7]);
+    });
+  },
+
+  rbftNodeIterate({ it }): void {
+    it(() => {
+      const o1 = { a: 1 };
+      const o2 = { a: 2 };
+      const o3 = { a: 3 };
+      const o4 = { a: 4 };
+      const o5 = { a: 5 };
+      const o6 = { a: 6 };
+      const o7 = { a: 7 };
+      const o8 = { a: 8 };
+
+      const comparator = new Comparator<typeof o1>((o1, o2) =>
+        o1.a === o2.a ? 0 : o1.a < o2.a ? -1 : 1
+      );
+
+      const node1 = new Structure(o1, comparator);
+      const node2 = new Structure(o2, comparator);
+      const node3 = new Structure(o3, comparator);
+      const node4 = new Structure(o4, comparator);
+      const node5 = new Structure(o5, comparator);
+      const node6 = new Structure(o6, comparator);
+      const node7 = new Structure(o7, comparator);
+      const node8 = new Structure(o8, comparator);
+
+      node3.left = node1;
+      node1.right = node2;
+      node3.right = node4;
+      node4.right = node6;
+      node6.left = node5;
+      node6.right = node8;
+      node8.left = node7;
+
+      expect(
+        Array.from(node3.rbftNodeIterate()).map((node) => node.value)
+      ).toEqual([o3, o1, o4, o2, o6, o5, o8, o7].reverse());
     });
   },
 

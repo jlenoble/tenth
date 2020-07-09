@@ -32,7 +32,9 @@ export interface BinarySearchTree<T> extends BinaryTree<T> {
   _remove(value: T): BinarySearchTreeNode<T> | null;
 
   dftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
+  rdftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
   bftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
+  rbftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
 
   toString<N extends BinarySearchTreeNode<T>, V>(fn?: (node: N) => V): string;
 }

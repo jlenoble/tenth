@@ -9,8 +9,13 @@ export interface BinaryTreeNode<T> extends Node<T> {
   root: BinaryTreeNode<T>;
 
   [Symbol.iterator](): IterableIterator<T>;
+
   dftNodeIterate(): IterableIterator<BinaryTreeNode<T>>;
+  rdftNodeIterate(): IterableIterator<BinaryTreeNode<T>>;
+
   bftNodeIterate(): IterableIterator<BinaryTreeNode<T>>;
+  rbftNodeIterate(): IterableIterator<BinaryTreeNode<T>>;
+
   dftNodeIterateWithDepth(
     depth?: number
   ): IterableIterator<{ node: BinaryTreeNode<T>; depth: number }>;

@@ -48,7 +48,15 @@ export class EmptyBinarySearchTreeNode<T>
     // Empty trees call this method, don't throw
   }
 
+  *rdftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
+    // Empty trees call this method, don't throw
+  }
+
   *bftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
+    // Empty trees call this method, don't throw
+  }
+
+  *rbftNodeIterate(): IterableIterator<BinarySearchTreeNodeInterface<T>> {
     // Empty trees call this method, don't throw
   }
 

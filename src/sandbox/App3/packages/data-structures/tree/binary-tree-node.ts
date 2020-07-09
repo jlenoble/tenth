@@ -104,6 +104,18 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
     }
   }
 
+  *rdftNodeIterate(): IterableIterator<BinaryTreeNode<T>> {
+    if (this.#right !== null) {
+      yield* this.#right.rdftNodeIterate();
+    }
+
+    yield this;
+
+    if (this.#left !== null) {
+      yield* this.#left.rdftNodeIterate();
+    }
+  }
+
   *dftNodeIterateWithDepth(
     depth = 0
   ): IterableIterator<{ node: BinaryTreeNode<T>; depth: number }> {
@@ -158,6 +170,13 @@ export class BinaryTreeNode<T> implements BinaryTreeNodeInterface<T> {
       if (node.#right !== null) {
         queue.push({ node: node.#right, depth: depth + 1 });
       }
+    }
+  }
+
+  *rbftNodeIterate(): IterableIterator<BinaryTreeNode<T>> {
+    const stack = Array.from(this.bftNodeIterate());
+    for (let i = stack.length - 1; i >= 0; i--) {
+      yield stack[i];
     }
   }
 
