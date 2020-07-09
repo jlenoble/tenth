@@ -268,6 +268,74 @@ export const tests = <T>(
       });
     },
 
+    // return type is an artefact to please typescript
+    toString(): string {
+      it("testing toString", () => {
+        const tree = new Structure();
+
+        expect(sortedArgs.length).toBeGreaterThanOrEqual(6);
+
+        const args = sortedArgs.slice(0, 6);
+
+        tree.insert(args[3]);
+        tree.insert(args[1]);
+        tree.insert(args[4]);
+        tree.insert(args[0]);
+        tree.insert(args[2]);
+        tree.insert(args[5]);
+
+        expect(tree.toString()).toEqual(
+          [
+            `└─ ${args[3]}`,
+            `   ├─ L:${args[1]}`,
+            `   │  ├─ L:${args[0]}`,
+            `   │  └─ R:${args[2]}`,
+            `   └─ R:${args[4]}`,
+            `      ├─ L:null`,
+            `      └─ R:${args[5]}\n`,
+          ].join("\n")
+        );
+
+        expect(tree.toString((node) => !!node.parent)).toEqual(
+          [
+            "└─ false",
+            "   ├─ L:true",
+            "   │  ├─ L:true",
+            "   │  └─ R:true",
+            "   └─ R:true",
+            "      ├─ L:null",
+            "      └─ R:true\n",
+          ].join("\n")
+        );
+
+        expect(tree.toString((node) => !!node.left)).toEqual(
+          [
+            "└─ true",
+            "   ├─ L:true",
+            "   │  ├─ L:false",
+            "   │  └─ R:false",
+            "   └─ R:false",
+            "      ├─ L:null",
+            "      └─ R:false\n",
+          ].join("\n")
+        );
+
+        expect(tree.toString((node) => !!node.right)).toEqual(
+          [
+            "└─ true",
+            "   ├─ L:true",
+            "   │  ├─ L:false",
+            "   │  └─ R:false",
+            "   └─ R:true",
+            "      ├─ L:null",
+            "      └─ R:false\n",
+          ].join("\n")
+        );
+      });
+
+      return "";
+    },
+
     root: false, // protected
   };
 };
