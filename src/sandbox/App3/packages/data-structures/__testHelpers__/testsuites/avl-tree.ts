@@ -35,6 +35,39 @@ export const tests = <T>(
     },
 
     rotateRightRight(): void {
+      it("atomic RR", () => {
+        const tree = new Structure();
+
+        expect(sortedArgs.length).toBeGreaterThanOrEqual(3);
+
+        const args = sortedArgs.slice(0, 3);
+
+        tree.insert(args[0]);
+        tree.insert(args[1]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[0], args[1]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([1, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 2));
+
+        tree.insert(args[2]);
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map(({ value }) => value)
+        ).toEqual([args[1], args[0], args[2]]);
+        expect(
+          Array.from(tree.bftNodeIterate()).map(
+            (node) => (node as AvlTreeNode<T>).height
+          )
+        ).toEqual([1, 0, 0]);
+        expect(Array.from(tree)).toEqual(args.slice(0, 3));
+      });
+
       it("Balanced insert", () => {
         const tree = new Structure();
 
@@ -236,5 +269,6 @@ export const tests = <T>(
     },
 
     bftNodeIterate: false, // cf. rotateRightRight "Balanced insert"
+    height: false, // cf. rotateRightRight "Right only insert"
   };
 };
