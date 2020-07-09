@@ -371,8 +371,47 @@ export const tests = <T>(
       });
     },
 
+    bftNodeIterate(): void {
+      it("Breadth first traversal", () => {
+        const tree = new Structure();
+        const args = sortedArgs.slice(0, 6);
+
+        tree.insert(args[2]);
+        tree.insert(args[3]);
+        tree.insert(args[1]);
+        tree.insert(args[5]);
+        tree.insert(args[0]);
+        tree.insert(args[4]);
+
+        expect(Array.from(tree)).toEqual(args);
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual([args[2], args[1], args[4], args[0], args[3], args[5]]);
+      });
+    },
+
+    rbftNodeIterate(): void {
+      it("Reverse breadth first traversal", () => {
+        const tree = new Structure();
+        const args = sortedArgs.slice(0, 6);
+
+        tree.insert(args[2]);
+        tree.insert(args[3]);
+        tree.insert(args[1]);
+        tree.insert(args[5]);
+        tree.insert(args[0]);
+        tree.insert(args[4]);
+
+        expect(Array.from(tree)).toEqual(args);
+        expect(
+          Array.from(tree.rbftNodeIterate()).map((node) => node.value)
+        ).toEqual(
+          [args[2], args[1], args[4], args[0], args[3], args[5]].reverse()
+        );
+      });
+    },
+
     balance: false, // cf. internally called by every tests
-    bftNodeIterate: false, // cf. rotateRightRight "Balanced insert"
     height: false, // cf. rotateRightRight "Right only insert"
   };
 };
