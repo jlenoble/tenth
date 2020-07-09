@@ -100,9 +100,7 @@ export class EmptyBinarySearchTreeNode<T>
   }
 
   has(): boolean {
-    throw new Error(
-      "EmptyBinarySearchTreeNode 'has' method should not be called"
-    );
+    return false;
   }
 
   _find(): BinarySearchTreeNodeInterface<T> | null {
