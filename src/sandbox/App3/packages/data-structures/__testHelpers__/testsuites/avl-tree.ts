@@ -371,6 +371,7 @@ export const tests = <T>(
       });
     },
 
+    balance: false, // cf. internally called by every tests
     bftNodeIterate: false, // cf. rotateRightRight "Balanced insert"
     height: false, // cf. rotateRightRight "Right only insert"
   };
