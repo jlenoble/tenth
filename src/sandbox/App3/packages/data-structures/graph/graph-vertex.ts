@@ -16,15 +16,16 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
 
   constructor(
     value: T,
-    valueCompare: (a: T, b: T) => -1 | 0 | 1 = defaultCompare
-  ) {
-    const edgeCompare = (a: GraphEdge<T>, b: GraphEdge<T>): -1 | 0 | 1 => {
+    edgeCompare: (a: GraphEdge<T>, b: GraphEdge<T>) => -1 | 0 | 1 = (
+      a: GraphEdge<T>,
+      b: GraphEdge<T>
+    ): -1 | 0 | 1 => {
       return (
-        valueCompare(a.start.value, b.start.value) ||
-        valueCompare(a.end.value, b.end.value)
+        defaultCompare(a.start.value, b.start.value) ||
+        defaultCompare(a.end.value, b.end.value)
       );
-    };
-
+    }
+  ) {
     this.#value = value;
     this.#edges = new AvlTree(undefined, edgeCompare);
   }
