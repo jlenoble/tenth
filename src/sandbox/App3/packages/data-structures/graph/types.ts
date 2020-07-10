@@ -1,3 +1,5 @@
+import { Constructor, DataStructure } from "../types";
+
 export interface GraphEdge<T> {
   start: GraphVertex<T>;
   end: GraphVertex<T>;
@@ -21,7 +23,9 @@ export interface GraphVertex<T> {
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null;
 }
 
-export interface Graph<T> {
+export type GraphConstructor<T> = Constructor<Graph<T>>;
+
+export interface Graph<T> extends DataStructure<T> {
   weight: number;
   adjacencyList: Map<T, Map<T, number>>;
 

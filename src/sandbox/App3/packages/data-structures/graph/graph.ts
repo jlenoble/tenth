@@ -23,6 +23,14 @@ export class Graph<T> implements GraphInterface<T> {
     return w;
   }
 
+  get size(): number {
+    return this.#vertices.size;
+  }
+
+  get degree(): number {
+    return this.#edges.size;
+  }
+
   get adjacencyList(): Map<T, Map<T, number>> {
     const list: Map<T, Map<T, number>> = new Map();
 
@@ -62,6 +70,10 @@ export class Graph<T> implements GraphInterface<T> {
     } else {
       this.#edgesTo = this.#edgesFrom;
     }
+  }
+
+  isEmpty(): boolean {
+    return this.size === 0;
   }
 
   addVertex(value: T): GraphVertexInterface<T> {
