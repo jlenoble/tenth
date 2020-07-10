@@ -94,13 +94,11 @@ class AvlTreeNode<T> extends BinarySearchTreeNode<T>
     let height = this.#height;
 
     let node = this.parent;
-    let counter = 0;
+
     while (node !== null && node.#height <= height) {
       node.#height = height + 1;
       height = node.#height;
       node = node.parent;
-      counter++;
-      if (counter > 9) break;
     }
   }
 
@@ -138,12 +136,9 @@ export class AvlTree<T> extends BinarySearchTree<T>
     let node = super._insert(value) as AvlTreeNode<T> | null;
     const inserted = Boolean(node);
 
-    let counter = 0;
-
-    while (node !== null && counter < 10) {
+    while (node !== null) {
       this.balance(node);
       node = node.parent;
-      counter++;
     }
 
     return inserted;
