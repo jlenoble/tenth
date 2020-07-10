@@ -6,7 +6,8 @@ export const tests = <T>(
   Structure: GraphConstructor<T>,
   initArgs: T[]
 ): TestSuite => {
-  const sortedArgs = Array.from(new Set(initArgs)).sort(defaultCompare);
+  const args = new Set(initArgs);
+  const sortedArgs = Array.from(args).sort(defaultCompare);
 
   return {
     addVertex(): void {
@@ -14,6 +15,12 @@ export const tests = <T>(
         const g = new Structure();
         initArgs.forEach((arg) => g.addVertex(arg));
         expect(g.size).toBe(sortedArgs.length);
+
+        expect(Array.from(g).length).toBe(args.size);
+
+        for (const arg of g) {
+          expect(args.has(arg)).toBe(true);
+        }
       });
     },
   };
