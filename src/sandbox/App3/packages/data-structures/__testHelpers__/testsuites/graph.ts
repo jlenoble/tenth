@@ -27,6 +27,22 @@ export const tests = <T>(
       });
     },
 
+    deleteVertex(): void {
+      it("Deleting vertices", () => {
+        const g = new Structure(initArgs);
+        expect(Array.from(g).length).toBe(args.size);
+
+        for (const arg of g) {
+          expect(args.has(arg)).toBe(true);
+        }
+
+        sortedArgs.forEach((arg, i) => {
+          g.deleteVertex(arg);
+          expect(g.size).toBe(sortedArgs.length - i - 1);
+        });
+      });
+    },
+
     addEdge(): void {
       it("Adding edges - unique values", () => {
         const g = new Structure();

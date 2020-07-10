@@ -107,9 +107,16 @@ export class Graph<T> implements GraphInterface<T> {
 
     vertex.deleteAllEdges();
 
-    return Array.from(this.edgesFor(value)).every(({ start, end }) => {
-      this.deleteEdge(start.value, end.value);
-    });
+    if (
+      Array.from(this.edgesFor(value)).every(({ start, end }) => {
+        this.deleteEdge(start.value, end.value);
+      })
+    ) {
+      this.#vertices.delete(value);
+      return true;
+    }
+
+    return false;
   }
 
   getVertex(value: T): GraphVertexInterface<T> | null {
