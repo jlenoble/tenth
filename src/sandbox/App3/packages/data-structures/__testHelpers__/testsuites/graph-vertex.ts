@@ -193,7 +193,7 @@ export const tests = <T>(
 
         vertices[0].addEdge(e01).addEdge(e02).addEdge(e03);
         vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
-        vertices[2].addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
         vertices[3].addEdge(e03);
 
         const neighbors0 = new Set(Array.from(vertices[0].neighbors()));
@@ -203,7 +203,7 @@ export const tests = <T>(
 
         expect(neighbors0.size).toBe(3);
         expect(neighbors1.size).toBe(2);
-        expect(neighbors2.size).toBe(1);
+        expect(neighbors2.size).toBe(2);
         expect(neighbors3.size).toBe(1);
 
         expect(neighbors0.has(vertices[0])).toBe(false);
@@ -216,7 +216,7 @@ export const tests = <T>(
         expect(neighbors1.has(vertices[2])).toBe(true);
         expect(neighbors1.has(vertices[3])).toBe(false);
 
-        expect(neighbors2.has(vertices[0])).toBe(false);
+        expect(neighbors2.has(vertices[0])).toBe(true);
         expect(neighbors2.has(vertices[1])).toBe(true);
         expect(neighbors2.has(vertices[2])).toBe(false);
         expect(neighbors2.has(vertices[3])).toBe(false);
@@ -243,7 +243,7 @@ export const tests = <T>(
 
         vertices[0].addEdge(e01).addEdge(e02).addEdge(e03);
         vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
-        vertices[2].addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
         vertices[3].addEdge(e03);
 
         expect(vertices[0].hasNeighbor(vertices[0])).toBe(false);
@@ -256,7 +256,7 @@ export const tests = <T>(
         expect(vertices[1].hasNeighbor(vertices[2])).toBe(true);
         expect(vertices[1].hasNeighbor(vertices[3])).toBe(false);
 
-        expect(vertices[2].hasNeighbor(vertices[0])).toBe(false);
+        expect(vertices[2].hasNeighbor(vertices[0])).toBe(true);
         expect(vertices[2].hasNeighbor(vertices[1])).toBe(true);
         expect(vertices[2].hasNeighbor(vertices[2])).toBe(false);
         expect(vertices[2].hasNeighbor(vertices[3])).toBe(false);
