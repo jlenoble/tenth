@@ -354,6 +354,46 @@ export const tests = <T>(
         expect(edges3.has(e21)).toBe(false);
       });
     },
+
+    findEdge(): void {
+      it("Finding an edge", () => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+        const e03 = new GraphEdge(vertices[0], vertices[3]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02).addEdge(e03);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+        vertices[3].addEdge(e03);
+
+        expect(vertices[0].findEdge(vertices[0])).toBe(null);
+        expect(vertices[0].findEdge(vertices[1])).toBe(e01);
+        expect(vertices[0].findEdge(vertices[2])).toBe(e02);
+        expect(vertices[0].findEdge(vertices[3])).toBe(e03);
+
+        expect(vertices[1].findEdge(vertices[0])).toBe(e01);
+        expect(vertices[1].findEdge(vertices[1])).toBe(null);
+        expect(vertices[1].findEdge(vertices[2])).toBe(e12);
+        expect(vertices[1].findEdge(vertices[3])).toBe(null);
+
+        expect(vertices[2].findEdge(vertices[0])).toBe(e02);
+        expect(vertices[2].findEdge(vertices[1])).toBe(e21);
+        expect(vertices[2].findEdge(vertices[2])).toBe(null);
+        expect(vertices[2].findEdge(vertices[3])).toBe(null);
+
+        expect(vertices[3].findEdge(vertices[0])).toBe(e03);
+        expect(vertices[3].findEdge(vertices[1])).toBe(null);
+        expect(vertices[3].findEdge(vertices[2])).toBe(null);
+        expect(vertices[3].findEdge(vertices[3])).toBe(null);
+      });
+    },
   };
 };
 

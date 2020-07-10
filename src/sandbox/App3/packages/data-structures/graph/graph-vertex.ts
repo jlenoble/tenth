@@ -78,11 +78,16 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
   }
 
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null {
+    let rtl: GraphEdge<T> | null = null;
+
     for (const edge of this.#edges) {
-      if (edge.end === vertex || edge.start === vertex) {
+      if (edge.start === this && edge.end === vertex) {
         return edge;
+      } else if (edge.end === this && edge.start === vertex) {
+        rtl = edge;
       }
     }
-    return null;
+
+    return rtl;
   }
 }
