@@ -146,6 +146,87 @@ export const tests = <T>(
         });
       });
     },
+
+    neighbors(): void {
+      it("Iterating on neighbors", () => {
+        const vertices = initArgs.map((a) => {
+          return new Structure(a);
+        });
+
+        const edges = vertices.map((v1) => {
+          return vertices.map((v2) => {
+            const edge = new GraphEdge<T>(v1, v2);
+            v1.addEdge(edge);
+            v2.addEdge(edge);
+            return edge;
+          });
+        });
+
+        vertices[0].deleteEdge(edges[0][0]);
+        vertices[1].deleteEdge(edges[1][1]);
+        vertices[1].deleteEdge(edges[1][2]);
+
+        vertices.forEach((v, i) => {
+          const neighbors = Array.from(v.neighbors());
+          expect(v.degree).toBe(neighbors.length);
+          if (i === 0) {
+            expect(neighbors.length).toBe(2 * sortedArgs.length - 2);
+          } else if (i === 1) {
+            expect(v.degree).toBe(2 * sortedArgs.length - 3);
+          } else {
+            expect(v.degree).toBe(2 * sortedArgs.length - 1);
+          }
+        });
+      });
+
+      it("Checking neighbors", () => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+        const e03 = new GraphEdge(vertices[0], vertices[3]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02).addEdge(e03);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e12).addEdge(e21);
+        vertices[3].addEdge(e03);
+
+        const neighbors0 = new Set(Array.from(vertices[0].neighbors()));
+        const neighbors1 = new Set(Array.from(vertices[1].neighbors()));
+        const neighbors2 = new Set(Array.from(vertices[2].neighbors()));
+        const neighbors3 = new Set(Array.from(vertices[3].neighbors()));
+
+        expect(neighbors0.size).toBe(3);
+        expect(neighbors1.size).toBe(2);
+        expect(neighbors2.size).toBe(1);
+        expect(neighbors3.size).toBe(1);
+
+        expect(neighbors0.has(vertices[0])).toBe(false);
+        expect(neighbors0.has(vertices[1])).toBe(true);
+        expect(neighbors0.has(vertices[2])).toBe(true);
+        expect(neighbors0.has(vertices[3])).toBe(true);
+
+        expect(neighbors1.has(vertices[0])).toBe(true);
+        expect(neighbors1.has(vertices[1])).toBe(false);
+        expect(neighbors1.has(vertices[2])).toBe(true);
+        expect(neighbors1.has(vertices[3])).toBe(false);
+
+        expect(neighbors2.has(vertices[0])).toBe(false);
+        expect(neighbors2.has(vertices[1])).toBe(true);
+        expect(neighbors2.has(vertices[2])).toBe(false);
+        expect(neighbors2.has(vertices[3])).toBe(false);
+
+        expect(neighbors3.has(vertices[0])).toBe(true);
+        expect(neighbors3.has(vertices[1])).toBe(false);
+        expect(neighbors3.has(vertices[2])).toBe(false);
+        expect(neighbors3.has(vertices[3])).toBe(false);
+      });
+    },
   };
 };
 
