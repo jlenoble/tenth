@@ -47,6 +47,10 @@ export class Graph<T> implements GraphInterface<T> {
     return list;
   }
 
+  *[Symbol.iterator](): IterableIterator<T> {
+    yield* this.#vertices.keys();
+  }
+
   constructor(
     isDirected = false,
     valueCompare: (a: T, b: T) => -1 | 0 | 1 = defaultCompare
