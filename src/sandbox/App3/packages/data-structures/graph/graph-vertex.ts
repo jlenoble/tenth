@@ -49,7 +49,11 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
 
   *neighbors(): IterableIterator<GraphVertexInterface<T>> {
     for (const edge of this.#edges) {
-      yield edge.start === this ? edge.end : edge.start;
+      if (edge.start === this && edge.end !== this) {
+        yield edge.end;
+      } else if (edge.end === this && edge.start !== this) {
+        yield edge.start;
+      }
     }
   }
 

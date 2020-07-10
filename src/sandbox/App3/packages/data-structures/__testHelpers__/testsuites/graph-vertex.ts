@@ -168,12 +168,21 @@ export const tests = <T>(
 
         vertices.forEach((v, i) => {
           const neighbors = Array.from(v.neighbors());
-          expect(v.degree).toBe(neighbors.length);
-          if (i === 0) {
+
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const s = duplicates.get(initArgs[i])!;
+
+          if (s.has(0)) {
+            expect(v.degree).toBe(neighbors.length);
             expect(neighbors.length).toBe(2 * sortedArgs.length - 2);
-          } else if (i === 1) {
+          } else if (s.has(1)) {
+            expect(v.degree).toBe(neighbors.length);
             expect(v.degree).toBe(2 * sortedArgs.length - 3);
+          } else if (s.has(i) && [...s][0] !== i) {
+            expect(v.degree).toBe(neighbors.length);
+            expect(v.degree).toBe(2 * sortedArgs.length - 1);
           } else {
+            expect(v.degree - 1).toBe(neighbors.length);
             expect(v.degree).toBe(2 * sortedArgs.length - 1);
           }
         });
