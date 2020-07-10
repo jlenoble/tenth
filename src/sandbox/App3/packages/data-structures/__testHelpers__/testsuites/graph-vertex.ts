@@ -394,6 +394,32 @@ export const tests = <T>(
         expect(vertices[3].findEdge(vertices[3])).toBe(null);
       });
     },
+
+    degree(): void {
+      it("Checking degree", () => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+        const e03 = new GraphEdge(vertices[0], vertices[3]);
+
+        expect(vertices[0].degree).toBe(0);
+        vertices[0].addEdge(e01);
+        expect(vertices[0].degree).toBe(1);
+        vertices[0].addEdge(e02);
+        expect(vertices[0].degree).toBe(2);
+        vertices[0].addEdge(e03);
+        expect(vertices[0].degree).toBe(3);
+        vertices[0].deleteEdge(e01);
+        expect(vertices[0].degree).toBe(2);
+        vertices[0].deleteEdge(e03);
+        expect(vertices[0].degree).toBe(1);
+        vertices[0].deleteEdge(e02);
+        expect(vertices[0].degree).toBe(0);
+      });
+    },
   };
 };
 
