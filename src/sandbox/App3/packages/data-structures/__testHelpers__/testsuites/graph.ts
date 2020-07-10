@@ -8,5 +8,13 @@ export const tests = <T>(
 ): TestSuite => {
   const sortedArgs = Array.from(new Set(initArgs)).sort(defaultCompare);
 
-  return {};
+  return {
+    addVertex(): void {
+      it("Adding vertices", () => {
+        const g = new Structure();
+        initArgs.forEach((arg) => g.addVertex(arg));
+        expect(g.size).toBe(sortedArgs.length);
+      });
+    },
+  };
 };
