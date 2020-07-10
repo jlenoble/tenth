@@ -1,6 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { GraphConstructor } from "../../graph/types";
 import { defaultCompare } from "../../../comparator";
+import { tests as graphTests } from "./graph";
 
 export const tests = <T>(
   Structure: GraphConstructor<T>,
@@ -10,19 +11,7 @@ export const tests = <T>(
   const sortedArgs = Array.from(args).sort(defaultCompare);
 
   return {
-    addVertex(): void {
-      it("Adding vertices", () => {
-        const g = new Structure();
-        initArgs.forEach((arg) => g.addVertex(arg));
-        expect(g.size).toBe(sortedArgs.length);
-
-        expect(Array.from(g).length).toBe(args.size);
-
-        for (const arg of g) {
-          expect(args.has(arg)).toBe(true);
-        }
-      });
-    },
+    ...graphTests(Structure, initArgs),
 
     addEdge(): void {
       it("Adding edges - unique values", () => {
@@ -50,9 +39,7 @@ export const tests = <T>(
           });
         });
 
-        expect(g.degree).toBe(
-          (sortedArgs.length * (sortedArgs.length + 1)) / 2
-        );
+        expect(g.degree).toBe(sortedArgs.length * sortedArgs.length);
 
         expect(Array.from(g).length).toBe(args.size);
 
