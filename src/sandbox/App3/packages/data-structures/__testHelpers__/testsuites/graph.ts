@@ -76,7 +76,6 @@ export const tests = <T>(
         initArgs.forEach((a) => {
           initArgs.forEach((b) => {
             g.addEdge(a, b);
-            return b;
           });
         });
 
@@ -89,6 +88,41 @@ export const tests = <T>(
         for (const arg of g) {
           expect(args.has(arg)).toBe(true);
         }
+      });
+    },
+
+    findEdge(): void {
+      it("finding edges", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            const edge = g.findEdge(a, b);
+            expect(edge).toBeDefined();
+
+            if (edge) {
+              const { start, end } = edge;
+              expect(start).toBeDefined();
+              expect(end).toBeDefined();
+
+              if (start && end) {
+                if (defaultCompare(a, b) !== 1) {
+                  expect(start.value).toBe(a);
+                  expect(end.value).toBe(b);
+                } else {
+                  expect(start.value).toBe(b);
+                  expect(end.value).toBe(a);
+                }
+              }
+            }
+          });
+        });
       });
     },
   };

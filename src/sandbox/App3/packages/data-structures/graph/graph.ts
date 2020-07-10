@@ -13,6 +13,8 @@ export class Graph<T> implements GraphInterface<T> {
   readonly #edges: AvlTree<GraphEdgeInterface<T>>;
   readonly #edgesFrom: Map<T, Map<T, GraphEdgeInterface<T>>>;
   readonly #edgesTo: Map<T, Map<T, GraphEdgeInterface<T>>>;
+  readonly #isDirected: boolean;
+  readonly #valueCompare: (a: T, b: T) => -1 | 0 | 1;
   readonly #edgeCompare: (a: GraphEdge<T>, b: GraphEdge<T>) => -1 | 0 | 1;
 
   get weight(): number {
@@ -56,6 +58,8 @@ export class Graph<T> implements GraphInterface<T> {
     isDirected = false,
     valueCompare: (a: T, b: T) => -1 | 0 | 1 = defaultCompare
   ) {
+    this.#valueCompare = valueCompare;
+
     this.#edgeCompare = (a: GraphEdge<T>, b: GraphEdge<T>): -1 | 0 | 1 => {
       return (
         valueCompare(a.start.value, b.start.value) ||
@@ -75,6 +79,8 @@ export class Graph<T> implements GraphInterface<T> {
     } else {
       this.#edgesTo = this.#edgesFrom;
     }
+
+    this.#isDirected = isDirected;
 
     if (values) {
       for (const value of values) {
@@ -124,6 +130,12 @@ export class Graph<T> implements GraphInterface<T> {
   }
 
   addEdge(start: T, end: T, weight = 1): GraphEdgeInterface<T> {
+    if (!this.#isDirected && this.#valueCompare(start, end) === 1) {
+      const tmp = start;
+      start = end;
+      end = tmp;
+    }
+
     let edges = this.#edgesFrom.get(start);
     let edge: GraphEdgeInterface<T> | undefined;
 
