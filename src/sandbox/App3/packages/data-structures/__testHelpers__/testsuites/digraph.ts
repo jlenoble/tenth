@@ -35,7 +35,6 @@ export const tests = <T>(
         initArgs.forEach((a) => {
           initArgs.forEach((b) => {
             g.addEdge(a, b);
-            return b;
           });
         });
 
