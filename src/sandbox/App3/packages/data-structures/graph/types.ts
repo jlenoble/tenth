@@ -27,6 +27,7 @@ export type GraphConstructor<T> = Constructor<Graph<T>>;
 
 export interface Graph<T> extends DataStructure<T> {
   weight: number;
+  degree: number;
   adjacencyList: Map<T, Map<T, number>>;
 
   addVertex(value: T): GraphVertex<T>;
