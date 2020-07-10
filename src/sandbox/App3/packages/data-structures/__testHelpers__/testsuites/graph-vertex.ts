@@ -44,7 +44,7 @@ export const tests = <T>(
     },
 
     deleteEdge(): void {
-      it("deleting edges", () => {
+      it("Deleting edges", () => {
         const vertices = initArgs.map((a) => {
           return new Structure(a);
         });
@@ -68,6 +68,33 @@ export const tests = <T>(
         vertices.forEach((v, i) => {
           if (i === 0 || i === 2) {
             expect(v.degree).toBe(2 * sortedArgs.length - 2);
+          } else {
+            expect(v.degree).toBe(2 * sortedArgs.length - 1);
+          }
+        });
+      });
+    },
+
+    deleteAllEdges(): void {
+      it("Deleting all edges", () => {
+        const vertices = initArgs.map((a) => {
+          return new Structure(a);
+        });
+
+        vertices.forEach((v1) => {
+          vertices.forEach((v2) => {
+            const edge = new GraphEdge<T>(v1, v2);
+            v1.addEdge(edge);
+            v2.addEdge(edge);
+          });
+        });
+
+        vertices[0].deleteAllEdges();
+        vertices[3].deleteAllEdges();
+
+        vertices.forEach((v, i) => {
+          if (i === 0 || i === 3) {
+            expect(v.degree).toBe(0);
           } else {
             expect(v.degree).toBe(2 * sortedArgs.length - 1);
           }
