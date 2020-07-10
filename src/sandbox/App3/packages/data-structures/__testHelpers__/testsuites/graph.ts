@@ -43,6 +43,17 @@ export const tests = <T>(
       });
     },
 
+    getVertex(): void {
+      it("Getting vertices", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((arg) => {
+          const vertex = g.getVertex(arg);
+          expect(vertex?.value).toBe(arg);
+        });
+      });
+    },
+
     addEdge(): void {
       it("Adding edges - unique values", () => {
         const g = new Structure();
