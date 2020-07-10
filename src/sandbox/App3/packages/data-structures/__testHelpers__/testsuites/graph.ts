@@ -1,6 +1,7 @@
 import { TestSuite } from "../../../testsuite";
 import { GraphConstructor } from "../../graph/types";
 import { defaultCompare } from "../../../comparator";
+import { tests as dataStructureTests } from "./data-structure";
 
 export const tests = <T>(
   Structure: GraphConstructor<T>,
@@ -10,6 +11,8 @@ export const tests = <T>(
   const sortedArgs = Array.from(args).sort(defaultCompare);
 
   return {
+    ...dataStructureTests(Structure, sortedArgs),
+
     addVertex(): void {
       it("Adding vertices", () => {
         const g = new Structure();
