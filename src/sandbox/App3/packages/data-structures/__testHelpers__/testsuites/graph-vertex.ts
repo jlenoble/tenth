@@ -267,6 +267,84 @@ export const tests = <T>(
         expect(vertices[3].hasNeighbor(vertices[3])).toBe(false);
       });
     },
+
+    edges(): void {
+      it("Iterating on edges", () => {
+        const vertices = initArgs.map((a) => {
+          return new Structure(a);
+        });
+
+        const edges = vertices.map((v1) => {
+          return vertices.map((v2) => {
+            const edge = new GraphEdge<T>(v1, v2);
+            v1.addEdge(edge);
+            v2.addEdge(edge);
+            return edge;
+          });
+        });
+
+        vertices[0].deleteEdge(edges[0][0]);
+        vertices[1].deleteEdge(edges[1][1]);
+        vertices[1].deleteEdge(edges[1][2]);
+
+        vertices.forEach((v) => {
+          const edges = Array.from(v.edges());
+          expect(v.degree).toBe(edges.length);
+        });
+      });
+
+      it("Checking edges", () => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+        const e03 = new GraphEdge(vertices[0], vertices[3]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02).addEdge(e03);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+        vertices[3].addEdge(e03);
+
+        const edges0 = new Set(Array.from(vertices[0].edges()));
+        const edges1 = new Set(Array.from(vertices[1].edges()));
+        const edges2 = new Set(Array.from(vertices[2].edges()));
+        const edges3 = new Set(Array.from(vertices[3].edges()));
+
+        expect(edges0.size).toBe(3);
+        expect(edges1.size).toBe(3);
+        expect(edges2.size).toBe(3);
+        expect(edges3.size).toBe(1);
+
+        expect(edges0.has(e01)).toBe(true);
+        expect(edges0.has(e02)).toBe(true);
+        expect(edges0.has(e03)).toBe(true);
+        expect(edges0.has(e12)).toBe(false);
+        expect(edges0.has(e21)).toBe(false);
+
+        expect(edges1.has(e01)).toBe(true);
+        expect(edges1.has(e02)).toBe(false);
+        expect(edges1.has(e03)).toBe(false);
+        expect(edges1.has(e12)).toBe(true);
+        expect(edges1.has(e21)).toBe(true);
+
+        expect(edges2.has(e01)).toBe(false);
+        expect(edges2.has(e02)).toBe(true);
+        expect(edges2.has(e03)).toBe(false);
+        expect(edges2.has(e12)).toBe(true);
+        expect(edges2.has(e21)).toBe(true);
+
+        expect(edges3.has(e01)).toBe(false);
+        expect(edges3.has(e02)).toBe(false);
+        expect(edges3.has(e03)).toBe(true);
+        expect(edges3.has(e12)).toBe(false);
+        expect(edges3.has(e21)).toBe(false);
+      });
+    },
   };
 };
 
