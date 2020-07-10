@@ -9,7 +9,7 @@ makeTestSuite(
   Graph,
   tests(Graph, initArgs),
   staticTests({
-    length: 0,
+    length: 1,
     name: "Graph",
     Structure: Graph,
   })

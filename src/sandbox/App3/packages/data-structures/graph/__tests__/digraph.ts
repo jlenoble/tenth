@@ -6,8 +6,8 @@ import { tests } from "../../__testHelpers__/testsuites/digraph";
 const initArgs = [1, 10, 12, 5, 12, 2, 12, 33, 21];
 
 class DirectedGraph extends Graph<number> {
-  constructor() {
-    super(true);
+  constructor(values?: Iterable<number>) {
+    super(values, true);
   }
 }
 
@@ -15,7 +15,7 @@ makeTestSuite(
   DirectedGraph,
   tests(DirectedGraph, initArgs),
   staticTests({
-    length: 0,
+    length: 1,
     name: "DirectedGraph",
     Structure: DirectedGraph,
   })

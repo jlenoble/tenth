@@ -52,6 +52,7 @@ export class Graph<T> implements GraphInterface<T> {
   }
 
   constructor(
+    values?: Iterable<T>,
     isDirected = false,
     valueCompare: (a: T, b: T) => -1 | 0 | 1 = defaultCompare
   ) {
@@ -73,6 +74,12 @@ export class Graph<T> implements GraphInterface<T> {
       this.#edgesTo = new Map();
     } else {
       this.#edgesTo = this.#edgesFrom;
+    }
+
+    if (values) {
+      for (const value of values) {
+        this.addVertex(value);
+      }
     }
   }
 
