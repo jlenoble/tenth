@@ -63,7 +63,10 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
 
   hasNeighbor(vertex: GraphVertex<T>): boolean {
     for (const edge of this.#edges) {
-      if (edge.end === vertex || edge.start === vertex) {
+      if (
+        (edge.end === vertex && edge.end !== this) ||
+        (edge.start === vertex && edge.start !== this)
+      ) {
         return true;
       }
     }
