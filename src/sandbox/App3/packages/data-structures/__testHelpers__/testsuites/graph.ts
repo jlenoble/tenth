@@ -91,6 +91,40 @@ export const tests = <T>(
       });
     },
 
+    deleteEdge(): void {
+      it("Deleting edges", () => {
+        const g = new Structure(args);
+
+        args.forEach((a) => {
+          args.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        let counter = g.degree;
+        const leftAB: Map<T, Map<T, boolean>> = new Map(
+          Array.from(args).map((arg) => [
+            arg,
+            new Map(Array.from(args).map((arg) => [arg, true])),
+          ])
+        );
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            if (leftAB?.get(a)?.get(b)) {
+              leftAB.get(a)?.delete(b);
+              leftAB.get(b)?.delete(a);
+              counter--;
+            }
+
+            g.deleteEdge(a, b);
+
+            expect(g.degree).toBe(counter);
+          });
+        });
+      });
+    },
+
     findEdge(): void {
       it("finding edges", () => {
         const g = new Structure(initArgs);
