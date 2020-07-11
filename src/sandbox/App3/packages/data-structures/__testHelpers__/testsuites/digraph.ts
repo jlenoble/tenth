@@ -112,5 +112,31 @@ export const tests = <T>(
         });
       });
     },
+
+    edges(): void {
+      it("Looping on edges", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        const edges: string[] = [];
+
+        sortedArgs.forEach((a) => {
+          sortedArgs.forEach((b) => {
+            edges.push(`${a}:${b}`);
+          });
+        });
+
+        expect(
+          Array.from(g.edges()).map(
+            ({ start, end }) => `${start.value}:${end.value}`
+          )
+        ).toEqual(edges);
+      });
+    },
   };
 };
