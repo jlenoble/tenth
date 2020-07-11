@@ -48,6 +48,41 @@ export const tests = <T>(
       });
     },
 
+    deleteEdge(): void {
+      it("Deleting edges", () => {
+        const g = new Structure(args);
+
+        args.forEach((a) => {
+          args.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        let counter = g.degree;
+        const leftA = new Set(args);
+
+        initArgs.forEach((a) => {
+          const leftB = new Set(args);
+
+          initArgs.forEach((b) => {
+            if (leftB.has(b)) {
+              leftB.delete(b);
+
+              if (leftA.has(a)) {
+                counter--;
+              }
+            }
+
+            g.deleteEdge(a, b);
+
+            expect(g.degree).toBe(counter);
+          });
+
+          leftA.delete(a);
+        });
+      });
+    },
+
     findEdge(): void {
       it("finding edges", () => {
         const g = new Structure(initArgs);
