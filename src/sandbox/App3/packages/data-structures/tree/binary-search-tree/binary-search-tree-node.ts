@@ -96,7 +96,11 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
       if (nextNode !== right) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const parent = nextNode.parent!;
-        parent.removeChild(nextNode);
+        if (nextNode.right !== null) {
+          parent.replaceChild(nextNode, nextNode.right);
+        } else {
+          parent.removeChild(nextNode);
+        }
         node.value = nextNode.value;
         return parent;
       } else {

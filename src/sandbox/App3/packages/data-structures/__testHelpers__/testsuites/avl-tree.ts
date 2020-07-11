@@ -336,7 +336,17 @@ export const tests = <T>(
         expect(Array.from(tree)).toEqual(args);
       });
 
-      it("deep LR (imbalancing)", () => {
+      it("remove 1576 from balanced 7", () => {
+        /*
+            7           x           x           x
+          6           6           x           4
+            5           x           x           x
+        4       ->  4       ->  4       ->  3
+            3           3           3           x
+          2           2           2           2
+            1           x           x           x
+        */
+
         const tree = new Structure(balancedArgs);
         const sortedArgs = balancedArgs.slice().sort(defaultCompare);
         const balancedRows: T[][] = [];
@@ -386,6 +396,83 @@ export const tests = <T>(
         expect(newRows[newRows.length - 3]).toEqual(
           [sortedArgs[2]].concat(balancedRows[balancedRows.length - 3].slice(1))
         );
+      });
+
+      it("remove 9f8 from balanced f", () => {
+        /*
+              f            x            x            x
+            e            e            e            e
+              d            d            d            d
+          c            c            c            c
+              b            b            b            x
+            a            a            a            b
+              9            x            x            x
+        8        ->  8       ->  x         ->  a
+              7            7            7            7
+            6            6            6            6
+              5            5            5            5
+          4            4            4            4
+              3            3            3            3
+            2            2            2            2
+              1            1            1            1
+        */
+
+        const tree = new Structure(balancedArgs);
+        const sortedArgs = balancedArgs.slice().sort(defaultCompare);
+        const balancedRows: T[][] = [];
+
+        let min = 0;
+        let max = 1;
+        const l = balancedArgs.length;
+        while (max < l) {
+          balancedRows.push(
+            balancedArgs.slice(min, min + max).sort(defaultCompare)
+          );
+          min = min + max;
+          max *= 2;
+        }
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual(balancedRows.reduce((r1, r2) => r1.concat(r2)));
+        expect(Array.from(tree)).toEqual(sortedArgs);
+
+        tree.remove(sortedArgs[8]);
+        tree.remove(sortedArgs[14]);
+        tree.remove(sortedArgs[7]);
+
+        expect(tree.size).toEqual(balancedArgs.length - 3);
+        expect(Array.from(tree).length).toEqual(balancedArgs.length - 3);
+
+        const newRows: T[][] = [];
+
+        for (const {
+          node: { value },
+          depth,
+        } of tree.bftNodeIterateWithDepth()) {
+          const newRow = newRows[depth] || [];
+          if (!newRows[depth]) {
+            newRows[depth] = newRow;
+          }
+          newRow.push(value);
+        }
+
+        expect(newRows[newRows.length - 1].slice(0, 5)).toEqual(
+          balancedRows[balancedRows.length - 1]
+            .slice(0, 4)
+            .concat(balancedRows[balancedRows.length - 1].slice(6, 7))
+        );
+        expect(newRows[newRows.length - 2].slice(0, 4)).toEqual(
+          balancedRows[balancedRows.length - 2]
+            .slice(0, 2)
+            .concat([sortedArgs[10], sortedArgs[13]])
+        );
+        expect(newRows[newRows.length - 3].slice(0, 2)).toEqual(
+          balancedRows[balancedRows.length - 3].slice(0, 2)
+        );
+        expect(newRows[newRows.length - 4].slice(0, 1)).toEqual([
+          sortedArgs[9],
+        ]);
       });
     },
 
