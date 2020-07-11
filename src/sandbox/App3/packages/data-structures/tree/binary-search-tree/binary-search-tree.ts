@@ -98,6 +98,30 @@ export class BinarySearchTree<T> implements BinarySearchTreeInterface<T> {
     >;
   }
 
+  *dftNodeIterateWithDepth(
+    depth?: number
+  ): IterableIterator<{
+    node: BinarySearchTreeNodeInterface<T>;
+    depth: number;
+  }> {
+    yield* this.#root.dftNodeIterateWithDepth(depth) as IterableIterator<{
+      node: BinarySearchTreeNodeInterface<T>;
+      depth: number;
+    }>;
+  }
+
+  *bftNodeIterateWithDepth(
+    depth?: number
+  ): IterableIterator<{
+    node: BinarySearchTreeNodeInterface<T>;
+    depth: number;
+  }> {
+    yield* this.#root.bftNodeIterateWithDepth(depth) as IterableIterator<{
+      node: BinarySearchTreeNodeInterface<T>;
+      depth: number;
+    }>;
+  }
+
   _insert(value: T): BinarySearchTreeNodeInterface<T> | null {
     const node = this.#root._insert(value);
 

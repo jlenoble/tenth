@@ -36,5 +36,12 @@ export interface BinarySearchTree<T> extends BinaryTree<T> {
   bftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
   rbftNodeIterate(): IterableIterator<BinarySearchTreeNode<T>>;
 
+  dftNodeIterateWithDepth(
+    depth?: number
+  ): IterableIterator<{ node: BinaryTreeNode<T>; depth: number }>;
+  bftNodeIterateWithDepth(
+    depth?: number
+  ): IterableIterator<{ node: BinaryTreeNode<T>; depth: number }>;
+
   toString<N extends BinarySearchTreeNode<T>, V>(fn?: (node: N) => V): string;
 }
