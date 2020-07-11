@@ -25,7 +25,7 @@ export const tests = <T>(
           expect(args.has(arg)).toBe(true);
         }
       });
-    },
+    }, //
 
     deleteVertex(): void {
       it("Deleting vertices", () => {
@@ -157,6 +157,16 @@ export const tests = <T>(
             }
           });
         });
+      });
+    },
+
+    vertices(): void {
+      it("Looping on vertices", () => {
+        const g = new Structure(initArgs);
+
+        expect(Array.from(g.vertices()).map((vertex) => vertex.value)).toEqual(
+          Array.from(args)
+        );
       });
     },
   };
