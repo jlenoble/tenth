@@ -88,14 +88,17 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
     if (left === null && right === null) {
       if (parent !== null) {
         parent.removeChild(node);
+        return parent;
       }
     } else if (right !== null) {
       const nextNode = right._findMin();
 
       if (nextNode !== right) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        nextNode.parent!.removeChild(nextNode);
+        const parent = nextNode.parent!;
+        parent.removeChild(nextNode);
         node.value = nextNode.value;
+        return parent;
       } else {
         node.value = right.value;
         node.right = right.right;
@@ -103,6 +106,7 @@ export class BinarySearchTreeNode<T> extends BinaryTreeNode<T>
     } else if (parent !== null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       parent.replaceChild(node, left!);
+      return parent;
     } else if (left !== null) {
       node.value = left.value;
       node.left = left.left;

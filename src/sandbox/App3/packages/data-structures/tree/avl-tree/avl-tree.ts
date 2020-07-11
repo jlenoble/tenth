@@ -145,11 +145,14 @@ export class AvlTree<T> extends BinarySearchTree<T>
   }
 
   remove(value: T): boolean {
-    const node = super._remove(value);
+    let node = super._remove(value) as AvlTreeNode<T> | null;
     const removed = node !== null;
 
-    if (removed && this.size > 2) {
-      this.balance(this.root);
+    if (this.size > 2) {
+      while (node !== null) {
+        this.balance(node);
+        node = node.parent;
+      }
     }
 
     return removed;

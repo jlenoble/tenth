@@ -145,11 +145,6 @@ export const tests = <T>(
           } else {
             const node2 = tree._remove(value);
             expect(node2).not.toBeNull();
-
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(tree.comparator.lessThanOrEqual(value, node2!.value)).toBe(
-              true
-            );
           }
           values.delete(value);
         });

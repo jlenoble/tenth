@@ -5,7 +5,8 @@ import { tests as binarySearchTreeTests } from "./binary-search-tree";
 
 export const tests = <T>(
   Structure: AvlTreeConstructor<T>,
-  initArgs: T[]
+  initArgs: T[],
+  balancedArgs: T[]
 ): TestSuite => {
   const sortedArgs = Array.from(new Set(initArgs)).sort(defaultCompare);
 
@@ -333,6 +334,58 @@ export const tests = <T>(
           )
         ).toEqual([1, 0, 0]);
         expect(Array.from(tree)).toEqual(args);
+      });
+
+      it("deep LR (imbalancing)", () => {
+        const tree = new Structure(balancedArgs);
+        const sortedArgs = balancedArgs.slice().sort(defaultCompare);
+        const balancedRows: T[][] = [];
+
+        let min = 0;
+        let max = 1;
+        const l = balancedArgs.length;
+        while (max < l) {
+          balancedRows.push(
+            balancedArgs.slice(min, min + max).sort(defaultCompare)
+          );
+          min = min + max;
+          max *= 2;
+        }
+
+        expect(
+          Array.from(tree.bftNodeIterate()).map((node) => node.value)
+        ).toEqual(balancedRows.reduce((r1, r2) => r1.concat(r2)));
+        expect(Array.from(tree)).toEqual(sortedArgs);
+
+        tree.remove(sortedArgs[0]);
+        tree.remove(sortedArgs[4]);
+        tree.remove(sortedArgs[6]);
+        tree.remove(sortedArgs[5]);
+
+        const newRows: T[][] = [];
+
+        for (const {
+          node: { value },
+          depth,
+        } of tree.bftNodeIterateWithDepth()) {
+          const newRow = newRows[depth] || [];
+          if (!newRows[depth]) {
+            newRows[depth] = newRow;
+          }
+          newRow.push(value);
+        }
+
+        expect(newRows[newRows.length - 1]).toEqual(
+          balancedRows[balancedRows.length - 1].slice(4)
+        );
+        expect(newRows[newRows.length - 2]).toEqual(
+          [sortedArgs[1], sortedArgs[3]].concat(
+            balancedRows[balancedRows.length - 2].slice(2)
+          )
+        );
+        expect(newRows[newRows.length - 3]).toEqual(
+          [sortedArgs[2]].concat(balancedRows[balancedRows.length - 3].slice(1))
+        );
       });
     },
 

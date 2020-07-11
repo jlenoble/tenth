@@ -300,23 +300,23 @@ export const tests = (
 
       let node1 = new Structure(o1, comparator);
       let node2 = node1._insert(o2);
-      let node3 = node1._insert(o3);
+      node1._insert(o3);
 
-      expect(node1._remove(o3)).toBe(node3);
-      expect(node1._remove(o2)).toBe(node2);
-      expect(node1._remove(o1)).toBe(node1);
-
-      node1 = new Structure(o1, comparator);
-      node2 = node1._insert(o2);
-      node3 = node1._insert(o3);
-
-      expect(node1._remove(o2)).toBe(node2);
       expect(node1._remove(o3)).toBe(node2);
+      expect(node1._remove(o2)).toBe(node1);
       expect(node1._remove(o1)).toBe(node1);
 
       node1 = new Structure(o1, comparator);
       node2 = node1._insert(o2);
-      node3 = node1._insert(o3);
+      node1._insert(o3);
+
+      expect(node1._remove(o2)).toBe(node2);
+      expect(node1._remove(o3)).toBe(node1);
+      expect(node1._remove(o1)).toBe(node1);
+
+      node1 = new Structure(o1, comparator);
+      node2 = node1._insert(o2);
+      node1._insert(o3);
 
       expect(node1._remove(o1)).toBe(node1);
       expect(node1._remove(o2)).toBe(node1);
