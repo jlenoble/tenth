@@ -280,6 +280,37 @@ export const tests = <T>(
       });
     },
 
+    edgesFor(): void {
+      it("Looping on edges from and to a vertex", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        for (const vertex of g.vertices()) {
+          expect(Array.from(g.edgesFor(vertex.value)).length).toBe(
+            sortedArgs.length
+          );
+          expect(
+            Array.from(g.edgesFor(vertex.value)).map(
+              ({ start, end }) => `${start.value}:${end.value}`
+            )
+          ).toEqual(
+            Array.from(args).map((arg) => {
+              if (defaultCompare(vertex.value, arg) !== 1) {
+                return `${vertex.value}:${arg}`;
+              } else {
+                return `${arg}:${vertex.value}`;
+              }
+            })
+          );
+        }
+      });
+    },
+
     weight({ it }): void {
       it(() => {
         const g = new Structure(initArgs);
