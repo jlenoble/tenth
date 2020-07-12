@@ -349,6 +349,28 @@ export const tests = (
       });
     },
 
+    map(): void {
+      it("Mapping", () => {
+        const m = new Structure();
+        const m2 = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m2.set(a, b, a - b + 100);
+          }
+        }
+
+        expect(Array.from(m.map((v) => v + 100))).toEqual(Array.from(m2));
+        expect(Array.from(m.map((v) => v + 101))).not.toEqual(Array.from(m2));
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };

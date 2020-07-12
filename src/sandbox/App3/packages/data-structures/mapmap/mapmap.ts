@@ -164,4 +164,16 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
       yield* column.values();
     }
   }
+
+  map<V>(fn: (value: T) => V): MapMap<A, B, V> {
+    const m: MapMap<A, B, V> = new MapMap();
+
+    for (const [a, row] of this.#rows) {
+      for (const [b, value] of row) {
+        m.set(a, b, fn(value));
+      }
+    }
+
+    return m;
+  }
 }

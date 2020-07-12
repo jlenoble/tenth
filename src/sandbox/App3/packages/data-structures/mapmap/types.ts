@@ -24,4 +24,6 @@ export interface MapMap<A, B, T> extends DataStructure<T> {
 
   iterateByRow(): IterableIterator<T>;
   iterateByColumn(): IterableIterator<T>;
+
+  map<V>(fn: (value: T) => V): MapMap<A, B, V>;
 }
