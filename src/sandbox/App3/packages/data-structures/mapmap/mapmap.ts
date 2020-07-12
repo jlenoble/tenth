@@ -92,4 +92,20 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
 
     return m;
   }
+
+  *iterateRow(a: A): IterableIterator<T> {
+    if (this.#rows.has(a)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      yield* this.#rows.get(a)!.values();
+    }
+  }
+
+  *iterateColumn(b: B): IterableIterator<T> {
+    for (const row of this.#rows.values()) {
+      if (row.has(b)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        yield row.get(b)!;
+      }
+    }
+  }
 }

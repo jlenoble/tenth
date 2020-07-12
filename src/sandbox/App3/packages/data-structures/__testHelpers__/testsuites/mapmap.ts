@@ -180,6 +180,42 @@ export const tests = (
       });
     },
 
+    iterateRow(): void {
+      it("Iterating a row", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        for (const a of initArgs) {
+          expect(Array.from(m.iterateRow(a))).toEqual(
+            Array.from(args).map((b) => a - b)
+          );
+        }
+      });
+    },
+
+    iterateColumn(): void {
+      it("Iterating a column", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        for (const b of initArgs) {
+          expect(Array.from(m.iterateColumn(b))).toEqual(
+            Array.from(args).map((a) => a - b)
+          );
+        }
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };
