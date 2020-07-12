@@ -149,7 +149,7 @@ export const tests = <T>(
 
     neighbors(): void {
       it("Iterating on neighbors", () => {
-        const vertices = initArgs.map((a) => {
+        const vertices = sortedArgs.map((a) => {
           return new Structure(a);
         });
 
@@ -166,24 +166,23 @@ export const tests = <T>(
         vertices[1].deleteEdge(edges[1][1]);
         vertices[1].deleteEdge(edges[1][2]);
 
+        vertices.forEach((v) => {
+          const neighbors = Array.from(v.neighbors());
+          expect(neighbors.length).toBe(sortedArgs.length - 1);
+        });
+
+        vertices[1].deleteEdge(edges[2][1]);
+
         vertices.forEach((v, i) => {
           const neighbors = Array.from(v.neighbors());
 
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const s = duplicates.get(initArgs[i])!;
 
-          if (s.has(0)) {
-            expect(v.degree).toBe(neighbors.length);
-            expect(neighbors.length).toBe(2 * sortedArgs.length - 2);
-          } else if (s.has(1)) {
-            expect(v.degree).toBe(neighbors.length);
-            expect(v.degree).toBe(2 * sortedArgs.length - 3);
-          } else if (s.has(i) && [...s][0] !== i) {
-            expect(v.degree).toBe(neighbors.length);
-            expect(v.degree).toBe(2 * sortedArgs.length - 1);
+          if (s.has(1)) {
+            expect(neighbors.length).toBe(sortedArgs.length - 2);
           } else {
-            expect(v.degree - 1).toBe(neighbors.length);
-            expect(v.degree).toBe(2 * sortedArgs.length - 1);
+            expect(neighbors.length).toBe(sortedArgs.length - 1);
           }
         });
       });
