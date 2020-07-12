@@ -126,6 +126,9 @@ export class Graph<T> implements GraphInterface<T> {
 
       edge = new GraphEdge(startVertex, endVertex, weight);
 
+      startVertex.addEdge(edge);
+      endVertex.addEdge(edge);
+
       this.#edges.insert(edge);
       this.#edgesMap.set(start, end, edge);
     }

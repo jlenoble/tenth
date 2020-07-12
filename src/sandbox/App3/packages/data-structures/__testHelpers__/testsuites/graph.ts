@@ -197,5 +197,25 @@ export const tests = <T>(
         ).toEqual(edges);
       });
     },
+
+    neighborsFor(): void {
+      it("Looping on neighbors", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        for (const vertex of g.vertices()) {
+          expect(
+            Array.from(g.neighborsFor(vertex.value)).map(
+              (neighbor) => neighbor.value
+            )
+          ).toEqual(sortedArgs.filter((arg) => arg !== vertex.value));
+        }
+      });
+    },
   };
 };
