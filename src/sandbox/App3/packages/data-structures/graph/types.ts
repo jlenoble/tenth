@@ -1,4 +1,5 @@
 import { Constructor, DataStructure } from "../types";
+import { MapMap } from "../mapmap/types";
 
 export interface GraphEdge<T> {
   start: GraphVertex<T>;
@@ -28,7 +29,7 @@ export type GraphConstructor<T> = Constructor<Graph<T>>;
 export interface Graph<T> extends DataStructure<T> {
   weight: number;
   degree: number;
-  adjacencyList: Map<T, Map<T, number>>;
+  adjacencyList: MapMap<T, T, number>;
 
   addVertex(value: T): GraphVertex<T>;
   deleteVertex(value: T): boolean;

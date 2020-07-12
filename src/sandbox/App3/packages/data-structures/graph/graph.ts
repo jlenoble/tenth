@@ -7,12 +7,12 @@ import { GraphVertex } from "./graph-vertex";
 import { GraphEdge } from "./graph-edge";
 import { AvlTree } from "../tree";
 import { defaultCompare } from "../../comparator";
+import { MapMap } from "../mapmap";
 
 export class Graph<T> implements GraphInterface<T> {
   readonly #vertices: Map<T, GraphVertexInterface<T>>;
   readonly #edges: AvlTree<GraphEdgeInterface<T>>;
-  readonly #edgesFrom: Map<T, Map<T, GraphEdgeInterface<T>>>;
-  readonly #edgesTo: Map<T, Map<T, GraphEdgeInterface<T>>>;
+  readonly #edgesMap: MapMap<T, T, GraphEdgeInterface<T>>;
   readonly #isDirected: boolean;
   readonly #valueCompare: (a: T, b: T) => -1 | 0 | 1;
   readonly #edgeCompare: (a: GraphEdge<T>, b: GraphEdge<T>) => -1 | 0 | 1;
@@ -33,20 +33,8 @@ export class Graph<T> implements GraphInterface<T> {
     return this.#edges.size;
   }
 
-  get adjacencyList(): Map<T, Map<T, number>> {
-    const list: Map<T, Map<T, number>> = new Map();
-
-    for (const [value1, edges] of this.#edgesFrom) {
-      const sublist: Map<T, number> = new Map();
-
-      list.set(value1, sublist);
-
-      for (const [value2, { weight }] of edges) {
-        sublist.set(value2, weight);
-      }
-    }
-
-    return list;
+  get adjacencyList(): MapMap<T, T, number> {
+    return this.#edgesMap.map((edge) => edge.weight);
   }
 
   *[Symbol.iterator](): IterableIterator<T> {
@@ -72,13 +60,7 @@ export class Graph<T> implements GraphInterface<T> {
       undefined,
       this.#edgeCompare
     );
-    this.#edgesFrom = new Map();
-
-    if (isDirected) {
-      this.#edgesTo = new Map();
-    } else {
-      this.#edgesTo = this.#edgesFrom;
-    }
+    this.#edgesMap = new MapMap();
 
     this.#isDirected = isDirected;
 
@@ -136,36 +118,16 @@ export class Graph<T> implements GraphInterface<T> {
       end = tmp;
     }
 
-    let edges = this.#edgesFrom.get(start);
-    let edge: GraphEdgeInterface<T> | undefined;
-
-    if (edges?.size) {
-      edge = edges.get(end);
-    }
+    let edge = this.#edgesMap.get(start, end);
 
     if (edge === undefined) {
       const startVertex = this.addVertex(start);
       const endVertex = this.addVertex(end);
 
       edge = new GraphEdge(startVertex, endVertex, weight);
-      startVertex.addEdge(edge);
-      endVertex.addEdge(edge);
-
-      if (!edges) {
-        edges = new Map();
-        this.#edgesFrom.set(start, edges);
-      }
-      edges.set(end, edge);
-
-      edges = this.#edgesTo.get(end);
-
-      if (!edges) {
-        edges = new Map();
-        this.#edgesTo.set(end, edges);
-      }
-      edges.set(start, edge);
 
       this.#edges.insert(edge);
+      this.#edgesMap.set(start, end, edge);
     }
 
     return edge;
@@ -187,43 +149,20 @@ export class Graph<T> implements GraphInterface<T> {
     startVertex.deleteEdge(edge);
     endVertex.deleteEdge(edge);
 
-    let edges = this.#edgesFrom.get(start);
-    if (edges) {
-      edges.delete(end);
-      if (!edges.size) {
-        this.#edgesFrom.delete(start);
-      }
-    }
-
-    edges = this.#edgesTo.get(end);
-    if (edges) {
-      edges.delete(start);
-      if (!edges.size) {
-        this.#edgesTo.delete(end);
-      }
-    }
-
     this.#edges.remove(edge);
+    this.#edgesMap.delete(start, end);
 
     return true;
   }
 
   findEdge(start: T, end: T): GraphEdgeInterface<T> | null {
-    let edges = this.#edgesFrom.get(start);
-
-    if (!edges?.size) {
-      edges = this.#edgesTo.get(end);
-
-      if (!edges?.size) {
-        return null;
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return edges.get(start)!;
-      }
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return edges.get(end)!;
+    if (!this.#isDirected && this.#valueCompare(start, end) === 1) {
+      const tmp = start;
+      start = end;
+      end = tmp;
     }
+
+    return this.#edgesMap.get(start, end) || null;
   }
 
   *neighborsFor(value: T): IterableIterator<GraphVertexInterface<T>> {
@@ -241,25 +180,17 @@ export class Graph<T> implements GraphInterface<T> {
   *edgesFor(value: T): IterableIterator<GraphEdgeInterface<T>> {
     yield* this.edgesStartingFrom(value);
 
-    if (this.#edgesFrom !== this.#edgesTo) {
+    if (this.#isDirected) {
       yield* this.edgesEndingTo(value);
     }
   }
 
   *edgesStartingFrom(value: T): IterableIterator<GraphEdge<T>> {
-    const edges = this.#edgesFrom.get(value);
-
-    if (edges?.size) {
-      yield* edges.values();
-    }
+    yield* this.#edgesMap.iterateRow(value);
   }
 
   *edgesEndingTo(value: T): IterableIterator<GraphEdgeInterface<T>> {
-    const edges = this.#edgesTo.get(value);
-
-    if (edges?.size) {
-      yield* edges.values();
-    }
+    yield* this.#edgesMap.iterateColumn(value);
   }
 
   *edges(): IterableIterator<GraphEdgeInterface<T>> {
