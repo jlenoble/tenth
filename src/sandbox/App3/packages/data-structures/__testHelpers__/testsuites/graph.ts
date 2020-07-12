@@ -325,5 +325,25 @@ export const tests = <T>(
         });
       });
     },
+
+    adjacencyList(): void {
+      it("Adjacency list", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b, +a + +b);
+          });
+        });
+
+        const list = g.adjacencyList;
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            expect(list.get(a, b)).toBe(+a + +b);
+          });
+        });
+      });
+    },
   };
 };
