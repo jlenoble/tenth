@@ -217,5 +217,23 @@ export const tests = <T>(
         }
       });
     },
+
+    edgesStartingFrom(): void {
+      it("Looping on edges from a vertex", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        for (const vertex of g.vertices()) {
+          expect(Array.from(g.edgesStartingFrom(vertex.value)).length).toBe(
+            sortedArgs.length
+          );
+        }
+      });
+    },
   };
 };

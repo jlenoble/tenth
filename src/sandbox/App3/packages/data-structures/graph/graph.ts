@@ -131,6 +131,10 @@ export class Graph<T> implements GraphInterface<T> {
 
       this.#edges.insert(edge);
       this.#edgesMap.set(start, end, edge);
+
+      if (!this.#isDirected) {
+        this.#edgesMap.set(end, start, edge);
+      }
     }
 
     return edge;
