@@ -138,5 +138,51 @@ export const tests = <T>(
         ).toEqual(edges);
       });
     },
+
+    edgesStartingFrom(): void {
+      it("Looping on edges from a vertex", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        for (const vertex of g.vertices()) {
+          expect(Array.from(g.edgesStartingFrom(vertex.value)).length).toBe(
+            sortedArgs.length
+          );
+          expect(
+            Array.from(g.edgesStartingFrom(vertex.value)).map(
+              ({ end: { value } }) => value
+            )
+          ).toEqual(Array.from(args));
+        }
+      });
+    },
+
+    edgesEndingTo(): void {
+      it("Looping on edges to a vertex", () => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        for (const vertex of g.vertices()) {
+          expect(Array.from(g.edgesEndingTo(vertex.value)).length).toBe(
+            sortedArgs.length
+          );
+          expect(
+            Array.from(g.edgesEndingTo(vertex.value)).map(
+              ({ start: { value } }) => value
+            )
+          ).toEqual(Array.from(args));
+        }
+      });
+    },
   };
 };
