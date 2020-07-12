@@ -13,6 +13,9 @@ export interface MapMap<A, B, T> extends DataStructure<T> {
   getRow(a: A): Map<B, T>;
   getColumn(b: B): Map<A, T>;
 
+  getRows(): Map<A, Map<B, T>>;
+  getColumns(): Map<B, Map<A, T>>;
+
   iterateRow(a: A): IterableIterator<T>;
   iterateColumn(b: B): IterableIterator<T>;
 

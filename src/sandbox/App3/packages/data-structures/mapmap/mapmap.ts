@@ -111,6 +111,22 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
     return new Map(this.#columns.get(b) || []);
   }
 
+  getRows(): Map<A, Map<B, T>> {
+    const rows: Map<A, Map<B, T>> = new Map();
+    for (const a of this.#rows.keys()) {
+      rows.set(a, this.getRow(a));
+    }
+    return rows;
+  }
+
+  getColumns(): Map<B, Map<A, T>> {
+    const columns: Map<B, Map<A, T>> = new Map();
+    for (const b of this.#columns.keys()) {
+      columns.set(b, this.getColumn(b));
+    }
+    return columns;
+  }
+
   *iterateRow(a: A): IterableIterator<T> {
     if (this.#rows.has(a)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

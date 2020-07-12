@@ -155,6 +155,52 @@ export const tests = (
       });
     },
 
+    getRows(): void {
+      it("Getting all rows", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        const rows: [number, number][][] = [];
+        for (const a of args) {
+          rows.push(Array.from(args).map((b) => [a, a - b]));
+        }
+
+        expect(
+          Array.from(m.getRows().entries()).map(([a, row]) =>
+            Array.from(row.values()).map((value) => [a, value])
+          )
+        ).toEqual(rows);
+      });
+    },
+
+    getColumns(): void {
+      it("Getting all columns", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        const columns: [number, number][][] = [];
+        for (const b of args) {
+          columns.push(Array.from(args).map((a) => [b, a - b]));
+        }
+
+        expect(
+          Array.from(m.getColumns().entries()).map(([b, column]) =>
+            Array.from(column.values()).map((value) => [b, value])
+          )
+        ).toEqual(columns);
+      });
+    },
+
     getColumn(): void {
       it("Getting a column", () => {
         const m = new Structure();
