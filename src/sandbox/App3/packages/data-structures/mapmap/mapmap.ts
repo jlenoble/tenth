@@ -9,6 +9,12 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
     return this.#size;
   }
 
+  *[Symbol.iterator](): IterableIterator<T> {
+    for (const row of this.#rows.values()) {
+      yield* row.values();
+    }
+  }
+
   isEmpty(): boolean {
     return this.#size === 0;
   }

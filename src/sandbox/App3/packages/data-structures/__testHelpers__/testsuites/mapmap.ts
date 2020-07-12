@@ -278,11 +278,12 @@ export const tests = (
         }
 
         expect(Array.from(m.iterateByRow())).toEqual(values);
+        expect(Array.from(m.iterateByRow())).toEqual(Array.from(m));
       });
     },
 
     iterateByColumn(): void {
-      it("Iterating by row", () => {
+      it("Iterating by column", () => {
         const m = new Structure();
         const values: number[] = [];
 
