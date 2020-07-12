@@ -185,6 +185,27 @@ export const tests = <T>(
       });
     },
 
+    weight({ it }): void {
+      it(() => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b, +a + +b);
+          });
+        });
+
+        let weight = 0;
+        sortedArgs.forEach((a) => {
+          sortedArgs.forEach((b) => {
+            weight += +a + +b;
+          });
+        });
+
+        expect(g.weight).toBe(weight);
+      });
+    },
+
     degree({ it }): void {
       it(() => {
         const g = new Structure(initArgs);
