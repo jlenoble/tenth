@@ -184,5 +184,26 @@ export const tests = <T>(
         }
       });
     },
+
+    degree({ it }): void {
+      it(() => {
+        const g = new Structure(initArgs);
+
+        initArgs.forEach((a) => {
+          initArgs.forEach((b) => {
+            g.addEdge(a, b);
+          });
+        });
+
+        let size = sortedArgs.length * sortedArgs.length;
+        sortedArgs.forEach((a) => {
+          sortedArgs.forEach((b) => {
+            g.deleteEdge(a, b);
+            size--;
+            expect(g.degree).toBe(size);
+          });
+        });
+      });
+    },
   };
 };
