@@ -2,6 +2,7 @@ import { MapMap as MapMapInterface } from "./types";
 
 export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
   #rows: Map<A, Map<B, T>> = new Map();
+  #columns: Map<B, Map<A, T>> = new Map();
   #size = 0;
 
   get size(): number {
@@ -14,6 +15,7 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
 
   set(a: A, b: B, value: T): void {
     let row: Map<B, T>;
+    let column: Map<A, T>;
 
     if (this.#rows.has(a)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -23,11 +25,20 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
       this.#rows.set(a, row);
     }
 
+    if (this.#columns.has(b)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      column = this.#columns.get(b)!;
+    } else {
+      column = new Map();
+      this.#columns.set(b, column);
+    }
+
     if (!row.has(b)) {
       this.#size++;
     }
 
     row.set(b, value);
+    column.set(a, value);
   }
 
   get(a: A, b: B): T | undefined {
@@ -61,7 +72,11 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
       if (row.size === 0) {
         this.#rows.delete(a);
       }
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.#columns.get(b)!.delete(a);
       this.#size--;
+
       return true;
     }
 
@@ -73,6 +88,12 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
       row.clear();
     }
     this.#rows.clear();
+
+    for (const column of this.#columns.values()) {
+      column.clear();
+    }
+    this.#columns.clear();
+
     this.#size = 0;
   }
 
@@ -81,16 +102,7 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
   }
 
   getColumn(b: B): Map<A, T> {
-    const m: Map<A, T> = new Map();
-
-    for (const [a, row] of this.#rows) {
-      if (row.has(b)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        m.set(a, row.get(b)!);
-      }
-    }
-
-    return m;
+    return new Map(this.#columns.get(b) || []);
   }
 
   *iterateRow(a: A): IterableIterator<T> {
@@ -101,11 +113,9 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
   }
 
   *iterateColumn(b: B): IterableIterator<T> {
-    for (const row of this.#rows.values()) {
-      if (row.has(b)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        yield row.get(b)!;
-      }
+    if (this.#columns.has(b)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      yield* this.#columns.get(b)!.values();
     }
   }
 
