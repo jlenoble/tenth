@@ -238,6 +238,28 @@ export const tests = (
       });
     },
 
+    iterateColumns(): void {
+      it("Iterating columns", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        const _args = Array.from(args);
+
+        let counter = 0;
+        for (const column of m.iterateColumns()) {
+          expect(Array.from(column.values())).toEqual(
+            _args.map((a) => a - _args[counter])
+          );
+          counter++;
+        }
+      });
+    },
+
     iterateByRow(): void {
       it("Iterating by row", () => {
         const m = new Structure();
