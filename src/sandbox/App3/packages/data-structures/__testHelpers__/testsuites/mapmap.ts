@@ -109,6 +109,26 @@ export const tests = (
       });
     },
 
+    clear(): void {
+      it("Clearing", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a + b);
+          }
+        }
+
+        expect(m.isEmpty()).toBe(false);
+        expect(m.size).toBe(sortedArgs.length ** 2);
+
+        m.clear();
+
+        expect(m.isEmpty()).toBe(true);
+        expect(m.size).toBe(0);
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };

@@ -67,4 +67,12 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
 
     return false;
   }
+
+  clear(): void {
+    for (const row of this.#rows.values()) {
+      row.clear();
+    }
+    this.#rows.clear();
+    this.#size = 0;
+  }
 }
