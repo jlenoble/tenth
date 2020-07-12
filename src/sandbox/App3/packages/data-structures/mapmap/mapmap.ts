@@ -39,4 +39,14 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
 
     return row.get(b);
   }
+
+  has(a: A, b: B): boolean {
+    const row = this.#rows.get(a);
+
+    if (row === undefined) {
+      return false;
+    }
+
+    return row.has(b);
+  }
 }

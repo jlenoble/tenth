@@ -48,6 +48,41 @@ export const tests = (
       });
     },
 
+    has(): void {
+      it("Testing elements", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a * b);
+          }
+        }
+
+        let min = 0;
+        let max = 0;
+        for (const a of initArgs) {
+          if (a < min) {
+            min = a;
+          } else if (a > max) {
+            max = a;
+          }
+
+          for (const b of initArgs) {
+            expect(m.has(a, b)).toBe(true);
+          }
+        }
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            expect(m.has(a, min - 1)).toBe(false);
+            expect(m.has(a, max + 2)).toBe(false);
+            expect(m.has(min - 3, b)).toBe(false);
+            expect(m.has(max + 4, b)).toBe(false);
+          }
+        }
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };
