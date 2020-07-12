@@ -6,6 +6,7 @@ export interface MapMap<A, B, T> extends DataStructure<T> {
   get(a: A, b: B): T | undefined;
   set(a: A, b: B, t: T): void;
   has(a: A, b: B): boolean;
+  delete(a: A, b: B): boolean;
 
   clear(): void;
 

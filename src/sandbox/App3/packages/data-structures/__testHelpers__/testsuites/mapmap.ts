@@ -83,6 +83,32 @@ export const tests = (
       });
     },
 
+    delete(): void {
+      it("Deleting elements", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a + b);
+          }
+        }
+
+        let size = m.size;
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            if (m.has(a, b)) {
+              expect(m.delete(a, b)).toBe(true);
+              size--;
+            } else {
+              expect(m.delete(a, b)).toBe(false);
+            }
+
+            expect(m.size).toBe(size);
+          }
+        }
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };

@@ -49,4 +49,22 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
 
     return row.has(b);
   }
+
+  delete(a: A, b: B): boolean {
+    const row = this.#rows.get(a);
+
+    if (row === undefined) {
+      return false;
+    }
+
+    if (row.delete(b)) {
+      if (row.size === 0) {
+        this.#rows.delete(a);
+      }
+      this.#size--;
+      return true;
+    }
+
+    return false;
+  }
 }
