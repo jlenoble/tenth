@@ -7,7 +7,8 @@ export const tests = (
   Structure: MapMapConstructor<number, number, number>,
   initArgs: number[]
 ): TestSuite => {
-  const sortedArgs = Array.from(new Set(initArgs)).sort(defaultCompare);
+  const args = new Set(initArgs);
+  const sortedArgs = Array.from(args).sort(defaultCompare);
 
   return {
     ...dataStructureTests(Structure, sortedArgs),
@@ -126,6 +127,56 @@ export const tests = (
 
         expect(m.isEmpty()).toBe(true);
         expect(m.size).toBe(0);
+      });
+    },
+
+    getRow(): void {
+      it("Getting a row", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        for (const a of initArgs) {
+          const row = m.getRow(a);
+
+          expect(row).toBeDefined();
+
+          if (row) {
+            expect(Array.from(row.keys())).toEqual(Array.from(args));
+            expect(Array.from(row.values())).toEqual(
+              Array.from(args).map((b) => a - b)
+            );
+          }
+        }
+      });
+    },
+
+    getColumn(): void {
+      it("Getting a column", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        for (const b of initArgs) {
+          const column = m.getColumn(b);
+
+          expect(column).toBeDefined();
+
+          if (column) {
+            expect(Array.from(column.keys())).toEqual(Array.from(args));
+            expect(Array.from(column.values())).toEqual(
+              Array.from(args).map((a) => a - b)
+            );
+          }
+        }
       });
     },
 

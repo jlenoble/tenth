@@ -75,4 +75,21 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
     this.#rows.clear();
     this.#size = 0;
   }
+
+  getRow(a: A): Map<B, T> {
+    return new Map(this.#rows.get(a) || []);
+  }
+
+  getColumn(b: B): Map<A, T> {
+    const m: Map<A, T> = new Map();
+
+    for (const [a, row] of this.#rows) {
+      if (row.has(b)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        m.set(a, row.get(b)!);
+      }
+    }
+
+    return m;
+  }
 }
