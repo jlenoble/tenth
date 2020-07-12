@@ -188,7 +188,11 @@ export class Graph<T> implements GraphInterface<T> {
     yield* this.edgesStartingFrom(value);
 
     if (this.#isDirected) {
-      yield* this.edgesEndingTo(value);
+      for (const edge of this.edgesEndingTo(value)) {
+        if (edge.start !== edge.end) {
+          yield edge;
+        }
+      }
     }
   }
 
