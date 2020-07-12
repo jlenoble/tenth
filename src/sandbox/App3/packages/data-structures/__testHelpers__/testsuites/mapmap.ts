@@ -30,6 +30,24 @@ export const tests = (
       });
     },
 
+    get(): void {
+      it("Getting elements", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a + b);
+          }
+        }
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            expect(m.get(a, b)).toBe(a + b);
+          }
+        }
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };

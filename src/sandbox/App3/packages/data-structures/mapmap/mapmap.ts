@@ -29,4 +29,14 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
 
     row.set(b, value);
   }
+
+  get(a: A, b: B): T | undefined {
+    const row = this.#rows.get(a);
+
+    if (row === undefined) {
+      return;
+    }
+
+    return row.get(b);
+  }
 }
