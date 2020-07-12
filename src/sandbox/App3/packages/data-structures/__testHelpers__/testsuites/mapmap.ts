@@ -216,6 +216,28 @@ export const tests = (
       });
     },
 
+    iterateRows(): void {
+      it("Iterating rows", () => {
+        const m = new Structure();
+
+        for (const a of initArgs) {
+          for (const b of initArgs) {
+            m.set(a, b, a - b);
+          }
+        }
+
+        const _args = Array.from(args);
+
+        let counter = 0;
+        for (const row of m.iterateRows()) {
+          expect(Array.from(row.values())).toEqual(
+            _args.map((b) => _args[counter] - b)
+          );
+          counter++;
+        }
+      });
+    },
+
     size: false, // see "set"
     isEmpty: false, // see "set"
   };
