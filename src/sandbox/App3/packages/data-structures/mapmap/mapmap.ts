@@ -114,4 +114,10 @@ export class MapMap<A, B, T> implements MapMapInterface<A, B, T> {
       yield new Map(row);
     }
   }
+
+  *iterateByRow(): IterableIterator<T> {
+    for (const row of this.#rows.values()) {
+      yield* row.values();
+    }
+  }
 }
