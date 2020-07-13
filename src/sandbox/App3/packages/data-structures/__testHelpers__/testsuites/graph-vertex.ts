@@ -421,7 +421,7 @@ export const tests = <T>(
     },
 
     fwdIterate(): void {
-      it("Iterating forward", () => {
+      it("Iterating downstream vertices", () => {
         const vertices = sortedArgs.slice(0, 4).map((a) => {
           return new Structure(a);
         });
@@ -453,6 +453,42 @@ export const tests = <T>(
         expect(
           Array.from(vertices[3].fwdIterate()).map((v) => v.value)
         ).toEqual([]);
+      });
+    },
+
+    bckIterate(): void {
+      it("Iterating upstream vertices", () => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+        const e03 = new GraphEdge(vertices[0], vertices[3]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02).addEdge(e03);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+        vertices[3].addEdge(e03);
+
+        expect(
+          Array.from(vertices[0].bckIterate()).map((v) => v.value)
+        ).toEqual([]);
+
+        expect(
+          Array.from(vertices[1].bckIterate()).map((v) => v.value)
+        ).toEqual([e01.start.value, e21.start.value]);
+
+        expect(
+          Array.from(vertices[2].bckIterate()).map((v) => v.value)
+        ).toEqual([e02.start.value, e12.start.value]);
+
+        expect(
+          Array.from(vertices[3].bckIterate()).map((v) => v.value)
+        ).toEqual([e03.start.value]);
       });
     },
   };

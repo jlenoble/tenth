@@ -96,13 +96,49 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
   }
 
   *fwdIterate({
+    enterVertex = () => {
+      /* noop */
+    },
+    exitVertex = () => {
+      /* noop */
+    },
     mayEnter = () => true,
   }: {
+    enterVertex?: (vertex: GraphVertexInterface<T>) => void;
+    exitVertex?: (vertex: GraphVertexInterface<T>) => void;
     mayEnter?: (vertex: GraphVertexInterface<T>) => boolean;
   } = {}): IterableIterator<GraphVertexInterface<T>> {
     for (const edge of this.#edges) {
-      if (edge.start === this && mayEnter(edge.end)) {
-        yield edge.end;
+      const end = edge.end;
+
+      if (edge.start === this && mayEnter(end)) {
+        enterVertex(end);
+        yield end;
+        exitVertex(end);
+      }
+    }
+  }
+
+  *bckIterate({
+    enterVertex = () => {
+      /* noop */
+    },
+    exitVertex = () => {
+      /* noop */
+    },
+    mayEnter = () => true,
+  }: {
+    enterVertex?: (vertex: GraphVertexInterface<T>) => void;
+    exitVertex?: (vertex: GraphVertexInterface<T>) => void;
+    mayEnter?: (vertex: GraphVertexInterface<T>) => boolean;
+  } = {}): IterableIterator<GraphVertexInterface<T>> {
+    for (const edge of this.#edges) {
+      const start = edge.start;
+
+      if (edge.end === this && mayEnter(start)) {
+        enterVertex(start);
+        yield start;
+        exitVertex(start);
       }
     }
   }

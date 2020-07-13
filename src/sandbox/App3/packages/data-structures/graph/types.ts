@@ -24,6 +24,14 @@ export interface GraphVertex<T> {
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null;
 
   fwdIterate(callbacks?: {
+    enterVertex?: (vertex: GraphVertex<T>) => void;
+    exitVertex?: (vertex: GraphVertex<T>) => void;
+    mayEnter?: (vertex: GraphVertex<T>) => boolean;
+  }): IterableIterator<GraphVertex<T>>;
+
+  bckIterate(callbacks?: {
+    enterVertex?: (vertex: GraphVertex<T>) => void;
+    exitVertex?: (vertex: GraphVertex<T>) => void;
     mayEnter?: (vertex: GraphVertex<T>) => boolean;
   }): IterableIterator<GraphVertex<T>>;
 }
