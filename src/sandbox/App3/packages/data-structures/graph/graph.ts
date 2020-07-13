@@ -207,4 +207,12 @@ export class Graph<T> implements GraphInterface<T> {
   *edges(): IterableIterator<GraphEdgeInterface<T>> {
     yield* this.#edges;
   }
+
+  *dftIterate(): IterableIterator<GraphVertexInterface<T>> {
+    const visited: WeakSet<GraphVertexInterface<T>> = new WeakSet();
+
+    for (const vertex of this.#vertices.values()) {
+      yield* vertex.dftIterate({ visited });
+    }
+  }
 }

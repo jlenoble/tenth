@@ -1,5 +1,9 @@
 import { AvlTree } from "../tree";
-import { GraphVertex as GraphVertexInterface, GraphEdge } from "./types";
+import {
+  GraphVertex as GraphVertexInterface,
+  GraphEdge,
+  IterateOptions,
+} from "./types";
 import { defaultCompare } from "../../comparator";
 
 export class GraphVertex<T> implements GraphVertexInterface<T> {
@@ -95,51 +99,55 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
     return rtl;
   }
 
-  *fwdIterate({
-    enterVertex = () => {
-      /* noop */
-    },
-    exitVertex = () => {
-      /* noop */
-    },
-    mayEnter = () => true,
-  }: {
-    enterVertex?: (vertex: GraphVertexInterface<T>) => void;
-    exitVertex?: (vertex: GraphVertexInterface<T>) => void;
-    mayEnter?: (vertex: GraphVertexInterface<T>) => boolean;
-  } = {}): IterableIterator<GraphVertexInterface<T>> {
+  *fwdIterate(): IterableIterator<GraphVertexInterface<T>> {
     for (const edge of this.#edges) {
-      const end = edge.end;
-
-      if (edge.start === this && mayEnter(end)) {
-        enterVertex(end);
-        yield end;
-        exitVertex(end);
+      if (edge.start === this) {
+        yield edge.end;
       }
     }
   }
 
-  *bckIterate({
-    enterVertex = () => {
-      /* noop */
-    },
-    exitVertex = () => {
-      /* noop */
-    },
-    mayEnter = () => true,
-  }: {
-    enterVertex?: (vertex: GraphVertexInterface<T>) => void;
-    exitVertex?: (vertex: GraphVertexInterface<T>) => void;
-    mayEnter?: (vertex: GraphVertexInterface<T>) => boolean;
-  } = {}): IterableIterator<GraphVertexInterface<T>> {
+  *bckIterate(): IterableIterator<GraphVertexInterface<T>> {
     for (const edge of this.#edges) {
-      const start = edge.start;
-
-      if (edge.end === this && mayEnter(start)) {
-        enterVertex(start);
-        yield start;
-        exitVertex(start);
+      if (edge.end === this) {
+        yield edge.start;
       }
+    }
+  }
+
+  *dftIterate(
+    options: Partial<IterateOptions<T>> = {}
+  ): IterableIterator<GraphVertexInterface<T>> {
+    let { visited, enterVertex, exitVertex, mayEnter } = options;
+
+    if (!visited) {
+      visited = new WeakSet();
+    }
+
+    if (!mayEnter) {
+      mayEnter = (vertex, visited) => !visited.has(vertex);
+    }
+
+    if (mayEnter(this, visited)) {
+      if (!enterVertex) {
+        // eslint-disable-next-line require-yield
+        enterVertex = function* (vertex, options) {
+          options.visited.add(vertex);
+        };
+      }
+
+      if (!exitVertex) {
+        exitVertex = function* (vertex, options) {
+          for (const nextVertex of vertex.fwdIterate()) {
+            yield* nextVertex.dftIterate(options);
+          }
+        };
+      }
+
+      const options = { visited, enterVertex, exitVertex, mayEnter };
+      yield* enterVertex(this, options);
+      yield this;
+      yield* exitVertex(this, options);
     }
   }
 }

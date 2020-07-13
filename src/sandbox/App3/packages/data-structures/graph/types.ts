@@ -7,6 +7,21 @@ export interface GraphEdge<T> {
   weight: number;
 }
 
+export interface IterateOptions<T> {
+  visited: WeakSet<GraphVertex<T>>;
+  enterVertex: (
+    vertex: GraphVertex<T>,
+    options: IterateOptions<T>
+  ) => IterableIterator<GraphVertex<T>>;
+  exitVertex: (
+    vertex: GraphVertex<T>,
+    options: IterateOptions<T>
+  ) => IterableIterator<GraphVertex<T>>;
+  mayEnter: (
+    vertex: GraphVertex<T>,
+    visited: WeakSet<GraphVertex<T>>
+  ) => boolean;
+}
 export interface GraphVertex<T> {
   value: T;
   degree: number;
@@ -23,17 +38,12 @@ export interface GraphVertex<T> {
 
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null;
 
-  fwdIterate(callbacks?: {
-    enterVertex?: (vertex: GraphVertex<T>) => void;
-    exitVertex?: (vertex: GraphVertex<T>) => void;
-    mayEnter?: (vertex: GraphVertex<T>) => boolean;
-  }): IterableIterator<GraphVertex<T>>;
+  fwdIterate(): IterableIterator<GraphVertex<T>>;
+  bckIterate(): IterableIterator<GraphVertex<T>>;
 
-  bckIterate(callbacks?: {
-    enterVertex?: (vertex: GraphVertex<T>) => void;
-    exitVertex?: (vertex: GraphVertex<T>) => void;
-    mayEnter?: (vertex: GraphVertex<T>) => boolean;
-  }): IterableIterator<GraphVertex<T>>;
+  dftIterate(
+    options?: Partial<IterateOptions<T>>
+  ): IterableIterator<GraphVertex<T>>;
 }
 
 export type GraphConstructor<T> = Constructor<Graph<T>>;
@@ -58,4 +68,6 @@ export interface Graph<T> extends DataStructure<T> {
   edgesStartingFrom(value: T): IterableIterator<GraphEdge<T>>;
   edgesEndingTo(value: T): IterableIterator<GraphEdge<T>>;
   edges(): IterableIterator<GraphEdge<T>>;
+
+  dftIterate(): IterableIterator<GraphVertex<T>>;
 }
