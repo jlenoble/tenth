@@ -94,4 +94,16 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
 
     return rtl;
   }
+
+  *fwdIterate({
+    mayEnter = () => true,
+  }: {
+    mayEnter?: (vertex: GraphVertexInterface<T>) => boolean;
+  } = {}): IterableIterator<GraphVertexInterface<T>> {
+    for (const edge of this.#edges) {
+      if (edge.start === this && mayEnter(edge.end)) {
+        yield edge.end;
+      }
+    }
+  }
 }

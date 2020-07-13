@@ -22,6 +22,10 @@ export interface GraphVertex<T> {
   hasNeighbor(vertex: GraphVertex<T>): boolean;
 
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null;
+
+  fwdIterate(callbacks?: {
+    mayEnter?: (vertex: GraphVertex<T>) => boolean;
+  }): IterableIterator<GraphVertex<T>>;
 }
 
 export type GraphConstructor<T> = Constructor<Graph<T>>;
