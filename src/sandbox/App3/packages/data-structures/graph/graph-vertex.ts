@@ -74,15 +74,15 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
   }
 
   hasNeighbor(vertex: GraphVertex<T>): boolean {
-    for (const edge of this.#edges) {
-      if (
-        (edge.end === vertex && edge.end !== this) ||
-        (edge.start === vertex && edge.start !== this)
-      ) {
-        return true;
-      }
-    }
-    return false;
+    return this.hasSuccessor(vertex) || this.hasPredecessor(vertex);
+  }
+
+  hasPredecessor(vertex: GraphVertex<T>): boolean {
+    return this.#edges.has({ start: vertex, end: this, weight: 1 });
+  }
+
+  hasSuccessor(vertex: GraphVertex<T>): boolean {
+    return this.#edges.has({ start: this, end: vertex, weight: 1 });
   }
 
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null {

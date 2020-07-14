@@ -22,6 +22,7 @@ export interface IterateOptions<T> {
     visited: WeakSet<GraphVertex<T>>
   ) => boolean;
 }
+
 export interface GraphVertex<T> {
   value: T;
   degree: number;
@@ -35,6 +36,8 @@ export interface GraphVertex<T> {
 
   hasEdge(edge: GraphEdge<T>): boolean;
   hasNeighbor(vertex: GraphVertex<T>): boolean;
+  hasPredecessor(vertex: GraphVertex<T>): boolean;
+  hasSuccessor(vertex: GraphVertex<T>): boolean;
 
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null;
 
