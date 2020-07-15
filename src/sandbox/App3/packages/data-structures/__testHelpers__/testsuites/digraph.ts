@@ -301,5 +301,41 @@ export const tests = <T>(
         ]);
       });
     },
+
+    bftIterate(): void {
+      it("Breadth first traversal", () => {
+        /*
+            0     1  ___2
+            |   __|_/  /|
+            |  |  |   / |
+            3  |  4__/  5
+             \ | / \   /|
+              \|/  _\_/ |
+               6  /  \__7
+               | /
+               8/
+        
+          expecting: 0 1 2 3 4 5 6 7 8
+        */
+        const initArgs = ([0, 1, 2, 3, 4, 5, 6, 7, 8] as unknown) as T[];
+        const g = new Structure(initArgs.slice().reverse());
+
+        g.addEdge(initArgs[5], initArgs[8]);
+        g.addEdge(initArgs[6], initArgs[8]);
+        g.addEdge(initArgs[1], initArgs[4]);
+        g.addEdge(initArgs[0], initArgs[3]);
+        g.addEdge(initArgs[4], initArgs[7]);
+        g.addEdge(initArgs[4], initArgs[6]);
+        g.addEdge(initArgs[5], initArgs[7]);
+        g.addEdge(initArgs[2], initArgs[6]);
+        g.addEdge(initArgs[3], initArgs[6]);
+        g.addEdge(initArgs[2], initArgs[5]);
+        g.addEdge(initArgs[2], initArgs[4]);
+
+        expect(Array.from(g.bftIterate()).map((v) => v.value)).toEqual(
+          initArgs
+        );
+      });
+    },
   };
 };

@@ -215,4 +215,50 @@ export class Graph<T> implements GraphInterface<T> {
       yield* vertex.dftIterate({ visited });
     }
   }
+
+  *bftIterate(): IterableIterator<GraphVertexInterface<T>> {
+    const visited: WeakSet<GraphVertexInterface<T>> = new WeakSet();
+    const pending: WeakSet<GraphVertexInterface<T>> = new WeakSet();
+    const startVertices: Set<GraphVertexInterface<T>> = new Set();
+
+    for (const { start, end } of this.#edges) {
+      if (start !== end) {
+        pending.add(end);
+
+        if (startVertices.has(end)) {
+          startVertices.delete(end);
+        }
+      }
+
+      if (!pending.has(start)) {
+        startVertices.add(start);
+      }
+    }
+
+    const queue: GraphVertexInterface<T>[] = [...startVertices];
+
+    while (queue.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const vertex = queue.shift()!;
+
+      visited.add(vertex);
+      startVertices.delete(vertex);
+      yield vertex;
+
+      for (const v of vertex.fwdIterate()) {
+        if (visited.has(v)) {
+          continue;
+        }
+
+        if (
+          pending.has(v) &&
+          Array.from(startVertices).every((vv) => !vv.hasSuccessor(v))
+        ) {
+          queue.push(v);
+          pending.delete(v);
+          startVertices.add(v);
+        }
+      }
+    }
+  }
 }
