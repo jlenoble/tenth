@@ -3,19 +3,24 @@ import { BlockConstructor } from "../../block/types";
 
 export const tests = <T>(
   Structure: BlockConstructor<T>,
-  initArgs: T[]
+  initArgs: T[],
+  getWidth = (arg: T) => +arg,
+  blockWidth = -1
 ): TestSuite => {
   const args = Array.from(new Set(initArgs));
 
   return {
     add(): void {
       it("Add items (enough capacity)", () => {
-        const width = args.reduce((sum: number, arg: T) => sum + +arg, 0);
-        const b = new Structure(width + 100);
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
         const _added: Set<T> = new Set();
 
         initArgs.forEach((arg) => {
-          const { free, added } = b.add(arg, +arg);
+          const { free, added } = b.add(arg, getWidth(arg));
           expect(added).toBe(!_added.has(arg));
           expect(free).toBeGreaterThan(0);
           _added.add(arg);
@@ -29,12 +34,15 @@ export const tests = <T>(
       });
 
       it("Add items (not enough capacity, boundary coincidence)", () => {
-        const width = args.reduce((sum: number, arg: T) => sum + +arg, 0);
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
         const b = new Structure(width);
         const _added: Set<T> = new Set();
 
         initArgs.forEach((arg, i) => {
-          const { free, added } = b.add(arg, +arg);
+          const { free, added } = b.add(arg, getWidth(arg));
           expect(added).toBe(!_added.has(arg));
 
           if (i < initArgs.length - 1) {
@@ -47,7 +55,7 @@ export const tests = <T>(
         });
 
         initArgs.forEach((arg) => {
-          const { free, added } = b.add(arg, +arg);
+          const { free, added } = b.add(arg, getWidth(arg));
           expect(added).toBe(false);
           expect(free).toBe(0);
         });
@@ -94,12 +102,15 @@ export const tests = <T>(
 
     delete(): void {
       it("Delete items", () => {
-        const width = args.reduce((sum: number, arg: T) => sum + +arg, 0);
-        const b = new Structure(width + 100);
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
         const _deleted: Set<T> = new Set();
 
         initArgs.forEach((arg) => {
-          b.add(arg, +arg);
+          b.add(arg, getWidth(arg));
         });
 
         let f = 100;
@@ -109,7 +120,7 @@ export const tests = <T>(
           expect(deleted).toBe(!_deleted.has(arg));
 
           if (deleted) {
-            f += +arg;
+            f += getWidth(arg);
           }
 
           expect(free).toBe(f);
@@ -127,15 +138,18 @@ export const tests = <T>(
 
     get(): void {
       it("Getting items", () => {
-        const width = args.reduce((sum: number, arg: T) => sum + +arg, 0);
-        const b = new Structure(width + 100);
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
 
         initArgs.forEach((arg) => {
-          b.add(arg, +arg);
+          b.add(arg, getWidth(arg));
         });
 
         initArgs.forEach((arg) => {
-          expect(b.get(arg)).toBe(+arg);
+          expect(b.get(arg)).toBe(getWidth(arg));
         });
 
         expect(b.width).toBe(width + 100);
@@ -148,11 +162,14 @@ export const tests = <T>(
 
     has(): void {
       it("Testing items", () => {
-        const width = args.reduce((sum: number, arg: T) => sum + +arg, 0);
-        const b = new Structure(width + 100);
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
 
         initArgs.forEach((arg) => {
-          b.add(arg, +arg);
+          b.add(arg, getWidth(arg));
         });
 
         initArgs.forEach((arg) => {
@@ -169,11 +186,14 @@ export const tests = <T>(
 
     clear(): void {
       it("Clearing", () => {
-        const width = args.reduce((sum: number, arg: T) => sum + +arg, 0);
-        const b = new Structure(width + 100);
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
 
         initArgs.forEach((arg) => {
-          b.add(arg, +arg);
+          b.add(arg, getWidth(arg));
         });
 
         expect(b.width).toBe(width + 100);
