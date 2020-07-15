@@ -35,6 +35,10 @@ export class Block<T> implements BlockInterface<T> {
     return this.#items.size === 0;
   }
 
+  isFull(): boolean {
+    return this.#free === 0;
+  }
+
   add(item: T, width: number): { free: number; added: boolean } {
     if (width > 0) {
       const _width = this.#items.get(item);

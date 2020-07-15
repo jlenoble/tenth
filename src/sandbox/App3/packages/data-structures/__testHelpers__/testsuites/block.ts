@@ -31,6 +31,7 @@ export const tests = <T>(
         expect(b.free).toBe(100);
         expect(b.size).toBe(args.length);
         expect(b.isEmpty()).toBe(false);
+        expect(b.isFull()).toBe(false);
       });
 
       it("Add items (not enough capacity, boundary coincidence)", () => {
@@ -65,6 +66,7 @@ export const tests = <T>(
         expect(b.free).toBe(0);
         expect(b.size).toBe(args.length);
         expect(b.isEmpty()).toBe(false);
+        expect(b.isFull()).toBe(true);
       });
 
       it("Add items (not enough capacity, no boundary coincidence)", () => {
@@ -97,6 +99,7 @@ export const tests = <T>(
         expect(b.free).toBe(0);
         expect(b.size).toBe(args.length);
         expect(b.isEmpty()).toBe(false);
+        expect(b.isFull()).toBe(true);
       });
     },
 
@@ -133,6 +136,7 @@ export const tests = <T>(
         expect(f).toBe(width + 100);
         expect(b.size).toBe(0);
         expect(b.isEmpty()).toBe(true);
+        expect(b.isFull()).toBe(false);
       });
     },
 
@@ -157,6 +161,7 @@ export const tests = <T>(
         expect(b.free).toBe(100);
         expect(b.size).toBe(args.length);
         expect(b.isEmpty()).toBe(false);
+        expect(b.isFull()).toBe(false);
       });
     },
 
@@ -181,6 +186,7 @@ export const tests = <T>(
         expect(b.free).toBe(100);
         expect(b.size).toBe(args.length);
         expect(b.isEmpty()).toBe(false);
+        expect(b.isFull()).toBe(false);
       });
     },
 
@@ -208,6 +214,7 @@ export const tests = <T>(
         expect(b.free).toBe(width + 100);
         expect(b.size).toBe(0);
         expect(b.isEmpty()).toBe(true);
+        expect(b.isFull()).toBe(false);
       });
     },
 
@@ -216,5 +223,6 @@ export const tests = <T>(
     free: false, // see addItems
     size: false, // see addItems
     isEmpty: false, // see addItems
+    isFull: false, // see addItems
   };
 };
