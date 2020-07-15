@@ -356,6 +356,98 @@ export const tests = <T>(
       });
     },
 
+    hasEdges({ it }): void {
+      it(() => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+
+        expect(vertices[0].hasEdges()).toBe(true);
+        expect(vertices[1].hasEdges()).toBe(true);
+        expect(vertices[2].hasEdges()).toBe(true);
+        expect(vertices[3].hasEdges()).toBe(false);
+      });
+    },
+
+    hasNeighbors({ it }): void {
+      it(() => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+
+        expect(vertices[0].hasNeighbors()).toBe(true);
+        expect(vertices[1].hasNeighbors()).toBe(true);
+        expect(vertices[2].hasNeighbors()).toBe(true);
+        expect(vertices[3].hasNeighbors()).toBe(false);
+      });
+    },
+
+    hasPredecessors({ it }): void {
+      it(() => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+
+        expect(vertices[0].hasPredecessors()).toBe(false);
+        expect(vertices[1].hasPredecessors()).toBe(true);
+        expect(vertices[2].hasPredecessors()).toBe(true);
+        expect(vertices[3].hasPredecessors()).toBe(false);
+      });
+    },
+
+    hasSuccessors({ it }): void {
+      it(() => {
+        const vertices = sortedArgs.slice(0, 4).map((a) => {
+          return new Structure(a);
+        });
+
+        const e01 = new GraphEdge(vertices[0], vertices[1]);
+        const e02 = new GraphEdge(vertices[0], vertices[2]);
+
+        const e12 = new GraphEdge(vertices[1], vertices[2]);
+        const e21 = new GraphEdge(vertices[2], vertices[1]);
+
+        vertices[0].addEdge(e01).addEdge(e02);
+        vertices[1].addEdge(e01).addEdge(e12).addEdge(e21);
+        vertices[2].addEdge(e02).addEdge(e12).addEdge(e21);
+
+        expect(vertices[0].hasSuccessors()).toBe(true);
+        expect(vertices[1].hasSuccessors()).toBe(true);
+        expect(vertices[2].hasSuccessors()).toBe(true);
+        expect(vertices[3].hasSuccessors()).toBe(false);
+      });
+    },
+
     edges(): void {
       it("Iterating on edges", () => {
         const vertices = initArgs.map((a) => {

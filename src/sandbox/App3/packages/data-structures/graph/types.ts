@@ -39,6 +39,11 @@ export interface GraphVertex<T> {
   hasPredecessor(vertex: GraphVertex<T>): boolean;
   hasSuccessor(vertex: GraphVertex<T>): boolean;
 
+  hasEdges(): boolean;
+  hasNeighbors(): boolean;
+  hasPredecessors(): boolean;
+  hasSuccessors(): boolean;
+
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null;
 
   fwdIterate(): IterableIterator<GraphVertex<T>>;

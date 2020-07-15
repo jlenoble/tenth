@@ -85,6 +85,37 @@ export class GraphVertex<T> implements GraphVertexInterface<T> {
     return this.#edges.has({ start: this, end: vertex, weight: 1 });
   }
 
+  hasEdges(): boolean {
+    return this.#edges.size > 0;
+  }
+
+  hasNeighbors(): boolean {
+    for (const { start, end } of this.#edges) {
+      if (start === this || end === this) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  hasPredecessors(): boolean {
+    for (const { end } of this.#edges) {
+      if (end === this) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  hasSuccessors(): boolean {
+    for (const { start } of this.#edges) {
+      if (start === this) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   findEdge(vertex: GraphVertex<T>): GraphEdge<T> | null {
     let rtl: GraphEdge<T> | null = null;
 
