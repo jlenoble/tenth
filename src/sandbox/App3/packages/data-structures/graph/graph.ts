@@ -261,4 +261,49 @@ export class Graph<T> implements GraphInterface<T> {
       }
     }
   }
+
+  *topoIterate(): IterableIterator<GraphVertexInterface<T>> {
+    const visited: WeakSet<GraphVertexInterface<T>> = new WeakSet();
+    const backIterated: WeakSet<GraphVertexInterface<T>> = new WeakSet();
+    const stack: GraphVertexInterface<T>[] = [];
+
+    for (let start of this.#vertices.values()) {
+      if (!visited.has(start)) {
+        stack.unshift(start);
+        visited.add(start);
+      }
+
+      let peek = stack[stack.length - 1];
+
+      if (!peek) {
+        continue;
+      }
+
+      do {
+        start = peek;
+
+        if (!backIterated.has(start)) {
+          backIterated.add(start);
+
+          for (const vertex of start.bckIterate()) {
+            if (!visited.has(vertex)) {
+              visited.add(vertex);
+              if (!vertex.hasPredecessors()) {
+                yield vertex;
+              } else {
+                stack.push(vertex);
+              }
+            }
+          }
+        }
+
+        peek = stack[stack.length - 1];
+      } while (start !== peek);
+
+      if (backIterated.has(start)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        yield stack.pop()!;
+      }
+    }
+  }
 }

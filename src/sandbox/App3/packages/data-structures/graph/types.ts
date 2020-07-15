@@ -79,4 +79,5 @@ export interface Graph<T> extends DataStructure<T> {
 
   dftIterate(): IterableIterator<GraphVertex<T>>;
   bftIterate(): IterableIterator<GraphVertex<T>>;
+  topoIterate(): IterableIterator<GraphVertex<T>>;
 }
