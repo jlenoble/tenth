@@ -155,13 +155,6 @@ export const tests = <T>(
         initArgs.forEach((arg) => {
           expect(b.get(arg)).toBe(getWidth(arg));
         });
-
-        expect(b.width).toBe(width + 100);
-        expect(b.occupied).toBe(width);
-        expect(b.free).toBe(100);
-        expect(b.size).toBe(args.length);
-        expect(b.isEmpty()).toBe(false);
-        expect(b.isFull()).toBe(false);
       });
     },
 
@@ -180,13 +173,6 @@ export const tests = <T>(
         initArgs.forEach((arg) => {
           expect(b.has(arg)).toBe(true);
         });
-
-        expect(b.width).toBe(width + 100);
-        expect(b.occupied).toBe(width);
-        expect(b.free).toBe(100);
-        expect(b.size).toBe(args.length);
-        expect(b.isEmpty()).toBe(false);
-        expect(b.isFull()).toBe(false);
       });
     },
 
@@ -202,16 +188,12 @@ export const tests = <T>(
           b.add(arg, getWidth(arg));
         });
 
-        expect(b.width).toBe(width + 100);
         expect(b.occupied).toBe(width);
-        expect(b.free).toBe(100);
         expect(b.size).toBe(args.length);
 
         b.clear();
 
-        expect(b.width).toBe(width + 100);
         expect(b.occupied).toBe(0);
-        expect(b.free).toBe(width + 100);
         expect(b.size).toBe(0);
         expect(b.isEmpty()).toBe(true);
         expect(b.isFull()).toBe(false);
