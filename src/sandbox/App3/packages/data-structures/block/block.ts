@@ -25,6 +25,14 @@ export class Block<T> implements BlockInterface<T> {
     yield* this.#items.keys();
   }
 
+  *keys(): IterableIterator<T> {
+    yield* this.#items.keys();
+  }
+
+  *values(): IterableIterator<number> {
+    yield* this.#items.values();
+  }
+
   *entries(): IterableIterator<[T, number]> {
     yield* this.#items;
   }

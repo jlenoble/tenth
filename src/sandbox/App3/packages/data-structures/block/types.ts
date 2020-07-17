@@ -13,6 +13,10 @@ export interface Block<T> extends DataStructure<T> {
   get(item: T): number | undefined;
   has(item: T): boolean;
   clear(): void;
+
+  keys(): IterableIterator<T>;
+  values(): IterableIterator<number>;
+  entries(): IterableIterator<[T, number]>;
 }
 
 export type BlocksConstructor<T> = Constructor<Blocks<T>>;

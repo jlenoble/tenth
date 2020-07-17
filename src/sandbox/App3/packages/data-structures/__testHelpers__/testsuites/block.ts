@@ -200,6 +200,54 @@ export const tests = <T>(
       });
     },
 
+    keys(): void {
+      it("Looping on items", () => {
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
+
+        initArgs.forEach((arg) => {
+          b.add(arg, getWidth(arg));
+        });
+
+        expect(Array.from(b.keys())).toEqual(args);
+      });
+    },
+
+    values(): void {
+      it("Looping on widths", () => {
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
+
+        initArgs.forEach((arg) => {
+          b.add(arg, getWidth(arg));
+        });
+
+        expect(Array.from(b.values())).toEqual(args);
+      });
+    },
+
+    entries(): void {
+      it("Looping on entries", () => {
+        const width = args.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth === -1 ? width + 100 : blockWidth);
+
+        initArgs.forEach((arg) => {
+          b.add(arg, getWidth(arg));
+        });
+
+        expect(Array.from(b.entries())).toEqual(args.map((arg) => [arg, arg]));
+      });
+    },
+
     width: false, // see addItems
     occupied: false, // see addItems
     free: false, // see addItems
