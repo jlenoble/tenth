@@ -72,26 +72,44 @@ export class Blocks<T> implements BlocksInterface<T> {
   }
 
   delete(item: T): { free: number; deleted: boolean } {
-    const indices: number[] = [];
+    let firstIndex = -1;
 
     const deleted = this.#blocks.some((block, i) => {
       if (block.delete(item).deleted) {
-        indices.push(i);
+        if (firstIndex === -1) {
+          firstIndex = i;
+        }
         return true;
       }
       return false;
     });
 
-    if (indices.length > 0) {
-      const index = indices.shift()!;
-      const lastIndex = indices[indices.length - 1];
+    if (deleted) {
+      const blocks = this.#blocks.slice(0, firstIndex);
+      const items: Map<T, number> = new Map();
 
-      for (let i = index; i <= lastIndex; i++) {
-        const block = this.#blocks[i];
-        if (block.isFull()) {
-          continue;
+      for (let i = firstIndex; i < this.#blocks.length; i++) {
+        for (const [_item, width] of this.#blocks[i].entries()) {
+          if (item === _item) {
+            continue;
+          }
+          items.set(_item, width + (items.get(_item) || 0));
         }
       }
+
+      let currentBlock = new Block<T>(this.#blockWidth);
+      blocks.push(currentBlock);
+
+      for (const [item, width] of items) {
+        let { free } = currentBlock.add(item, width);
+
+        while (free < 0) {
+          currentBlock = new Block<T>(this.#blockWidth);
+          blocks.push(currentBlock);
+          free = currentBlock.add(item, -free).free;
+        }
+      }
+      this.#blocks = blocks;
     }
 
     return { free: this.free, deleted };

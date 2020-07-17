@@ -35,5 +35,42 @@ export const tests = <T>(
         expect(b.isFull()).toBe(false);
       });
     },
+
+    delete(): void {
+      it("Delete items", () => {
+        const width = initArgs.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth);
+        const _deleted: Set<T> = new Set();
+
+        initArgs.forEach((arg) => {
+          b.add(arg, getWidth(arg));
+        });
+
+        let f = Math.ceil(width / blockWidth) * blockWidth - width;
+
+        initArgs.forEach((arg) => {
+          const { free, deleted } = b.delete(arg);
+
+          expect(deleted).toBe(!_deleted.has(arg));
+
+          if (deleted) {
+            f += getWidth(arg);
+          }
+
+          expect(free % blockWidth).toBe(f % blockWidth);
+          _deleted.add(arg);
+        });
+
+        expect(b.width).toBe(blockWidth);
+        expect(b.occupied).toBe(0);
+        expect(b.free).toBe(blockWidth);
+        expect(b.size).toBe(0);
+        expect(b.isEmpty()).toBe(true);
+        expect(b.isFull()).toBe(false);
+      });
+    },
   };
 };

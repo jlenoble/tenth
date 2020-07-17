@@ -25,6 +25,10 @@ export class Block<T> implements BlockInterface<T> {
     yield* this.#items.keys();
   }
 
+  *entries(): IterableIterator<[T, number]> {
+    yield* this.#items;
+  }
+
   constructor(width: number) {
     this.#width = width;
     this.#free = width;
