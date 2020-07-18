@@ -228,7 +228,9 @@ export const tests = <T>(
           b.add(arg, getWidth(arg));
         });
 
-        expect(Array.from(b.values())).toEqual(args);
+        expect(Array.from(b.values())).toEqual(
+          args.map((arg) => getWidth(arg))
+        );
       });
     },
 
@@ -244,7 +246,9 @@ export const tests = <T>(
           b.add(arg, getWidth(arg));
         });
 
-        expect(Array.from(b.entries())).toEqual(args.map((arg) => [arg, arg]));
+        expect(Array.from(b.entries())).toEqual(
+          args.map((arg) => [arg, getWidth(arg)])
+        );
       });
     },
 

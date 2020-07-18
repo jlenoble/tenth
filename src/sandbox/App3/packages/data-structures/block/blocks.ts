@@ -35,9 +35,89 @@ export class Blocks<T> implements BlocksInterface<T> {
     }, 0);
   }
 
-  // *[Symbol.iterator](): IterableIterator<T> {
-  //   yield* this.#items.keys();
-  // }
+  *[Symbol.iterator](): IterableIterator<T> {
+    yield* this.keys();
+  }
+
+  *keys(): IterableIterator<T> {
+    let lastItem: T | undefined;
+
+    for (const block of this.#blocks) {
+      for (const item of block) {
+        if (item === lastItem) {
+          continue;
+        }
+        lastItem = item;
+        yield item;
+      }
+    }
+  }
+
+  *values(): IterableIterator<number> {
+    let lastItem: T | undefined;
+    let width = 0;
+
+    for (const block of this.#blocks) {
+      let blockWidth = 0;
+
+      for (const [item, _width] of block.entries()) {
+        if (!lastItem) {
+          lastItem = item;
+        }
+
+        if (width > 0 && item !== lastItem) {
+          yield width;
+          width = 0;
+          lastItem = item;
+        }
+
+        width += _width;
+        blockWidth += _width;
+
+        if (item === lastItem) {
+          if (_width !== this.#blockWidth && blockWidth !== this.#blockWidth) {
+            yield width;
+            width = 0;
+            lastItem = undefined;
+          }
+          continue;
+        }
+      }
+    }
+  }
+
+  *entries(): IterableIterator<[T, number]> {
+    let lastItem: T | undefined;
+    let width = 0;
+
+    for (const block of this.#blocks) {
+      let blockWidth = 0;
+
+      for (const [item, _width] of block.entries()) {
+        if (!lastItem) {
+          lastItem = item;
+        }
+
+        if (width > 0 && item !== lastItem) {
+          yield [lastItem, width];
+          width = 0;
+          lastItem = item;
+        }
+
+        width += _width;
+        blockWidth += _width;
+
+        if (item === lastItem) {
+          if (_width !== this.#blockWidth && blockWidth !== this.#blockWidth) {
+            yield [item, width];
+            width = 0;
+            lastItem = undefined;
+          }
+          continue;
+        }
+      }
+    }
+  }
 
   constructor(blockWidth: number) {
     this.#blockWidth = blockWidth;
