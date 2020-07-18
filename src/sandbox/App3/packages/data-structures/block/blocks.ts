@@ -119,6 +119,10 @@ export class Blocks<T> implements BlocksInterface<T> {
     }
   }
 
+  *blocks(): IterableIterator<BlockInterface<T>> {
+    yield* this.#blocks;
+  }
+
   constructor(blockWidth: number) {
     this.#blockWidth = blockWidth;
     this.#blocks = [new Block(blockWidth)];

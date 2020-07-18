@@ -23,5 +23,4 @@ export type BlocksConstructor<T> = Constructor<Blocks<T>>;
 
 export interface Blocks<T> extends Block<T> {
   blocks(): IterableIterator<Block<T>>;
-  items(): IterableIterator<T>;
 }

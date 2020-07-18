@@ -72,5 +72,23 @@ export const tests = <T>(
         expect(b.isFull()).toBe(false);
       });
     },
+
+    blocks(): void {
+      it("Looping on blocks", () => {
+        const width = initArgs.reduce(
+          (sum: number, arg: T) => sum + getWidth(arg),
+          0
+        );
+        const b = new Structure(blockWidth);
+
+        initArgs.forEach((arg) => {
+          b.add(arg, getWidth(arg));
+        });
+
+        expect(Array.from(b.blocks()).length).toBe(
+          Math.ceil(width / blockWidth)
+        );
+      });
+    },
   };
 };
