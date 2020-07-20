@@ -17,8 +17,8 @@ export interface ContainerContainer extends Container {
   clear(): void;
 
   add(first: Item, last?: Item): Container;
-  remove(firstId: Item["id"], lastID?: Item["id"]): void;
+  remove(firstId: Item["id"], lastId?: Item["id"]): void;
 
-  has(firstId: Item["id"], lastID?: Item["id"]): boolean;
-  get(firstId: Item["id"], lastID?: Item["id"]): Container | undefined;
+  has(firstId: Item["id"], lastId?: Item["id"]): boolean;
+  get(firstId: Item["id"], lastId?: Item["id"]): Container | undefined;
 }
