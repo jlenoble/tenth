@@ -17,6 +17,7 @@ store.sqlite
 
 # production
 /build
+main
 
 # misc
 .DS_Store
