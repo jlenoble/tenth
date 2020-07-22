@@ -1,0 +1,9 @@
+[package]
+name = "learn-rust"
+version = "0.1.0"
+authors = ["Jason Lenoble <jason.lenoble@gmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "learn-rust"
+path = "learn-rust.rs"
