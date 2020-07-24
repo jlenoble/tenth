@@ -7,3 +7,6 @@ edition = "2018"
 [[bin]]
 name = "learn-rust"
 path = "learn-rust.rs"
+
+[dependencies]
+rand = "0.7"
