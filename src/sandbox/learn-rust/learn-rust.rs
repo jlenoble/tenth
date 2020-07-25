@@ -1,3 +1,7 @@
+mod brainstorm;
+
+use brainstorm::Idea;
+
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
