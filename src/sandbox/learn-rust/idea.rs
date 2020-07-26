@@ -13,6 +13,12 @@ impl From<&str> for Idea {
   }
 }
 
+impl AsRef<str> for Idea {
+  fn as_ref(&self) -> &str {
+    self.0.as_ref()
+  }
+}
+
 #[test]
 fn new_idea() {
   assert_eq!(Idea::new(), Idea(String::from("")));
@@ -26,7 +32,13 @@ fn default_idea() {
 }
 
 #[test]
-fn from_str() {
+fn idea_from_str() {
   let idea = Idea("idea".to_string());
   assert_eq!(idea, Idea::from("idea"));
+}
+
+#[test]
+fn idea_as_ref() {
+  let idea = Idea(String::from("idea"));
+  assert_eq!("idea", idea.as_ref());
 }
