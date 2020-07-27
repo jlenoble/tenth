@@ -19,26 +19,31 @@ impl AsRef<str> for Idea {
   }
 }
 
-#[test]
-fn new_idea() {
-  assert_eq!(Idea::new(), Idea(String::from("")));
-}
+#[cfg(test)]
+mod tests {
+  use super::*;
 
-#[test]
-fn default_idea() {
-  assert_eq!(Idea::default(), Idea::new());
-  let idea: Idea = Default::default();
-  assert_eq!(idea, Idea(String::from("")));
-}
+  #[test]
+  fn new_idea() {
+    assert_eq!(Idea::new(), Idea(String::from("")));
+  }
 
-#[test]
-fn idea_from_str() {
-  let idea = Idea("idea".to_string());
-  assert_eq!(idea, Idea::from("idea"));
-}
+  #[test]
+  fn default_idea() {
+    assert_eq!(Idea::default(), Idea::new());
+    let idea: Idea = Default::default();
+    assert_eq!(idea, Idea(String::from("")));
+  }
 
-#[test]
-fn idea_as_ref() {
-  let idea = Idea(String::from("idea"));
-  assert_eq!("idea", idea.as_ref());
+  #[test]
+  fn idea_from_str() {
+    let idea = Idea("idea".to_string());
+    assert_eq!(idea, Idea::from("idea"));
+  }
+
+  #[test]
+  fn idea_as_ref() {
+    let idea = Idea(String::from("idea"));
+    assert_eq!("idea", idea.as_ref());
+  }
 }
