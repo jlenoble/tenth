@@ -1,2 +1,2 @@
 [workspace]
-members = ["src/sandbox/learn-rust"]
+members = ["src/sandbox/learn_rust"]

@@ -1,9 +1,13 @@
 [package]
-name = "learn-rust"
+name = "learn_rust"
 version = "0.1.0"
 authors = ["Jason Lenoble <jason.lenoble@gmail.com>"]
 edition = "2018"
 
+[lib]
+name = "learn_rust"
+path = "lib.rs"
+
 [[bin]]
-name = "learn-rust"
-path = "learn-rust.rs"
+name = "learn_rust"
+path = "main.rs"
