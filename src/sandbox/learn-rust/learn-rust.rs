@@ -1,41 +1,42 @@
-mod idea;
-
-use idea::Idea;
-
-use rand::Rng;
-use std::cmp::Ordering;
-use std::io;
+use std::{env, error::Error, fs, process};
 
 fn main() {
-  println!("Guess the number!");
+  let args: Vec<String> = env::args().collect();
+  let config = Config::new(&args).unwrap_or_else(|err| {
+    println!("Problem parsing arguments: {}", err);
+    process::exit(1);
+  });
 
-  let secret_number = rand::thread_rng().gen_range(1, 101);
+  println!("Searching for {}", config.query);
+  println!("In file {}", config.filename);
 
-  loop {
-    println!("Please input your guess.");
+  if let Err(e) = run(config) {
+    println!("Application error: {}", e);
 
-    let mut guess = String::new();
-
-    io::stdin()
-      .read_line(&mut guess)
-      .expect("Failed to read line");
-
-    let guess: u32 = match guess.trim().parse() {
-      Ok(num) => num,
-      Err(_) => {
-        println!("Please type a number!");
-        continue;
-      }
-    };
-
-    println!("You guessed: {}", guess);
-    match guess.cmp(&secret_number) {
-      Ordering::Less => println!("Too small!"),
-      Ordering::Greater => println!("Too big!"),
-      Ordering::Equal => {
-        println!("You win!");
-        break;
-      }
-    }
+    process::exit(1);
   }
+}
+
+struct Config {
+  query: String,
+  filename: String,
+}
+
+impl Config {
+  fn new(args: &[String]) -> Result<Config, &'static str> {
+    if args.len() < 3 {
+      return Err("not enough arguments");
+    }
+
+    Ok(Config {
+      query: args[1].clone(),
+      filename: args[2].clone(),
+    })
+  }
+}
+
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+  let contents = fs::read_to_string(config.filename)?;
+  println!("With text:\n{}", contents);
+  Ok(())
 }
