@@ -3,6 +3,8 @@ name = "learn_rust"
 version = "0.1.0"
 authors = ["Jason Lenoble <jason.lenoble@gmail.com>"]
 edition = "2018"
+description = "Sandbox for learning Rust"
+license = "MIT"
 
 [lib]
 name = "learn_rust"
