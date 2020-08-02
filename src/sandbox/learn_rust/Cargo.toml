@@ -6,10 +6,6 @@ edition = "2018"
 description = "Sandbox for learning Rust"
 license = "MIT"
 
-[lib]
-name = "learn_rust"
-path = "lib.rs"
-
 [[bin]]
 name = "learn_rust"
 path = "main.rs"
