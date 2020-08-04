@@ -22,6 +22,7 @@ module.exports = {
         new WasmPackPlugin({
           crateDirectory: path.resolve(__dirname, "src/sandbox/learn_rust"),
           outDir: path.resolve(__dirname, "dev-build/src/pkg"),
+          watchDirectories: [path.resolve(__dirname, "src/sandbox/learn_rust")],
         }),
       ]);
 
