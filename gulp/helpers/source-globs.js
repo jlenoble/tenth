@@ -11,7 +11,8 @@ export const srcGlob = new GulpGlob(
   `${srcDir}/**/*.js`,
   `${srcDir}/**/*.jsx`,
   `${gulpDir}/**/*.js`,
-  "gulpfile.js"
+  "gulpfile.js",
+  `!${srcDir}/index.js`
 );
 
 // All needed (config, includes) files (no JS)
@@ -20,5 +21,6 @@ export const copyGlob = new GulpGlob(
   `${srcDir}/**/*.css`,
   `${srcDir}/**/*.svg`,
   `${gulpDir}/**/*.json`,
-  `${gulpDir}/**/.*.*`
+  `${gulpDir}/**/.*.*`,
+  `${srcDir}/index.js`
 );
