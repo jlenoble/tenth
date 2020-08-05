@@ -13,7 +13,7 @@ new GulpTask({
 
 new GulpTask({
   name: "copy-rust",
-  glob: ["dev-build/rust/**/*"],
+  glob: ["dev-build/rust/**/*", "dev-build/rust/.*"],
   dest: "src/sandbox/learn_rust",
   pipe: copyRustPipe,
 });
