@@ -41,6 +41,8 @@ See the file COPYING for details
 
 Rust Documentation
 
+@end ifnottex
+
 Rust is a general-purpose programming language. It supports
 imperative-procedural, concurrent-actor and pure-functional
 styles. Rust also supports generic programming and metaprogramming, in
@@ -373,6 +375,7 @@ cases occurs:
 preconditions of the missing @code{auto}-predicates are met, the
 compiler may insert assertions for each missing predicate.
 @item Otherwise the condition is a compile-time error.
+@end itemize
 
 
 @node       Dropping predicates
