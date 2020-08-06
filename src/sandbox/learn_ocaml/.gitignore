@@ -2,3 +2,6 @@ main
 *.cmo
 *.cmi
 lexer.ml
+parser.ml
+parser.mli
+parser.output

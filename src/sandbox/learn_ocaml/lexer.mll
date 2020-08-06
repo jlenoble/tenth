@@ -1,8 +1,20 @@
 {
-
+  open Parser;;
 }
 
-rule translate = parse
-| "current_directory" { print_string (Sys.getcwd ()) }
-| _ as c              { print_char c                 }
-| eof                 { exit 0                       }
+let digit = ['0'-'9']
+
+rule token = parse
+  | [' ' '\t'] { token lexbuf }
+  | '\n' { NEWLINE }
+  | digit+
+  | "." digit+
+  | digit+ "." digit* as num { NUM (float_of_string num) }
+  | '+' { PLUS }
+  | '-' { MINUS }
+  | '*' { MULTIPLY }
+  | '/' { DIVIDE }
+  | '^' { CARET }
+  | 'n' { UMINUS }
+  | _ { token lexbuf }
+  | eof { exit 0 }
