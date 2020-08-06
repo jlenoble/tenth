@@ -15,9 +15,7 @@ export const transpilePipe = new PolyPipe(babel);
 export const copyPipe = new PolyPipe(noop);
 
 export const copyRustPipe = new PolyPipe(
-  () => debug({ title: "read" }),
   () => filter(["**", "!*dev-build/rust/.git"], { dot: true }),
-  () => debug({ title: "filtered" }),
   () =>
     gulpIf(
       (f) => !f.isDirectory(),
