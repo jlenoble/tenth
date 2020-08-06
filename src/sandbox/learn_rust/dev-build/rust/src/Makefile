@@ -1,26 +1,31 @@
 
 LIBS=nums.cma
 
-main: ast.cmo parser.cmo lexer.cmo main.cmo
+main: ast.cmo parser.cmo lexer.cmo interp.cmo main.cmo
 	ocamlc -o $@ $(LIBS) $^ 
 
-main.cmo: parser.cmi lexer.cmi
+main.cmo: parser.cmi lexer.cmi interp.cmi
+
+interp.cmo: ast.cmi parser.cmi interp.ml 
 
 .phony: clean
 
 clean:
-	rm -f *.cmo *.cmi lexer.ml parser.ml parser.mli parser.output
+	rm -f *.cmo *.cmi lexer.ml parser.ml parser.mli
 
-parser.cmo: parser.ml parser.cmi ast.cmo
+parser.cmo: parser.ml parser.cmi ast.cmi ast.cmo
 	ocamlc -c $<
 
-lexer.cmo: lexer.ml parser.cmi 
+parser.cmi: parser.mli ast.cmi ast.cmo
+	ocamlc -c $<
+
+lexer.cmo lexer.cmi: lexer.ml parser.cmi ast.cmi
 	ocamlc -c $<
 
 %.cmo: %.ml
 	ocamlc -c $<
 
-%.cmi: %.mli
+%.cmi: %.mli %.ml
 	ocamlc -c $<
 
 %.ml: %.mll
