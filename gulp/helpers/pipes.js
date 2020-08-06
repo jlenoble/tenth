@@ -4,6 +4,7 @@ import through from "through2";
 import filter from "gulp-filter";
 import debug from "gulp-debug";
 import changed from "gulp-changed";
+import gulpIf from "gulp-if";
 
 const noop = () => through.obj();
 
@@ -14,8 +15,13 @@ export const transpilePipe = new PolyPipe(babel);
 export const copyPipe = new PolyPipe(noop);
 
 export const copyRustPipe = new PolyPipe(
-  [changed, "src/sandbox/learn_rust"],
-  debug,
+  () => debug({ title: "read" }),
   () => filter(["**", "!*dev-build/rust/.git"], { dot: true }),
-  debug
+  () => debug({ title: "filtered" }),
+  () =>
+    gulpIf(
+      (f) => !f.isDirectory(),
+      changed("src/sandbox/learn_rust", { hasChanged: changed.compareContents })
+    ),
+  () => debug({ title: "changed" })
 );
