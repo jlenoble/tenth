@@ -3,6 +3,7 @@ import babel from "gulp-babel";
 import through from "through2";
 import filter from "gulp-filter";
 import debug from "gulp-debug";
+import changed from "gulp-changed";
 
 const noop = () => through.obj();
 
@@ -13,6 +14,7 @@ export const transpilePipe = new PolyPipe(babel);
 export const copyPipe = new PolyPipe(noop);
 
 export const copyRustPipe = new PolyPipe(
+  [changed, "src/sandbox/learn_rust"],
   debug,
   () => filter(["**", "!*dev-build/rust/.git"], { dot: true }),
   debug
