@@ -1,3 +1,4 @@
 main
 *.cmo
 *.cmi
+lexer.ml
