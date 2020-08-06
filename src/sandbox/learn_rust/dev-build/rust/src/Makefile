@@ -7,7 +7,7 @@ all: parser.cmo parser.cmi lexer.cmo ast.cmo
 clean:
 	rm -f *.cmo *.cmi lexer.ml parser.ml parser.mli
 
-parser.cmo: parser.ml parser.cmi ast.cmo
+parser.cmo: ast.cmo parser.ml parser.cmi
 	ocamlc -c $<
 
 lexer.cmo: lexer.ml parser.cmi 
